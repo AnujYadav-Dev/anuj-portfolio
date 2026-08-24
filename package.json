@@ -1,0 +1,28 @@
+{
+  "name": "portfolio",
+  "private": true,
+  "version": "0.0.1",
+  "description": "Dynamic portfolio platform — Next.js + Express + PostgreSQL",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev:api": "npm run dev -w @portfolio/api",
+    "dev:web": "npm run dev -w @portfolio/web",
+    "build:shared": "npm run build -w @portfolio/shared",
+    "build:api": "npm run build -w @portfolio/api",
+    "build:web": "npm run build -w @portfolio/web",
+    "build": "npm run build:shared && npm run build:api && npm run build:web",
+    "lint": "npm run lint --workspaces --if-present",
+    "format": "prettier --write \"**/*.{ts,tsx,json,md,css}\" --ignore-path .gitignore",
+    "format:check": "prettier --check \"**/*.{ts,tsx,json,md,css}\" --ignore-path .gitignore"
+  },
+  "devDependencies": {
+    "prettier": "^3.3.0",
+    "typescript": "^5.5.0"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  }
+}

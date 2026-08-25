@@ -2,14 +2,7 @@
 
 import * as React from 'react';
 import Link from 'next/link';
-import {
-  ArrowLeft,
-  ExternalLink,
-  Calendar,
-  Layers,
-  User,
-  Sparkles,
-} from 'lucide-react';
+import { ArrowLeft, ExternalLink, Calendar, Layers, User, Sparkles } from 'lucide-react';
 import { GitHubIcon } from '@/components/common/Icons';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -74,9 +67,7 @@ export function ProjectCaseStudy({ project }: ProjectCaseStudyProps) {
               {project.title}
             </h1>
 
-            <p className="text-md text-muted leading-relaxed">
-              {project.shortDescription}
-            </p>
+            <p className="text-md text-muted leading-relaxed">{project.shortDescription}</p>
 
             {/* Metadata Matrix */}
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 p-4 rounded-md border border-border bg-surface text-xs font-mono">
@@ -107,22 +98,18 @@ export function ProjectCaseStudy({ project }: ProjectCaseStudyProps) {
             {/* Action CTAs */}
             <div className="flex flex-wrap items-center gap-4 pt-2">
               {project.liveUrl && (
-                <a
-                  href={project.liveUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  <Button variant="primary" size="md" rightIcon={<ExternalLink className="h-4 w-4" />}>
+                <a href={project.liveUrl} target="_blank" rel="noopener noreferrer">
+                  <Button
+                    variant="primary"
+                    size="md"
+                    rightIcon={<ExternalLink className="h-4 w-4" />}
+                  >
                     View Live Website
                   </Button>
                 </a>
               )}
               {project.githubUrl && (
-                <a
-                  href={project.githubUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
+                <a href={project.githubUrl} target="_blank" rel="noopener noreferrer">
                   <Button variant="outline" size="md" leftIcon={<GitHubIcon className="h-4 w-4" />}>
                     View Source Code
                   </Button>
@@ -169,4 +156,3 @@ export function ProjectCaseStudy({ project }: ProjectCaseStudyProps) {
     </div>
   );
 }
-

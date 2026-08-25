@@ -42,7 +42,10 @@ export const homepageSectionService = {
     return mapHomepageSectionToDto(created);
   },
 
-  async updateSection(id: string, input: Partial<UpsertHomepageSectionInput>): Promise<HomepageSectionDto> {
+  async updateSection(
+    id: string,
+    input: Partial<UpsertHomepageSectionInput>,
+  ): Promise<HomepageSectionDto> {
     await homepageSectionService.getSectionById(id);
 
     const updateData: Prisma.HomepageSectionUpdateInput = {};

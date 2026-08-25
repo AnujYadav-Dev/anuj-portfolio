@@ -205,7 +205,9 @@ export default function AdminAboutPage() {
             <DialogHeader className="border-b border-border pb-3">
               <DialogTitle className="text-base font-bold text-foreground flex items-center gap-2">
                 <BookOpen className="w-4 h-4 text-accent" />
-                <span>{editingSection ? `Edit: ${editingSection.title}` : 'Add About Section'}</span>
+                <span>
+                  {editingSection ? `Edit: ${editingSection.title}` : 'Add About Section'}
+                </span>
               </DialogTitle>
             </DialogHeader>
 
@@ -267,10 +269,21 @@ export default function AdminAboutPage() {
             </div>
 
             <DialogFooter className="pt-3 border-t border-border flex justify-end gap-2">
-              <Button type="button" variant="outline" size="sm" onClick={() => setIsModalOpen(false)}>
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={() => setIsModalOpen(false)}
+              >
                 Cancel
               </Button>
-              <Button type="submit" variant="primary" size="sm" isLoading={isSaving} disabled={isSaving}>
+              <Button
+                type="submit"
+                variant="primary"
+                size="sm"
+                isLoading={isSaving}
+                disabled={isSaving}
+              >
                 Save Section
               </Button>
             </DialogFooter>

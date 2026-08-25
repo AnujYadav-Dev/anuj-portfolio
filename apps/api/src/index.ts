@@ -82,8 +82,6 @@ if (config.STORAGE_PROVIDER === 'local') {
   );
 }
 
-
-
 const apiRouter = express.Router();
 apiRouter.use(publicRateLimiter);
 apiRouter.use(healthRouter);
@@ -128,7 +126,6 @@ apiRouter.use('/testimonials', testimonialRouter);
 apiRouter.use('/newsletter', newsletterRouter);
 apiRouter.use('/email-templates', emailTemplateRouter);
 
-
 // Discovery, Taxonomy & Metrics
 apiRouter.use('/tags', tagRouter);
 apiRouter.use('/search', searchRouter);
@@ -139,10 +136,7 @@ app.use(errorHandler);
 
 if (process.env.NODE_ENV !== 'test') {
   app.listen(config.PORT, () => {
-    logger.info(
-      { port: config.PORT, env: config.NODE_ENV },
-      'API server started',
-    );
+    logger.info({ port: config.PORT, env: config.NODE_ENV }, 'API server started');
     schedulerService.startScheduler();
   });
 }

@@ -47,13 +47,22 @@ export default function AdminAnalyticsDashboardPage() {
   const loadAnalytics = async () => {
     setIsRefreshing(true);
     try {
-      const [overviewRes, timeseriesRes, topPagesRes, clicksRes, logsRes] = await Promise.allSettled([
-        apiClient.get<{ data: AdminAnalyticsOverviewDto }>(`/analytics/admin/overview?period=${period}`),
-        apiClient.get<{ data: AnalyticsTimeSeriesPoint[] }>(`/analytics/admin/timeseries?period=${period}`),
-        apiClient.get<{ data: AdminTopPageItem[] }>(`/analytics/admin/top-pages?period=${period}`),
-        apiClient.get<{ data: AdminClickItem[] }>(`/analytics/admin/clicks?period=${period}`),
-        apiClient.get<PaginatedResponse<AdminVisitorLogItem>>(`/analytics/admin/visitors?page=${logPage}&pageSize=15`),
-      ]);
+      const [overviewRes, timeseriesRes, topPagesRes, clicksRes, logsRes] =
+        await Promise.allSettled([
+          apiClient.get<{ data: AdminAnalyticsOverviewDto }>(
+            `/analytics/admin/overview?period=${period}`,
+          ),
+          apiClient.get<{ data: AnalyticsTimeSeriesPoint[] }>(
+            `/analytics/admin/timeseries?period=${period}`,
+          ),
+          apiClient.get<{ data: AdminTopPageItem[] }>(
+            `/analytics/admin/top-pages?period=${period}`,
+          ),
+          apiClient.get<{ data: AdminClickItem[] }>(`/analytics/admin/clicks?period=${period}`),
+          apiClient.get<PaginatedResponse<AdminVisitorLogItem>>(
+            `/analytics/admin/visitors?page=${logPage}&pageSize=15`,
+          ),
+        ]);
 
       if (overviewRes.status === 'fulfilled') setOverview(overviewRes.value.data);
       if (timeseriesRes.status === 'fulfilled') setTimeseries(timeseriesRes.value.data || []);
@@ -90,12 +99,18 @@ export default function AdminAnalyticsDashboardPage() {
     {
       key: 'views',
       header: 'Page Views',
-      render: (item) => <span className="font-mono text-xs text-foreground font-semibold">{item.views.toLocaleString()}</span>,
+      render: (item) => (
+        <span className="font-mono text-xs text-foreground font-semibold">
+          {item.views.toLocaleString()}
+        </span>
+      ),
     },
     {
       key: 'uniqueVisitors',
       header: 'Unique Visitors',
-      render: (item) => <span className="font-mono text-xs text-muted">{item.uniqueVisitors.toLocaleString()}</span>,
+      render: (item) => (
+        <span className="font-mono text-xs text-muted">{item.uniqueVisitors.toLocaleString()}</span>
+      ),
     },
     {
       key: 'avgDurationSeconds',
@@ -126,7 +141,9 @@ export default function AdminAnalyticsDashboardPage() {
       key: 'count',
       header: 'Click Count',
       render: (item) => (
-        <span className="font-mono text-xs text-foreground font-bold">{item.count.toLocaleString()}</span>
+        <span className="font-mono text-xs text-foreground font-bold">
+          {item.count.toLocaleString()}
+        </span>
       ),
     },
     {
@@ -149,7 +166,9 @@ export default function AdminAnalyticsDashboardPage() {
           <span className="font-bold text-foreground text-xs block">
             {item.city ? `${item.city}, ${item.country}` : item.country || 'Global Visitor'}
           </span>
-          <span className="text-[10px] text-muted font-mono">{item.ipAddress || item.sessionId.substring(0, 12)}</span>
+          <span className="text-[10px] text-muted font-mono">
+            {item.ipAddress || item.sessionId.substring(0, 12)}
+          </span>
         </div>
       ),
     },
@@ -159,7 +178,10 @@ export default function AdminAnalyticsDashboardPage() {
       render: (item) => (
         <div className="text-xs font-mono text-muted">
           <span>{item.deviceType || 'Desktop'}</span>
-          <span className="opacity-80"> • {item.browser || 'Browser'} on {item.os || 'OS'}</span>
+          <span className="opacity-80">
+            {' '}
+            • {item.browser || 'Browser'} on {item.os || 'OS'}
+          </span>
         </div>
       ),
     },
@@ -175,14 +197,20 @@ export default function AdminAnalyticsDashboardPage() {
     {
       key: 'pageViewsCount',
       header: 'Views',
-      render: (item) => <span className="font-mono text-xs text-foreground">{item.pageViewsCount} pages</span>,
+      render: (item) => (
+        <span className="font-mono text-xs text-foreground">{item.pageViewsCount} pages</span>
+      ),
     },
     {
       key: 'lastVisitedAt',
       header: 'Visited At',
       render: (item) => (
         <span className="font-mono text-xs text-muted">
-          {new Date(item.lastVisitedAt).toLocaleDateString()} {new Date(item.lastVisitedAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+          {new Date(item.lastVisitedAt).toLocaleDateString()}{' '}
+          {new Date(item.lastVisitedAt).toLocaleTimeString([], {
+            hour: '2-digit',
+            minute: '2-digit',
+          })}
         </span>
       ),
     },
@@ -232,7 +260,9 @@ export default function AdminAnalyticsDashboardPage() {
               disabled={isRefreshing}
               title="Refresh Telemetry"
             >
-              <RefreshCw className={cn('w-3.5 h-3.5', isRefreshing && 'animate-spin text-accent')} />
+              <RefreshCw
+                className={cn('w-3.5 h-3.5', isRefreshing && 'animate-spin text-accent')}
+              />
             </Button>
           </div>
         }
@@ -242,7 +272,9 @@ export default function AdminAnalyticsDashboardPage() {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <Card className="bg-surface border-border p-5 shadow-sm">
           <div className="flex items-center justify-between">
-            <span className="text-[11px] font-mono uppercase tracking-wider text-muted">Page Views</span>
+            <span className="text-[11px] font-mono uppercase tracking-wider text-muted">
+              Page Views
+            </span>
             <Eye className="w-4 h-4 text-accent" />
           </div>
           <p className="text-2xl font-extrabold text-foreground font-mono mt-2">
@@ -252,7 +284,9 @@ export default function AdminAnalyticsDashboardPage() {
 
         <Card className="bg-surface border-border p-5 shadow-sm">
           <div className="flex items-center justify-between">
-            <span className="text-[11px] font-mono uppercase tracking-wider text-muted">Unique Visitors</span>
+            <span className="text-[11px] font-mono uppercase tracking-wider text-muted">
+              Unique Visitors
+            </span>
             <Users className="w-4 h-4 text-foreground" />
           </div>
           <p className="text-2xl font-extrabold text-foreground font-mono mt-2">
@@ -262,7 +296,9 @@ export default function AdminAnalyticsDashboardPage() {
 
         <Card className="bg-surface border-border p-5 shadow-sm">
           <div className="flex items-center justify-between">
-            <span className="text-[11px] font-mono uppercase tracking-wider text-muted">Total Sessions</span>
+            <span className="text-[11px] font-mono uppercase tracking-wider text-muted">
+              Total Sessions
+            </span>
             <Compass className="w-4 h-4 text-muted" />
           </div>
           <p className="text-2xl font-extrabold text-foreground font-mono mt-2">
@@ -272,7 +308,9 @@ export default function AdminAnalyticsDashboardPage() {
 
         <Card className="bg-surface border-border p-5 shadow-sm">
           <div className="flex items-center justify-between">
-            <span className="text-[11px] font-mono uppercase tracking-wider text-muted">Avg Session Time</span>
+            <span className="text-[11px] font-mono uppercase tracking-wider text-muted">
+              Avg Session Time
+            </span>
             <Clock className="w-4 h-4 text-accent" />
           </div>
           <p className="text-2xl font-extrabold text-foreground font-mono mt-2">
@@ -284,7 +322,9 @@ export default function AdminAnalyticsDashboardPage() {
       {/* Traffic Trajectory Chart */}
       <Card className="bg-surface border-border shadow-sm">
         <CardHeader className="border-b border-border pb-4">
-          <CardTitle className="text-sm font-bold text-foreground">Traffic Trajectory Over Time</CardTitle>
+          <CardTitle className="text-sm font-bold text-foreground">
+            Traffic Trajectory Over Time
+          </CardTitle>
         </CardHeader>
         <CardContent className="pt-6">
           <TimeSeriesChart data={timeseries} height={280} />
@@ -340,7 +380,6 @@ export default function AdminAnalyticsDashboardPage() {
             <DistributionBarList items={overview?.browserBreakdown || []} />
           </CardContent>
         </Card>
-
       </div>
 
       {/* Top Pages Table */}

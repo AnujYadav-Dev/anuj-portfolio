@@ -2,7 +2,11 @@
 
 import React, { useEffect, useState } from 'react';
 import { apiClient } from '@/lib/api';
-import type { ContentBlockDto, CreateContentBlockRequest, UpdateContentBlockRequest } from '@portfolio/shared';
+import type {
+  ContentBlockDto,
+  CreateContentBlockRequest,
+  UpdateContentBlockRequest,
+} from '@portfolio/shared';
 import { BlockType } from '@portfolio/shared';
 import { AdminPageHeader } from '@/components/admin/ui/AdminPageHeader';
 import { AdminDataTable, type Column } from '@/components/admin/ui/AdminDataTable';
@@ -280,10 +284,21 @@ export default function AdminContentBlocksPage() {
             </div>
 
             <DialogFooter className="pt-3 border-t border-border flex justify-end gap-2">
-              <Button type="button" variant="outline" size="sm" onClick={() => setIsModalOpen(false)}>
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={() => setIsModalOpen(false)}
+              >
                 Cancel
               </Button>
-              <Button type="submit" variant="primary" size="sm" isLoading={isSaving} disabled={isSaving}>
+              <Button
+                type="submit"
+                variant="primary"
+                size="sm"
+                isLoading={isSaving}
+                disabled={isSaving}
+              >
                 Save Block
               </Button>
             </DialogFooter>

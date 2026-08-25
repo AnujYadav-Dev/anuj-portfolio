@@ -44,11 +44,10 @@ export default function NewsletterPage() {
           {isSuccess ? (
             <Card className="bg-surface border-border p-8 text-center flex flex-col items-center gap-4">
               <CheckCircle2 className="h-10 w-10 text-success" />
-              <h3 className="text-lg font-bold text-foreground">
-                You&apos;re on the list!
-              </h3>
+              <h3 className="text-lg font-bold text-foreground">You&apos;re on the list!</h3>
               <p className="text-xs text-muted max-w-md leading-relaxed">
-                Thank you for subscribing. You will receive new essays, case studies, and engineering breakdowns directly to your inbox. Zero spam, unsubscribe anytime.
+                Thank you for subscribing. You will receive new essays, case studies, and
+                engineering breakdowns directly to your inbox. Zero spam, unsubscribe anytime.
               </p>
               <Button
                 variant="outline"
@@ -67,7 +66,8 @@ export default function NewsletterPage() {
                 </span>
                 <CardTitle>Stay in the loop</CardTitle>
                 <CardDescription>
-                  Get monthly engineering essays, release notes, and deep architectural breakdowns delivered straight to your inbox.
+                  Get monthly engineering essays, release notes, and deep architectural breakdowns
+                  delivered straight to your inbox.
                 </CardDescription>
               </CardHeader>
 

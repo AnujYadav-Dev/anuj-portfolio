@@ -124,7 +124,9 @@ export default function AdminEmailsPage() {
                 key={v}
                 className="px-2 py-0.5 rounded bg-surface-muted border border-border text-[11px] font-mono text-accent"
               >
-                {'{{'}{v}{'}}'}
+                {'{{'}
+                {v}
+                {'}}'}
               </span>
             ))}
           </div>
@@ -132,7 +134,9 @@ export default function AdminEmailsPage() {
           <Card className="bg-surface border-border">
             <CardHeader className="pb-3 border-b border-border flex flex-row items-center justify-between">
               <div>
-                <CardTitle className="text-sm font-bold text-foreground">Email Subject & Body</CardTitle>
+                <CardTitle className="text-sm font-bold text-foreground">
+                  Email Subject & Body
+                </CardTitle>
                 <CardDescription className="text-xs text-muted">
                   Supports mustache template variables replacement.
                 </CardDescription>
@@ -144,7 +148,9 @@ export default function AdminEmailsPage() {
                   onClick={() => setPreviewMode('html')}
                   className={cn(
                     'px-2.5 py-1 text-xs rounded transition-colors',
-                    previewMode === 'html' ? 'bg-surface text-foreground font-semibold shadow-sm' : 'text-muted hover:text-foreground',
+                    previewMode === 'html'
+                      ? 'bg-surface text-foreground font-semibold shadow-sm'
+                      : 'text-muted hover:text-foreground',
                   )}
                 >
                   <Code className="w-3.5 h-3.5 inline mr-1" /> HTML
@@ -154,7 +160,9 @@ export default function AdminEmailsPage() {
                   onClick={() => setPreviewMode('preview')}
                   className={cn(
                     'px-2.5 py-1 text-xs rounded transition-colors',
-                    previewMode === 'preview' ? 'bg-surface text-foreground font-semibold shadow-sm' : 'text-muted hover:text-foreground',
+                    previewMode === 'preview'
+                      ? 'bg-surface text-foreground font-semibold shadow-sm'
+                      : 'text-muted hover:text-foreground',
                   )}
                 >
                   <Eye className="w-3.5 h-3.5 inline mr-1" /> Live Preview
@@ -164,7 +172,9 @@ export default function AdminEmailsPage() {
                   onClick={() => setPreviewMode('text')}
                   className={cn(
                     'px-2.5 py-1 text-xs rounded transition-colors',
-                    previewMode === 'text' ? 'bg-surface text-foreground font-semibold shadow-sm' : 'text-muted hover:text-foreground',
+                    previewMode === 'text'
+                      ? 'bg-surface text-foreground font-semibold shadow-sm'
+                      : 'text-muted hover:text-foreground',
                   )}
                 >
                   Plain Text
@@ -199,7 +209,9 @@ export default function AdminEmailsPage() {
 
               {previewMode === 'preview' && (
                 <div className="space-y-1.5">
-                  <label className="text-xs font-semibold text-foreground">Rendered HTML View</label>
+                  <label className="text-xs font-semibold text-foreground">
+                    Rendered HTML View
+                  </label>
                   <div className="border border-border rounded-lg p-6 bg-white text-black min-h-[300px]">
                     <div dangerouslySetInnerHTML={{ __html: bodyHtml }} />
                   </div>
@@ -208,7 +220,9 @@ export default function AdminEmailsPage() {
 
               {previewMode === 'text' && (
                 <div className="space-y-1.5">
-                  <label className="text-xs font-semibold text-foreground">Fallback Plain Text Body</label>
+                  <label className="text-xs font-semibold text-foreground">
+                    Fallback Plain Text Body
+                  </label>
                   <Textarea
                     value={bodyText}
                     onChange={(e) => setBodyText(e.target.value)}
@@ -219,7 +233,13 @@ export default function AdminEmailsPage() {
               )}
 
               <div className="pt-3 border-t border-border flex justify-end">
-                <Button type="submit" variant="primary" size="sm" isLoading={isSaving} disabled={isSaving}>
+                <Button
+                  type="submit"
+                  variant="primary"
+                  size="sm"
+                  isLoading={isSaving}
+                  disabled={isSaving}
+                >
                   <Save className="w-3.5 h-3.5 mr-1.5" />
                   <span>Save Email Template</span>
                 </Button>

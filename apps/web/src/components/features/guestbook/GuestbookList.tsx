@@ -29,20 +29,16 @@ export function GuestbookList({ entries }: GuestbookListProps) {
         });
 
         return (
-          <RevealOnScroll key={entry.id} delayIndex={(idx % 4 + 1) as 1 | 2 | 3 | 4}>
+          <RevealOnScroll key={entry.id} delayIndex={((idx % 4) + 1) as 1 | 2 | 3 | 4}>
             <Card className="bg-surface border-border p-4 flex flex-col gap-2">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <Avatar fallbackText={entry.authorName} size="sm" />
-                  <span className="font-semibold text-xs text-foreground">
-                    {entry.authorName}
-                  </span>
+                  <span className="font-semibold text-xs text-foreground">{entry.authorName}</span>
                 </div>
                 <span className="text-[11px] font-mono text-muted">{date}</span>
               </div>
-              <p className="text-xs text-muted leading-relaxed pl-8">
-                {entry.message}
-              </p>
+              <p className="text-xs text-muted leading-relaxed pl-8">{entry.message}</p>
             </Card>
           </RevealOnScroll>
         );

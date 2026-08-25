@@ -31,7 +31,9 @@ export default function AdminHomepageLayoutPage() {
   const fetchSections = async () => {
     setIsLoading(true);
     try {
-      const res = await apiClient.get<{ data: HomepageSectionDto[] }>('/homepage-sections/admin/all');
+      const res = await apiClient.get<{ data: HomepageSectionDto[] }>(
+        '/homepage-sections/admin/all',
+      );
       setSections(res.data || []);
     } catch {
       toast.error('Failed to load homepage sections');
@@ -114,7 +116,9 @@ export default function AdminHomepageLayoutPage() {
             <div className="min-w-0">
               <div className="flex items-center gap-2">
                 <LayoutTemplate className="w-4 h-4 text-accent" />
-                <span className="font-bold text-foreground text-xs">{item.title || item.sectionKey}</span>
+                <span className="font-bold text-foreground text-xs">
+                  {item.title || item.sectionKey}
+                </span>
                 <span className="text-[10px] text-muted font-mono bg-surface-muted px-1.5 py-0.2 rounded border border-border">
                   #{item.sectionKey}
                 </span>
@@ -197,10 +201,21 @@ export default function AdminHomepageLayoutPage() {
             </div>
 
             <DialogFooter className="pt-3 border-t border-border flex justify-end gap-2">
-              <Button type="button" variant="outline" size="sm" onClick={() => setIsModalOpen(false)}>
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={() => setIsModalOpen(false)}
+              >
                 Cancel
               </Button>
-              <Button type="submit" variant="primary" size="sm" isLoading={isSaving} disabled={isSaving}>
+              <Button
+                type="submit"
+                variant="primary"
+                size="sm"
+                isLoading={isSaving}
+                disabled={isSaving}
+              >
                 Save Changes
               </Button>
             </DialogFooter>

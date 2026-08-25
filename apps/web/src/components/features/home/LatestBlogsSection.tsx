@@ -50,7 +50,7 @@ export function LatestBlogsSection() {
                 : '';
 
               return (
-                <RevealOnScroll key={post.id} delayIndex={(idx % 4 + 1) as 1 | 2 | 3 | 4}>
+                <RevealOnScroll key={post.id} delayIndex={((idx % 4) + 1) as 1 | 2 | 3 | 4}>
                   <Link
                     href={`/blogs/${post.slug}`}
                     onMouseEnter={() => setHoveredId(post.id)}

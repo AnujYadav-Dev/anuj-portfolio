@@ -3,7 +3,12 @@
 import React, { useState, useEffect } from 'react';
 import { useAdminAuth } from '@/hooks/useAdminAuth';
 import { apiClient } from '@/lib/api';
-import type { AuthorDto, MediaDto, UpdateProfileRequest, ChangePasswordRequest } from '@portfolio/shared';
+import type {
+  AuthorDto,
+  MediaDto,
+  UpdateProfileRequest,
+  ChangePasswordRequest,
+} from '@portfolio/shared';
 import { AdminPageHeader } from '@/components/admin/ui/AdminPageHeader';
 import { MediaPickerModal } from '@/components/admin/ui/MediaPickerModal';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
@@ -60,8 +65,6 @@ export default function AdminProfilePage() {
       setIsSavingProfile(false);
     }
   };
-
-
 
   const handleChangePassword = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -154,7 +157,9 @@ export default function AdminProfilePage() {
                 </div>
 
                 <div className="space-y-1.5">
-                  <label className="text-xs font-semibold text-foreground">Bio / About Snippet</label>
+                  <label className="text-xs font-semibold text-foreground">
+                    Bio / About Snippet
+                  </label>
                   <Textarea
                     placeholder="Tell visitors about your background..."
                     value={bio}
@@ -220,7 +225,9 @@ export default function AdminProfilePage() {
                   </div>
 
                   <div className="space-y-1.5">
-                    <label className="text-xs font-semibold text-foreground">Confirm New Password</label>
+                    <label className="text-xs font-semibold text-foreground">
+                      Confirm New Password
+                    </label>
                     <Input
                       type="password"
                       placeholder="Repeat new password"

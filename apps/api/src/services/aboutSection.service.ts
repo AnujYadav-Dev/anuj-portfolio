@@ -48,7 +48,10 @@ export const aboutSectionService = {
     return mapAboutSectionToDto(created);
   },
 
-  async updateSection(id: string, input: Partial<UpsertAboutSectionInput>): Promise<AboutSectionDto> {
+  async updateSection(
+    id: string,
+    input: Partial<UpsertAboutSectionInput>,
+  ): Promise<AboutSectionDto> {
     await aboutSectionService.getSectionById(id);
 
     const updateData: Prisma.AboutSectionUpdateInput = {};
@@ -59,7 +62,8 @@ export const aboutSectionService = {
     if (input.sortOrder !== undefined) updateData.sortOrder = input.sortOrder;
     if (input.isEnabled !== undefined) updateData.isEnabled = input.isEnabled;
     if (input.seoTitle !== undefined) updateData.seoTitle = input.seoTitle || null;
-    if (input.seoDescription !== undefined) updateData.seoDescription = input.seoDescription || null;
+    if (input.seoDescription !== undefined)
+      updateData.seoDescription = input.seoDescription || null;
     if (input.seoKeywords !== undefined) updateData.seoKeywords = input.seoKeywords || null;
 
     const updated = await aboutSectionRepository.update(id, updateData);

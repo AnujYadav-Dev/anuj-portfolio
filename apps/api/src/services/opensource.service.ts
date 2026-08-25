@@ -5,7 +5,10 @@ import type { OpensourceContributionDto, UpsertOpensourceInput } from '@portfoli
 import type { Prisma } from '@prisma/client';
 
 export const opensourceService = {
-  async listContributions(onlyEnabled = true, isFeatured?: boolean): Promise<OpensourceContributionDto[]> {
+  async listContributions(
+    onlyEnabled = true,
+    isFeatured?: boolean,
+  ): Promise<OpensourceContributionDto[]> {
     const records = await opensourceRepository.findAll(onlyEnabled, isFeatured);
     return records.map(mapOpensourceToDto);
   },
@@ -34,7 +37,10 @@ export const opensourceService = {
     return mapOpensourceToDto(created);
   },
 
-  async updateContribution(id: string, input: Partial<UpsertOpensourceInput>): Promise<OpensourceContributionDto> {
+  async updateContribution(
+    id: string,
+    input: Partial<UpsertOpensourceInput>,
+  ): Promise<OpensourceContributionDto> {
     await opensourceService.getContributionById(id);
 
     const updateData: Prisma.OpensourceContributionUpdateInput = {};

@@ -2,7 +2,11 @@
 
 import React, { useEffect, useState } from 'react';
 import { apiClient } from '@/lib/api';
-import type { SocialLinkDto, CreateSocialLinkRequest, UpdateSocialLinkRequest } from '@portfolio/shared';
+import type {
+  SocialLinkDto,
+  CreateSocialLinkRequest,
+  UpdateSocialLinkRequest,
+} from '@portfolio/shared';
 import { AdminPageHeader } from '@/components/admin/ui/AdminPageHeader';
 import { ReorderableList } from '@/components/admin/ui/ReorderableList';
 import { ConfirmDialog } from '@/components/admin/ui/ConfirmDialog';
@@ -160,7 +164,9 @@ export default function AdminSocialPage() {
                   </span>
                 )}
               </div>
-              <p className="text-[11px] text-accent font-mono truncate mt-0.5 max-w-md">{item.url}</p>
+              <p className="text-[11px] text-accent font-mono truncate mt-0.5 max-w-md">
+                {item.url}
+              </p>
             </div>
 
             <div className="flex items-center gap-1.5 shrink-0">
@@ -249,16 +255,29 @@ export default function AdminSocialPage() {
                     onChange={(e) => setIsEnabled(e.target.checked)}
                     className="rounded border-border bg-background text-accent focus:ring-accent accent-accent w-4 h-4 cursor-pointer"
                   />
-                  <span className="text-xs font-semibold text-foreground">Visible on Public Site</span>
+                  <span className="text-xs font-semibold text-foreground">
+                    Visible on Public Site
+                  </span>
                 </label>
               </div>
             </div>
 
             <DialogFooter className="pt-3 border-t border-border flex justify-end gap-2">
-              <Button type="button" variant="outline" size="sm" onClick={() => setIsModalOpen(false)}>
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={() => setIsModalOpen(false)}
+              >
                 Cancel
               </Button>
-              <Button type="submit" variant="primary" size="sm" isLoading={isSaving} disabled={isSaving}>
+              <Button
+                type="submit"
+                variant="primary"
+                size="sm"
+                isLoading={isSaving}
+                disabled={isSaving}
+              >
                 Save Link
               </Button>
             </DialogFooter>

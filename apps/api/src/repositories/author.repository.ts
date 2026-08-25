@@ -25,13 +25,16 @@ export const authorRepository = {
     return admins.map((admin) => admin.email);
   },
 
-  async update(id: string, data: {
-    displayName?: string;
-    username?: string;
-    email?: string;
-    bio?: string | null;
-    avatarId?: string | null;
-  }) {
+  async update(
+    id: string,
+    data: {
+      displayName?: string;
+      username?: string;
+      email?: string;
+      bio?: string | null;
+      avatarId?: string | null;
+    },
+  ) {
     return prisma.author.update({
       where: { id },
       data,

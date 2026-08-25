@@ -55,16 +55,12 @@ export function MarkdownEditor({
     const selection = value.substring(start, end) || defaultText;
     const replacement = `${prefix}${selection}${suffix}`;
 
-    const newValue =
-      value.substring(0, start) + replacement + value.substring(end);
+    const newValue = value.substring(0, start) + replacement + value.substring(end);
     onChange(newValue);
 
     setTimeout(() => {
       textarea.focus();
-      textarea.setSelectionRange(
-        start + prefix.length,
-        start + prefix.length + selection.length,
-      );
+      textarea.setSelectionRange(start + prefix.length, start + prefix.length + selection.length);
     }, 10);
   };
 
@@ -191,10 +187,7 @@ export function MarkdownEditor({
             <button
               type="button"
               onClick={() =>
-                insertText(
-                  '| Column 1 | Column 2 |\n| :--- | :--- |\n| Item 1 | Value 1 |\n',
-                  '',
-                )
+                insertText('| Column 1 | Column 2 |\n| :--- | :--- |\n| Item 1 | Value 1 |\n', '')
               }
               className="p-1.5 text-muted hover:text-foreground hover:bg-surface rounded transition-colors"
               title="Insert Table"
@@ -220,7 +213,9 @@ export function MarkdownEditor({
               onClick={() => setViewMode('write')}
               className={cn(
                 'p-1 rounded text-xs transition-colors',
-                viewMode === 'write' ? 'bg-surface-muted text-foreground' : 'text-muted hover:text-foreground',
+                viewMode === 'write'
+                  ? 'bg-surface-muted text-foreground'
+                  : 'text-muted hover:text-foreground',
               )}
               title="Write Mode"
             >
@@ -231,7 +226,9 @@ export function MarkdownEditor({
               onClick={() => setViewMode('split')}
               className={cn(
                 'p-1 rounded text-xs transition-colors hidden md:block',
-                viewMode === 'split' ? 'bg-surface-muted text-foreground' : 'text-muted hover:text-foreground',
+                viewMode === 'split'
+                  ? 'bg-surface-muted text-foreground'
+                  : 'text-muted hover:text-foreground',
               )}
               title="Split View Mode"
             >
@@ -242,7 +239,9 @@ export function MarkdownEditor({
               onClick={() => setViewMode('preview')}
               className={cn(
                 'p-1 rounded text-xs transition-colors',
-                viewMode === 'preview' ? 'bg-surface-muted text-foreground' : 'text-muted hover:text-foreground',
+                viewMode === 'preview'
+                  ? 'bg-surface-muted text-foreground'
+                  : 'text-muted hover:text-foreground',
               )}
               title="Live Preview Mode"
             >
@@ -255,7 +254,9 @@ export function MarkdownEditor({
         <div
           className={cn(
             'grid divide-border min-h-0',
-            viewMode === 'split' ? 'grid-cols-1 md:grid-cols-2 divide-y md:divide-y-0 md:divide-x' : 'grid-cols-1',
+            viewMode === 'split'
+              ? 'grid-cols-1 md:grid-cols-2 divide-y md:divide-y-0 md:divide-x'
+              : 'grid-cols-1',
           )}
           style={{ minHeight }}
         >

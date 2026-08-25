@@ -101,17 +101,17 @@ Open [http://localhost:3000](http://localhost:3000) for the frontend and [http:/
 
 All documentation is in the [`docs/`](docs/) folder. See [`docs/README.md`](docs/README.md) for the full index.
 
-| Document                                            | Purpose                                   |
-| --------------------------------------------------- | ----------------------------------------- |
-| [CONTEXT.md](docs/CONTEXT.md)                       | Living project context and current status |
-| [CHANGELOG.md](docs/CHANGELOG.md)                   | Record of all changes                     |
-| [PROJECT_GUIDELINES.md](docs/PROJECT_GUIDELINES.md) | Development principles                    |
-| [CODING_STANDARDS.md](docs/CODING_STANDARDS.md)     | Naming and coding conventions             |
-| [ARCHITECTURE_RULES.md](docs/ARCHITECTURE_RULES.md) | Structural boundaries and patterns        |
-| [UI-DESIGN-GUIDELINES.md](docs/UI-DESIGN-GUIDELINES.md)  | Visual source of truth from UI references |
-| [DESIGN_SYSTEM.md](docs/DESIGN_SYSTEM.md)           | Visual design guidelines                  |
-| [DESIGN_TOKENS.md](docs/DESIGN_TOKENS.md)           | Semantic token definitions                |
-| [DATABASE_SCHEMA.md](docs/DATABASE_SCHEMA.md)       | PostgreSQL schema (38 tables)             |
+| Document                                                | Purpose                                   |
+| ------------------------------------------------------- | ----------------------------------------- |
+| [CONTEXT.md](docs/CONTEXT.md)                           | Living project context and current status |
+| [CHANGELOG.md](docs/CHANGELOG.md)                       | Record of all changes                     |
+| [PROJECT_GUIDELINES.md](docs/PROJECT_GUIDELINES.md)     | Development principles                    |
+| [CODING_STANDARDS.md](docs/CODING_STANDARDS.md)         | Naming and coding conventions             |
+| [ARCHITECTURE_RULES.md](docs/ARCHITECTURE_RULES.md)     | Structural boundaries and patterns        |
+| [UI-DESIGN-GUIDELINES.md](docs/UI-DESIGN-GUIDELINES.md) | Visual source of truth from UI references |
+| [DESIGN_SYSTEM.md](docs/DESIGN_SYSTEM.md)               | Visual design guidelines                  |
+| [DESIGN_TOKENS.md](docs/DESIGN_TOKENS.md)               | Semantic token definitions                |
+| [DATABASE_SCHEMA.md](docs/DATABASE_SCHEMA.md)           | PostgreSQL schema (38 tables)             |
 
 ---
 

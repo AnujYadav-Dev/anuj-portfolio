@@ -86,9 +86,7 @@ export default function AdminGuestbookPage() {
       key: 'message',
       header: 'Guestbook Message',
       render: (item) => (
-        <p className="text-xs text-foreground truncate max-w-lg leading-relaxed">
-          {item.message}
-        </p>
+        <p className="text-xs text-foreground truncate max-w-lg leading-relaxed">{item.message}</p>
       ),
     },
     {

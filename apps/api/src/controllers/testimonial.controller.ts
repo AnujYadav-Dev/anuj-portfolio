@@ -4,13 +4,15 @@ import type { ReorderInput, UpsertTestimonialInput } from '@portfolio/shared';
 
 export const testimonialController = {
   async listPublic(req: Request, res: Response): Promise<void> {
-    const isFeatured = req.query.isFeatured !== undefined ? req.query.isFeatured === 'true' : undefined;
+    const isFeatured =
+      req.query.isFeatured !== undefined ? req.query.isFeatured === 'true' : undefined;
     const records = await testimonialService.listTestimonials(true, isFeatured);
     res.json({ data: records });
   },
 
   async listAdmin(req: Request, res: Response): Promise<void> {
-    const isFeatured = req.query.isFeatured !== undefined ? req.query.isFeatured === 'true' : undefined;
+    const isFeatured =
+      req.query.isFeatured !== undefined ? req.query.isFeatured === 'true' : undefined;
     const records = await testimonialService.listTestimonials(false, isFeatured);
     res.json({ data: records });
   },

@@ -12,12 +12,7 @@ export interface ZoomableImageProps {
   className?: string;
 }
 
-export function ZoomableImage({
-  src,
-  alt = '',
-  caption,
-  className,
-}: ZoomableImageProps) {
+export function ZoomableImage({ src, alt = '', caption, className }: ZoomableImageProps) {
   const [isZoomed, setIsZoomed] = React.useState(false);
 
   return (

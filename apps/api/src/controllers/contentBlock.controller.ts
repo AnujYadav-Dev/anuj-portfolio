@@ -4,13 +4,19 @@ import type { ReorderInput, UpsertContentBlockInput } from '@portfolio/shared';
 
 export const contentBlockController = {
   async listPublic(req: Request, res: Response): Promise<void> {
-    const { pageId, homepageSectionId } = req.query as { pageId?: string; homepageSectionId?: string };
+    const { pageId, homepageSectionId } = req.query as {
+      pageId?: string;
+      homepageSectionId?: string;
+    };
     const blocks = await contentBlockService.listBlocks(pageId, homepageSectionId, true);
     res.json({ data: blocks });
   },
 
   async listAdmin(req: Request, res: Response): Promise<void> {
-    const { pageId, homepageSectionId } = req.query as { pageId?: string; homepageSectionId?: string };
+    const { pageId, homepageSectionId } = req.query as {
+      pageId?: string;
+      homepageSectionId?: string;
+    };
     const blocks = await contentBlockService.listBlocks(pageId, homepageSectionId, false);
     res.json({ data: blocks });
   },

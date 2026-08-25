@@ -118,7 +118,6 @@ export default function AdminExperiencePage() {
         isEnabled,
       };
 
-
       if (editingExp) {
         await apiClient.put(`/experiences/${editingExp.id}`, payload);
         toast.success('Experience updated successfully');
@@ -204,11 +203,11 @@ export default function AdminExperiencePage() {
                 {item.isCurrent
                   ? 'Present'
                   : item.endDate
-                  ? new Date(item.endDate).toLocaleDateString(undefined, {
-                      month: 'short',
-                      year: 'numeric',
-                    })
-                  : 'Present'}
+                    ? new Date(item.endDate).toLocaleDateString(undefined, {
+                        month: 'short',
+                        year: 'numeric',
+                      })
+                    : 'Present'}
                 {item.location && ` • ${item.location}`}
               </p>
             </div>
@@ -242,14 +241,20 @@ export default function AdminExperiencePage() {
             <DialogHeader className="border-b border-border pb-3">
               <DialogTitle className="text-base font-bold text-foreground flex items-center gap-2">
                 <Briefcase className="w-4 h-4 text-accent" />
-                <span>{editingExp ? `Edit: ${editingExp.role} @ ${editingExp.companyName}` : 'Add Work Experience'}</span>
+                <span>
+                  {editingExp
+                    ? `Edit: ${editingExp.role} @ ${editingExp.companyName}`
+                    : 'Add Work Experience'}
+                </span>
               </DialogTitle>
             </DialogHeader>
 
             <div className="space-y-3">
               <div className="grid grid-cols-2 gap-3">
                 <div className="space-y-1">
-                  <label className="text-xs font-semibold text-foreground">Role / Position Title</label>
+                  <label className="text-xs font-semibold text-foreground">
+                    Role / Position Title
+                  </label>
                   <Input
                     type="text"
                     placeholder="e.g. Senior Distributed Systems Engineer"
@@ -329,12 +334,16 @@ export default function AdminExperiencePage() {
                     onChange={(e) => setIsCurrent(e.target.checked)}
                     className="rounded border-border bg-background text-accent focus:ring-accent accent-accent w-4 h-4 cursor-pointer"
                   />
-                  <span className="text-xs font-semibold text-foreground">I currently work in this role</span>
+                  <span className="text-xs font-semibold text-foreground">
+                    I currently work in this role
+                  </span>
                 </label>
               </div>
 
               <div className="space-y-1">
-                <label className="text-xs font-semibold text-foreground">Technologies (comma-separated)</label>
+                <label className="text-xs font-semibold text-foreground">
+                  Technologies (comma-separated)
+                </label>
                 <Input
                   type="text"
                   placeholder="e.g. Go, Rust, Kubernetes, Kafka, gRPC"
@@ -345,7 +354,9 @@ export default function AdminExperiencePage() {
               </div>
 
               <div className="space-y-1">
-                <label className="text-xs font-semibold text-foreground">Description & Accomplishments</label>
+                <label className="text-xs font-semibold text-foreground">
+                  Description & Accomplishments
+                </label>
                 <Textarea
                   placeholder="Describe your responsibilities, team scale, and major achievements..."
                   value={description}
@@ -363,16 +374,29 @@ export default function AdminExperiencePage() {
                     onChange={(e) => setIsEnabled(e.target.checked)}
                     className="rounded border-border bg-background text-accent focus:ring-accent accent-accent w-4 h-4 cursor-pointer"
                   />
-                  <span className="text-xs font-semibold text-foreground">Visible on Public Site</span>
+                  <span className="text-xs font-semibold text-foreground">
+                    Visible on Public Site
+                  </span>
                 </label>
               </div>
             </div>
 
             <DialogFooter className="pt-3 border-t border-border flex justify-end gap-2">
-              <Button type="button" variant="outline" size="sm" onClick={() => setIsModalOpen(false)}>
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={() => setIsModalOpen(false)}
+              >
                 Cancel
               </Button>
-              <Button type="submit" variant="primary" size="sm" isLoading={isSaving} disabled={isSaving}>
+              <Button
+                type="submit"
+                variant="primary"
+                size="sm"
+                isLoading={isSaving}
+                disabled={isSaving}
+              >
                 Save Experience
               </Button>
             </DialogFooter>

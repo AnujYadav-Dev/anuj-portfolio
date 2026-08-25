@@ -53,7 +53,6 @@ The goal is to build an **ultra-premium, dynamic, database-driven developer port
 | **Phase 9**  | **Testing, QA & Optimization**    | Unit/E2E tests, WCAG 2.2 AA audit, Lighthouse 95+, security hardening          | 📋 Planned   |
 | **Phase 10** | **Deployment & CI/CD**            | Database provisioning, API deployment, Next.js deployment, GitHub Actions      | 📋 Planned   |
 
-
 ---
 
 ## 🛠️ Detailed Phase Breakdown
@@ -334,7 +333,6 @@ Build all public routes defined in `docs/URL_IDEAS.md`, ensuring mobile-first re
 #### Objective:
 
 Deliver a fast, secure, beautiful administrative portal allowing complete management of all 44 portfolio features.
-
 
 #### 7.1 Admin Layout & Authentication Gate
 

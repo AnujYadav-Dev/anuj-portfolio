@@ -20,9 +20,7 @@ export function useResearchPapers(query?: Partial<ListResearchPapersQuery>) {
 }
 
 export function useResearchPaperBySlug(slug: string, author?: string) {
-  const path = author
-    ? `/research/by/${author}/${slug}`
-    : `/research/${slug}`;
+  const path = author ? `/research/by/${author}/${slug}` : `/research/${slug}`;
 
   return useQuery<{ data: ResearchPaperDto }>({
     queryKey: ['research-paper', slug, author],

@@ -12,7 +12,9 @@ export const guestbookController = {
   },
 
   async listAdmin(req: Request, res: Response): Promise<void> {
-    const query = (req.validatedQuery as PaginationQuery & { moderationStatus?: ModerationStatus }) ?? req.query;
+    const query =
+      (req.validatedQuery as PaginationQuery & { moderationStatus?: ModerationStatus }) ??
+      req.query;
     const result = await guestbookService.listAdminEntries(query);
     res.json(result);
   },

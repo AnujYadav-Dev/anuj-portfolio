@@ -95,7 +95,13 @@ export default function AdminSeoPage() {
         title="Search Engine & Social Metadata (SEO)"
         description="Global metadata fallbacks, OpenGraph image cards, and live Google / Twitter SERP previews."
         action={
-          <Button type="submit" variant="primary" size="sm" isLoading={isSaving} disabled={isSaving}>
+          <Button
+            type="submit"
+            variant="primary"
+            size="sm"
+            isLoading={isSaving}
+            disabled={isSaving}
+          >
             <Save className="w-3.5 h-3.5 mr-1.5" />
             <span>Save SEO Configuration</span>
           </Button>
@@ -125,7 +131,9 @@ export default function AdminSeoPage() {
               </div>
 
               <div className="space-y-1.5">
-                <label className="text-xs font-semibold text-foreground">Production Canonical URL</label>
+                <label className="text-xs font-semibold text-foreground">
+                  Production Canonical URL
+                </label>
                 <Input
                   type="url"
                   value={siteUrl}
@@ -136,18 +144,24 @@ export default function AdminSeoPage() {
               </div>
 
               <div className="space-y-1.5">
-                <label className="text-xs font-semibold text-foreground">Default Meta Description</label>
+                <label className="text-xs font-semibold text-foreground">
+                  Default Meta Description
+                </label>
                 <Textarea
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
                   rows={3}
                   className="bg-background text-xs"
                 />
-                <span className="text-[10px] text-muted font-mono">{description.length} / 160 chars</span>
+                <span className="text-[10px] text-muted font-mono">
+                  {description.length} / 160 chars
+                </span>
               </div>
 
               <div className="space-y-1.5">
-                <label className="text-xs font-semibold text-foreground">Keywords (Comma-separated)</label>
+                <label className="text-xs font-semibold text-foreground">
+                  Keywords (Comma-separated)
+                </label>
                 <Input
                   type="text"
                   value={keywords}
@@ -167,7 +181,9 @@ export default function AdminSeoPage() {
               </div>
 
               <div className="space-y-1.5">
-                <label className="text-xs font-semibold text-foreground">Default Social Share Image (OG Image)</label>
+                <label className="text-xs font-semibold text-foreground">
+                  Default Social Share Image (OG Image)
+                </label>
                 {ogImageUrl ? (
                   <div className="relative aspect-video w-full rounded border border-border overflow-hidden bg-surface-muted">
                     <img src={ogImageUrl} alt="OG Card" className="w-full h-full object-cover" />

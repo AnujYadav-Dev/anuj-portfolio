@@ -25,10 +25,7 @@ function parseCallout(text: string): { type: CalloutType; content: string } | nu
   return null;
 }
 
-export function MarkdownRenderer({
-  content,
-  className,
-}: MarkdownRendererProps) {
+export function MarkdownRenderer({ content, className }: MarkdownRendererProps) {
   return (
     <div
       className={cn(
@@ -89,14 +86,10 @@ export function MarkdownRenderer({
             <p className="my-4 text-foreground/90 leading-relaxed">{children}</p>
           ),
           ul: ({ children }) => (
-            <ul className="my-4 ml-6 list-disc [&>li]:mt-1.5 text-foreground/90">
-              {children}
-            </ul>
+            <ul className="my-4 ml-6 list-disc [&>li]:mt-1.5 text-foreground/90">{children}</ul>
           ),
           ol: ({ children }) => (
-            <ol className="my-4 ml-6 list-decimal [&>li]:mt-1.5 text-foreground/90">
-              {children}
-            </ol>
+            <ol className="my-4 ml-6 list-decimal [&>li]:mt-1.5 text-foreground/90">{children}</ol>
           ),
           li: ({ children }) => <li className="leading-relaxed">{children}</li>,
           blockquote: ({ children }) => {
@@ -122,12 +115,7 @@ export function MarkdownRenderer({
             const codeString = String(children).replace(/\n$/, '');
 
             if (!inline && (match || codeString.includes('\n'))) {
-              return (
-                <CodeBlock
-                  code={codeString}
-                  language={match ? match[1] : 'text'}
-                />
-              );
+              return <CodeBlock code={codeString} language={match ? match[1] : 'text'} />;
             }
 
             return (
@@ -145,9 +133,7 @@ export function MarkdownRenderer({
           },
           table: ({ children }) => (
             <div className="my-6 w-full overflow-y-auto rounded-md border border-border">
-              <table className="w-full text-left text-xs border-collapse">
-                {children}
-              </table>
+              <table className="w-full text-left text-xs border-collapse">{children}</table>
             </div>
           ),
           thead: ({ children }) => (
@@ -159,9 +145,7 @@ export function MarkdownRenderer({
             <tbody className="divide-y divide-border bg-surface">{children}</tbody>
           ),
           tr: ({ children }) => (
-            <tr className="hover:bg-surface-muted/50 transition-colors">
-              {children}
-            </tr>
+            <tr className="hover:bg-surface-muted/50 transition-colors">{children}</tr>
           ),
           th: ({ children }) => (
             <th className="px-4 py-2.5 font-semibold text-foreground text-[11px] uppercase tracking-wider">

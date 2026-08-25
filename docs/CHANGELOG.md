@@ -10,6 +10,7 @@
 ### Phase 7: Admin Panel & Content Management System (CMS) Platform
 
 #### Added: Admin Layout & Security Infrastructure (`apps/web/src/app/(admin)/`, `components/admin/`)
+
 - `components/admin/layout/AdminAuthProvider.tsx` & `useAdminAuth.ts` — Authentication state provider with active session monitoring, 15-minute token TTL countdown, and silent background token refresh.
 - `components/admin/layout/AdminAuthGuard.tsx` — Client-side route protection redirecting unauthenticated visitors to `/admin/login`.
 - `components/admin/layout/AdminSidebar.tsx` — Collapsible navigation sidebar organizing 24 distinct CMS routes across 5 domain groups (Overview, Content, Journey & Profile, Customization, Community & Telemetry).
@@ -17,6 +18,7 @@
 - `components/admin/layout/AdminLayoutShell.tsx` & `app/(admin)/layout.tsx` — Root shell managing sidebar collapse states and mobile responsive drawers for admin views.
 
 #### Added: Reusable Admin UI Primitives (`apps/web/src/components/admin/ui/`)
+
 - `AdminPageHeader.tsx` — Standardized page header with title, subtitle, and primary action buttons.
 - `AdminDataTable.tsx` — Generic data table with live search filtering, custom slot filters, pagination, row click handlers, and empty/loading states.
 - `MarkdownEditor.tsx` — Full-featured MDX/Markdown split editor with live preview toggle, formatting shortcuts toolbar, and sync scrolling.
@@ -26,6 +28,7 @@
 - `ConfirmDialog.tsx` & `StatusBadge.tsx` — Destructive action confirmations and consistent status indicator badges.
 
 #### Added: Content Management & Editor Suite (`apps/web/src/app/(admin)/admin/`)
+
 - `admin/login/page.tsx` — Admin authentication portal with email/password validation, rate-limiting handlers, and session persistence.
 - `admin/page.tsx` — Dashboard overview featuring 4 metric KPI cards, 14-day SVG traffic trajectory area chart, recent contact inbox preview drawer, and quick-action shortcuts.
 - `admin/works/` (`page.tsx`, `new/page.tsx`, `[id]/page.tsx`, `ProjectEditorForm.tsx`) — Full project lifecycle editor with architecture case studies, technology tagger, live demo/repo URLs, and cover image picker.
@@ -34,6 +37,7 @@
 - `admin/pages/` (`page.tsx`, `new/page.tsx`, `[id]/page.tsx`, `PageEditorForm.tsx`) & `admin/blocks/page.tsx` — Dynamic route builder and reusable content block snippet catalog.
 
 #### Added: Profile, Journey & Taxonomy Managers
+
 - `admin/profile/page.tsx` — Public author profile updater and password change security manager.
 - `admin/about/page.tsx` — About section narrative modules editor with custom ordering and slug keys.
 - `admin/skills/page.tsx` — Technical skills matrix and category editor with proficiency sliders.
@@ -45,6 +49,7 @@
 - `admin/opensource/page.tsx` & `admin/testimonials/page.tsx` & `admin/gallery/page.tsx` — Open source repos, recommendations, and visual showcase editors.
 
 #### Added: Layout Customization, Centralized Media & Community Telemetry
+
 - `admin/homepage/page.tsx` — Homepage section reordering and live visibility toggles.
 - `admin/navigation/page.tsx` — Header navigation menu tree and external link customizer.
 - `admin/settings/page.tsx` — Global site settings and telemetry flags bulk editor.
@@ -60,8 +65,8 @@
 
 ### Phase 6: Public-Facing Application Pages & Navigation
 
-
 #### Added: Global Layout Shell, Navigation & Telemetry (`apps/web/src/components/layout/`, `app/(public)/`)
+
 - `components/layout/SkipLink.tsx` — Accessible skip link for keyboard navigation.
 - `components/layout/TelemetryTracker.tsx` — Headless analytics component sending page view and click telemetry to `/api/v1/analytics/collect`.
 - `components/layout/CommandPalette.tsx` — Global overlay modal (`Ctrl+K` / `Cmd+K`) supporting instant full-text search, direct route navigation, theme switching, email copy, and resume download.
@@ -72,6 +77,7 @@
 - `app/(public)/layout.tsx` — Public route group shell wrapping all public portfolio pages.
 
 #### Added: Dynamic Homepage Engine (`apps/web/src/components/features/home/`, `app/(public)/page.tsx`)
+
 - `HeroSection.tsx` — Headline tagline, dynamic availability badge, CTA links with warm orange underlines, and bottom giant watermark `FULL STACK ENGINEER`.
 - `AboutPreview.tsx` — Split 2-column narrative overview with warm orange highlighted phrases and quick jump to `/about`.
 - `WorksBento.tsx` — Bento grid pairing live monospace terminal verbs on the left with a featured project case study on the right.
@@ -82,18 +88,21 @@
 - `app/(public)/page.tsx` — Dynamic homepage page resolving section order dynamically from `useHomepageSections()`.
 
 #### Added: Works & Projects Ecosystem (`apps/web/src/app/(public)/works/`, `components/features/works/`)
+
 - `ProjectCard.tsx` — Rich project card with thumbnail preview, category badge, tech tags, and case study links.
 - `ProjectFilters.tsx` — Interactive filter bar supporting live search, category pill switching, and tag selection.
 - `ProjectCaseStudy.tsx` — Deep case study reader featuring metadata matrix, live demo/source links, zoomable interface screenshots, and rendered markdown architecture notes.
 - Routes: `/works`, `/works/[slug]`, `/works/by/[author]`, `/works/by/[author]/[slug]`.
 
 #### Added: Blogs & Research Ecosystem (`apps/web/src/app/(public)/blogs/`, `research/`, `components/features/blogs/`, `research/`)
+
 - `BlogListRow.tsx` — Expandable article list rows with hover details and reading times.
 - `BlogReader.tsx` — Long-form reading experience featuring squircle mosaic backdrop header, sticky table of contents sidebar with scroll-spy, share actions, and author bio card.
 - `ResearchPaperCard.tsx` — Academic paper card with conference/journal badge, abstract, DOI link, and PDF download action.
 - Routes: `/blogs`, `/blogs/[slug]`, `/blogs/by/[author]`, `/blogs/by/[author]/[slug]`, `/research`, `/research/[slug]`.
 
 #### Added: Profile, Journey & Interactive Public Hubs (`apps/web/src/app/(public)/`, `components/features/`)
+
 - `about/TimelineList.tsx` & `/my-timeline` — Chronological journey milestone viewer grouped by year with event type badges.
 - `about/SkillsMatrix.tsx` & `/skills` — Technical proficiency matrix with discipline tabs and animated progress tracks.
 - `about/CertificatesGallery.tsx` & `/certificates-achievements` — Dual gallery for professional certifications and competition awards with verification links.
@@ -115,12 +124,14 @@
 ### Phase 5: Frontend Design System Primitives & Client Infrastructure
 
 #### Added: Core Client Infrastructure (`apps/web/src/`)
+
 - `lib/api.ts` — Unified typed API client with base URL configuration, bearer token synchronization, and error normalization.
 - `lib/queryClient.ts` — TanStack Query client factory with 5-minute public stale time and exponential retry backoff.
 - `components/providers/` — Complete provider hierarchy (`QueryProvider`, `ThemeProvider` with zero-flicker sync, `ToastProvider` with Sonner, `AppProviders` composer).
 - Updated `app/layout.tsx` — Wrapped application tree in `AppProviders`.
 
 #### Added: Accessible Design System Primitives (`apps/web/src/components/ui/`)
+
 - `button.tsx` — Button variants (`primary`, `secondary`, `outline`, `ghost`, `destructive`, `link`), sizes (`sm`, `md`, `lg`, `icon`), loading spinner state, and focus rings.
 - `card.tsx` — Surface card container with `CardHeader`, `CardTitle`, `CardDescription`, `CardContent`, and `CardFooter`.
 - `badge.tsx` — Compact pill badges with semantic variants (`default`, `accent`, `outline`, `muted`, `success`, `warning`, `destructive`).
@@ -135,11 +146,13 @@
 - `theme-toggle.tsx` — Theme switcher button cycling dark/light modes with animated icons.
 
 #### Added: Motion & Scroll Reveal (`apps/web/src/components/motion/`, `hooks/`)
+
 - `hooks/useScrollReveal.ts` — IntersectionObserver hook tracking viewport visibility.
 - `components/motion/RevealOnScroll.tsx` — Wrapper component implementing the unified global motion rule (`translateY(16px)` $\to$ `0`, `opacity: 0` $\to$ `1`, `600ms cubic-bezier(0.16, 1, 0.3, 1)`) with stagger delays and `prefers-reduced-motion` safety.
 - Updated `globals.css` with `.reveal-on-scroll`, `.is-revealed`, and `.reveal-delay-*` classes.
 
 #### Added: Rich Long-Form Markdown / MDX Engine (`apps/web/src/components/content/`)
+
 - `CodeBlock.tsx` — Syntax-highlighted code block with language pill badge, line numbers, and copy code button with toast feedback.
 - `Callout.tsx` — GitHub-style alert callout boxes (`NOTE`, `TIP`, `IMPORTANT`, `WARNING`, `CAUTION`) with left border accents and icons.
 - `TableOfContents.tsx` — Auto-generated heading hierarchy with active scroll-spy heading highlighting and smooth jump navigation.
@@ -147,6 +160,7 @@
 - `MarkdownRenderer.tsx` — Unified markdown renderer composing code blocks, callouts, images, blockquotes, tables, and anchor links.
 
 #### Added: Domain Data Fetching Hooks (`apps/web/src/hooks/`)
+
 - `useProjects.ts`, `useBlogPosts.ts`, `useResearch.ts`, `useProfile.ts`, `useLayout.ts`, `useInteractions.ts`, `useDiscovery.ts`, `useAnalyticsTracker.ts` — Comprehensive TanStack Query hooks covering all 20+ backend REST API domain modules and automated visitor telemetry.
 
 ---
@@ -156,17 +170,20 @@
 ### Phase 4: Backend REST API Domain Modules
 
 #### Added: Shared Contracts & Utilities (`packages/shared/src/`, `apps/api/src/utils/`)
+
 - Shared DTOs: `SearchType`, `SearchResultItemDto`, `SearchResultsDto`, `PublicStatsDto`, `TagDto`, `TagWithCountDto`, `ContentVersionDto`, `GalleryItemDto`, `NewsletterSubscriberDto`.
 - Shared Zod Schemas: `searchQuerySchema`, `createTagSchema`, `updateTagSchema`, `listTagsQuerySchema`, `restoreVersionParamsSchema`, `reorderSchema`, `slugParamSchema`, `upsertProjectCategorySchema`, `upsertBlogCategorySchema`, `createResumeSchema`, `upsertOpensourceSchema`, `upsertGalleryItemSchema`, `upsertTestimonialSchema`.
 - Backend Utilities: `calculateReadingTime` (WPM estimation for markdown), `saveContentVersion` (automatic snapshotting to `content_versions`), `buildPagination`/`getPrismaPagination`, `map*ToDto` comprehensive domain mappers across all 20+ models.
 
 #### Added: Content Domain Modules (`apps/api/src/`)
+
 - **Projects & Categories** (`/api/v1/projects`, `/api/v1/project-categories`): Full CRUD, slug routing, pagination, category filtering, featured filters, image galleries, tags association, and content versioning.
 - **Blog Posts & Categories** (`/api/v1/blogs`, `/api/v1/blog-categories`): Full CRUD, reading time auto-calculation, tags association, and content version history rollback (`GET /blogs/:id/versions`, `POST /blogs/:id/versions/:version/restore`).
 - **Research Papers** (`/api/v1/research`): CRUD, status management, pagination, and direct PDF download/redirect (`GET /research/:slug/download`).
 - **Dynamic Pages & Content Blocks** (`/api/v1/pages`, `/api/v1/content-blocks`): Custom markdown pages (`/now`, `/uses`, `/stack`) with associated reusable content blocks and reordering.
 
 #### Added: Profile & Portfolio Modules (`apps/api/src/`)
+
 - **About Sections** (`/api/v1/about-sections`): Reorderable markdown sections.
 - **Skills & Categories** (`/api/v1/skills`, `/api/v1/skill-categories`): Categorized skills with proficiency scores, icons, and category reordering.
 - **Experiences & Education** (`/api/v1/experiences`, `/api/v1/education`): Chronological career history and academic credentials with institution logo relations.
@@ -177,17 +194,20 @@
 - **Gallery** (`/api/v1/gallery`): Media gallery with categories, captions, and sort ordering.
 
 #### Added: Layout & Site Configuration Modules (`apps/api/src/`)
+
 - **Homepage Sections** (`/api/v1/homepage-sections`): Modular homepage layouts with dynamic JSON configuration and block relations.
 - **Navigation Menus** (`/api/v1/nav-items`): Hierarchical tree builder supporting header, footer, or both locations with nested children.
 - **Site Settings** (`/api/v1/site-settings`): Dynamic key-value configuration with public map projection and bulk admin upsert.
 
 #### Added: Interactions, Moderation & Communications (`apps/api/src/`)
+
 - **Contact Submissions Inbox** (`/api/v1/contact`): Admin submissions inbox with pagination, read/replied status tracking, and deletion.
 - **Guestbook** (`/api/v1/guestbook`): Public message submissions with moderation workflows (`approved`, `rejected`, `pending`).
 - **Testimonials** (`/api/v1/testimonials`): Client and peer testimonials with avatar relations and featured flags.
 - **Newsletter** (`/api/v1/newsletter`): Double opt-in subscriptions, confirmation tokens, unsubscriptions, and admin export.
 
 #### Added: Discovery, Taxonomy & Background Jobs (`apps/api/src/`)
+
 - **Tags Taxonomy** (`/api/v1/tags`): Global tag taxonomy with entity usage counts and slug-based lookup.
 - **Global Search Engine** (`/api/v1/search`): Unified multi-entity search spanning projects, blogs, research papers, pages, skills, and about sections.
 - **Public Aggregated Stats** (`/api/v1/stats`): Aggregated public metrics (projects, blogs, papers, skills, experience duration, stars).

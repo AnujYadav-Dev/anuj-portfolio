@@ -85,7 +85,7 @@ export default function StatsPage() {
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
               {metrics.map((metric, idx) => (
-                <RevealOnScroll key={metric.label} delayIndex={(idx % 4 + 1) as 1 | 2 | 3 | 4}>
+                <RevealOnScroll key={metric.label} delayIndex={((idx % 4) + 1) as 1 | 2 | 3 | 4}>
                   <Card className="bg-surface border-border p-6 h-full flex flex-col justify-between">
                     <div>
                       <div className="flex items-center justify-between mb-4">
@@ -112,9 +112,7 @@ export default function StatsPage() {
           {stats?.updatedAt && (
             <div className="text-xs font-mono text-muted text-center pt-6 flex items-center justify-center gap-1.5">
               <Activity className="h-3.5 w-3.5 text-accent animate-pulse" />
-              <span>
-                Telemetry synced on {new Date(stats.updatedAt).toLocaleDateString()}
-              </span>
+              <span>Telemetry synced on {new Date(stats.updatedAt).toLocaleDateString()}</span>
             </div>
           )}
         </div>

@@ -39,18 +39,12 @@ export function ContactForm() {
     return (
       <Card className="bg-surface border-border p-8 text-center flex flex-col items-center gap-4">
         <CheckCircle2 className="h-10 w-10 text-success" />
-        <h3 className="text-lg font-bold text-foreground">
-          Message Sent Successfully!
-        </h3>
+        <h3 className="text-lg font-bold text-foreground">Message Sent Successfully!</h3>
         <p className="text-xs text-muted max-w-md leading-relaxed">
-          Thank you for reaching out. I have received your dispatch and will review and respond as soon as possible.
+          Thank you for reaching out. I have received your dispatch and will review and respond as
+          soon as possible.
         </p>
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => setIsSuccess(false)}
-          className="mt-2"
-        >
+        <Button variant="outline" size="sm" onClick={() => setIsSuccess(false)} className="mt-2">
           Send Another Message
         </Button>
       </Card>
@@ -62,7 +56,8 @@ export function ContactForm() {
       <CardHeader>
         <CardTitle>Send an Inquiry</CardTitle>
         <CardDescription>
-          Fill in the details below. All submissions are encrypted and routed directly to my priority inbox.
+          Fill in the details below. All submissions are encrypted and routed directly to my
+          priority inbox.
         </CardDescription>
       </CardHeader>
 

@@ -165,7 +165,9 @@ export default function AdminNavigationPage() {
                   </span>
                 )}
               </div>
-              <p className="text-[11px] text-muted font-mono truncate mt-0.5 max-w-md">{item.url}</p>
+              <p className="text-[11px] text-muted font-mono truncate mt-0.5 max-w-md">
+                {item.url}
+              </p>
             </div>
 
             <div className="flex items-center gap-1.5 shrink-0">
@@ -254,10 +256,21 @@ export default function AdminNavigationPage() {
             </div>
 
             <DialogFooter className="pt-3 border-t border-border flex justify-end gap-2">
-              <Button type="button" variant="outline" size="sm" onClick={() => setIsModalOpen(false)}>
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={() => setIsModalOpen(false)}
+              >
                 Cancel
               </Button>
-              <Button type="submit" variant="primary" size="sm" isLoading={isSaving} disabled={isSaving}>
+              <Button
+                type="submit"
+                variant="primary"
+                size="sm"
+                isLoading={isSaving}
+                disabled={isSaving}
+              >
                 Save Item
               </Button>
             </DialogFooter>

@@ -69,7 +69,8 @@ export default function AboutPage() {
       ) : (
         <SplitSection labelNumber="01 // INTRO" labelTitle="Who am I?">
           <p className="text-sm text-muted">
-            Software engineer dedicated to clean architecture, distributed systems, and refined user interfaces.
+            Software engineer dedicated to clean architecture, distributed systems, and refined user
+            interfaces.
           </p>
         </SplitSection>
       )}

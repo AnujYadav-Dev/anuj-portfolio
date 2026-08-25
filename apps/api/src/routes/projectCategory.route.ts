@@ -2,11 +2,7 @@ import { Router } from 'express';
 import { projectCategoryController } from '@/controllers/projectCategory.controller';
 import { authenticateAdmin } from '@/middleware/auth.middleware';
 import { validateBody, validateParams } from '@/middleware/validate.middleware';
-import {
-  upsertProjectCategorySchema,
-  uuidParamSchema,
-  reorderSchema,
-} from '@portfolio/shared';
+import { upsertProjectCategorySchema, uuidParamSchema, reorderSchema } from '@portfolio/shared';
 
 const router = Router();
 

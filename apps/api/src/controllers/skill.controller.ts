@@ -1,10 +1,6 @@
 import type { Request, Response } from 'express';
 import { skillService } from '@/services/skill.service';
-import type {
-  ReorderInput,
-  UpsertSkillCategoryInput,
-  UpsertSkillInput,
-} from '@portfolio/shared';
+import type { ReorderInput, UpsertSkillCategoryInput, UpsertSkillInput } from '@portfolio/shared';
 
 export const skillController = {
   // Categories

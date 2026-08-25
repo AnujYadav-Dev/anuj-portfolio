@@ -133,7 +133,13 @@ export const projectService = {
     }
 
     // Save version snapshot before update
-    await saveContentVersion('project', id, existing as any, adminAuthorId, 'Project updated via API');
+    await saveContentVersion(
+      'project',
+      id,
+      existing as any,
+      adminAuthorId,
+      'Project updated via API',
+    );
 
     const updateData: Prisma.ProjectUncheckedUpdateInput = {};
     if (input.title !== undefined) updateData.title = input.title;
@@ -152,12 +158,15 @@ export const projectService = {
       }
     }
     if (input.isFeatured !== undefined) updateData.isFeatured = input.isFeatured;
-    if (input.startDate !== undefined) updateData.startDate = input.startDate ? new Date(input.startDate) : null;
-    if (input.endDate !== undefined) updateData.endDate = input.endDate ? new Date(input.endDate) : null;
+    if (input.startDate !== undefined)
+      updateData.startDate = input.startDate ? new Date(input.startDate) : null;
+    if (input.endDate !== undefined)
+      updateData.endDate = input.endDate ? new Date(input.endDate) : null;
     if (input.categoryId !== undefined) updateData.categoryId = input.categoryId || null;
     if (input.coverImageId !== undefined) updateData.coverImageId = input.coverImageId || null;
     if (input.seoTitle !== undefined) updateData.seoTitle = input.seoTitle || null;
-    if (input.seoDescription !== undefined) updateData.seoDescription = input.seoDescription || null;
+    if (input.seoDescription !== undefined)
+      updateData.seoDescription = input.seoDescription || null;
     if (input.seoKeywords !== undefined) updateData.seoKeywords = input.seoKeywords || null;
     if (input.ogImageId !== undefined) updateData.ogImageId = input.ogImageId || null;
 

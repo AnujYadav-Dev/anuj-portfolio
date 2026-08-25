@@ -31,10 +31,7 @@ export default function CertificatesAchievementsPage() {
               ))}
             </div>
           ) : (
-            <CertificatesGallery
-              certificates={certificates}
-              achievements={achievements}
-            />
+            <CertificatesGallery certificates={certificates} achievements={achievements} />
           )}
         </div>
       </div>

@@ -65,9 +65,7 @@ export function BlogListRow({ post, className }: BlogListRowProps) {
       {/* Expandable Details on Hover */}
       {isHovered && post.excerpt && (
         <div className="mt-2.5 pt-2 border-t border-border/40 flex flex-col gap-2 animate-in fade-in slide-in-from-top-1 duration-instant">
-          <p className="text-xs text-muted line-clamp-2 leading-relaxed">
-            {post.excerpt}
-          </p>
+          <p className="text-xs text-muted line-clamp-2 leading-relaxed">{post.excerpt}</p>
         </div>
       )}
     </Link>

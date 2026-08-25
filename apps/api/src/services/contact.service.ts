@@ -53,7 +53,10 @@ export const contactService = {
         variables: templateVariables,
       });
     } catch (error) {
-      logger.error({ err: error, submissionId: submission.id }, 'Failed to send contact auto-reply');
+      logger.error(
+        { err: error, submissionId: submission.id },
+        'Failed to send contact auto-reply',
+      );
     }
 
     try {
@@ -66,7 +69,10 @@ export const contactService = {
         });
       }
     } catch (error) {
-      logger.error({ err: error, submissionId: submission.id }, 'Failed to send contact admin notification');
+      logger.error(
+        { err: error, submissionId: submission.id },
+        'Failed to send contact admin notification',
+      );
     }
 
     return mapContactSubmissionToDto(submission);

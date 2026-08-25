@@ -3,14 +3,10 @@ import type { UploadMediaMetadataInput, ListMediaInput, UpdateMediaInput } from 
 import { mediaRepository } from '@/repositories/media.repository';
 import { getStorageAdapter } from '@/storage';
 import { generateStoredFilename } from '@/utils/hash';
-import {
-  mapMediaToDto,
-  mimeTypeToMediaType,
-} from '@/utils/mappers';
+import { mapMediaToDto, mimeTypeToMediaType } from '@/utils/mappers';
 import { ValidationError, NotFoundError } from '@/utils/errors';
 import { ALLOWED_UPLOAD_MIME_TYPES } from '@/config/constants';
 import { getPrismaPagination, buildPagination } from '@/utils/pagination';
-
 
 export interface UploadedFile {
   originalname: string;
@@ -20,12 +16,12 @@ export interface UploadedFile {
 }
 
 export const mediaService = {
-  async upload(
-    file: UploadedFile,
-    metadata: UploadMediaMetadataInput,
-    uploadedBy: string,
-  ) {
-    if (!ALLOWED_UPLOAD_MIME_TYPES.includes(file.mimetype as (typeof ALLOWED_UPLOAD_MIME_TYPES)[number])) {
+  async upload(file: UploadedFile, metadata: UploadMediaMetadataInput, uploadedBy: string) {
+    if (
+      !ALLOWED_UPLOAD_MIME_TYPES.includes(
+        file.mimetype as (typeof ALLOWED_UPLOAD_MIME_TYPES)[number],
+      )
+    ) {
       throw new ValidationError('Unsupported file type', {
         mimetype: [`File type '${file.mimetype}' is not allowed`],
       });
@@ -38,10 +34,7 @@ export const mediaService = {
     let width: number | null = null;
     let height: number | null = null;
 
-    if (
-      file.mimetype.startsWith('image/') &&
-      file.mimetype !== 'image/svg+xml'
-    ) {
+    if (file.mimetype.startsWith('image/') && file.mimetype !== 'image/svg+xml') {
       try {
         const dimensions = imageSize(new Uint8Array(file.buffer));
         width = dimensions.width ?? null;
@@ -90,7 +83,6 @@ export const mediaService = {
       data: items.map(mapMediaToDto),
       pagination: buildPagination(page, pageSize, total),
     };
-
   },
 
   async getById(id: string) {

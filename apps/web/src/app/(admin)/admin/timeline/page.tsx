@@ -2,7 +2,11 @@
 
 import React, { useEffect, useState } from 'react';
 import { apiClient } from '@/lib/api';
-import type { TimelineEventDto, CreateTimelineEventRequest, UpdateTimelineEventRequest } from '@portfolio/shared';
+import type {
+  TimelineEventDto,
+  CreateTimelineEventRequest,
+  UpdateTimelineEventRequest,
+} from '@portfolio/shared';
 import { TimelineEventType } from '@portfolio/shared';
 import { AdminPageHeader } from '@/components/admin/ui/AdminPageHeader';
 import { ReorderableList } from '@/components/admin/ui/ReorderableList';
@@ -249,7 +253,9 @@ export default function AdminTimelinePage() {
                 </div>
 
                 <div className="space-y-1">
-                  <label className="text-xs font-semibold text-foreground">End Date (Optional)</label>
+                  <label className="text-xs font-semibold text-foreground">
+                    End Date (Optional)
+                  </label>
                   <Input
                     type="date"
                     value={endDate}
@@ -260,7 +266,9 @@ export default function AdminTimelinePage() {
               </div>
 
               <div className="space-y-1">
-                <label className="text-xs font-semibold text-foreground">External Link URL (Optional)</label>
+                <label className="text-xs font-semibold text-foreground">
+                  External Link URL (Optional)
+                </label>
                 <Input
                   type="url"
                   placeholder="https://..."
@@ -271,7 +279,9 @@ export default function AdminTimelinePage() {
               </div>
 
               <div className="space-y-1">
-                <label className="text-xs font-semibold text-foreground">Description (Optional)</label>
+                <label className="text-xs font-semibold text-foreground">
+                  Description (Optional)
+                </label>
                 <Textarea
                   placeholder="Additional context about this milestone..."
                   value={description}
@@ -283,10 +293,21 @@ export default function AdminTimelinePage() {
             </div>
 
             <DialogFooter className="pt-3 border-t border-border flex justify-end gap-2">
-              <Button type="button" variant="outline" size="sm" onClick={() => setIsModalOpen(false)}>
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={() => setIsModalOpen(false)}
+              >
                 Cancel
               </Button>
-              <Button type="submit" variant="primary" size="sm" isLoading={isSaving} disabled={isSaving}>
+              <Button
+                type="submit"
+                variant="primary"
+                size="sm"
+                isLoading={isSaving}
+                disabled={isSaving}
+              >
                 Save Milestone
               </Button>
             </DialogFooter>

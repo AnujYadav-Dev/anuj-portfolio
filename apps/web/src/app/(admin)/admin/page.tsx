@@ -42,9 +42,15 @@ export default function AdminDashboardPage() {
     async function loadDashboardData() {
       try {
         const [overviewRes, timeseriesRes, contactRes, statsRes] = await Promise.allSettled([
-          apiClient.get<{ data: AdminAnalyticsOverviewDto }>('/analytics/admin/overview?period=30d'),
-          apiClient.get<{ data: AnalyticsTimeSeriesPoint[] }>('/analytics/admin/timeseries?period=14d'),
-          apiClient.get<PaginatedResponse<ContactSubmissionDto>>('/contact/admin/submissions?pageSize=5'),
+          apiClient.get<{ data: AdminAnalyticsOverviewDto }>(
+            '/analytics/admin/overview?period=30d',
+          ),
+          apiClient.get<{ data: AnalyticsTimeSeriesPoint[] }>(
+            '/analytics/admin/timeseries?period=14d',
+          ),
+          apiClient.get<PaginatedResponse<ContactSubmissionDto>>(
+            '/contact/admin/submissions?pageSize=5',
+          ),
           apiClient.get<{ data: PublicStatsDto }>('/stats'),
         ]);
 
@@ -97,7 +103,6 @@ export default function AdminDashboardPage() {
             </Link>
           </div>
         }
-
       />
 
       {/* Topline KPI Cards Grid */}
@@ -192,14 +197,15 @@ export default function AdminDashboardPage() {
             <span>{stats?.totalBlogPosts || 0} Articles</span>
           </div>
         </Card>
-
       </div>
 
       {/* Traffic Trends Chart Section */}
       <Card className="bg-surface border-border shadow-sm">
         <CardHeader className="flex flex-row items-center justify-between border-b border-border pb-4">
           <div>
-            <CardTitle className="text-sm font-bold text-foreground">Traffic & Visitor Trajectory (Last 14 Days)</CardTitle>
+            <CardTitle className="text-sm font-bold text-foreground">
+              Traffic & Visitor Trajectory (Last 14 Days)
+            </CardTitle>
             <p className="text-xs text-muted mt-0.5">
               Daily trend of page views and unique visitor sessions recorded across all routes.
             </p>
@@ -211,7 +217,6 @@ export default function AdminDashboardPage() {
             Detailed Insights →
           </Link>
         </CardHeader>
-
 
         <CardContent className="pt-6">
           <TimeSeriesChart data={timeseries} height={260} />

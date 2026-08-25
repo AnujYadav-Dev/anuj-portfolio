@@ -20,7 +20,12 @@ export type RefreshTokenInput = z.infer<typeof refreshTokenSchema>;
 /** Update profile schema. */
 export const updateProfileSchema = z.object({
   displayName: z.string().min(1).max(100).optional(),
-  username: z.string().min(2).max(50).regex(/^[a-zA-Z0-9_-]+$/, 'Invalid username format').optional(),
+  username: z
+    .string()
+    .min(2)
+    .max(50)
+    .regex(/^[a-zA-Z0-9_-]+$/, 'Invalid username format')
+    .optional(),
   email: z.string().email('Invalid email address').optional(),
   bio: z.string().max(2000).nullable().optional(),
   avatarUrl: z.string().url().nullable().optional(),

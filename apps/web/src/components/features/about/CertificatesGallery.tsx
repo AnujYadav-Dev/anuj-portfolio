@@ -2,7 +2,14 @@
 
 import * as React from 'react';
 import { ExternalLink, Award, ShieldCheck } from 'lucide-react';
-import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '@/components/ui/card';
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+  CardContent,
+  CardFooter,
+} from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { RevealOnScroll } from '@/components/motion/RevealOnScroll';
@@ -13,10 +20,7 @@ export interface CertificatesGalleryProps {
   achievements: AchievementDto[];
 }
 
-export function CertificatesGallery({
-  certificates,
-  achievements,
-}: CertificatesGalleryProps) {
+export function CertificatesGallery({ certificates, achievements }: CertificatesGalleryProps) {
   return (
     <div className="flex flex-col gap-16">
       {/* Certifications Section */}
@@ -24,9 +28,7 @@ export function CertificatesGallery({
         <div className="flex flex-col gap-6">
           <div className="flex items-center gap-2">
             <ShieldCheck className="h-4 w-4 text-accent" />
-            <h3 className="text-lg font-bold text-foreground">
-              Professional Certifications
-            </h3>
+            <h3 className="text-lg font-bold text-foreground">Professional Certifications</h3>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -39,7 +41,7 @@ export function CertificatesGallery({
                 : '';
 
               return (
-                <RevealOnScroll key={cert.id} delayIndex={(idx % 4 + 1) as 1 | 2 | 3 | 4}>
+                <RevealOnScroll key={cert.id} delayIndex={((idx % 4) + 1) as 1 | 2 | 3 | 4}>
                   <Card className="bg-surface border-border h-full flex flex-col justify-between">
                     <CardHeader>
                       <div className="flex items-center justify-between gap-2 mb-2">
@@ -47,9 +49,7 @@ export function CertificatesGallery({
                           {cert.issuingOrganization}
                         </span>
                         {issueDate && (
-                          <span className="text-xs font-mono text-muted">
-                            {issueDate}
-                          </span>
+                          <span className="text-xs font-mono text-muted">{issueDate}</span>
                         )}
                       </div>
                       <CardTitle className="text-md">{cert.name}</CardTitle>
@@ -88,9 +88,7 @@ export function CertificatesGallery({
         <div className="flex flex-col gap-6">
           <div className="flex items-center gap-2">
             <Award className="h-4 w-4 text-accent" />
-            <h3 className="text-lg font-bold text-foreground">
-              Honors & Competitions
-            </h3>
+            <h3 className="text-lg font-bold text-foreground">Honors & Competitions</h3>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -103,7 +101,7 @@ export function CertificatesGallery({
                 : '';
 
               return (
-                <RevealOnScroll key={ach.id} delayIndex={(idx % 4 + 1) as 1 | 2 | 3 | 4}>
+                <RevealOnScroll key={ach.id} delayIndex={((idx % 4) + 1) as 1 | 2 | 3 | 4}>
                   <Card className="bg-surface border-border h-full flex flex-col justify-between">
                     <CardHeader>
                       <div className="flex items-center justify-between gap-2 mb-2">
@@ -112,11 +110,7 @@ export function CertificatesGallery({
                             {ach.issuer}
                           </Badge>
                         )}
-                        {achDate && (
-                          <span className="text-xs font-mono text-muted">
-                            {achDate}
-                          </span>
-                        )}
+                        {achDate && <span className="text-xs font-mono text-muted">{achDate}</span>}
                       </div>
                       <CardTitle className="text-md">{ach.title}</CardTitle>
                       {ach.description && (

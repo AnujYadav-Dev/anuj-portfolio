@@ -55,7 +55,7 @@ export function SkillsMatrix({ categories, skills }: SkillsMatrixProps) {
           if (categorySkills.length === 0) return null;
 
           return (
-            <RevealOnScroll key={category.id} delayIndex={(idx % 4 + 1) as 1 | 2 | 3 | 4}>
+            <RevealOnScroll key={category.id} delayIndex={((idx % 4) + 1) as 1 | 2 | 3 | 4}>
               <Card className="bg-surface border-border h-full flex flex-col justify-between">
                 <CardHeader className="pb-3">
                   <div className="flex items-center justify-between">
@@ -77,9 +77,7 @@ export function SkillsMatrix({ categories, skills }: SkillsMatrixProps) {
                   {categorySkills.map((skill) => (
                     <div key={skill.id} className="flex flex-col gap-1">
                       <div className="flex items-center justify-between text-xs">
-                        <span className="font-semibold text-foreground">
-                          {skill.name}
-                        </span>
+                        <span className="font-semibold text-foreground">{skill.name}</span>
                         {skill.proficiency && (
                           <span className="font-mono text-[11px] text-muted">
                             {skill.proficiency}%

@@ -5,15 +5,7 @@ import { z } from 'zod';
 export const searchQuerySchema = z.object({
   q: z.string().trim().min(1).max(100),
   type: z
-    .enum([
-      'all',
-      'project',
-      'blog_post',
-      'research_paper',
-      'skill',
-      'page',
-      'about_section',
-    ])
+    .enum(['all', 'project', 'blog_post', 'research_paper', 'skill', 'page', 'about_section'])
     .default('all'),
   limit: z.coerce.number().int().min(1).max(50).default(20),
 });

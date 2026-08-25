@@ -15,23 +15,11 @@ const router = Router();
 
 router.use(strictRateLimiter);
 
-router.post(
-  '/login',
-  validateBody(loginSchema),
-  asyncHandler(authController.login),
-);
+router.post('/login', validateBody(loginSchema), asyncHandler(authController.login));
 
-router.post(
-  '/refresh',
-  validateBody(refreshTokenSchema),
-  asyncHandler(authController.refresh),
-);
+router.post('/refresh', validateBody(refreshTokenSchema), asyncHandler(authController.refresh));
 
-router.post(
-  '/logout',
-  validateBody(refreshTokenSchema),
-  asyncHandler(authController.logout),
-);
+router.post('/logout', validateBody(refreshTokenSchema), asyncHandler(authController.logout));
 
 router.get('/me', authenticateAdmin, asyncHandler(authController.me));
 

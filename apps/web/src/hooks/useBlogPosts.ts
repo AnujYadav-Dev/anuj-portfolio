@@ -21,9 +21,7 @@ export function useBlogPosts(query?: Partial<ListBlogPostsQuery>) {
 }
 
 export function useBlogPostBySlug(slug: string, author?: string) {
-  const path = author
-    ? `/blogs/by/${author}/${slug}`
-    : `/blogs/${slug}`;
+  const path = author ? `/blogs/by/${author}/${slug}` : `/blogs/${slug}`;
 
   return useQuery<{ data: BlogPostDto }>({
     queryKey: ['blog', slug, author],
@@ -35,7 +33,6 @@ export function useBlogPostBySlug(slug: string, author?: string) {
 export function useBlogCategories() {
   return useQuery<{ data: BlogCategoryDto[] }>({
     queryKey: ['blog-categories'],
-    queryFn: () =>
-      apiClient.get<{ data: BlogCategoryDto[] }>('/blog-categories'),
+    queryFn: () => apiClient.get<{ data: BlogCategoryDto[] }>('/blog-categories'),
   });
 }

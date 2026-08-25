@@ -29,9 +29,12 @@ export default function AdminResearchListPage() {
   const fetchPapers = async () => {
     setIsLoading(true);
     try {
-      const res = await apiClient.get<PaginatedResponse<ResearchPaperListItemDto>>('/research/admin/all', {
-        params: { page, pageSize: 20, search },
-      });
+      const res = await apiClient.get<PaginatedResponse<ResearchPaperListItemDto>>(
+        '/research/admin/all',
+        {
+          params: { page, pageSize: 20, search },
+        },
+      );
       setPapers(res.data || []);
       setTotalPages(res.pagination.totalPages || 1);
       setTotalItems(res.pagination.totalItems || 0);
@@ -143,7 +146,6 @@ export default function AdminResearchListPage() {
             <span>Add Research Paper</span>
           </Link>
         }
-
       />
 
       <AdminDataTable

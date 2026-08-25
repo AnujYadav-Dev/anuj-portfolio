@@ -19,12 +19,7 @@ export const mediaRepository = {
     return prisma.media.create({ data });
   },
 
-  async findMany(options: {
-    skip: number;
-    take: number;
-    mediaType?: MediaType;
-    search?: string;
-  }) {
+  async findMany(options: { skip: number; take: number; mediaType?: MediaType; search?: string }) {
     const where: Prisma.MediaWhereInput = {};
 
     if (options.mediaType) {
@@ -47,10 +42,7 @@ export const mediaRepository = {
     });
   },
 
-  async count(options: {
-    mediaType?: MediaType;
-    search?: string;
-  }) {
+  async count(options: { mediaType?: MediaType; search?: string }) {
     const where: Prisma.MediaWhereInput = {};
 
     if (options.mediaType) {
@@ -72,11 +64,14 @@ export const mediaRepository = {
     return prisma.media.findUnique({ where: { id } });
   },
 
-  async update(id: string, data: {
-    filename?: string;
-    altText?: string | null;
-    caption?: string | null;
-  }) {
+  async update(
+    id: string,
+    data: {
+      filename?: string;
+      altText?: string | null;
+      caption?: string | null;
+    },
+  ) {
     return prisma.media.update({
       where: { id },
       data,

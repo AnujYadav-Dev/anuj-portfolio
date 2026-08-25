@@ -6,11 +6,6 @@ import { searchQuerySchema } from '@portfolio/shared';
 
 const router = Router();
 
-router.get(
-  '/',
-  publicRateLimiter,
-  validateQuery(searchQuerySchema),
-  searchController.search,
-);
+router.get('/', publicRateLimiter, validateQuery(searchQuerySchema), searchController.search);
 
 export { router as searchRouter };

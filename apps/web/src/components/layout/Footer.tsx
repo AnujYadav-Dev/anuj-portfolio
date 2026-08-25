@@ -43,10 +43,7 @@ export function Footer() {
     { id: '4', platform: 'Email', url: 'mailto:anuj@example.com' },
   ];
 
-  const socials =
-    socialData?.data && socialData.data.length > 0
-      ? socialData.data
-      : defaultSocials;
+  const socials = socialData?.data && socialData.data.length > 0 ? socialData.data : defaultSocials;
 
   return (
     <footer className="w-full bg-background border-t border-border mt-auto transition-colors duration-fast">
@@ -68,9 +65,7 @@ export function Footer() {
                 {isAvailable ? 'Currently Available' : 'Currently Busy'}
               </span>
             </div>
-            <p className="text-xs text-muted leading-relaxed max-w-md">
-              {availabilityText}
-            </p>
+            <p className="text-xs text-muted leading-relaxed max-w-md">{availabilityText}</p>
           </div>
 
           {/* Newsletter Box */}
@@ -79,7 +74,8 @@ export function Footer() {
               Stay in the Loop
             </span>
             <p className="text-xs text-muted leading-relaxed">
-              Occasional dispatches on systems architecture, full-stack craft, and engineering essays.
+              Occasional dispatches on systems architecture, full-stack craft, and engineering
+              essays.
             </p>
             <form onSubmit={handleSubscribe} className="flex gap-2 max-w-md mt-1">
               <Input

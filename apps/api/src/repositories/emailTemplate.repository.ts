@@ -11,11 +11,14 @@ export const emailTemplateRepository = {
     return prisma.emailTemplate.findUnique({ where: { templateKey } });
   },
 
-  async update(templateKey: string, data: {
-    subject?: string;
-    bodyHtml?: string;
-    bodyText?: string | null;
-  }) {
+  async update(
+    templateKey: string,
+    data: {
+      subject?: string;
+      bodyHtml?: string;
+      bodyText?: string | null;
+    },
+  ) {
     return prisma.emailTemplate.update({
       where: { templateKey },
       data,

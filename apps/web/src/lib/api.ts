@@ -1,7 +1,6 @@
 import type { ApiErrorResponse, AuthResponse } from '@portfolio/shared';
 
-const API_BASE_URL =
-  process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001/api/v1';
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001/api/v1';
 
 export class ApiClientError extends Error {
   constructor(
@@ -113,7 +112,13 @@ async function request<T>(path: string, options: RequestOptions = {}): Promise<T
   }
 
   // Handle 401 unauthorized & auto-refresh
-  if (response.status === 401 && !_retry && typeof window !== 'undefined' && !path.includes('/auth/login') && !path.includes('/auth/refresh')) {
+  if (
+    response.status === 401 &&
+    !_retry &&
+    typeof window !== 'undefined' &&
+    !path.includes('/auth/login') &&
+    !path.includes('/auth/refresh')
+  ) {
     if (!refreshPromise) {
       refreshPromise = refreshAccessToken().finally(() => {
         refreshPromise = null;
@@ -136,7 +141,8 @@ async function request<T>(path: string, options: RequestOptions = {}): Promise<T
   if (!response.ok) {
     const errorBody = data as ApiErrorResponse | null;
     const code = errorBody?.error?.code || 'UNKNOWN_ERROR';
-    const message = errorBody?.error?.message || response.statusText || 'An unexpected error occurred';
+    const message =
+      errorBody?.error?.message || response.statusText || 'An unexpected error occurred';
     const details = errorBody?.error?.details;
     throw new ApiClientError(code, message, response.status, details);
   }

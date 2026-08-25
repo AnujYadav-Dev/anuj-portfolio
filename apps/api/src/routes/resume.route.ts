@@ -12,24 +12,19 @@ router.get('/active/download', resumeController.downloadActive);
 
 // Admin
 router.get('/admin/all', authenticateAdmin, resumeController.listAll);
-router.get('/admin/:id', authenticateAdmin, validateParams(uuidParamSchema), resumeController.getById);
-router.post(
-  '/',
+router.get(
+  '/admin/:id',
   authenticateAdmin,
-  validateBody(createResumeSchema),
-  resumeController.create,
+  validateParams(uuidParamSchema),
+  resumeController.getById,
 );
+router.post('/', authenticateAdmin, validateBody(createResumeSchema), resumeController.create);
 router.patch(
   '/:id/activate',
   authenticateAdmin,
   validateParams(uuidParamSchema),
   resumeController.setActive,
 );
-router.delete(
-  '/:id',
-  authenticateAdmin,
-  validateParams(uuidParamSchema),
-  resumeController.delete,
-);
+router.delete('/:id', authenticateAdmin, validateParams(uuidParamSchema), resumeController.delete);
 
 export { router as resumeRouter };

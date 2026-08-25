@@ -26,9 +26,7 @@ export default function GlobalError({
         </div>
 
         <div className="flex flex-col gap-2">
-          <h1 className="text-2xl font-bold text-foreground">
-            Something went wrong
-          </h1>
+          <h1 className="text-2xl font-bold text-foreground">Something went wrong</h1>
           <p className="text-xs text-muted leading-relaxed font-mono">
             {error.message || 'An unexpected exception occurred during page rendering.'}
           </p>

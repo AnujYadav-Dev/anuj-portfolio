@@ -14,7 +14,9 @@ import type {
 import type { Prisma } from '@prisma/client';
 
 export const researchService = {
-  async listPublished(query: ListResearchPapersQuery): Promise<PaginatedResponse<ResearchPaperListItemDto>> {
+  async listPublished(
+    query: ListResearchPapersQuery,
+  ): Promise<PaginatedResponse<ResearchPaperListItemDto>> {
     const now = new Date();
     const where: Prisma.ResearchPaperWhereInput = {
       status: 'published',
@@ -42,7 +44,9 @@ export const researchService = {
     };
   },
 
-  async listAdmin(query: ListResearchPapersQuery): Promise<PaginatedResponse<ResearchPaperListItemDto>> {
+  async listAdmin(
+    query: ListResearchPapersQuery,
+  ): Promise<PaginatedResponse<ResearchPaperListItemDto>> {
     const where: Prisma.ResearchPaperWhereInput = {};
     if (query.status) where.status = query.status as any;
     if (query.isFeatured !== undefined) where.isFeatured = query.isFeatured;
@@ -126,8 +130,10 @@ export const researchService = {
     if (input.abstract !== undefined) updateData.abstract = input.abstract || null;
     if (input.content !== undefined) updateData.content = input.content || null;
     if (input.doi !== undefined) updateData.doi = input.doi || null;
-    if (input.publicationUrl !== undefined) updateData.publicationUrl = input.publicationUrl || null;
-    if (input.publicationName !== undefined) updateData.publicationName = input.publicationName || null;
+    if (input.publicationUrl !== undefined)
+      updateData.publicationUrl = input.publicationUrl || null;
+    if (input.publicationName !== undefined)
+      updateData.publicationName = input.publicationName || null;
     if (input.publicationDate !== undefined) {
       updateData.publicationDate = input.publicationDate ? new Date(input.publicationDate) : null;
     }
@@ -135,7 +141,8 @@ export const researchService = {
     if (input.isFeatured !== undefined) updateData.isFeatured = input.isFeatured;
     if (input.pdfId !== undefined) updateData.pdfId = input.pdfId || null;
     if (input.seoTitle !== undefined) updateData.seoTitle = input.seoTitle || null;
-    if (input.seoDescription !== undefined) updateData.seoDescription = input.seoDescription || null;
+    if (input.seoDescription !== undefined)
+      updateData.seoDescription = input.seoDescription || null;
     if (input.seoKeywords !== undefined) updateData.seoKeywords = input.seoKeywords || null;
     if (input.ogImageId !== undefined) updateData.ogImageId = input.ogImageId || null;
 

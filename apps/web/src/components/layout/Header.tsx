@@ -60,9 +60,7 @@ export function Header() {
           <nav className="hidden md:flex items-center gap-6 text-xs font-medium">
             {navLinks.map((link, idx) => {
               const isActive =
-                link.href === '/'
-                  ? pathname === '/'
-                  : pathname.startsWith(link.href);
+                link.href === '/' ? pathname === '/' : pathname.startsWith(link.href);
 
               return (
                 <Link
@@ -70,9 +68,7 @@ export function Header() {
                   href={link.href}
                   className={cn(
                     'transition-colors py-1 hover:text-accent',
-                    isActive
-                      ? 'text-accent font-semibold'
-                      : 'text-muted hover:text-foreground',
+                    isActive ? 'text-accent font-semibold' : 'text-muted hover:text-foreground',
                   )}
                 >
                   {link.label}
@@ -80,7 +76,6 @@ export function Header() {
               );
             })}
           </nav>
-
 
           {/* Right Action Tools */}
           <div className="flex items-center gap-2">
@@ -115,16 +110,10 @@ export function Header() {
       </header>
 
       {/* Command Palette Overlay */}
-      <CommandPalette
-        isOpen={isCommandOpen}
-        onClose={() => setIsCommandOpen(false)}
-      />
+      <CommandPalette isOpen={isCommandOpen} onClose={() => setIsCommandOpen(false)} />
 
       {/* Mobile Drawer */}
-      <MobileNav
-        isOpen={isMobileNavOpen}
-        onClose={() => setIsMobileNavOpen(false)}
-      />
+      <MobileNav isOpen={isMobileNavOpen} onClose={() => setIsMobileNavOpen(false)} />
     </>
   );
 }

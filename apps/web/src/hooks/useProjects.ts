@@ -21,9 +21,7 @@ export function useProjects(query?: Partial<ListProjectsQuery>) {
 }
 
 export function useProjectBySlug(slug: string, author?: string) {
-  const path = author
-    ? `/projects/by/${author}/${slug}`
-    : `/projects/${slug}`;
+  const path = author ? `/projects/by/${author}/${slug}` : `/projects/${slug}`;
 
   return useQuery<{ data: ProjectDto }>({
     queryKey: ['project', slug, author],
@@ -35,7 +33,6 @@ export function useProjectBySlug(slug: string, author?: string) {
 export function useProjectCategories() {
   return useQuery<{ data: ProjectCategoryDto[] }>({
     queryKey: ['project-categories'],
-    queryFn: () =>
-      apiClient.get<{ data: ProjectCategoryDto[] }>('/project-categories'),
+    queryFn: () => apiClient.get<{ data: ProjectCategoryDto[] }>('/project-categories'),
   });
 }

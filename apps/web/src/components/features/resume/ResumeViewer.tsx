@@ -50,16 +50,8 @@ export function ResumeViewer() {
           </Button>
 
           {resumeData?.data?.fileUrl && (
-            <a
-              href={resumeData.data.fileUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <Button
-                variant="primary"
-                size="sm"
-                rightIcon={<Download className="h-3.5 w-3.5" />}
-              >
+            <a href={resumeData.data.fileUrl} target="_blank" rel="noopener noreferrer">
+              <Button variant="primary" size="sm" rightIcon={<Download className="h-3.5 w-3.5" />}>
                 Download PDF
               </Button>
             </a>
@@ -108,16 +100,15 @@ export function ResumeViewer() {
                   <div key={exp.id} className="flex flex-col gap-1.5">
                     <div className="flex flex-wrap items-center justify-between text-xs">
                       <span className="font-bold text-sm text-foreground print:text-black">
-                        {exp.role} <span className="text-muted font-normal">at</span> {exp.companyName}
+                        {exp.role} <span className="text-muted font-normal">at</span>{' '}
+                        {exp.companyName}
                       </span>
                       <span className="font-mono text-muted">
                         {start} — {end}
                       </span>
                     </div>
                     {exp.description && (
-                      <p className="text-xs text-muted leading-relaxed">
-                        {exp.description}
-                      </p>
+                      <p className="text-xs text-muted leading-relaxed">{exp.description}</p>
                     )}
                     {exp.technologies && exp.technologies.length > 0 && (
                       <div className="flex flex-wrap gap-1 pt-1">
@@ -157,7 +148,9 @@ export function ResumeViewer() {
                       </span>
                     </div>
                     <span className="text-muted">{edu.institution}</span>
-                    {edu.grade && <span className="font-mono text-[11px] text-accent">Grade: {edu.grade}</span>}
+                    {edu.grade && (
+                      <span className="font-mono text-[11px] text-accent">Grade: {edu.grade}</span>
+                    )}
                   </div>
                 );
               })}

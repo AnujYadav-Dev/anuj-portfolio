@@ -165,9 +165,9 @@ export function CommandPalette({ isOpen, onClose }: CommandPaletteProps) {
       }
     }
 
-    return results.length > 0 ? results : defaultActions.filter((a) =>
-      a.title.toLowerCase().includes(query.toLowerCase()),
-    );
+    return results.length > 0
+      ? results
+      : defaultActions.filter((a) => a.title.toLowerCase().includes(query.toLowerCase()));
   }, [query, defaultActions, searchResults, router]);
 
   React.useEffect(() => {
@@ -207,10 +207,7 @@ export function CommandPalette({ isOpen, onClose }: CommandPaletteProps) {
             className="w-full bg-transparent text-sm text-foreground placeholder:text-placeholder focus:outline-none font-sans"
           />
           {query && (
-            <button
-              onClick={() => setQuery('')}
-              className="text-muted hover:text-foreground p-1"
-            >
+            <button onClick={() => setQuery('')} className="text-muted hover:text-foreground p-1">
               <X className="h-3.5 w-3.5" />
             </button>
           )}
@@ -268,8 +265,15 @@ export function CommandPalette({ isOpen, onClose }: CommandPaletteProps) {
         {/* Footer shortcuts */}
         <div className="flex items-center justify-between px-4 py-2 border-t border-border bg-surface-muted/50 text-[11px] text-muted font-mono">
           <div className="flex items-center gap-2">
-            <span>Navigate <kbd className="px-1 bg-surface border border-border rounded-xs text-[10px]">↑</kbd> <kbd className="px-1 bg-surface border border-border rounded-xs text-[10px]">↓</kbd></span>
-            <span>Select <kbd className="px-1 bg-surface border border-border rounded-xs text-[10px]">↵</kbd></span>
+            <span>
+              Navigate{' '}
+              <kbd className="px-1 bg-surface border border-border rounded-xs text-[10px]">↑</kbd>{' '}
+              <kbd className="px-1 bg-surface border border-border rounded-xs text-[10px]">↓</kbd>
+            </span>
+            <span>
+              Select{' '}
+              <kbd className="px-1 bg-surface border border-border rounded-xs text-[10px]">↵</kbd>
+            </span>
           </div>
           <span>Command Palette</span>
         </div>

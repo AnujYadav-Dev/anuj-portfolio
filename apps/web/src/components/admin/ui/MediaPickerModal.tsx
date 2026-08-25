@@ -13,14 +13,7 @@ import { Input } from '@/components/ui/input';
 import { Spinner } from '@/components/ui/spinner';
 import { apiClient } from '@/lib/api';
 import type { MediaDto, PaginatedResponse } from '@portfolio/shared';
-import {
-  Image as ImageIcon,
-  FileText,
-  UploadCloud,
-  Search,
-  Check,
-  HardDrive,
-} from 'lucide-react';
+import { Image as ImageIcon, FileText, UploadCloud, Search, Check, HardDrive } from 'lucide-react';
 import { toast } from 'sonner';
 import { cn } from '@/lib/cn';
 
@@ -109,7 +102,6 @@ export function MediaPickerModal({
   return (
     <Dialog isOpen={isOpen} onClose={onClose}>
       <DialogContent className="max-w-3xl bg-surface border-border p-6 max-h-[85vh] flex flex-col">
-
         <DialogHeader className="pb-3 border-b border-border flex flex-row items-center justify-between">
           <DialogTitle className="text-base font-bold text-foreground flex items-center gap-2">
             <HardDrive className="w-4 h-4 text-accent" />
@@ -237,7 +229,13 @@ export function MediaPickerModal({
                 id="media-file-input"
                 onChange={(e) => setUploadFile(e.target.files?.[0] || null)}
                 className="hidden"
-                accept={acceptType === 'image' ? 'image/*' : acceptType === 'pdf' ? 'application/pdf' : '*/*'}
+                accept={
+                  acceptType === 'image'
+                    ? 'image/*'
+                    : acceptType === 'pdf'
+                      ? 'application/pdf'
+                      : '*/*'
+                }
               />
               <Button
                 type="button"
@@ -249,10 +247,11 @@ export function MediaPickerModal({
               </Button>
             </div>
 
-
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div className="space-y-1">
-                <label className="text-xs font-semibold text-foreground">Alt Text (Accessibility)</label>
+                <label className="text-xs font-semibold text-foreground">
+                  Alt Text (Accessibility)
+                </label>
                 <Input
                   type="text"
                   placeholder="Describe image for screen readers"

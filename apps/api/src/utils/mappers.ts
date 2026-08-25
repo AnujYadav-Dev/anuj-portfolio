@@ -50,7 +50,6 @@ import type {
   EducationDto,
   EmailTemplateDto,
   ExperienceDto,
-
   GalleryItemDto,
   GuestbookEntryDto,
   HomepageSectionDto,
@@ -372,7 +371,10 @@ type ResearchWithRelations = ResearchPaper & {
 };
 
 /** Map Prisma ResearchPaper to ResearchPaperDto. */
-export function mapResearchPaperToDto(paper: ResearchWithRelations, tagNames?: string[]): ResearchPaperDto {
+export function mapResearchPaperToDto(
+  paper: ResearchWithRelations,
+  tagNames?: string[],
+): ResearchPaperDto {
   return {
     id: paper.id,
     title: paper.title,
@@ -403,7 +405,9 @@ export function mapResearchPaperToDto(paper: ResearchWithRelations, tagNames?: s
 }
 
 /** Map Prisma ResearchPaper to ResearchPaperListItemDto. */
-export function mapResearchPaperToListItemDto(paper: ResearchWithRelations): ResearchPaperListItemDto {
+export function mapResearchPaperToListItemDto(
+  paper: ResearchWithRelations,
+): ResearchPaperListItemDto {
   return {
     id: paper.id,
     title: paper.title,
@@ -799,6 +803,4 @@ export function mapEmailTemplateToDto(t: EmailTemplate): EmailTemplateDto {
   };
 }
 
-
 export type { EmailTemplate };
-

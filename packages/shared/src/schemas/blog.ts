@@ -1,10 +1,5 @@
 import { z } from 'zod';
-import {
-  slugSchema,
-  paginationSchema,
-  seoFieldsSchema,
-  optionalUuidSchema,
-} from './common';
+import { slugSchema, paginationSchema, seoFieldsSchema, optionalUuidSchema } from './common';
 
 import { ContentStatus } from '../types/enums';
 
@@ -23,7 +18,6 @@ export const createBlogPostSchema = z
     tagIds: z.array(z.string().uuid()).optional(),
   })
   .merge(seoFieldsSchema);
-
 
 export type CreateBlogPostInput = z.infer<typeof createBlogPostSchema>;
 

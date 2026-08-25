@@ -28,7 +28,6 @@ export const createResearchPaperSchema = z
   })
   .merge(seoFieldsSchema);
 
-
 export type CreateResearchPaperInput = z.infer<typeof createResearchPaperSchema>;
 
 /** Update research paper request validation — all fields optional. */

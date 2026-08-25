@@ -7,11 +7,7 @@ import { ProjectEditorForm } from '@/components/admin/features/works/ProjectEdit
 import { Spinner } from '@/components/ui/spinner';
 import { toast } from 'sonner';
 
-export default function AdminEditProjectPage({
-  params,
-}: {
-  params: Promise<{ id: string }>;
-}) {
+export default function AdminEditProjectPage({ params }: { params: Promise<{ id: string }> }) {
   const resolvedParams = use(params);
   const [project, setProject] = useState<ProjectDto | null>(null);
   const [isLoading, setIsLoading] = useState(true);

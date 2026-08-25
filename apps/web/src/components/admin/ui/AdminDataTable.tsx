@@ -95,9 +95,7 @@ export function AdminDataTable<T>({
   if (!onSearchChange && activeSearch) {
     const term = activeSearch.toLowerCase();
     displayData = displayData.filter((item: any) =>
-      Object.values(item).some(
-        (val) => val && String(val).toLowerCase().includes(term),
-      ),
+      Object.values(item).some((val) => val && String(val).toLowerCase().includes(term)),
     );
   }
 
@@ -161,10 +159,7 @@ export function AdminDataTable<T>({
                   </th>
                 )}
                 {columns.map((col) => (
-                  <th
-                    key={col.key}
-                    className={cn('px-4 py-3 font-semibold', col.className)}
-                  >
+                  <th key={col.key} className={cn('px-4 py-3 font-semibold', col.className)}>
                     {col.sortable ? (
                       <button
                         type="button"
@@ -234,10 +229,7 @@ export function AdminDataTable<T>({
                       )}
                     >
                       {onToggleSelect && (
-                        <td
-                          className="px-4 py-3 text-center"
-                          onClick={(e) => e.stopPropagation()}
-                        >
+                        <td className="px-4 py-3 text-center" onClick={(e) => e.stopPropagation()}>
                           <input
                             type="checkbox"
                             checked={isSelected}
@@ -270,8 +262,9 @@ export function AdminDataTable<T>({
         {pagination && pagination.totalPages > 1 && (
           <div className="px-4 py-3 border-t border-border flex items-center justify-between text-xs text-muted font-mono bg-surface-muted/30">
             <div>
-              Showing Page <span className="font-semibold text-foreground">{pagination.page}</span> of{' '}
-              <span className="font-semibold text-foreground">{pagination.totalPages}</span> ({pagination.totalItems} total)
+              Showing Page <span className="font-semibold text-foreground">{pagination.page}</span>{' '}
+              of <span className="font-semibold text-foreground">{pagination.totalPages}</span> (
+              {pagination.totalItems} total)
             </div>
 
             <div className="flex items-center gap-1.5">

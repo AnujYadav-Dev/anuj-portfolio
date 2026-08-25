@@ -25,7 +25,9 @@ export function PageEditorForm({ initialData, isNew = false }: PageEditorFormPro
   const [title, setTitle] = useState(initialData?.title || '');
   const [slug, setSlug] = useState(initialData?.slug || '');
   const [content, setContent] = useState(initialData?.content || '');
-  const [status, setStatus] = useState<ContentStatus>(initialData?.status || ContentStatus.Published);
+  const [status, setStatus] = useState<ContentStatus>(
+    initialData?.status || ContentStatus.Published,
+  );
   const [seoTitle, setSeoTitle] = useState(initialData?.seoTitle || '');
   const [seoDescription, setSeoDescription] = useState(initialData?.seoDescription || '');
 
@@ -56,7 +58,6 @@ export function PageEditorForm({ initialData, isNew = false }: PageEditorFormPro
         seoDescription: seoDescription || undefined,
       };
 
-
       if (isNew) {
         await apiClient.post('/pages', payload);
         toast.success('Page created successfully!');
@@ -81,7 +82,9 @@ export function PageEditorForm({ initialData, isNew = false }: PageEditorFormPro
           <h2 className="text-xl font-bold text-foreground">
             {isNew ? 'Create Dynamic Page' : `Edit: ${initialData?.title}`}
           </h2>
-          <p className="text-xs text-muted font-mono">{status.toUpperCase()} • /{slug || 'no-slug'}</p>
+          <p className="text-xs text-muted font-mono">
+            {status.toUpperCase()} • /{slug || 'no-slug'}
+          </p>
         </div>
 
         <div className="flex items-center gap-2">
@@ -151,7 +154,9 @@ export function PageEditorForm({ initialData, isNew = false }: PageEditorFormPro
           {/* Markdown Content */}
           <Card className="bg-surface border-border">
             <CardHeader className="pb-3">
-              <CardTitle className="text-sm font-bold text-foreground">Page Content (Markdown)</CardTitle>
+              <CardTitle className="text-sm font-bold text-foreground">
+                Page Content (Markdown)
+              </CardTitle>
             </CardHeader>
             <CardContent>
               <MarkdownEditor

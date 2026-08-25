@@ -2,17 +2,12 @@
 
 import { useQuery } from '@tanstack/react-query';
 import { apiClient } from '@/lib/api';
-import type {
-  HomepageSectionDto,
-  NavItemDto,
-  PageDto,
-} from '@portfolio/shared';
+import type { HomepageSectionDto, NavItemDto, PageDto } from '@portfolio/shared';
 
 export function useHomepageSections() {
   return useQuery<{ data: HomepageSectionDto[] }>({
     queryKey: ['homepage-sections'],
-    queryFn: () =>
-      apiClient.get<{ data: HomepageSectionDto[] }>('/homepage-sections'),
+    queryFn: () => apiClient.get<{ data: HomepageSectionDto[] }>('/homepage-sections'),
   });
 }
 

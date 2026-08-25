@@ -7,11 +7,7 @@ import { BlogEditorForm } from '@/components/admin/features/blogs/BlogEditorForm
 import { Spinner } from '@/components/ui/spinner';
 import { toast } from 'sonner';
 
-export default function AdminEditBlogPage({
-  params,
-}: {
-  params: Promise<{ id: string }>;
-}) {
+export default function AdminEditBlogPage({ params }: { params: Promise<{ id: string }> }) {
   const resolvedParams = use(params);
   const [blog, setBlog] = useState<BlogPostDto | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -19,9 +15,7 @@ export default function AdminEditBlogPage({
   useEffect(() => {
     async function loadBlog() {
       try {
-        const res = await apiClient.get<{ data: BlogPostDto }>(
-          `/blogs/admin/${resolvedParams.id}`,
-        );
+        const res = await apiClient.get<{ data: BlogPostDto }>(`/blogs/admin/${resolvedParams.id}`);
         setBlog(res.data);
       } catch (err: any) {
         toast.error('Failed to load blog post');

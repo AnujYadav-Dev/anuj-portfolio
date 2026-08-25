@@ -29,7 +29,6 @@ import {
   Sparkles,
 } from 'lucide-react';
 
-
 interface ProjectEditorFormProps {
   initialData?: ProjectDto;
   isNew?: boolean;
@@ -159,7 +158,6 @@ export function ProjectEditorForm({ initialData, isNew = false }: ProjectEditorF
     }
   };
 
-
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
       {/* Top Header Actions */}
@@ -201,7 +199,9 @@ export function ProjectEditorForm({ initialData, isNew = false }: ProjectEditorF
           {/* Basic Info */}
           <Card className="bg-surface border-border">
             <CardHeader className="pb-3">
-              <CardTitle className="text-sm font-bold text-foreground">General Information</CardTitle>
+              <CardTitle className="text-sm font-bold text-foreground">
+                General Information
+              </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="space-y-1.5">
@@ -238,7 +238,9 @@ export function ProjectEditorForm({ initialData, isNew = false }: ProjectEditorF
               </div>
 
               <div className="space-y-1.5">
-                <label className="text-xs font-semibold text-foreground">Short Summary Description</label>
+                <label className="text-xs font-semibold text-foreground">
+                  Short Summary Description
+                </label>
                 <Textarea
                   placeholder="Provide a concise 2-3 sentence overview of this project..."
                   value={shortDescription}
@@ -254,7 +256,9 @@ export function ProjectEditorForm({ initialData, isNew = false }: ProjectEditorF
           {/* Long-Form Case Study Markdown Editor */}
           <Card className="bg-surface border-border">
             <CardHeader className="pb-3">
-              <CardTitle className="text-sm font-bold text-foreground">Detailed Case Study (MDX / Markdown)</CardTitle>
+              <CardTitle className="text-sm font-bold text-foreground">
+                Detailed Case Study (MDX / Markdown)
+              </CardTitle>
             </CardHeader>
             <CardContent>
               <MarkdownEditor
@@ -265,7 +269,6 @@ export function ProjectEditorForm({ initialData, isNew = false }: ProjectEditorF
               />
             </CardContent>
           </Card>
-
 
           {/* SEO Metadata Card */}
           <Card className="bg-surface border-border">
@@ -285,7 +288,9 @@ export function ProjectEditorForm({ initialData, isNew = false }: ProjectEditorF
               </div>
 
               <div className="space-y-1.5">
-                <label className="text-xs font-semibold text-foreground">Meta SEO Description</label>
+                <label className="text-xs font-semibold text-foreground">
+                  Meta SEO Description
+                </label>
                 <Textarea
                   placeholder="Custom meta description for search engines and social link previews..."
                   value={seoDescription}
@@ -314,7 +319,9 @@ export function ProjectEditorForm({ initialData, isNew = false }: ProjectEditorF
           {/* Status & Publication */}
           <Card className="bg-surface border-border">
             <CardHeader className="pb-3">
-              <CardTitle className="text-sm font-bold text-foreground">Publishing & Status</CardTitle>
+              <CardTitle className="text-sm font-bold text-foreground">
+                Publishing & Status
+              </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4 text-xs">
               <div className="space-y-1.5">
@@ -426,7 +433,9 @@ export function ProjectEditorForm({ initialData, isNew = false }: ProjectEditorF
           {/* Category & Tags */}
           <Card className="bg-surface border-border">
             <CardHeader className="pb-3">
-              <CardTitle className="text-sm font-bold text-foreground">Taxonomy & Category</CardTitle>
+              <CardTitle className="text-sm font-bold text-foreground">
+                Taxonomy & Category
+              </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4 text-xs">
               <div className="space-y-1.5">
@@ -496,7 +505,6 @@ export function ProjectEditorForm({ initialData, isNew = false }: ProjectEditorF
                   <span>GitHub Repository URL</span>
                 </label>
                 <Input
-
                   type="url"
                   placeholder="https://github.com/..."
                   value={githubUrl}

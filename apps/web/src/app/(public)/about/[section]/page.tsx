@@ -31,10 +31,11 @@ export default function SingleAboutSectionPage() {
     return (
       <div className="max-w-[1200px] mx-auto px-4 md:px-8 py-24 text-center">
         <h2 className="text-xl font-bold text-foreground">Section Not Found</h2>
-        <p className="text-xs text-muted mt-2">
-          The requested section could not be located.
-        </p>
-        <Link href="/about" className="text-xs font-mono text-accent hover:underline mt-4 inline-block">
+        <p className="text-xs text-muted mt-2">The requested section could not be located.</p>
+        <Link
+          href="/about"
+          className="text-xs font-mono text-accent hover:underline mt-4 inline-block"
+        >
           ← Back to About Hub
         </Link>
       </div>

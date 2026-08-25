@@ -35,9 +35,7 @@ export function Tabs({
 
   return (
     <TabsContext.Provider value={{ value: activeValue, onChange: handleChange }}>
-      <div className={cn('flex flex-col space-y-4 w-full', className)}>
-        {children}
-      </div>
+      <div className={cn('flex flex-col space-y-4 w-full', className)}>{children}</div>
     </TabsContext.Provider>
   );
 }
@@ -110,10 +108,7 @@ export function TabsContent({
   if (context.value !== value) return null;
 
   return (
-    <div
-      role="tabpanel"
-      className={cn('animate-in fade-in duration-fast', className)}
-    >
+    <div role="tabpanel" className={cn('animate-in fade-in duration-fast', className)}>
       {children}
     </div>
   );

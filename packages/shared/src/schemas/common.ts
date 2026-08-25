@@ -26,20 +26,14 @@ export const slugSchema = z
 export const dateStringSchema = z
   .string()
   .min(1, 'Date is required')
-  .refine(
-    (val) => !isNaN(Date.parse(val)),
-    { message: 'Invalid date format' },
-  );
+  .refine((val) => !isNaN(Date.parse(val)), { message: 'Invalid date format' });
 
 /** Reusable optional date string schema. */
 export const optionalDateStringSchema = z
   .string()
   .optional()
   .or(z.literal(''))
-  .refine(
-    (val) => !val || !isNaN(Date.parse(val)),
-    { message: 'Invalid date format' },
-  );
+  .refine((val) => !val || !isNaN(Date.parse(val)), { message: 'Invalid date format' });
 
 /** Reusable optional UUID schema. */
 export const optionalUuidSchema = z.string().uuid().optional().or(z.literal(''));
@@ -55,7 +49,6 @@ export const seoFieldsSchema = z.object({
   ogImageId: optionalUuidSchema,
 });
 
-
 /** UUID param schema. */
 export const uuidParamSchema = z.object({
   id: z.string().uuid(),
@@ -65,12 +58,14 @@ export type UuidParam = z.infer<typeof uuidParamSchema>;
 
 /** Reorder items schema (batch update sort orders). */
 export const reorderSchema = z.object({
-  items: z.array(
-    z.object({
-      id: z.string().uuid(),
-      sortOrder: z.number().int(),
-    }),
-  ).min(1),
+  items: z
+    .array(
+      z.object({
+        id: z.string().uuid(),
+        sortOrder: z.number().int(),
+      }),
+    )
+    .min(1),
 });
 
 export type ReorderInput = z.infer<typeof reorderSchema>;

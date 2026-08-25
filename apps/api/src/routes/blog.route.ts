@@ -13,8 +13,18 @@ import {
 const router = Router();
 
 // Admin collection routes (must precede /:slug)
-router.get('/admin/all', authenticateAdmin, validateQuery(listBlogPostsQuerySchema), blogController.listAdmin);
-router.get('/admin/:id', authenticateAdmin, validateParams(uuidParamSchema), blogController.getById);
+router.get(
+  '/admin/all',
+  authenticateAdmin,
+  validateQuery(listBlogPostsQuerySchema),
+  blogController.listAdmin,
+);
+router.get(
+  '/admin/:id',
+  authenticateAdmin,
+  validateParams(uuidParamSchema),
+  blogController.getById,
+);
 
 // Specific nested public routes
 router.get('/by/:author/:slug', blogController.getByAuthorAndSlug);
@@ -24,11 +34,32 @@ router.get('/', validateQuery(listBlogPostsQuerySchema), blogController.listPubl
 
 // Generic actions
 router.post('/', authenticateAdmin, validateBody(createBlogPostSchema), blogController.create);
-router.put('/:id', authenticateAdmin, validateParams(uuidParamSchema), validateBody(updateBlogPostSchema), blogController.update);
+router.put(
+  '/:id',
+  authenticateAdmin,
+  validateParams(uuidParamSchema),
+  validateBody(updateBlogPostSchema),
+  blogController.update,
+);
 router.delete('/:id', authenticateAdmin, validateParams(uuidParamSchema), blogController.delete);
-router.patch('/:id/status', authenticateAdmin, validateParams(uuidParamSchema), blogController.updateStatus);
-router.put('/:id/status', authenticateAdmin, validateParams(uuidParamSchema), blogController.updateStatus);
-router.get('/:id/versions', authenticateAdmin, validateParams(uuidParamSchema), blogController.getVersions);
+router.patch(
+  '/:id/status',
+  authenticateAdmin,
+  validateParams(uuidParamSchema),
+  blogController.updateStatus,
+);
+router.put(
+  '/:id/status',
+  authenticateAdmin,
+  validateParams(uuidParamSchema),
+  blogController.updateStatus,
+);
+router.get(
+  '/:id/versions',
+  authenticateAdmin,
+  validateParams(uuidParamSchema),
+  blogController.getVersions,
+);
 router.post(
   '/:id/versions/:version/restore',
   authenticateAdmin,

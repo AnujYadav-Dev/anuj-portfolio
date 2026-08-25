@@ -4,8 +4,7 @@ import * as React from 'react';
 import { useScrollReveal } from '@/hooks/useScrollReveal';
 import { cn } from '@/lib/cn';
 
-export interface RevealOnScrollProps
-  extends React.HTMLAttributes<HTMLDivElement> {
+export interface RevealOnScrollProps extends React.HTMLAttributes<HTMLDivElement> {
   delayIndex?: 1 | 2 | 3 | 4 | 5;
   threshold?: number;
   triggerOnce?: boolean;
@@ -29,12 +28,7 @@ export function RevealOnScroll({
   return (
     <div
       ref={ref}
-      className={cn(
-        'reveal-on-scroll',
-        isRevealed && 'is-revealed',
-        delayClass,
-        className,
-      )}
+      className={cn('reveal-on-scroll', isRevealed && 'is-revealed', delayClass, className)}
       {...props}
     >
       {children}

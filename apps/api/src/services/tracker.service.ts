@@ -16,15 +16,9 @@ import { siteSettingRepository } from '@/repositories/siteSetting.repository';
 import { geoService } from '@/services/geo.service';
 import { parseUserAgent } from '@/utils/uaParser';
 import { parseReferrerSource, normalizeIpForDb } from '@/utils/ip';
-import {
-  mapVisitorToDto,
-  mapPageViewToDto,
-  mapLinkClickToDto,
-} from '@/utils/mappers';
+import { mapVisitorToDto, mapPageViewToDto, mapLinkClickToDto } from '@/utils/mappers';
 import { ValidationError } from '@/utils/errors';
 import { getPrismaPagination, buildPagination } from '@/utils/pagination';
-
-
 
 function getSinceDate(period?: AnalyticsPeriod): Date | undefined {
   if (!period || period === 'all') return undefined;
@@ -159,9 +153,15 @@ export const trackerService = {
     const osBreakdown = calculateBreakdowns(raw.osBreakdown, 'os', totalVisitors);
 
     // Approximate bounce rate: single-view visitors
-    const bounceRatePercent = totalVisitors > 0
-      ? Math.min(100, Math.round(((totalVisitors - Math.floor(raw.totalPageViews / 2)) / totalVisitors) * 100))
-      : 0;
+    const bounceRatePercent =
+      totalVisitors > 0
+        ? Math.min(
+            100,
+            Math.round(
+              ((totalVisitors - Math.floor(raw.totalPageViews / 2)) / totalVisitors) * 100,
+            ),
+          )
+        : 0;
 
     return {
       totalPageViews: raw.totalPageViews,
@@ -265,7 +265,6 @@ export const trackerService = {
     };
   },
 
-
   async getAdminClickStats(period?: AnalyticsPeriod, limit = 20): Promise<AdminClickItem[]> {
     const sinceDate = getSinceDate(period);
     const grouped = await visitorRepository.getClickStats(sinceDate, limit);
@@ -275,7 +274,9 @@ export const trackerService = {
       targetUrl: item.targetUrl,
       sourcePath: item.sourcePath,
       count: item._count.id,
-      lastClickedAt: item._max.clickedAt ? item._max.clickedAt.toISOString() : new Date().toISOString(),
+      lastClickedAt: item._max.clickedAt
+        ? item._max.clickedAt.toISOString()
+        : new Date().toISOString(),
     }));
   },
 };

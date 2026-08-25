@@ -1,10 +1,5 @@
 import { z } from 'zod';
-import {
-  slugSchema,
-  paginationSchema,
-  seoFieldsSchema,
-  optionalUuidSchema,
-} from './common';
+import { slugSchema, paginationSchema, seoFieldsSchema, optionalUuidSchema } from './common';
 
 import { ContentStatus, BlockType, NavLocation } from '../types/enums';
 
@@ -55,7 +50,6 @@ export const upsertNavItemSchema = z.object({
 });
 
 export type UpsertNavItemInput = z.infer<typeof upsertNavItemSchema>;
-
 
 /** Create page request validation. */
 export const createPageSchema = z

@@ -66,9 +66,7 @@ export default function SingleResearchPage() {
                   {paper.publicationName}
                 </Badge>
               )}
-              {publishDate && (
-                <span className="text-xs font-mono text-muted">{publishDate}</span>
-              )}
+              {publishDate && <span className="text-xs font-mono text-muted">{publishDate}</span>}
             </div>
 
             <h1 className="text-2xl sm:text-3xl md:text-4xl font-extrabold tracking-tight text-foreground">
@@ -76,9 +74,7 @@ export default function SingleResearchPage() {
             </h1>
 
             {paper.author && (
-              <p className="text-xs font-mono text-muted">
-                Author: {paper.author.displayName}
-              </p>
+              <p className="text-xs font-mono text-muted">Author: {paper.author.displayName}</p>
             )}
 
             <div className="flex flex-wrap items-center gap-4 pt-2">
@@ -91,7 +87,11 @@ export default function SingleResearchPage() {
               )}
               {paper.doi && (
                 <a href={`https://doi.org/${paper.doi}`} target="_blank" rel="noopener noreferrer">
-                  <Button variant="outline" size="md" leftIcon={<ExternalLink className="h-4 w-4" />}>
+                  <Button
+                    variant="outline"
+                    size="md"
+                    leftIcon={<ExternalLink className="h-4 w-4" />}
+                  >
                     View DOI Record
                   </Button>
                 </a>
@@ -106,9 +106,7 @@ export default function SingleResearchPage() {
               <h3 className="text-sm font-mono font-semibold text-accent uppercase tracking-wider mb-2">
                 Abstract
               </h3>
-              <p className="text-sm text-foreground/90 leading-relaxed">
-                {paper.abstract}
-              </p>
+              <p className="text-sm text-foreground/90 leading-relaxed">{paper.abstract}</p>
             </div>
           )}
         </div>

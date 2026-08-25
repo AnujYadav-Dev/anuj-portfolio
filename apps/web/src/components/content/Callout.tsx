@@ -1,11 +1,5 @@
 import * as React from 'react';
-import {
-  AlertCircle,
-  AlertTriangle,
-  CheckCircle2,
-  Info,
-  Lightbulb,
-} from 'lucide-react';
+import { AlertCircle, AlertTriangle, CheckCircle2, Info, Lightbulb } from 'lucide-react';
 import { cn } from '@/lib/cn';
 
 export type CalloutType = 'NOTE' | 'TIP' | 'IMPORTANT' | 'WARNING' | 'CAUTION';
@@ -17,12 +11,7 @@ export interface CalloutProps {
   className?: string;
 }
 
-export function Callout({
-  type = 'NOTE',
-  title,
-  children,
-  className,
-}: CalloutProps) {
+export function Callout({ type = 'NOTE', title, children, className }: CalloutProps) {
   const configs: Record<
     CalloutType,
     {

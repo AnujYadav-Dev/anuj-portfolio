@@ -1,12 +1,6 @@
 'use client';
 
-import React, {
-  createContext,
-  useCallback,
-  useContext,
-  useEffect,
-  useState,
-} from 'react';
+import React, { createContext, useCallback, useContext, useEffect, useState } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import type { AuthorDto, AuthResponse } from '@portfolio/shared';
 import { apiClient } from '@/lib/api';
@@ -183,11 +177,7 @@ export function AdminAuthProvider({ children }: { children: React.ReactNode }) {
     updateAuthor,
   };
 
-  return (
-    <AdminAuthContext.Provider value={value}>
-      {children}
-    </AdminAuthContext.Provider>
-  );
+  return <AdminAuthContext.Provider value={value}>{children}</AdminAuthContext.Provider>;
 }
 
 export function useAdminAuth() {

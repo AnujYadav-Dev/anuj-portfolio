@@ -22,15 +22,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import {
-  Plus,
-  Edit2,
-  Trash2,
-  Quote,
-  Star,
-  ExternalLink,
-  UploadCloud,
-} from 'lucide-react';
+import { Plus, Edit2, Trash2, Quote, Star, ExternalLink, UploadCloud } from 'lucide-react';
 import { toast } from 'sonner';
 
 export default function AdminTestimonialsPage() {
@@ -274,7 +266,11 @@ export default function AdminTestimonialsPage() {
             <DialogHeader className="border-b border-border pb-3">
               <DialogTitle className="text-base font-bold text-foreground flex items-center gap-2">
                 <Quote className="w-4 h-4 text-accent" />
-                <span>{editingTestimonial ? `Edit: ${editingTestimonial.authorName}` : 'New Testimonial'}</span>
+                <span>
+                  {editingTestimonial
+                    ? `Edit: ${editingTestimonial.authorName}`
+                    : 'New Testimonial'}
+                </span>
               </DialogTitle>
             </DialogHeader>
 
@@ -316,7 +312,9 @@ export default function AdminTestimonialsPage() {
               </div>
 
               <div className="space-y-1">
-                <label className="text-xs font-semibold text-foreground">Profile / Reference URL</label>
+                <label className="text-xs font-semibold text-foreground">
+                  Profile / Reference URL
+                </label>
                 <Input
                   type="url"
                   placeholder="https://linkedin.com/in/..."
@@ -342,7 +340,11 @@ export default function AdminTestimonialsPage() {
                 <label className="text-xs font-semibold text-foreground">Author Avatar</label>
                 {authorAvatarUrl ? (
                   <div className="flex items-center gap-3 p-2 border border-border rounded-lg bg-surface-muted">
-                    <img src={authorAvatarUrl} alt="" className="w-8 h-8 rounded-full object-cover" />
+                    <img
+                      src={authorAvatarUrl}
+                      alt=""
+                      className="w-8 h-8 rounded-full object-cover"
+                    />
                     <Button
                       type="button"
                       variant="outline"
@@ -387,16 +389,29 @@ export default function AdminTestimonialsPage() {
                     onChange={(e) => setIsEnabled(e.target.checked)}
                     className="rounded border-border bg-background text-accent focus:ring-accent accent-accent w-4 h-4 cursor-pointer"
                   />
-                  <span className="text-xs font-semibold text-foreground">Visible on Public Site</span>
+                  <span className="text-xs font-semibold text-foreground">
+                    Visible on Public Site
+                  </span>
                 </label>
               </div>
             </div>
 
             <DialogFooter className="pt-3 border-t border-border flex justify-end gap-2">
-              <Button type="button" variant="outline" size="sm" onClick={() => setIsModalOpen(false)}>
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={() => setIsModalOpen(false)}
+              >
                 Cancel
               </Button>
-              <Button type="submit" variant="primary" size="sm" isLoading={isSaving} disabled={isSaving}>
+              <Button
+                type="submit"
+                variant="primary"
+                size="sm"
+                isLoading={isSaving}
+                disabled={isSaving}
+              >
                 Save Testimonial
               </Button>
             </DialogFooter>

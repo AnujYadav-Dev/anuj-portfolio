@@ -2,23 +2,13 @@
 
 import * as React from 'react';
 import Link from 'next/link';
-import {
-  ArrowLeft,
-  Calendar,
-  Clock,
-  Share2,
-  Copy,
-  User,
-} from 'lucide-react';
+import { ArrowLeft, Calendar, Clock, Share2, Copy, User } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Avatar } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { MarkdownRenderer } from '@/components/content/MarkdownRenderer';
-import {
-  TableOfContents,
-  extractHeadings,
-} from '@/components/content/TableOfContents';
+import { TableOfContents, extractHeadings } from '@/components/content/TableOfContents';
 import { RevealOnScroll } from '@/components/motion/RevealOnScroll';
 import type { BlogPostDto } from '@portfolio/shared';
 import { toast } from 'sonner';
@@ -28,14 +18,9 @@ export interface BlogReaderProps {
 }
 
 export function BlogReader({ post }: BlogReaderProps) {
-  const headings = React.useMemo(
-    () => extractHeadings(post.content),
-    [post.content],
-  );
+  const headings = React.useMemo(() => extractHeadings(post.content), [post.content]);
 
-  const publishDate = new Date(
-    post.publishedAt || post.createdAt,
-  ).toLocaleDateString('en-US', {
+  const publishDate = new Date(post.publishedAt || post.createdAt).toLocaleDateString('en-US', {
     month: 'long',
     day: 'numeric',
     year: 'numeric',
@@ -98,9 +83,7 @@ export function BlogReader({ post }: BlogReaderProps) {
             </h1>
 
             {post.excerpt && (
-              <p className="text-sm md:text-md text-muted leading-relaxed">
-                {post.excerpt}
-              </p>
+              <p className="text-sm md:text-md text-muted leading-relaxed">{post.excerpt}</p>
             )}
 
             {/* Author and Date metadata */}
@@ -182,7 +165,8 @@ export function BlogReader({ post }: BlogReaderProps) {
                     Written by {post.author.displayName}
                   </span>
                   <p className="text-muted leading-relaxed">
-                    Software engineer and systems architect passionate about high-craft web systems and distributed infrastructure.
+                    Software engineer and systems architect passionate about high-craft web systems
+                    and distributed infrastructure.
                   </p>
                 </div>
               </div>

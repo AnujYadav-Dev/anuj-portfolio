@@ -47,5 +47,4 @@ export const GEO_LOOKUP_TIMEOUT_MS = 2000;
 export const GEO_CACHE_TTL_MS = 60 * 60 * 1000;
 
 /** Dummy bcrypt hash used for constant-time login when user is not found. */
-export const DUMMY_PASSWORD_HASH =
-  '$2b$10$JI85F2Cl9JXlxDh3P7LNPe1A3RitMM8vUvp2bNLlBR/fgnGgrX1Ka';
+export const DUMMY_PASSWORD_HASH = '$2b$10$JI85F2Cl9JXlxDh3P7LNPe1A3RitMM8vUvp2bNLlBR/fgnGgrX1Ka';

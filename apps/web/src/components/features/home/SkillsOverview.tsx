@@ -24,13 +24,11 @@ export function SkillsOverview() {
       <div className="flex flex-col gap-8 max-w-3xl">
         {categories.length > 0 ? (
           categories.map((category, idx) => {
-            const categorySkills = skills.filter(
-              (s) => s.categoryId === category.id,
-            );
+            const categorySkills = skills.filter((s) => s.categoryId === category.id);
             if (categorySkills.length === 0) return null;
 
             return (
-              <RevealOnScroll key={category.id} delayIndex={(idx % 4 + 1) as 1 | 2 | 3 | 4}>
+              <RevealOnScroll key={category.id} delayIndex={((idx % 4) + 1) as 1 | 2 | 3 | 4}>
                 <div className="flex flex-col gap-3">
                   <span className="text-xs font-mono font-semibold uppercase tracking-wider text-accent">
                     {category.name}
@@ -54,7 +52,20 @@ export function SkillsOverview() {
         ) : (
           <RevealOnScroll>
             <div className="flex flex-wrap gap-2">
-              {['TypeScript', 'React', 'Next.js', 'Node.js', 'Express', 'PostgreSQL', 'Prisma', 'Tailwind CSS', 'Docker', 'Redis', 'GraphQL', 'AWS'].map((skill) => (
+              {[
+                'TypeScript',
+                'React',
+                'Next.js',
+                'Node.js',
+                'Express',
+                'PostgreSQL',
+                'Prisma',
+                'Tailwind CSS',
+                'Docker',
+                'Redis',
+                'GraphQL',
+                'AWS',
+              ].map((skill) => (
                 <Badge key={skill} variant="default" size="md">
                   {skill}
                 </Badge>

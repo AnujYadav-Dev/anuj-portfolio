@@ -1,9 +1,5 @@
 import { searchRepository } from '@/repositories/search.repository';
-import type {
-  SearchQuery,
-  SearchResultItemDto,
-  SearchResultsDto,
-} from '@portfolio/shared';
+import type { SearchQuery, SearchResultItemDto, SearchResultsDto } from '@portfolio/shared';
 
 export const searchService = {
   async search(query: SearchQuery): Promise<SearchResultsDto> {

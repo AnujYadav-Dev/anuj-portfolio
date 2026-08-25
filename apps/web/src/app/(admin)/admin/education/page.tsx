@@ -2,7 +2,11 @@
 
 import React, { useEffect, useState } from 'react';
 import { apiClient } from '@/lib/api';
-import type { EducationDto, CreateEducationRequest, UpdateEducationRequest } from '@portfolio/shared';
+import type {
+  EducationDto,
+  CreateEducationRequest,
+  UpdateEducationRequest,
+} from '@portfolio/shared';
 import { AdminPageHeader } from '@/components/admin/ui/AdminPageHeader';
 import { ReorderableList } from '@/components/admin/ui/ReorderableList';
 import { ConfirmDialog } from '@/components/admin/ui/ConfirmDialog';
@@ -96,8 +100,6 @@ export default function AdminEducationPage() {
         description: description || undefined,
       };
 
-
-
       if (editingEdu) {
         await apiClient.put(`/education/${editingEdu.id}`, payload);
         toast.success('Education updated successfully');
@@ -167,7 +169,9 @@ export default function AdminEducationPage() {
             <div className="min-w-0">
               <div className="flex items-center gap-2">
                 <span className="font-bold text-foreground text-xs">{item.degree}</span>
-                {item.fieldOfStudy && <span className="text-muted text-xs">in {item.fieldOfStudy}</span>}
+                {item.fieldOfStudy && (
+                  <span className="text-muted text-xs">in {item.fieldOfStudy}</span>
+                )}
                 <span className="text-accent text-xs">@ {item.institution}</span>
               </div>
               <p className="text-[11px] text-muted font-mono mt-0.5">
@@ -206,13 +210,17 @@ export default function AdminEducationPage() {
             <DialogHeader className="border-b border-border pb-3">
               <DialogTitle className="text-base font-bold text-foreground flex items-center gap-2">
                 <BookOpen className="w-4 h-4 text-accent" />
-                <span>{editingEdu ? `Edit: ${editingEdu.institution}` : 'Add Education Record'}</span>
+                <span>
+                  {editingEdu ? `Edit: ${editingEdu.institution}` : 'Add Education Record'}
+                </span>
               </DialogTitle>
             </DialogHeader>
 
             <div className="space-y-3">
               <div className="space-y-1">
-                <label className="text-xs font-semibold text-foreground">Institution / University</label>
+                <label className="text-xs font-semibold text-foreground">
+                  Institution / University
+                </label>
                 <Input
                   type="text"
                   placeholder="e.g. Stanford University"
@@ -272,7 +280,9 @@ export default function AdminEducationPage() {
               </div>
 
               <div className="space-y-1">
-                <label className="text-xs font-semibold text-foreground">Grade / GPA (Optional)</label>
+                <label className="text-xs font-semibold text-foreground">
+                  Grade / GPA (Optional)
+                </label>
                 <Input
                   type="text"
                   placeholder="e.g. 3.9 / 4.0 or First Class Honors"
@@ -283,7 +293,9 @@ export default function AdminEducationPage() {
               </div>
 
               <div className="space-y-1">
-                <label className="text-xs font-semibold text-foreground">Academic Highlights & Activities</label>
+                <label className="text-xs font-semibold text-foreground">
+                  Academic Highlights & Activities
+                </label>
                 <Textarea
                   placeholder="Key coursework, honors, labs..."
                   value={description}
@@ -295,10 +307,21 @@ export default function AdminEducationPage() {
             </div>
 
             <DialogFooter className="pt-3 border-t border-border flex justify-end gap-2">
-              <Button type="button" variant="outline" size="sm" onClick={() => setIsModalOpen(false)}>
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={() => setIsModalOpen(false)}
+              >
                 Cancel
               </Button>
-              <Button type="submit" variant="primary" size="sm" isLoading={isSaving} disabled={isSaving}>
+              <Button
+                type="submit"
+                variant="primary"
+                size="sm"
+                isLoading={isSaving}
+                disabled={isSaving}
+              >
                 Save Education
               </Button>
             </DialogFooter>

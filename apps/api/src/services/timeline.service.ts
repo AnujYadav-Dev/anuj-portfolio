@@ -33,7 +33,10 @@ export const timelineService = {
     return mapTimelineEventToDto(created);
   },
 
-  async updateEvent(id: string, input: Partial<UpsertTimelineEventInput>): Promise<TimelineEventDto> {
+  async updateEvent(
+    id: string,
+    input: Partial<UpsertTimelineEventInput>,
+  ): Promise<TimelineEventDto> {
     await timelineService.getEventById(id);
 
     const updateData: Prisma.TimelineEventUpdateInput = {};
@@ -41,7 +44,8 @@ export const timelineService = {
     if (input.description !== undefined) updateData.description = input.description || null;
     if (input.eventType !== undefined) updateData.eventType = input.eventType as any;
     if (input.date !== undefined) updateData.date = new Date(input.date);
-    if (input.endDate !== undefined) updateData.endDate = input.endDate ? new Date(input.endDate) : null;
+    if (input.endDate !== undefined)
+      updateData.endDate = input.endDate ? new Date(input.endDate) : null;
     if (input.icon !== undefined) updateData.icon = input.icon || null;
     if (input.url !== undefined) updateData.url = input.url || null;
     if (input.sortOrder !== undefined) updateData.sortOrder = input.sortOrder;

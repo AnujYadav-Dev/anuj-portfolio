@@ -5,15 +5,7 @@ import Link from 'next/link';
 import { useAdminAuth } from '@/hooks/useAdminAuth';
 import { AdminBreadcrumbs } from './AdminBreadcrumbs';
 import { ThemeToggle } from '@/components/ui/theme-toggle';
-import {
-  Clock,
-  RefreshCw,
-  User,
-  KeyRound,
-  LogOut,
-  ChevronDown,
-  ShieldCheck,
-} from 'lucide-react';
+import { Clock, RefreshCw, User, KeyRound, LogOut, ChevronDown, ShieldCheck } from 'lucide-react';
 import { cn } from '@/lib/cn';
 
 export function AdminHeader() {

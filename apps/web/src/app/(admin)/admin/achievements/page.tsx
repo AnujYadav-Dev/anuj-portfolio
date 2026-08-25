@@ -101,7 +101,6 @@ export default function AdminAchievementsPage() {
         isEnabled,
       };
 
-
       if (editingAch) {
         await apiClient.put(`/achievements/${editingAch.id}`, payload);
         toast.success('Achievement updated successfully');
@@ -237,7 +236,9 @@ export default function AdminAchievementsPage() {
 
               <div className="grid grid-cols-2 gap-3">
                 <div className="space-y-1">
-                  <label className="text-xs font-semibold text-foreground">Issuer / Organization</label>
+                  <label className="text-xs font-semibold text-foreground">
+                    Issuer / Organization
+                  </label>
                   <Input
                     type="text"
                     placeholder="e.g. ETHGlobal / MIT"
@@ -259,7 +260,9 @@ export default function AdminAchievementsPage() {
               </div>
 
               <div className="space-y-1">
-                <label className="text-xs font-semibold text-foreground">Proof / Certificate URL</label>
+                <label className="text-xs font-semibold text-foreground">
+                  Proof / Certificate URL
+                </label>
                 <Input
                   type="url"
                   placeholder="https://..."
@@ -296,10 +299,21 @@ export default function AdminAchievementsPage() {
             </div>
 
             <DialogFooter className="pt-3 border-t border-border flex justify-end gap-2">
-              <Button type="button" variant="outline" size="sm" onClick={() => setIsModalOpen(false)}>
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={() => setIsModalOpen(false)}
+              >
                 Cancel
               </Button>
-              <Button type="submit" variant="primary" size="sm" isLoading={isSaving} disabled={isSaving}>
+              <Button
+                type="submit"
+                variant="primary"
+                size="sm"
+                isLoading={isSaving}
+                disabled={isSaving}
+              >
                 Save Achievement
               </Button>
             </DialogFooter>

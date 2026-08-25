@@ -103,7 +103,8 @@ export const pageService = {
     if (input.isNavVisible !== undefined) updateData.isNavVisible = input.isNavVisible;
     if (input.sortOrder !== undefined) updateData.sortOrder = input.sortOrder;
     if (input.seoTitle !== undefined) updateData.seoTitle = input.seoTitle || null;
-    if (input.seoDescription !== undefined) updateData.seoDescription = input.seoDescription || null;
+    if (input.seoDescription !== undefined)
+      updateData.seoDescription = input.seoDescription || null;
     if (input.seoKeywords !== undefined) updateData.seoKeywords = input.seoKeywords || null;
     if (input.ogImageId !== undefined) updateData.ogImageId = input.ogImageId || null;
 

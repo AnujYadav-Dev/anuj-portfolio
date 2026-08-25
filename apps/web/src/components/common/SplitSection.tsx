@@ -19,10 +19,7 @@ export function SplitSection({
   id,
 }: SplitSectionProps) {
   return (
-    <section
-      id={id}
-      className={cn('py-16 md:py-24 border-b border-border', className)}
-    >
+    <section id={id} className={cn('py-16 md:py-24 border-b border-border', className)}>
       <div className="max-w-[1200px] mx-auto px-4 md:px-8">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
           {/* Left Column: Label */}
@@ -33,13 +30,9 @@ export function SplitSection({
                   {labelNumber}
                 </span>
               )}
-              <h2 className="text-xl font-bold tracking-tight text-foreground">
-                {labelTitle}
-              </h2>
+              <h2 className="text-xl font-bold tracking-tight text-foreground">{labelTitle}</h2>
               {labelSubtitle && (
-                <p className="text-xs text-muted leading-relaxed">
-                  {labelSubtitle}
-                </p>
+                <p className="text-xs text-muted leading-relaxed">{labelSubtitle}</p>
               )}
             </div>
           </div>

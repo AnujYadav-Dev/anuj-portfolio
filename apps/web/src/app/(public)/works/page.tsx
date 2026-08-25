@@ -59,7 +59,7 @@ export default function WorksPage() {
           ) : projects.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {projects.map((project, idx) => (
-                <RevealOnScroll key={project.id} delayIndex={(idx % 4 + 1) as 1 | 2 | 3 | 4}>
+                <RevealOnScroll key={project.id} delayIndex={((idx % 4) + 1) as 1 | 2 | 3 | 4}>
                   <ProjectCard project={project} className="h-full" />
                 </RevealOnScroll>
               ))}

@@ -213,7 +213,10 @@ export default function AdminContactInboxPage() {
       />
 
       {/* Message Reader Modal */}
-      <Dialog open={Boolean(selectedMessage)} onOpenChange={(open) => !open && setSelectedMessage(null)}>
+      <Dialog
+        open={Boolean(selectedMessage)}
+        onOpenChange={(open) => !open && setSelectedMessage(null)}
+      >
         <DialogContent className="max-w-2xl bg-surface border-border p-6 max-h-[85vh] flex flex-col">
           {selectedMessage && (
             <div className="space-y-4 flex-1 flex flex-col">
@@ -268,7 +271,6 @@ export default function AdminContactInboxPage() {
                     <span>Reply via Email</span>
                   </a>
                 </div>
-
               </div>
             </div>
           )}

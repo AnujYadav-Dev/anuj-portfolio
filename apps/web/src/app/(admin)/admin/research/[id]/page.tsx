@@ -7,11 +7,7 @@ import { ResearchEditorForm } from '@/components/admin/features/research/Researc
 import { Spinner } from '@/components/ui/spinner';
 import { toast } from 'sonner';
 
-export default function AdminEditResearchPage({
-  params,
-}: {
-  params: Promise<{ id: string }>;
-}) {
+export default function AdminEditResearchPage({ params }: { params: Promise<{ id: string }> }) {
   const resolvedParams = use(params);
   const [paper, setPaper] = useState<ResearchPaperDto | null>(null);
   const [isLoading, setIsLoading] = useState(true);

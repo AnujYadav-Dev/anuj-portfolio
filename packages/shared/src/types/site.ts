@@ -58,7 +58,6 @@ export interface CreateContentBlockRequest {
 /** Update content block request. */
 export interface UpdateContentBlockRequest extends Partial<CreateContentBlockRequest> {}
 
-
 /** Navigation item DTO. */
 export interface NavItemDto {
   id: string;
@@ -85,7 +84,6 @@ export interface CreateNavItemRequest {
 
 /** Update navigation item request. */
 export interface UpdateNavItemRequest extends Partial<CreateNavItemRequest> {}
-
 
 /** Dynamic page DTO. */
 export interface PageDto extends SeoFields {
@@ -118,7 +116,6 @@ export interface CreatePageRequest {
 
 /** Update page request payload. */
 export interface UpdatePageRequest extends Partial<CreatePageRequest> {}
-
 
 /** Email template DTO. */
 export interface EmailTemplateDto {

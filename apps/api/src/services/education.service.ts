@@ -46,12 +46,14 @@ export const educationService = {
     if (input.fieldOfStudy !== undefined) updateData.fieldOfStudy = input.fieldOfStudy || null;
     if (input.location !== undefined) updateData.location = input.location || null;
     if (input.startDate !== undefined) updateData.startDate = new Date(input.startDate);
-    if (input.endDate !== undefined) updateData.endDate = input.endDate ? new Date(input.endDate) : null;
+    if (input.endDate !== undefined)
+      updateData.endDate = input.endDate ? new Date(input.endDate) : null;
     if (input.isCurrent !== undefined) updateData.isCurrent = input.isCurrent;
     if (input.grade !== undefined) updateData.grade = input.grade || null;
     if (input.description !== undefined) updateData.description = input.description || null;
     if (input.activities !== undefined) updateData.activities = input.activities || null;
-    if (input.institutionLogoId !== undefined) updateData.institutionLogoId = input.institutionLogoId || null;
+    if (input.institutionLogoId !== undefined)
+      updateData.institutionLogoId = input.institutionLogoId || null;
     if (input.sortOrder !== undefined) updateData.sortOrder = input.sortOrder;
     if (input.isEnabled !== undefined) updateData.isEnabled = input.isEnabled;
 

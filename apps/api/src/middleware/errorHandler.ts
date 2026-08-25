@@ -7,12 +7,7 @@ import { logger } from '@/config/logger';
  * Centralized error handling middleware.
  * Must be registered after all routes.
  */
-export function errorHandler(
-  err: Error,
-  req: Request,
-  res: Response,
-  _next: NextFunction,
-): void {
+export function errorHandler(err: Error, req: Request, res: Response, _next: NextFunction): void {
   if (err instanceof AppError) {
     res.status(err.statusCode).json({
       error: {

@@ -75,28 +75,28 @@ Full tokens in [DESIGN_TOKENS.md](DESIGN_TOKENS.md), CSS implementation in [CSS_
 
 All documentation lives in the `docs/` folder. See [README.md](README.md) for the full index.
 
-| File                                               | Purpose                                                                     |
-| -------------------------------------------------- | --------------------------------------------------------------------------- |
-| [DETAILED_ROADMAP.md](DETAILED_ROADMAP.md)         | Master end-to-end roadmap covering all 10 phases                            |
-| [README.md](../README.md)                          | Project root guide and getting started instructions                         |
-| [README.md](README.md)                             | Documentation index and navigation                                          |
-| [CONTEXT.md](CONTEXT.md)                           | This file — living project context                                          |
-| [CHANGELOG.md](CHANGELOG.md)                       | Record of all significant changes                                           |
-| [PROJECT_GUIDELINES.md](PROJECT_GUIDELINES.md)     | Development principles and rules                                            |
-| [AGENT_RULES.md](AGENT_RULES.md)                   | AI agent-specific rules                                                     |
-| [CODING_STANDARDS.md](CODING_STANDARDS.md)         | Naming and coding conventions                                               |
-| [ARCHITECTURE_RULES.md](ARCHITECTURE_RULES.md)     | Structural boundaries and patterns                                          |
+| File                                                    | Purpose                                                                     |
+| ------------------------------------------------------- | --------------------------------------------------------------------------- |
+| [DETAILED_ROADMAP.md](DETAILED_ROADMAP.md)              | Master end-to-end roadmap covering all 10 phases                            |
+| [README.md](../README.md)                               | Project root guide and getting started instructions                         |
+| [README.md](README.md)                                  | Documentation index and navigation                                          |
+| [CONTEXT.md](CONTEXT.md)                                | This file — living project context                                          |
+| [CHANGELOG.md](CHANGELOG.md)                            | Record of all significant changes                                           |
+| [PROJECT_GUIDELINES.md](PROJECT_GUIDELINES.md)          | Development principles and rules                                            |
+| [AGENT_RULES.md](AGENT_RULES.md)                        | AI agent-specific rules                                                     |
+| [CODING_STANDARDS.md](CODING_STANDARDS.md)              | Naming and coding conventions                                               |
+| [ARCHITECTURE_RULES.md](ARCHITECTURE_RULES.md)          | Structural boundaries and patterns                                          |
 | [UI-DESIGN-GUIDELINES.md](docs/UI-DESIGN-GUIDELINES.md) | Visual source of truth from UI reference images and unified animation rules |
-| [DESIGN_SYSTEM.md](DESIGN_SYSTEM.md)               | Visual design guidelines                                                    |
-| [DESIGN_TOKENS.md](DESIGN_TOKENS.md)               | Semantic token definitions                                                  |
-| [TAILWIND_GUIDELINES.md](TAILWIND_GUIDELINES.md)   | Tailwind CSS usage rules                                                    |
-| [CSS_TOKENS.md](CSS_TOKENS.md)                     | CSS custom properties and global styles                                     |
-| [DATABASE_SCHEMA.md](DATABASE_SCHEMA.md)           | PostgreSQL schema (38 tables, 12 enums)                                     |
-| [FEATURES_LIST.md](FEATURES_LIST.md)               | 44 documented features                                                      |
-| [URL_IDEAS.md](URL_IDEAS.md)                       | Public and admin route architecture                                         |
-| [TECH_STACK.md](TECH_STACK.md)                     | Technology choices                                                          |
-| [DARK_DESIGN.md](DARK_DESIGN.md)                   | Dark theme design tokens (source)                                           |
-| [LIGHT_DESIGN.md](LIGHT_DESIGN.md)                 | Light theme design tokens (source)                                          |
+| [DESIGN_SYSTEM.md](DESIGN_SYSTEM.md)                    | Visual design guidelines                                                    |
+| [DESIGN_TOKENS.md](DESIGN_TOKENS.md)                    | Semantic token definitions                                                  |
+| [TAILWIND_GUIDELINES.md](TAILWIND_GUIDELINES.md)        | Tailwind CSS usage rules                                                    |
+| [CSS_TOKENS.md](CSS_TOKENS.md)                          | CSS custom properties and global styles                                     |
+| [DATABASE_SCHEMA.md](DATABASE_SCHEMA.md)                | PostgreSQL schema (38 tables, 12 enums)                                     |
+| [FEATURES_LIST.md](FEATURES_LIST.md)                    | 44 documented features                                                      |
+| [URL_IDEAS.md](URL_IDEAS.md)                            | Public and admin route architecture                                         |
+| [TECH_STACK.md](TECH_STACK.md)                          | Technology choices                                                          |
+| [DARK_DESIGN.md](DARK_DESIGN.md)                        | Dark theme design tokens (source)                                           |
+| [LIGHT_DESIGN.md](LIGHT_DESIGN.md)                      | Light theme design tokens (source)                                          |
 
 ---
 
@@ -128,7 +128,6 @@ All documentation lives in the `docs/` folder. See [README.md](README.md) for th
   - **Visitor Analytics:** Live telemetry dashboard with timeseries traffic area charts, breakdown distributions (countries, referrers, devices, browsers), top pages table, outbound clicks stats, and live visitor log feed.
 - **Shared:** Complete domain-organized types, DTOs, request payloads, enums, Zod validation schemas, and constants compiled and verified across all workspaces.
 - **Next step:** Phase 8 — SEO, Syndication & Search Optimization (Automated XML Sitemap, dynamic `/feed.xml` RSS feed, OpenGraph image generation, JSON-LD structured data).
-
 
 ---
 

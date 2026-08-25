@@ -15,8 +15,7 @@ import { toast } from 'sonner';
 
 export function useContactMutation() {
   return useMutation<{ data: ContactSubmissionDto }, Error, CreateContactInput>({
-    mutationFn: (input) =>
-      apiClient.post<{ data: ContactSubmissionDto }>('/contact', input),
+    mutationFn: (input) => apiClient.post<{ data: ContactSubmissionDto }>('/contact', input),
     onSuccess: () => {
       toast.success('Thank you! Your message has been sent.');
     },
@@ -39,13 +38,8 @@ export function useGuestbook(page = 1, pageSize = 20) {
 export function useGuestbookMutation() {
   const queryClient = useQueryClient();
 
-  return useMutation<
-    { data: GuestbookEntryDto },
-    Error,
-    CreateGuestbookEntryInput
-  >({
-    mutationFn: (input) =>
-      apiClient.post<{ data: GuestbookEntryDto }>('/guestbook', input),
+  return useMutation<{ data: GuestbookEntryDto }, Error, CreateGuestbookEntryInput>({
+    mutationFn: (input) => apiClient.post<{ data: GuestbookEntryDto }>('/guestbook', input),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['guestbook'] });
       toast.success('Entry submitted! It will appear after moderation.');

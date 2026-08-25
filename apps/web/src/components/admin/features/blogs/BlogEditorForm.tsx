@@ -27,14 +27,7 @@ import {
   DialogDescription,
 } from '@/components/ui/dialog';
 import { toast } from 'sonner';
-import {
-  Save,
-  Image as ImageIcon,
-  Sparkles,
-  History,
-  Clock,
-  RotateCcw,
-} from 'lucide-react';
+import { Save, Image as ImageIcon, Sparkles, History, Clock, RotateCcw } from 'lucide-react';
 
 interface BlogEditorFormProps {
   initialData?: BlogPostDto;
@@ -101,7 +94,6 @@ export function BlogEditorForm({ initialData, isNew = false }: BlogEditorFormPro
     }
     loadMeta();
   }, [isNew, categoryId, initialData]);
-
 
   const handleAutoSlug = () => {
     const generated = title
@@ -178,8 +170,6 @@ export function BlogEditorForm({ initialData, isNew = false }: BlogEditorFormPro
         seoKeywords: seoKeywords || undefined,
       };
 
-
-
       if (isNew) {
         await apiClient.post('/blogs', payload);
         toast.success('Blog post created successfully!');
@@ -209,7 +199,8 @@ export function BlogEditorForm({ initialData, isNew = false }: BlogEditorFormPro
             <span>{status.toUpperCase()}</span>
             <span>•</span>
             <span className="flex items-center gap-1">
-              <Clock className="w-3 h-3 text-accent" /> ~{readingTimeMinutes} min read ({wordCount} words)
+              <Clock className="w-3 h-3 text-accent" /> ~{readingTimeMinutes} min read ({wordCount}{' '}
+              words)
             </span>
           </div>
         </div>
@@ -291,7 +282,9 @@ export function BlogEditorForm({ initialData, isNew = false }: BlogEditorFormPro
               </div>
 
               <div className="space-y-1.5">
-                <label className="text-xs font-semibold text-foreground">Lead Excerpt / Summary</label>
+                <label className="text-xs font-semibold text-foreground">
+                  Lead Excerpt / Summary
+                </label>
                 <Textarea
                   placeholder="A concise overview or hook that appears in article listing cards..."
                   value={excerpt}
@@ -306,7 +299,9 @@ export function BlogEditorForm({ initialData, isNew = false }: BlogEditorFormPro
           {/* Long-Form Markdown Editor */}
           <Card className="bg-surface border-border">
             <CardHeader className="pb-3">
-              <CardTitle className="text-sm font-bold text-foreground">Full Article Markdown Content</CardTitle>
+              <CardTitle className="text-sm font-bold text-foreground">
+                Full Article Markdown Content
+              </CardTitle>
             </CardHeader>
             <CardContent>
               <MarkdownEditor
@@ -336,7 +331,9 @@ export function BlogEditorForm({ initialData, isNew = false }: BlogEditorFormPro
               </div>
 
               <div className="space-y-1.5">
-                <label className="text-xs font-semibold text-foreground">Meta SEO Description</label>
+                <label className="text-xs font-semibold text-foreground">
+                  Meta SEO Description
+                </label>
                 <Textarea
                   placeholder="Custom meta description for search engines and Twitter/OG card preview..."
                   value={seoDescription}
@@ -364,7 +361,9 @@ export function BlogEditorForm({ initialData, isNew = false }: BlogEditorFormPro
         <div className="space-y-6">
           <Card className="bg-surface border-border">
             <CardHeader className="pb-3">
-              <CardTitle className="text-sm font-bold text-foreground">Publication & Status</CardTitle>
+              <CardTitle className="text-sm font-bold text-foreground">
+                Publication & Status
+              </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4 text-xs">
               <div className="space-y-1.5">
@@ -508,7 +507,8 @@ export function BlogEditorForm({ initialData, isNew = false }: BlogEditorFormPro
               <span>Content Version History & Rollback</span>
             </DialogTitle>
             <DialogDescription className="text-xs text-muted">
-              Snapshot versions automatically created upon each save. Select any version to preview and rollback.
+              Snapshot versions automatically created upon each save. Select any version to preview
+              and rollback.
             </DialogDescription>
           </DialogHeader>
 
@@ -516,7 +516,9 @@ export function BlogEditorForm({ initialData, isNew = false }: BlogEditorFormPro
             {/* Version List */}
             <div className="border border-border rounded-lg bg-background overflow-y-auto divide-y divide-border max-h-96">
               {versions.length === 0 ? (
-                <p className="p-4 text-xs text-muted text-center italic">No prior versions recorded</p>
+                <p className="p-4 text-xs text-muted text-center italic">
+                  No prior versions recorded
+                </p>
               ) : (
                 versions.map((v) => (
                   <button
@@ -567,7 +569,9 @@ export function BlogEditorForm({ initialData, isNew = false }: BlogEditorFormPro
                   </pre>
                 </>
               ) : (
-                <p className="text-muted italic text-center py-16">Select a version to inspect snapshot data</p>
+                <p className="text-muted italic text-center py-16">
+                  Select a version to inspect snapshot data
+                </p>
               )}
             </div>
           </div>

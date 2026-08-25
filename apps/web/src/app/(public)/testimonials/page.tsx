@@ -33,7 +33,7 @@ export default function TestimonialsPage() {
           ) : testimonials.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {testimonials.map((item, idx) => (
-                <RevealOnScroll key={item.id} delayIndex={(idx % 4 + 1) as 1 | 2 | 3 | 4}>
+                <RevealOnScroll key={item.id} delayIndex={((idx % 4) + 1) as 1 | 2 | 3 | 4}>
                   <Card className="bg-surface border-border h-full flex flex-col justify-between p-6">
                     <div className="flex flex-col gap-4">
                       <Quote className="h-6 w-6 text-accent/60 shrink-0" />

@@ -7,11 +7,7 @@ import { PageEditorForm } from '@/components/admin/features/pages/PageEditorForm
 import { Spinner } from '@/components/ui/spinner';
 import { toast } from 'sonner';
 
-export default function AdminEditPage({
-  params,
-}: {
-  params: Promise<{ id: string }>;
-}) {
+export default function AdminEditPage({ params }: { params: Promise<{ id: string }> }) {
   const resolvedParams = use(params);
   const [page, setPage] = useState<PageDto | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -19,9 +15,7 @@ export default function AdminEditPage({
   useEffect(() => {
     async function loadPage() {
       try {
-        const res = await apiClient.get<{ data: PageDto }>(
-          `/pages/admin/${resolvedParams.id}`,
-        );
+        const res = await apiClient.get<{ data: PageDto }>(`/pages/admin/${resolvedParams.id}`);
         setPage(res.data);
       } catch (err: any) {
         toast.error('Failed to load page');

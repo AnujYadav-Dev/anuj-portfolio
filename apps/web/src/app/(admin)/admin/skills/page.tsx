@@ -98,7 +98,12 @@ export default function AdminSkillsPage() {
       return;
     }
 
-    const generatedSlug = skillSlug || skillName.toLowerCase().replace(/[^a-z0-9]/g, '-').replace(/-+/g, '-');
+    const generatedSlug =
+      skillSlug ||
+      skillName
+        .toLowerCase()
+        .replace(/[^a-z0-9]/g, '-')
+        .replace(/-+/g, '-');
 
     setIsSavingSkill(true);
     try {
@@ -356,10 +361,21 @@ export default function AdminSkillsPage() {
             </div>
 
             <DialogFooter className="pt-3 border-t border-border flex justify-end gap-2">
-              <Button type="button" variant="outline" size="sm" onClick={() => setIsSkillModalOpen(false)}>
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={() => setIsSkillModalOpen(false)}
+              >
                 Cancel
               </Button>
-              <Button type="submit" variant="primary" size="sm" isLoading={isSavingSkill} disabled={isSavingSkill}>
+              <Button
+                type="submit"
+                variant="primary"
+                size="sm"
+                isLoading={isSavingSkill}
+                disabled={isSavingSkill}
+              >
                 Save Skill
               </Button>
             </DialogFooter>
@@ -410,10 +426,21 @@ export default function AdminSkillsPage() {
             </div>
 
             <DialogFooter className="pt-3 border-t border-border flex justify-end gap-2">
-              <Button type="button" variant="outline" size="sm" onClick={() => setIsCatModalOpen(false)}>
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={() => setIsCatModalOpen(false)}
+              >
                 Cancel
               </Button>
-              <Button type="submit" variant="primary" size="sm" isLoading={isSavingCat} disabled={isSavingCat}>
+              <Button
+                type="submit"
+                variant="primary"
+                size="sm"
+                isLoading={isSavingCat}
+                disabled={isSavingCat}
+              >
                 Create Category
               </Button>
             </DialogFooter>

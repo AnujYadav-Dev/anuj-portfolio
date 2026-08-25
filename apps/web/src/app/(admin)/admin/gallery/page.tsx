@@ -2,7 +2,12 @@
 
 import React, { useEffect, useState } from 'react';
 import { apiClient } from '@/lib/api';
-import type { GalleryItemDto, MediaDto, CreateGalleryItemRequest, UpdateGalleryItemRequest } from '@portfolio/shared';
+import type {
+  GalleryItemDto,
+  MediaDto,
+  CreateGalleryItemRequest,
+  UpdateGalleryItemRequest,
+} from '@portfolio/shared';
 import { AdminPageHeader } from '@/components/admin/ui/AdminPageHeader';
 import { ConfirmDialog } from '@/components/admin/ui/ConfirmDialog';
 import { MediaPickerModal } from '@/components/admin/ui/MediaPickerModal';
@@ -155,7 +160,9 @@ export default function AdminGalleryPage() {
         <div className="py-24 text-center border border-dashed border-border rounded-xl p-8 bg-surface">
           <ImageIcon className="w-10 h-10 text-placeholder mx-auto mb-2" />
           <p className="text-sm font-semibold text-foreground">No gallery items yet</p>
-          <p className="text-xs text-muted mt-1">Add screenshots, workspace photos, and diagrams.</p>
+          <p className="text-xs text-muted mt-1">
+            Add screenshots, workspace photos, and diagrams.
+          </p>
           <Button variant="primary" size="sm" onClick={openCreateModal} className="mt-4">
             Add First Item
           </Button>
@@ -169,7 +176,11 @@ export default function AdminGalleryPage() {
             >
               <div className="aspect-square w-full bg-surface-muted overflow-hidden relative">
                 {item.mediaUrl ? (
-                  <img src={item.mediaUrl} alt={item.title || ''} className="w-full h-full object-cover" />
+                  <img
+                    src={item.mediaUrl}
+                    alt={item.title || ''}
+                    className="w-full h-full object-cover"
+                  />
                 ) : (
                   <ImageIcon className="w-8 h-8 text-placeholder m-auto" />
                 )}
@@ -198,7 +209,9 @@ export default function AdminGalleryPage() {
               </div>
 
               <div className="p-2.5">
-                <p className="font-bold text-xs text-foreground truncate">{item.title || 'Untitled'}</p>
+                <p className="font-bold text-xs text-foreground truncate">
+                  {item.title || 'Untitled'}
+                </p>
                 <div className="flex items-center justify-between text-[10px] text-muted font-mono mt-0.5">
                   <span className="uppercase">{item.category || 'general'}</span>
                   <span>{item.isEnabled ? 'Visible' : 'Hidden'}</span>
@@ -273,7 +286,9 @@ export default function AdminGalleryPage() {
               </div>
 
               <div className="space-y-1">
-                <label className="text-xs font-semibold text-foreground">Caption / Description</label>
+                <label className="text-xs font-semibold text-foreground">
+                  Caption / Description
+                </label>
                 <Textarea
                   placeholder="Additional context about this visual asset..."
                   value={description}
@@ -299,10 +314,21 @@ export default function AdminGalleryPage() {
             </div>
 
             <DialogFooter className="pt-3 border-t border-border flex justify-end gap-2">
-              <Button type="button" variant="outline" size="sm" onClick={() => setIsModalOpen(false)}>
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={() => setIsModalOpen(false)}
+              >
                 Cancel
               </Button>
-              <Button type="submit" variant="primary" size="sm" isLoading={isSaving} disabled={isSaving}>
+              <Button
+                type="submit"
+                variant="primary"
+                size="sm"
+                isLoading={isSaving}
+                disabled={isSaving}
+              >
                 Save Gallery Item
               </Button>
             </DialogFooter>

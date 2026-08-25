@@ -146,7 +146,6 @@ export const upsertSocialLinkSchema = z.object({
 
 export type UpsertSocialLinkInput = z.infer<typeof upsertSocialLinkSchema>;
 
-
 /** Create resume schema. */
 export const createResumeSchema = z.object({
   title: z.string().min(1).max(200),

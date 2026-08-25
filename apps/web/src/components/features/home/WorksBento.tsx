@@ -5,7 +5,14 @@ import Link from 'next/link';
 import { ArrowUpRight, Code, Terminal, ExternalLink } from 'lucide-react';
 import { GitHubIcon } from '@/components/common/Icons';
 import { SplitSection } from '@/components/common/SplitSection';
-import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '@/components/ui/card';
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+  CardContent,
+  CardFooter,
+} from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { RevealOnScroll } from '@/components/motion/RevealOnScroll';
@@ -74,9 +81,7 @@ export function WorksBento() {
                   <div className="flex flex-col gap-2 font-mono text-xs text-muted">
                     <div className="flex justify-between">
                       <span>STATUS:</span>
-                      <span className="text-accent font-semibold">
-                        {verbs[activeVerbIndex]}
-                      </span>
+                      <span className="text-accent font-semibold">{verbs[activeVerbIndex]}</span>
                     </div>
                     <div className="flex justify-between">
                       <span>RUNTIME:</span>
@@ -127,13 +132,19 @@ export function WorksBento() {
                 <CardContent className="flex flex-col gap-4">
                   {/* Tech stack badges */}
                   <div className="flex flex-wrap gap-1.5">
-                    {(featuredProject?.technologies || ['TypeScript', 'Next.js', 'PostgreSQL', 'Prisma', 'Tailwind CSS']).map(
-                      (tech: string) => (
-                        <Badge key={tech} variant="outline" size="sm">
-                          {tech}
-                        </Badge>
-                      ),
-                    )}
+                    {(
+                      featuredProject?.technologies || [
+                        'TypeScript',
+                        'Next.js',
+                        'PostgreSQL',
+                        'Prisma',
+                        'Tailwind CSS',
+                      ]
+                    ).map((tech: string) => (
+                      <Badge key={tech} variant="outline" size="sm">
+                        {tech}
+                      </Badge>
+                    ))}
                   </div>
                 </CardContent>
 
@@ -142,14 +153,12 @@ export function WorksBento() {
                     {featuredProject?.projectType?.toUpperCase() || 'PERSONAL'}
                   </Badge>
 
-                  <Link
-                    href={
-                      featuredProject?.slug
-                        ? `/works/${featuredProject.slug}`
-                        : '/works'
-                    }
-                  >
-                    <Button variant="secondary" size="sm" rightIcon={<ArrowUpRight className="h-3.5 w-3.5" />}>
+                  <Link href={featuredProject?.slug ? `/works/${featuredProject.slug}` : '/works'}>
+                    <Button
+                      variant="secondary"
+                      size="sm"
+                      rightIcon={<ArrowUpRight className="h-3.5 w-3.5" />}
+                    >
                       Read Case Study
                     </Button>
                   </Link>

@@ -34,7 +34,7 @@ export function TimelineList({ events }: TimelineListProps) {
   return (
     <div className="flex flex-col border-t border-border">
       {groupedEvents.map(([year, yearEvents], idx) => (
-        <RevealOnScroll key={year} delayIndex={(idx % 4 + 1) as 1 | 2 | 3 | 4}>
+        <RevealOnScroll key={year} delayIndex={((idx % 4) + 1) as 1 | 2 | 3 | 4}>
           <div className="grid grid-cols-1 md:grid-cols-12 gap-6 py-8 border-b border-border">
             {/* Left: Year Header */}
             <div className="md:col-span-3">
@@ -48,18 +48,14 @@ export function TimelineList({ events }: TimelineListProps) {
               {yearEvents.map((event) => (
                 <div key={event.id} className="flex flex-col gap-1.5">
                   <div className="flex flex-wrap items-center gap-2">
-                    <span className="font-semibold text-sm text-foreground">
-                      {event.title}
-                    </span>
+                    <span className="font-semibold text-sm text-foreground">{event.title}</span>
                     <Badge variant="outline" size="sm">
                       {event.eventType.toUpperCase()}
                     </Badge>
                   </div>
 
                   {event.description && (
-                    <p className="text-xs text-muted leading-relaxed">
-                      {event.description}
-                    </p>
+                    <p className="text-xs text-muted leading-relaxed">{event.description}</p>
                   )}
 
                   {event.url && (

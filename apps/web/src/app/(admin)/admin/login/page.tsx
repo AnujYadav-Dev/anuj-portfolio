@@ -62,7 +62,9 @@ export default function AdminLoginPage() {
       {/* Login Card */}
       <Card className="border-border bg-surface shadow-2xl">
         <CardHeader className="pb-4">
-          <CardTitle className="text-base font-bold text-foreground">Sign In to Dashboard</CardTitle>
+          <CardTitle className="text-base font-bold text-foreground">
+            Sign In to Dashboard
+          </CardTitle>
           <CardDescription className="text-xs text-muted">
             Enter your superadmin credentials to manage content and platform telemetry.
           </CardDescription>
@@ -118,7 +120,11 @@ export default function AdminLoginPage() {
                   tabIndex={-1}
                   aria-label={showPassword ? 'Hide password' : 'Show password'}
                 >
-                  {showPassword ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
+                  {showPassword ? (
+                    <EyeOff className="w-3.5 h-3.5" />
+                  ) : (
+                    <Eye className="w-3.5 h-3.5" />
+                  )}
                 </button>
               </div>
             </div>

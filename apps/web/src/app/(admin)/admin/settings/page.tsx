@@ -82,7 +82,13 @@ export default function AdminSettingsPage() {
         title="Global Platform Settings"
         description="Core configuration flags, telemetry toggles, feature switches, and environment values."
         action={
-          <Button type="submit" variant="primary" size="sm" isLoading={isSaving} disabled={isSaving}>
+          <Button
+            type="submit"
+            variant="primary"
+            size="sm"
+            isLoading={isSaving}
+            disabled={isSaving}
+          >
             <Save className="w-3.5 h-3.5 mr-1.5" />
             <span>Save All Settings</span>
           </Button>
@@ -100,7 +106,11 @@ export default function AdminSettingsPage() {
           </CardHeader>
           <CardContent className="pt-4 space-y-4">
             {settings
-              .filter((s) => s.group === 'general' || (!s.key.startsWith('analytics_') && !s.key.startsWith('seo_')))
+              .filter(
+                (s) =>
+                  s.group === 'general' ||
+                  (!s.key.startsWith('analytics_') && !s.key.startsWith('seo_')),
+              )
               .map((s) => (
                 <div key={s.key} className="space-y-1.5">
                   <div className="flex items-center justify-between">
@@ -153,7 +163,9 @@ export default function AdminSettingsPage() {
                 <div key={s.key} className="space-y-1.5">
                   <div className="flex items-center justify-between">
                     <label className="text-xs font-semibold text-foreground">{s.key}</label>
-                    <span className="text-[10px] font-mono text-muted">{s.group || 'analytics'}</span>
+                    <span className="text-[10px] font-mono text-muted">
+                      {s.group || 'analytics'}
+                    </span>
                   </div>
                   {isBooleanSetting(s.key, formValues[s.key] ?? s.value) ? (
                     <select

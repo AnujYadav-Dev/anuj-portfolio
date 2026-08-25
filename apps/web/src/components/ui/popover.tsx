@@ -10,21 +10,13 @@ export interface PopoverProps {
   className?: string;
 }
 
-export function Popover({
-  trigger,
-  children,
-  align = 'left',
-  className,
-}: PopoverProps) {
+export function Popover({ trigger, children, align = 'left', className }: PopoverProps) {
   const [isOpen, setIsOpen] = React.useState(false);
   const containerRef = React.useRef<HTMLDivElement>(null);
 
   React.useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (
-        containerRef.current &&
-        !containerRef.current.contains(event.target as Node)
-      ) {
+      if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
         setIsOpen(false);
       }
     };

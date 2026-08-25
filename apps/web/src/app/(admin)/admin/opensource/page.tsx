@@ -47,7 +47,9 @@ export default function AdminOpensourcePage() {
   const fetchRepos = async () => {
     setIsLoading(true);
     try {
-      const res = await apiClient.get<{ data: OpensourceContributionDto[] }>('/opensource/admin/all');
+      const res = await apiClient.get<{ data: OpensourceContributionDto[] }>(
+        '/opensource/admin/all',
+      );
       setRepos(res.data || []);
     } catch {
       toast.error('Failed to load open source contributions');
@@ -364,16 +366,29 @@ export default function AdminOpensourcePage() {
                     onChange={(e) => setIsEnabled(e.target.checked)}
                     className="rounded border-border bg-background text-accent focus:ring-accent accent-accent w-4 h-4 cursor-pointer"
                   />
-                  <span className="text-xs font-semibold text-foreground">Visible on Public Site</span>
+                  <span className="text-xs font-semibold text-foreground">
+                    Visible on Public Site
+                  </span>
                 </label>
               </div>
             </div>
 
             <DialogFooter className="pt-3 border-t border-border flex justify-end gap-2">
-              <Button type="button" variant="outline" size="sm" onClick={() => setIsModalOpen(false)}>
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={() => setIsModalOpen(false)}
+              >
                 Cancel
               </Button>
-              <Button type="submit" variant="primary" size="sm" isLoading={isSaving} disabled={isSaving}>
+              <Button
+                type="submit"
+                variant="primary"
+                size="sm"
+                isLoading={isSaving}
+                disabled={isSaving}
+              >
                 Save Project
               </Button>
             </DialogFooter>

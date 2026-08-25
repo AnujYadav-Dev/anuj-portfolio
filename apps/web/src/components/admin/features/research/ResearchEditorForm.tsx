@@ -78,7 +78,6 @@ export function ResearchEditorForm({ initialData, isNew = false }: ResearchEdito
         pdfId: pdfId || undefined,
       };
 
-
       if (isNew) {
         await apiClient.post('/research', payload);
         toast.success('Research paper created successfully!');
@@ -103,7 +102,9 @@ export function ResearchEditorForm({ initialData, isNew = false }: ResearchEdito
           <h2 className="text-xl font-bold text-foreground">
             {isNew ? 'New Research Paper' : `Edit: ${initialData?.title}`}
           </h2>
-          <p className="text-xs text-muted font-mono">{status.toUpperCase()} • /{slug || 'no-slug'}</p>
+          <p className="text-xs text-muted font-mono">
+            {status.toUpperCase()} • /{slug || 'no-slug'}
+          </p>
         </div>
 
         <div className="flex items-center gap-2">
@@ -184,7 +185,9 @@ export function ResearchEditorForm({ initialData, isNew = false }: ResearchEdito
           {/* Markdown Content Notes */}
           <Card className="bg-surface border-border">
             <CardHeader className="pb-3">
-              <CardTitle className="text-sm font-bold text-foreground">Extended Notes / Full Text (Markdown)</CardTitle>
+              <CardTitle className="text-sm font-bold text-foreground">
+                Extended Notes / Full Text (Markdown)
+              </CardTitle>
             </CardHeader>
             <CardContent>
               <MarkdownEditor
@@ -200,7 +203,9 @@ export function ResearchEditorForm({ initialData, isNew = false }: ResearchEdito
         <div className="space-y-6">
           <Card className="bg-surface border-border">
             <CardHeader className="pb-3">
-              <CardTitle className="text-sm font-bold text-foreground">Publication Metadata</CardTitle>
+              <CardTitle className="text-sm font-bold text-foreground">
+                Publication Metadata
+              </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4 text-xs">
               <div className="space-y-1.5">
@@ -227,7 +232,9 @@ export function ResearchEditorForm({ initialData, isNew = false }: ResearchEdito
               </div>
 
               <div className="space-y-1.5">
-                <label className="font-semibold text-foreground">Publication Venue / Journal / Conference</label>
+                <label className="font-semibold text-foreground">
+                  Publication Venue / Journal / Conference
+                </label>
                 <Input
                   type="text"
                   placeholder="e.g. IEEE Transactions on Distributed Systems"
@@ -236,7 +243,6 @@ export function ResearchEditorForm({ initialData, isNew = false }: ResearchEdito
                   className="bg-background text-xs"
                 />
               </div>
-
 
               <div className="space-y-1.5">
                 <label className="font-semibold text-foreground">Publication / Paper URL</label>
@@ -287,7 +293,6 @@ export function ResearchEditorForm({ initialData, isNew = false }: ResearchEdito
                     Remove
                   </Button>
                 </div>
-
               ) : (
                 <Button
                   type="button"

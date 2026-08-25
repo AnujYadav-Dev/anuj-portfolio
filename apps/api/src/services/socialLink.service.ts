@@ -30,7 +30,10 @@ export const socialLinkService = {
     return mapSocialLinkToDto(created);
   },
 
-  async updateSocialLink(id: string, input: Partial<UpsertSocialLinkInput>): Promise<SocialLinkDto> {
+  async updateSocialLink(
+    id: string,
+    input: Partial<UpsertSocialLinkInput>,
+  ): Promise<SocialLinkDto> {
     await socialLinkService.getSocialLinkById(id);
 
     const updateData: Prisma.SocialLinkUpdateInput = {};

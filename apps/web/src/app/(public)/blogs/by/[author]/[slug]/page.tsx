@@ -28,9 +28,7 @@ export default function AuthorSingleBlogPage() {
     return (
       <div className="max-w-[1200px] mx-auto px-4 md:px-8 py-24 text-center">
         <h2 className="text-xl font-bold text-foreground">Article Not Found</h2>
-        <p className="text-xs text-muted mt-2">
-          The requested writing could not be located.
-        </p>
+        <p className="text-xs text-muted mt-2">The requested writing could not be located.</p>
       </div>
     );
   }

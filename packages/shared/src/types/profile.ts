@@ -317,5 +317,3 @@ export interface CreateGalleryItemRequest {
   isEnabled?: boolean;
 }
 export interface UpdateGalleryItemRequest extends Partial<CreateGalleryItemRequest> {}
-
-

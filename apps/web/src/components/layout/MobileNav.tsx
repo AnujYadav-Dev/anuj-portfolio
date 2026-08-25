@@ -53,10 +53,7 @@ export function MobileNav({ isOpen, onClose }: MobileNavProps) {
   return (
     <div className="fixed inset-0 z-modal flex md:hidden">
       {/* Backdrop */}
-      <div
-        className="fixed inset-0 bg-background/80 backdrop-blur-md"
-        onClick={onClose}
-      />
+      <div className="fixed inset-0 bg-background/80 backdrop-blur-md" onClick={onClose} />
 
       {/* Drawer */}
       <div className="relative z-modal ml-auto flex h-full w-[280px] flex-col bg-surface border-l border-border p-6 shadow-2xl animate-in slide-in-from-right duration-fast">
@@ -77,10 +74,7 @@ export function MobileNav({ isOpen, onClose }: MobileNavProps) {
         {/* Links */}
         <nav className="flex flex-col gap-1 py-6 overflow-y-auto">
           {links.map((link, idx) => {
-            const isActive =
-              link.href === '/'
-                ? pathname === '/'
-                : pathname.startsWith(link.href);
+            const isActive = link.href === '/' ? pathname === '/' : pathname.startsWith(link.href);
 
             return (
               <Link
@@ -95,12 +89,15 @@ export function MobileNav({ isOpen, onClose }: MobileNavProps) {
                 )}
               >
                 <span>{link.label}</span>
-                {isActive && <Badge variant="accent" size="sm">ACTIVE</Badge>}
+                {isActive && (
+                  <Badge variant="accent" size="sm">
+                    ACTIVE
+                  </Badge>
+                )}
               </Link>
             );
           })}
         </nav>
-
 
         {/* Footer actions */}
         <div className="mt-auto pt-4 border-t border-border flex flex-col gap-4">
@@ -116,7 +113,12 @@ export function MobileNav({ isOpen, onClose }: MobileNavProps) {
               rel="noopener noreferrer"
               className="w-full"
             >
-              <Button variant="secondary" size="sm" className="w-full" rightIcon={<Download className="h-3.5 w-3.5" />}>
+              <Button
+                variant="secondary"
+                size="sm"
+                className="w-full"
+                rightIcon={<Download className="h-3.5 w-3.5" />}
+              >
                 Download Resume
               </Button>
             </a>

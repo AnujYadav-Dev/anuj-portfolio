@@ -20,13 +20,7 @@ export interface DialogProps {
   children: React.ReactNode;
 }
 
-export function Dialog({
-  isOpen,
-  onClose,
-  open,
-  onOpenChange,
-  children,
-}: DialogProps) {
+export function Dialog({ isOpen, onClose, open, onOpenChange, children }: DialogProps) {
   const activeOpen = open !== undefined ? open : Boolean(isOpen);
 
   const handleClose = React.useCallback(() => {
@@ -99,22 +93,13 @@ export function DialogContent({
   );
 }
 
-export function DialogHeader({
-  className,
-  ...props
-}: React.HTMLAttributes<HTMLDivElement>) {
+export function DialogHeader({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
   return <div className={cn('flex flex-col space-y-1.5 mb-4', className)} {...props} />;
 }
 
-export function DialogTitle({
-  className,
-  ...props
-}: React.HTMLAttributes<HTMLHeadingElement>) {
+export function DialogTitle({ className, ...props }: React.HTMLAttributes<HTMLHeadingElement>) {
   return (
-    <h2
-      className={cn('text-lg font-bold tracking-tight text-foreground', className)}
-      {...props}
-    />
+    <h2 className={cn('text-lg font-bold tracking-tight text-foreground', className)} {...props} />
   );
 }
 
@@ -122,18 +107,16 @@ export function DialogDescription({
   className,
   ...props
 }: React.HTMLAttributes<HTMLParagraphElement>) {
-  return (
-    <p className={cn('text-xs text-muted leading-relaxed', className)} {...props} />
-  );
+  return <p className={cn('text-xs text-muted leading-relaxed', className)} {...props} />;
 }
 
-export function DialogFooter({
-  className,
-  ...props
-}: React.HTMLAttributes<HTMLDivElement>) {
+export function DialogFooter({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
   return (
     <div
-      className={cn('flex items-center justify-end gap-2 mt-6 pt-4 border-t border-border', className)}
+      className={cn(
+        'flex items-center justify-end gap-2 mt-6 pt-4 border-t border-border',
+        className,
+      )}
       {...props}
     />
   );

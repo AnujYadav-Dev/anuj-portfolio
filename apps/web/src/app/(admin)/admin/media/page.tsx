@@ -208,9 +208,7 @@ export default function AdminMediaLibraryPage() {
           </div>
         </div>
 
-        <div className="text-xs font-mono text-muted">
-          {totalItems} total assets
-        </div>
+        <div className="text-xs font-mono text-muted">{totalItems} total assets</div>
       </div>
 
       {/* Media Grid */}
@@ -224,7 +222,12 @@ export default function AdminMediaLibraryPage() {
           <HardDrive className="w-10 h-10 text-placeholder mx-auto mb-2" />
           <p className="text-sm font-semibold text-foreground">No media assets found</p>
           <p className="text-xs text-muted mt-1">Upload images, diagrams, or PDF resumes.</p>
-          <Button variant="primary" size="sm" onClick={() => setIsUploadOpen(true)} className="mt-4">
+          <Button
+            variant="primary"
+            size="sm"
+            onClick={() => setIsUploadOpen(true)}
+            className="mt-4"
+          >
             Upload File
           </Button>
         </div>
@@ -265,12 +268,13 @@ export default function AdminMediaLibraryPage() {
                 </div>
 
                 <div className="p-1.5">
-                  <p className="font-semibold text-[11px] text-foreground truncate">{item.filename}</p>
+                  <p className="font-semibold text-[11px] text-foreground truncate">
+                    {item.filename}
+                  </p>
                   <div className="flex items-center justify-between text-[9px] text-muted font-mono mt-0.5">
                     <span className="uppercase">{item.mediaType}</span>
                     <span>{formatBytes(item.sizeBytes)}</span>
                   </div>
-
                 </div>
               </div>
             );
@@ -294,7 +298,9 @@ export default function AdminMediaLibraryPage() {
                 <p className="text-xs font-semibold text-foreground mb-1">
                   {uploadFile ? uploadFile.name : 'Choose a file'}
                 </p>
-                <p className="text-[10px] text-muted font-mono mb-3">PNG, JPG, WebP, SVG, PDF up to 10MB</p>
+                <p className="text-[10px] text-muted font-mono mb-3">
+                  PNG, JPG, WebP, SVG, PDF up to 10MB
+                </p>
                 <input
                   type="file"
                   id="direct-upload-file"
@@ -311,9 +317,10 @@ export default function AdminMediaLibraryPage() {
                 </Button>
               </div>
 
-
               <div className="space-y-1">
-                <label className="text-xs font-semibold text-foreground">Alt Text (Accessibility)</label>
+                <label className="text-xs font-semibold text-foreground">
+                  Alt Text (Accessibility)
+                </label>
                 <Input
                   type="text"
                   placeholder="Describe image..."
@@ -336,7 +343,12 @@ export default function AdminMediaLibraryPage() {
             </div>
 
             <DialogFooter className="pt-3 border-t border-border flex justify-end gap-2">
-              <Button type="button" variant="outline" size="sm" onClick={() => setIsUploadOpen(false)}>
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={() => setIsUploadOpen(false)}
+              >
                 Cancel
               </Button>
               <Button
@@ -354,7 +366,10 @@ export default function AdminMediaLibraryPage() {
       </Dialog>
 
       {/* Inspect & Edit Metadata Modal */}
-      <Dialog open={Boolean(inspectingItem)} onOpenChange={(open) => !open && setInspectingItem(null)}>
+      <Dialog
+        open={Boolean(inspectingItem)}
+        onOpenChange={(open) => !open && setInspectingItem(null)}
+      >
         <DialogContent className="max-w-2xl bg-surface border-border p-6 max-h-[85vh] flex flex-col">
           {inspectingItem && (
             <form onSubmit={handleUpdateMetadata} className="space-y-4 flex-1 flex flex-col">
@@ -388,13 +403,30 @@ export default function AdminMediaLibraryPage() {
 
                 <div className="space-y-3 text-xs">
                   <div className="p-2.5 rounded bg-background border border-border space-y-1 font-mono text-[11px]">
-                    <p className="text-muted">Type: <span className="text-foreground">{inspectingItem.mimeType}</span></p>
-                    <p className="text-muted">Size: <span className="text-foreground">{formatBytes(inspectingItem.sizeBytes)}</span></p>
+                    <p className="text-muted">
+                      Type: <span className="text-foreground">{inspectingItem.mimeType}</span>
+                    </p>
+                    <p className="text-muted">
+                      Size:{' '}
+                      <span className="text-foreground">
+                        {formatBytes(inspectingItem.sizeBytes)}
+                      </span>
+                    </p>
 
                     {inspectingItem.width && (
-                      <p className="text-muted">Dimensions: <span className="text-foreground">{inspectingItem.width} × {inspectingItem.height} px</span></p>
+                      <p className="text-muted">
+                        Dimensions:{' '}
+                        <span className="text-foreground">
+                          {inspectingItem.width} × {inspectingItem.height} px
+                        </span>
+                      </p>
                     )}
-                    <p className="text-muted">Created: <span className="text-foreground">{new Date(inspectingItem.createdAt).toLocaleString()}</span></p>
+                    <p className="text-muted">
+                      Created:{' '}
+                      <span className="text-foreground">
+                        {new Date(inspectingItem.createdAt).toLocaleString()}
+                      </span>
+                    </p>
                   </div>
 
                   <div className="space-y-1">
@@ -419,7 +451,9 @@ export default function AdminMediaLibraryPage() {
                   </div>
 
                   <div className="space-y-1">
-                    <label className="font-semibold text-foreground">Alt Text (Accessibility)</label>
+                    <label className="font-semibold text-foreground">
+                      Alt Text (Accessibility)
+                    </label>
                     <Input
                       type="text"
                       value={altText}
@@ -441,10 +475,21 @@ export default function AdminMediaLibraryPage() {
               </div>
 
               <DialogFooter className="pt-3 border-t border-border flex justify-end gap-2">
-                <Button type="button" variant="outline" size="sm" onClick={() => setInspectingItem(null)}>
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setInspectingItem(null)}
+                >
                   Close
                 </Button>
-                <Button type="submit" variant="primary" size="sm" isLoading={isUpdating} disabled={isUpdating}>
+                <Button
+                  type="submit"
+                  variant="primary"
+                  size="sm"
+                  isLoading={isUpdating}
+                  disabled={isUpdating}
+                >
                   Save Metadata
                 </Button>
               </DialogFooter>

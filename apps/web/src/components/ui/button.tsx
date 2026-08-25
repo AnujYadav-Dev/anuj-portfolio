@@ -14,12 +14,10 @@ export const buttonVariants = cva(
           'border border-accent text-accent bg-transparent hover:bg-accent hover:text-accent-foreground active:opacity-90 rounded-sm font-medium',
         outline:
           'border border-border text-foreground bg-transparent hover:bg-surface-muted hover:border-muted rounded-sm',
-        ghost:
-          'text-foreground bg-transparent hover:bg-surface-muted hover:text-accent rounded-sm',
+        ghost: 'text-foreground bg-transparent hover:bg-surface-muted hover:text-accent rounded-sm',
         destructive:
           'bg-destructive text-destructive-foreground hover:bg-destructive/90 rounded-sm font-medium',
-        link:
-          'text-accent underline-offset-4 hover:underline p-0 h-auto font-normal',
+        link: 'text-accent underline-offset-4 hover:underline p-0 h-auto font-normal',
       },
       size: {
         sm: 'h-8 px-3 text-xs',
@@ -36,8 +34,7 @@ export const buttonVariants = cva(
 );
 
 export interface ButtonProps
-  extends React.ButtonHTMLAttributes<HTMLButtonElement>,
-    VariantProps<typeof buttonVariants> {
+  extends React.ButtonHTMLAttributes<HTMLButtonElement>, VariantProps<typeof buttonVariants> {
   isLoading?: boolean;
   leftIcon?: React.ReactNode;
   rightIcon?: React.ReactNode;

@@ -2,7 +2,14 @@
 
 import * as React from 'react';
 import { PageHeader } from '@/components/common/PageHeader';
-import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '@/components/ui/card';
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+  CardContent,
+  CardFooter,
+} from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
 import { RevealOnScroll } from '@/components/motion/RevealOnScroll';
@@ -33,7 +40,7 @@ export default function OpenSourcePage() {
           ) : contributions.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {contributions.map((item, idx) => (
-                <RevealOnScroll key={item.id} delayIndex={(idx % 4 + 1) as 1 | 2 | 3 | 4}>
+                <RevealOnScroll key={item.id} delayIndex={((idx % 4) + 1) as 1 | 2 | 3 | 4}>
                   <Card className="bg-surface border-border h-full flex flex-col justify-between hover:border-muted transition-all">
                     <CardHeader>
                       <div className="flex items-center justify-between gap-2 mb-2">

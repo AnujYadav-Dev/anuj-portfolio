@@ -23,10 +23,7 @@ const envSchema = z.object({
   DATABASE_URL: z.string().url(),
   JWT_SECRET: z.string().min(32),
   JWT_REFRESH_SECRET: z.string().min(32),
-  PORT: z.preprocess(
-    (value) => value ?? process.env.API_PORT,
-    z.coerce.number().default(3001),
-  ),
+  PORT: z.preprocess((value) => value ?? process.env.API_PORT, z.coerce.number().default(3001)),
   NODE_ENV: z.enum(['development', 'production', 'test']).default('development'),
   CORS_ORIGIN: z.string().default('http://localhost:3000'),
   STORAGE_PROVIDER: z.enum(['local', 'cloudinary']).default('local'),
@@ -50,8 +47,6 @@ export function isSmtpConfigured(): boolean {
 
 export function isCloudinaryConfigured(): boolean {
   return Boolean(
-    config.CLOUDINARY_CLOUD_NAME &&
-      config.CLOUDINARY_API_KEY &&
-      config.CLOUDINARY_API_SECRET,
+    config.CLOUDINARY_CLOUD_NAME && config.CLOUDINARY_API_KEY && config.CLOUDINARY_API_SECRET,
   );
 }

@@ -33,17 +33,23 @@ export const certificateService = {
     return mapCertificateToDto(created);
   },
 
-  async updateCertificate(id: string, input: Partial<UpsertCertificateInput>): Promise<CertificateDto> {
+  async updateCertificate(
+    id: string,
+    input: Partial<UpsertCertificateInput>,
+  ): Promise<CertificateDto> {
     await certificateService.getCertificateById(id);
 
     const updateData: Prisma.CertificateUncheckedUpdateInput = {};
     if (input.name !== undefined) updateData.name = input.name;
-    if (input.issuingOrganization !== undefined) updateData.issuingOrganization = input.issuingOrganization;
+    if (input.issuingOrganization !== undefined)
+      updateData.issuingOrganization = input.issuingOrganization;
     if (input.issueDate !== undefined) updateData.issueDate = new Date(input.issueDate);
-    if (input.expiryDate !== undefined) updateData.expiryDate = input.expiryDate ? new Date(input.expiryDate) : null;
+    if (input.expiryDate !== undefined)
+      updateData.expiryDate = input.expiryDate ? new Date(input.expiryDate) : null;
     if (input.credentialId !== undefined) updateData.credentialId = input.credentialId || null;
     if (input.credentialUrl !== undefined) updateData.credentialUrl = input.credentialUrl || null;
-    if (input.certificateImageId !== undefined) updateData.certificateImageId = input.certificateImageId || null;
+    if (input.certificateImageId !== undefined)
+      updateData.certificateImageId = input.certificateImageId || null;
     if (input.sortOrder !== undefined) updateData.sortOrder = input.sortOrder;
     if (input.isEnabled !== undefined) updateData.isEnabled = input.isEnabled;
 

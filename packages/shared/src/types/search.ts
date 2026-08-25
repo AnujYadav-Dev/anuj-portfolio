@@ -1,13 +1,7 @@
 // Search DTOs and query types.
 
 export type SearchType =
-  | 'all'
-  | 'project'
-  | 'blog_post'
-  | 'research_paper'
-  | 'skill'
-  | 'page'
-  | 'about_section';
+  'all' | 'project' | 'blog_post' | 'research_paper' | 'skill' | 'page' | 'about_section';
 
 /** Single search result item. */
 export interface SearchResultItemDto {

@@ -30,7 +30,7 @@ export default function ResearchPage() {
           ) : papers.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {papers.map((paper, idx) => (
-                <RevealOnScroll key={paper.id} delayIndex={(idx % 4 + 1) as 1 | 2 | 3 | 4}>
+                <RevealOnScroll key={paper.id} delayIndex={((idx % 4) + 1) as 1 | 2 | 3 | 4}>
                   <ResearchPaperCard paper={paper} />
                 </RevealOnScroll>
               ))}

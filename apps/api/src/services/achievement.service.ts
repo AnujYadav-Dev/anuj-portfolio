@@ -33,7 +33,10 @@ export const achievementService = {
     return mapAchievementToDto(created);
   },
 
-  async updateAchievement(id: string, input: Partial<UpsertAchievementInput>): Promise<AchievementDto> {
+  async updateAchievement(
+    id: string,
+    input: Partial<UpsertAchievementInput>,
+  ): Promise<AchievementDto> {
     await achievementService.getAchievementById(id);
 
     const updateData: Prisma.AchievementUncheckedUpdateInput = {};

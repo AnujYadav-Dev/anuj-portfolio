@@ -33,14 +33,18 @@ export const testimonialService = {
     return mapTestimonialToDto(created);
   },
 
-  async updateTestimonial(id: string, input: Partial<UpsertTestimonialInput>): Promise<TestimonialDto> {
+  async updateTestimonial(
+    id: string,
+    input: Partial<UpsertTestimonialInput>,
+  ): Promise<TestimonialDto> {
     await testimonialService.getTestimonialById(id);
 
     const updateData: Prisma.TestimonialUncheckedUpdateInput = {};
     if (input.authorName !== undefined) updateData.authorName = input.authorName;
     if (input.authorTitle !== undefined) updateData.authorTitle = input.authorTitle || null;
     if (input.authorCompany !== undefined) updateData.authorCompany = input.authorCompany || null;
-    if (input.authorAvatarId !== undefined) updateData.authorAvatarId = input.authorAvatarId || null;
+    if (input.authorAvatarId !== undefined)
+      updateData.authorAvatarId = input.authorAvatarId || null;
     if (input.content !== undefined) updateData.content = input.content;
     if (input.url !== undefined) updateData.url = input.url || null;
     if (input.isFeatured !== undefined) updateData.isFeatured = input.isFeatured;

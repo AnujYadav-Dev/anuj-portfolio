@@ -1,9 +1,6 @@
 import jwt from 'jsonwebtoken';
 import { config } from '@/config/env';
-import {
-  ACCESS_TOKEN_TTL_SECONDS,
-  REFRESH_TOKEN_TTL_SECONDS,
-} from '@/config/constants';
+import { ACCESS_TOKEN_TTL_SECONDS, REFRESH_TOKEN_TTL_SECONDS } from '@/config/constants';
 import { UnauthorizedError } from '@/utils/errors';
 import { hashToken, generateSecureToken } from '@/utils/hash';
 
@@ -71,11 +68,14 @@ export const tokenService = {
     }
   },
 
-  issueTokenPair(author: {
-    id: string;
-    isAdmin: boolean;
-    username: string;
-  }, sessionId: string): IssuedTokens {
+  issueTokenPair(
+    author: {
+      id: string;
+      isAdmin: boolean;
+      username: string;
+    },
+    sessionId: string,
+  ): IssuedTokens {
     const accessToken = this.signAccessToken({
       sub: author.id,
       isAdmin: author.isAdmin,

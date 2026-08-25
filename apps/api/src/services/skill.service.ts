@@ -44,7 +44,10 @@ export const skillService = {
     return mapSkillCategoryToDto(created);
   },
 
-  async updateCategory(id: string, input: Partial<UpsertSkillCategoryInput>): Promise<SkillCategoryDto> {
+  async updateCategory(
+    id: string,
+    input: Partial<UpsertSkillCategoryInput>,
+  ): Promise<SkillCategoryDto> {
     await skillService.getCategoryById(id);
 
     const updateData: Prisma.SkillCategoryUpdateInput = {};

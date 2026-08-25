@@ -2,10 +2,7 @@ import nodemailer from 'nodemailer';
 import Mustache from 'mustache';
 import { config, isSmtpConfigured } from '@/config/env';
 import { logger } from '@/config/logger';
-import {
-  EMAIL_RETRY_BASE_DELAY_MS,
-  EMAIL_RETRY_COUNT,
-} from '@/config/constants';
+import { EMAIL_RETRY_BASE_DELAY_MS, EMAIL_RETRY_COUNT } from '@/config/constants';
 import { emailTemplateRepository } from '@/repositories/emailTemplate.repository';
 import { AppError } from '@/utils/errors';
 

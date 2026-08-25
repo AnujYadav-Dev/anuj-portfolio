@@ -32,9 +32,7 @@ export function DynamicPageRenderer({ page }: DynamicPageRendererProps) {
             <div className="mt-12 pt-8 border-t border-border flex flex-col gap-8 max-w-3xl">
               {page.contentBlocks.map((block) => (
                 <div key={block.id} className="flex flex-col gap-2">
-                  <h3 className="text-md font-bold text-foreground">
-                    {block.title}
-                  </h3>
+                  <h3 className="text-md font-bold text-foreground">{block.title}</h3>
                   <MarkdownRenderer content={block.content || ''} />
                 </div>
               ))}

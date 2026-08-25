@@ -100,7 +100,6 @@ export default function AdminCertificatesPage() {
         isEnabled,
       };
 
-
       if (editingCert) {
         await apiClient.put(`/certificates/${editingCert.id}`, payload);
         toast.success('Certificate updated successfully');
@@ -236,7 +235,9 @@ export default function AdminCertificatesPage() {
               </div>
 
               <div className="space-y-1">
-                <label className="text-xs font-semibold text-foreground">Issuing Organization</label>
+                <label className="text-xs font-semibold text-foreground">
+                  Issuing Organization
+                </label>
                 <Input
                   type="text"
                   placeholder="e.g. Amazon Web Services / CNCF"
@@ -260,7 +261,9 @@ export default function AdminCertificatesPage() {
                 </div>
 
                 <div className="space-y-1">
-                  <label className="text-xs font-semibold text-foreground">Expiry Date (Optional)</label>
+                  <label className="text-xs font-semibold text-foreground">
+                    Expiry Date (Optional)
+                  </label>
                   <Input
                     type="date"
                     value={expiryDate}
@@ -271,7 +274,9 @@ export default function AdminCertificatesPage() {
               </div>
 
               <div className="space-y-1">
-                <label className="text-xs font-semibold text-foreground">Credential ID (Optional)</label>
+                <label className="text-xs font-semibold text-foreground">
+                  Credential ID (Optional)
+                </label>
                 <Input
                   type="text"
                   placeholder="e.g. AWS-PSA-123456"
@@ -308,10 +313,21 @@ export default function AdminCertificatesPage() {
             </div>
 
             <DialogFooter className="pt-3 border-t border-border flex justify-end gap-2">
-              <Button type="button" variant="outline" size="sm" onClick={() => setIsModalOpen(false)}>
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={() => setIsModalOpen(false)}
+              >
                 Cancel
               </Button>
-              <Button type="submit" variant="primary" size="sm" isLoading={isSaving} disabled={isSaving}>
+              <Button
+                type="submit"
+                variant="primary"
+                size="sm"
+                isLoading={isSaving}
+                disabled={isSaving}
+              >
                 Save Certificate
               </Button>
             </DialogFooter>

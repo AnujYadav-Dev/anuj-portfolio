@@ -95,11 +95,7 @@ export const authService = {
     const newRefreshTokenHash = hashToken(newRefreshToken);
     const expiresAt = new Date(Date.now() + REFRESH_TOKEN_TTL_SECONDS * 1000);
 
-    await sessionRepository.updateRefreshTokenHash(
-      session.id,
-      newRefreshTokenHash,
-      expiresAt,
-    );
+    await sessionRepository.updateRefreshTokenHash(session.id, newRefreshTokenHash, expiresAt);
 
     return {
       accessToken,

@@ -190,9 +190,7 @@ export function AdminSidebar() {
                         active ? 'text-accent' : 'text-muted group-hover:text-foreground',
                       )}
                     />
-                    {!isCollapsed && (
-                      <span className="truncate flex-1">{item.label}</span>
-                    )}
+                    {!isCollapsed && <span className="truncate flex-1">{item.label}</span>}
                   </Link>
                 );
               })}

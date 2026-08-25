@@ -71,7 +71,6 @@ export interface CreateTestimonialRequest {
 /** Update testimonial request payload. */
 export interface UpdateTestimonialRequest extends Partial<CreateTestimonialRequest> {}
 
-
 /** Newsletter subscribe request. */
 export interface NewsletterSubscribeRequest {
   email: string;

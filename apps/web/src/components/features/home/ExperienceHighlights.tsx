@@ -29,17 +29,13 @@ export function ExperienceHighlights() {
                 : '';
 
             return (
-              <RevealOnScroll key={exp.id} delayIndex={(idx % 4 + 1) as 1 | 2 | 3 | 4}>
+              <RevealOnScroll key={exp.id} delayIndex={((idx % 4) + 1) as 1 | 2 | 3 | 4}>
                 <div className="flex flex-col gap-2 pb-6 border-b border-border/60 last:border-0">
                   <div className="flex flex-wrap items-center justify-between gap-2">
                     <div className="flex items-center gap-2">
-                      <span className="font-bold text-md text-foreground">
-                        {exp.role}
-                      </span>
+                      <span className="font-bold text-md text-foreground">{exp.role}</span>
                       <span className="text-muted text-xs">@</span>
-                      <span className="text-accent font-semibold text-xs">
-                        {exp.companyName}
-                      </span>
+                      <span className="text-accent font-semibold text-xs">{exp.companyName}</span>
                     </div>
                     <span className="text-xs font-mono text-muted">
                       {startDate} — {endDate}
@@ -47,9 +43,7 @@ export function ExperienceHighlights() {
                   </div>
 
                   {exp.description && (
-                    <p className="text-xs text-muted leading-relaxed">
-                      {exp.description}
-                    </p>
+                    <p className="text-xs text-muted leading-relaxed">{exp.description}</p>
                   )}
 
                   {exp.technologies && exp.technologies.length > 0 && (
@@ -69,15 +63,12 @@ export function ExperienceHighlights() {
           <RevealOnScroll>
             <div className="flex flex-col gap-2 pb-6 border-b border-border/60">
               <div className="flex flex-wrap items-center justify-between gap-2">
-                <span className="font-bold text-md text-foreground">
-                  Lead Full Stack Engineer
-                </span>
-                <span className="text-xs font-mono text-muted">
-                  2024 — Present
-                </span>
+                <span className="font-bold text-md text-foreground">Lead Full Stack Engineer</span>
+                <span className="text-xs font-mono text-muted">2024 — Present</span>
               </div>
               <p className="text-xs text-muted leading-relaxed">
-                Architecting high-scale distributed systems and developer tools with TypeScript, Next.js, and PostgreSQL.
+                Architecting high-scale distributed systems and developer tools with TypeScript,
+                Next.js, and PostgreSQL.
               </p>
             </div>
           </RevealOnScroll>

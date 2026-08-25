@@ -1,7 +1,14 @@
 import * as React from 'react';
 import Link from 'next/link';
 import { Download, ExternalLink, FileText, BookOpen } from 'lucide-react';
-import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '@/components/ui/card';
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+  CardContent,
+  CardFooter,
+} from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import type { ResearchPaperListItemDto } from '@portfolio/shared';
@@ -29,9 +36,7 @@ export function ResearchPaperCard({ paper }: ResearchPaperCardProps) {
               {paper.publicationName}
             </Badge>
           )}
-          {publishDate && (
-            <span className="text-xs font-mono text-muted">{publishDate}</span>
-          )}
+          {publishDate && <span className="text-xs font-mono text-muted">{publishDate}</span>}
         </div>
 
         <Link href={`/research/${paper.slug}`}>
@@ -41,22 +46,16 @@ export function ResearchPaperCard({ paper }: ResearchPaperCardProps) {
         </Link>
 
         {paper.author && (
-          <p className="text-xs font-mono text-muted pt-1">
-            Author: {paper.author.displayName}
-          </p>
+          <p className="text-xs font-mono text-muted pt-1">Author: {paper.author.displayName}</p>
         )}
 
         {paper.abstract && (
-          <CardDescription className="line-clamp-3 mt-2">
-            {paper.abstract}
-          </CardDescription>
+          <CardDescription className="line-clamp-3 mt-2">{paper.abstract}</CardDescription>
         )}
       </CardHeader>
 
       <CardFooter className="justify-between border-t border-border mt-4 pt-3 text-xs">
-        <span className="text-xs text-muted font-mono">
-          {paper.publicationDate || 'Preprint'}
-        </span>
+        <span className="text-xs text-muted font-mono">{paper.publicationDate || 'Preprint'}</span>
 
         <Link href={`/research/${paper.slug}`}>
           <Button variant="outline" size="sm">

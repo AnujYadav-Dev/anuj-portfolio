@@ -20,12 +20,7 @@ export function AccordionItem({
   const [isOpen, setIsOpen] = React.useState(defaultOpen);
 
   return (
-    <div
-      className={cn(
-        'border-b border-border transition-colors duration-fast',
-        className,
-      )}
-    >
+    <div className={cn('border-b border-border transition-colors duration-fast', className)}>
       <button
         type="button"
         onClick={() => setIsOpen(!isOpen)}
@@ -57,8 +52,6 @@ export function Accordion({
   className?: string;
 }) {
   return (
-    <div className={cn('flex flex-col border-t border-border w-full', className)}>
-      {children}
-    </div>
+    <div className={cn('flex flex-col border-t border-border w-full', className)}>{children}</div>
   );
 }

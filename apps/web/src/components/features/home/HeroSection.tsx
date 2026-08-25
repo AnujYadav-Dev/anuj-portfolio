@@ -35,9 +35,7 @@ export function HeroSection() {
                 />
               </span>
               <span className="text-xs font-mono font-medium tracking-wide text-foreground">
-                {isAvailable
-                  ? 'AVAILABLE FOR HIGH-IMPACT ROLES'
-                  : 'CURRENTLY OCCUPIED'}
+                {isAvailable ? 'AVAILABLE FOR HIGH-IMPACT ROLES' : 'CURRENTLY OCCUPIED'}
               </span>
             </div>
 

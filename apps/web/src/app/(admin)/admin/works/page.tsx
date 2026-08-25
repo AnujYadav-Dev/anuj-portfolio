@@ -11,13 +11,7 @@ import { StatusBadge } from '@/components/admin/ui/StatusBadge';
 import { ConfirmDialog } from '@/components/admin/ui/ConfirmDialog';
 import { Button, buttonVariants } from '@/components/ui/button';
 
-import {
-  Plus,
-  Edit2,
-  Trash2,
-  Star,
-  ExternalLink,
-} from 'lucide-react';
+import { Plus, Edit2, Trash2, Star, ExternalLink } from 'lucide-react';
 import { toast } from 'sonner';
 
 export default function AdminProjectsListPage() {
@@ -36,9 +30,12 @@ export default function AdminProjectsListPage() {
   const fetchProjects = async () => {
     setIsLoading(true);
     try {
-      const res = await apiClient.get<PaginatedResponse<ProjectListItemDto>>('/projects/admin/all', {
-        params: { page, pageSize: 20, search },
-      });
+      const res = await apiClient.get<PaginatedResponse<ProjectListItemDto>>(
+        '/projects/admin/all',
+        {
+          params: { page, pageSize: 20, search },
+        },
+      );
       setProjects(res.data || []);
       setTotalPages(res.pagination.totalPages || 1);
       setTotalItems(res.pagination.totalItems || 0);
@@ -90,9 +87,7 @@ export default function AdminProjectsListPage() {
               <span className="font-bold text-foreground hover:text-accent truncate transition-colors">
                 {item.title}
               </span>
-              {item.isFeatured && (
-                <Star className="w-3 h-3 fill-accent text-accent shrink-0" />
-              )}
+              {item.isFeatured && <Star className="w-3 h-3 fill-accent text-accent shrink-0" />}
             </div>
             <p className="text-[11px] text-muted font-mono truncate">/{item.slug}</p>
           </div>
@@ -165,7 +160,6 @@ export default function AdminProjectsListPage() {
           </Link>
         }
       />
-
 
       <AdminDataTable
         columns={columns}

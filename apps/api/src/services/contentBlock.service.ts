@@ -1,14 +1,15 @@
 import { contentBlockRepository } from '@/repositories/contentBlock.repository';
 import { mapContentBlockToDto } from '@/utils/mappers';
 import { NotFoundError } from '@/utils/errors';
-import type {
-  ContentBlockDto,
-  UpsertContentBlockInput,
-} from '@portfolio/shared';
+import type { ContentBlockDto, UpsertContentBlockInput } from '@portfolio/shared';
 import type { Prisma } from '@prisma/client';
 
 export const contentBlockService = {
-  async listBlocks(pageId?: string, homepageSectionId?: string, onlyEnabled = true): Promise<ContentBlockDto[]> {
+  async listBlocks(
+    pageId?: string,
+    homepageSectionId?: string,
+    onlyEnabled = true,
+  ): Promise<ContentBlockDto[]> {
     const where: Prisma.ContentBlockWhereInput = {};
     if (onlyEnabled) where.isEnabled = true;
     if (pageId) where.pageId = pageId;
@@ -53,7 +54,8 @@ export const contentBlockService = {
     if (input.sortOrder !== undefined) updateData.sortOrder = input.sortOrder;
     if (input.isEnabled !== undefined) updateData.isEnabled = input.isEnabled;
     if (input.pageId !== undefined) updateData.pageId = input.pageId || null;
-    if (input.homepageSectionId !== undefined) updateData.homepageSectionId = input.homepageSectionId || null;
+    if (input.homepageSectionId !== undefined)
+      updateData.homepageSectionId = input.homepageSectionId || null;
 
     const updated = await contentBlockRepository.update(id, updateData);
     return mapContentBlockToDto(updated);

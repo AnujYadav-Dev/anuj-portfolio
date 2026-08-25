@@ -4,13 +4,15 @@ import type { ReorderInput, UpsertAchievementInput } from '@portfolio/shared';
 
 export const achievementController = {
   async listPublic(req: Request, res: Response): Promise<void> {
-    const isFeatured = req.query.isFeatured !== undefined ? req.query.isFeatured === 'true' : undefined;
+    const isFeatured =
+      req.query.isFeatured !== undefined ? req.query.isFeatured === 'true' : undefined;
     const records = await achievementService.listAchievements(true, isFeatured);
     res.json({ data: records });
   },
 
   async listAdmin(req: Request, res: Response): Promise<void> {
-    const isFeatured = req.query.isFeatured !== undefined ? req.query.isFeatured === 'true' : undefined;
+    const isFeatured =
+      req.query.isFeatured !== undefined ? req.query.isFeatured === 'true' : undefined;
     const records = await achievementService.listAchievements(false, isFeatured);
     res.json({ data: records });
   },

@@ -45,9 +45,7 @@ export function CodeBlock({
     >
       {/* Header bar if language or filename is present */}
       <div className="flex items-center justify-between px-4 py-2 border-b border-border bg-surface text-muted text-[11px] font-mono">
-        <span className="font-semibold text-foreground">
-          {filename || language.toUpperCase()}
-        </span>
+        <span className="font-semibold text-foreground">{filename || language.toUpperCase()}</span>
         <button
           type="button"
           onClick={handleCopy}

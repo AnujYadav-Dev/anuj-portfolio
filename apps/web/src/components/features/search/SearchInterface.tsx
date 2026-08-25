@@ -88,7 +88,8 @@ export function SearchInterface() {
             let icon = <FileText className="h-4 w-4 text-muted" />;
             if (item.type === 'project') icon = <Briefcase className="h-4 w-4 text-accent" />;
             else if (item.type === 'blog_post') icon = <BookOpen className="h-4 w-4 text-accent" />;
-            else if (item.type === 'research_paper') icon = <FileText className="h-4 w-4 text-accent" />;
+            else if (item.type === 'research_paper')
+              icon = <FileText className="h-4 w-4 text-accent" />;
             else if (item.type === 'skill') icon = <Code className="h-4 w-4 text-accent" />;
 
             return (

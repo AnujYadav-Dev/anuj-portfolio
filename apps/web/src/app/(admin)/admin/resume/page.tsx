@@ -2,7 +2,12 @@
 
 import React, { useEffect, useState } from 'react';
 import { apiClient } from '@/lib/api';
-import type { ResumeDto, MediaDto, CreateResumeRequest, UpdateResumeRequest } from '@portfolio/shared';
+import type {
+  ResumeDto,
+  MediaDto,
+  CreateResumeRequest,
+  UpdateResumeRequest,
+} from '@portfolio/shared';
 import { AdminPageHeader } from '@/components/admin/ui/AdminPageHeader';
 import { AdminDataTable, type Column } from '@/components/admin/ui/AdminDataTable';
 import { ConfirmDialog } from '@/components/admin/ui/ConfirmDialog';
@@ -293,17 +298,29 @@ export default function AdminResumePage() {
                     className="rounded border-border bg-background text-accent focus:ring-accent accent-accent w-4 h-4 cursor-pointer"
                   />
                   <span className="text-xs font-semibold text-foreground flex items-center gap-1">
-                    <CheckCircle2 className="w-3.5 h-3.5 text-accent" /> Set as Active Resume (Linked on Public Site)
+                    <CheckCircle2 className="w-3.5 h-3.5 text-accent" /> Set as Active Resume
+                    (Linked on Public Site)
                   </span>
                 </label>
               </div>
             </div>
 
             <DialogFooter className="pt-3 border-t border-border flex justify-end gap-2">
-              <Button type="button" variant="outline" size="sm" onClick={() => setIsModalOpen(false)}>
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={() => setIsModalOpen(false)}
+              >
                 Cancel
               </Button>
-              <Button type="submit" variant="primary" size="sm" isLoading={isSaving} disabled={isSaving}>
+              <Button
+                type="submit"
+                variant="primary"
+                size="sm"
+                isLoading={isSaving}
+                disabled={isSaving}
+              >
                 Save Resume
               </Button>
             </DialogFooter>

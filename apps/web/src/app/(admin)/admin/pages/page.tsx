@@ -125,7 +125,6 @@ export default function AdminPagesListPage() {
             <span>Create Dynamic Page</span>
           </Link>
         }
-
       />
 
       <AdminDataTable

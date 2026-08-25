@@ -1,5 +1,9 @@
 import { blogRepository } from '@/repositories/blog.repository';
-import { mapBlogPostToDto, mapBlogPostToListItemDto, mapContentVersionToDto } from '@/utils/mappers';
+import {
+  mapBlogPostToDto,
+  mapBlogPostToListItemDto,
+  mapContentVersionToDto,
+} from '@/utils/mappers';
 import { buildPagination, getPrismaPagination } from '@/utils/pagination';
 import { saveContentVersion } from '@/utils/versioning';
 import { calculateReadingTime } from '@/utils/readingTime';
@@ -122,21 +126,32 @@ export const blogService = {
     return mapBlogPostToDto(created, tagNames);
   },
 
-  async update(id: string, input: UpdateBlogPostInput, adminAuthorId?: string): Promise<BlogPostDto> {
+  async update(
+    id: string,
+    input: UpdateBlogPostInput,
+    adminAuthorId?: string,
+  ): Promise<BlogPostDto> {
     const existing = await blogRepository.findById(id);
     if (!existing) {
       throw new NotFoundError(`Blog post '${id}' not found`);
     }
 
     // Save snapshot in content_versions
-    await saveContentVersion('blog_post', id, existing as any, adminAuthorId, 'Blog post updated via API');
+    await saveContentVersion(
+      'blog_post',
+      id,
+      existing as any,
+      adminAuthorId,
+      'Blog post updated via API',
+    );
 
     const updateData: Prisma.BlogPostUncheckedUpdateInput = {};
     if (input.title !== undefined) updateData.title = input.title;
     if (input.slug !== undefined) updateData.slug = slugify(input.slug);
     if (input.content !== undefined) {
       updateData.content = input.content;
-      updateData.readingTimeMinutes = input.readingTimeMinutes ?? calculateReadingTime(input.content);
+      updateData.readingTimeMinutes =
+        input.readingTimeMinutes ?? calculateReadingTime(input.content);
     } else if (input.readingTimeMinutes !== undefined) {
       updateData.readingTimeMinutes = input.readingTimeMinutes;
     }
@@ -151,7 +166,8 @@ export const blogService = {
     if (input.categoryId !== undefined) updateData.categoryId = input.categoryId || null;
     if (input.coverImageId !== undefined) updateData.coverImageId = input.coverImageId || null;
     if (input.seoTitle !== undefined) updateData.seoTitle = input.seoTitle || null;
-    if (input.seoDescription !== undefined) updateData.seoDescription = input.seoDescription || null;
+    if (input.seoDescription !== undefined)
+      updateData.seoDescription = input.seoDescription || null;
     if (input.seoKeywords !== undefined) updateData.seoKeywords = input.seoKeywords || null;
     if (input.ogImageId !== undefined) updateData.ogImageId = input.ogImageId || null;
 

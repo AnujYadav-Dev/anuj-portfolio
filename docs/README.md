@@ -51,15 +51,15 @@
 
 ## Design & Styling
 
-| File                                               | Purpose                                                                          |
-| -------------------------------------------------- | -------------------------------------------------------------------------------- |
+| File                                                    | Purpose                                                                          |
+| ------------------------------------------------------- | -------------------------------------------------------------------------------- |
 | [UI-DESIGN-GUIDELINES.md](docs/UI-DESIGN-GUIDELINES.md) | Visual source of truth from UI reference images and unified animation rules      |
-| [DESIGN_SYSTEM.md](DESIGN_SYSTEM.md)               | Visual design guidelines: typography, colors, spacing, components, accessibility |
-| [DESIGN_TOKENS.md](DESIGN_TOKENS.md)               | Semantic token definitions (colors, spacing, motion, radius, shadows, z-index)   |
-| [TAILWIND_GUIDELINES.md](TAILWIND_GUIDELINES.md)   | Tailwind CSS configuration, usage rules, variant patterns                        |
-| [CSS_TOKENS.md](CSS_TOKENS.md)                     | CSS custom property implementation and global styles                             |
-| [DARK_DESIGN.md](DARK_DESIGN.md)                   | Original dark theme design tokens (source)                                       |
-| [LIGHT_DESIGN.md](LIGHT_DESIGN.md)                 | Original light theme design tokens (source)                                      |
+| [DESIGN_SYSTEM.md](DESIGN_SYSTEM.md)                    | Visual design guidelines: typography, colors, spacing, components, accessibility |
+| [DESIGN_TOKENS.md](DESIGN_TOKENS.md)                    | Semantic token definitions (colors, spacing, motion, radius, shadows, z-index)   |
+| [TAILWIND_GUIDELINES.md](TAILWIND_GUIDELINES.md)        | Tailwind CSS configuration, usage rules, variant patterns                        |
+| [CSS_TOKENS.md](CSS_TOKENS.md)                          | CSS custom property implementation and global styles                             |
+| [DARK_DESIGN.md](DARK_DESIGN.md)                        | Original dark theme design tokens (source)                                       |
+| [LIGHT_DESIGN.md](LIGHT_DESIGN.md)                      | Original light theme design tokens (source)                                      |
 
 ---
 

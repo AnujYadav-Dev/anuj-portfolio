@@ -29,13 +29,7 @@ export function extractHeadings(markdown: string): TocItem[] {
   return items;
 }
 
-export function TableOfContents({
-  items,
-  className,
-}: {
-  items: TocItem[];
-  className?: string;
-}) {
+export function TableOfContents({ items, className }: { items: TocItem[]; className?: string }) {
   const [activeId, setActiveId] = React.useState<string>('');
 
   React.useEffect(() => {
@@ -74,10 +68,7 @@ export function TableOfContents({
   return (
     <nav
       aria-label="Table of contents"
-      className={cn(
-        'rounded-md border border-border bg-surface p-4 text-xs',
-        className,
-      )}
+      className={cn('rounded-md border border-border bg-surface p-4 text-xs', className)}
     >
       <div className="font-semibold text-foreground mb-3 text-[11px] uppercase tracking-wider">
         On this page
@@ -88,10 +79,7 @@ export function TableOfContents({
           return (
             <li
               key={item.id}
-              className={cn(
-                'transition-colors',
-                item.level === 3 && 'pl-3 text-[11px]',
-              )}
+              className={cn('transition-colors', item.level === 3 && 'pl-3 text-[11px]')}
             >
               <a
                 href={`#${item.id}`}

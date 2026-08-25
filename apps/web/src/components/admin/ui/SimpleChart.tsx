@@ -19,11 +19,7 @@ interface TimeSeriesChartProps {
   className?: string;
 }
 
-export function TimeSeriesChart({
-  data,
-  height = 240,
-  className,
-}: TimeSeriesChartProps) {
+export function TimeSeriesChart({ data, height = 240, className }: TimeSeriesChartProps) {
   const [hoverIndex, setHoverIndex] = useState<number | null>(null);
 
   if (!data || data.length === 0) {
@@ -209,9 +205,7 @@ export function TimeSeriesChart({
 
       {/* Hover Tooltip Box */}
       {hoverIndex !== null && data[hoverIndex] && (
-        <div
-          className="absolute top-2 right-4 bg-surface border border-border px-3 py-2 rounded-lg shadow-xl text-xs font-mono z-10 pointer-events-none"
-        >
+        <div className="absolute top-2 right-4 bg-surface border border-border px-3 py-2 rounded-lg shadow-xl text-xs font-mono z-10 pointer-events-none">
           <p className="text-muted font-bold mb-1">{data[hoverIndex]?.date}</p>
           <div className="flex items-center gap-2 text-accent">
             <span className="w-2 h-2 rounded-full bg-accent" />
@@ -267,11 +261,10 @@ export function DistributionBarList({
       {items.map((item) => (
         <div key={item.name} className="space-y-1">
           <div className="flex items-center justify-between text-xs font-mono">
-            <span className="text-foreground font-medium truncate max-w-[200px]">
-              {item.name}
-            </span>
+            <span className="text-foreground font-medium truncate max-w-[200px]">{item.name}</span>
             <span className="text-muted">
-              <strong className="text-foreground">{item.count.toLocaleString()}</strong> ({item.percentage}%)
+              <strong className="text-foreground">{item.count.toLocaleString()}</strong> (
+              {item.percentage}%)
             </span>
           </div>
           <div className="h-1.5 w-full bg-surface-muted rounded-full overflow-hidden">

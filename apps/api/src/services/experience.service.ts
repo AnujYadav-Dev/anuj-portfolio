@@ -36,7 +36,10 @@ export const experienceService = {
     return mapExperienceToDto(created);
   },
 
-  async updateExperience(id: string, input: Partial<UpsertExperienceInput>): Promise<ExperienceDto> {
+  async updateExperience(
+    id: string,
+    input: Partial<UpsertExperienceInput>,
+  ): Promise<ExperienceDto> {
     await experienceService.getExperienceById(id);
 
     const updateData: Prisma.ExperienceUncheckedUpdateInput = {};
@@ -44,7 +47,8 @@ export const experienceService = {
     if (input.role !== undefined) updateData.role = input.role;
     if (input.location !== undefined) updateData.location = input.location || null;
     if (input.startDate !== undefined) updateData.startDate = new Date(input.startDate);
-    if (input.endDate !== undefined) updateData.endDate = input.endDate ? new Date(input.endDate) : null;
+    if (input.endDate !== undefined)
+      updateData.endDate = input.endDate ? new Date(input.endDate) : null;
     if (input.isCurrent !== undefined) updateData.isCurrent = input.isCurrent;
     if (input.description !== undefined) updateData.description = input.description || null;
     if (input.technologies !== undefined) updateData.technologies = input.technologies;

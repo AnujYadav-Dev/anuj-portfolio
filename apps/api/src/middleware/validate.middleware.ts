@@ -2,7 +2,9 @@ import type { NextFunction, Request, Response } from 'express';
 import type { ZodSchema } from 'zod';
 import { ValidationError } from '@/utils/errors';
 
-function formatZodErrors(error: { flatten: () => { fieldErrors: Record<string, string[] | undefined> } }): Record<string, string[]> {
+function formatZodErrors(error: {
+  flatten: () => { fieldErrors: Record<string, string[] | undefined> };
+}): Record<string, string[]> {
   const fieldErrors = error.flatten().fieldErrors;
   const details: Record<string, string[]> = {};
 
@@ -24,9 +26,7 @@ function createValidator(
       const result = schema.safeParse(req[source]);
 
       if (!result.success) {
-        next(
-          new ValidationError('Validation failed', formatZodErrors(result.error)),
-        );
+        next(new ValidationError('Validation failed', formatZodErrors(result.error)));
         return;
       }
 

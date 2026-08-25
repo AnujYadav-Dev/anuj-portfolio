@@ -4,13 +4,15 @@ import type { ReorderInput, UpsertOpensourceInput } from '@portfolio/shared';
 
 export const opensourceController = {
   async listPublic(req: Request, res: Response): Promise<void> {
-    const isFeatured = req.query.isFeatured !== undefined ? req.query.isFeatured === 'true' : undefined;
+    const isFeatured =
+      req.query.isFeatured !== undefined ? req.query.isFeatured === 'true' : undefined;
     const records = await opensourceService.listContributions(true, isFeatured);
     res.json({ data: records });
   },
 
   async listAdmin(req: Request, res: Response): Promise<void> {
-    const isFeatured = req.query.isFeatured !== undefined ? req.query.isFeatured === 'true' : undefined;
+    const isFeatured =
+      req.query.isFeatured !== undefined ? req.query.isFeatured === 'true' : undefined;
     const records = await opensourceService.listContributions(false, isFeatured);
     res.json({ data: records });
   },

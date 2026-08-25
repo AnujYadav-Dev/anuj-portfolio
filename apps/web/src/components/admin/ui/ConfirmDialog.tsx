@@ -38,7 +38,6 @@ export function ConfirmDialog({
   return (
     <Dialog isOpen={isOpen} onClose={onClose}>
       <DialogContent className="max-w-md bg-surface border-border">
-
         <DialogHeader>
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-full bg-destructive/10 text-destructive flex items-center justify-center shrink-0">
@@ -54,13 +53,7 @@ export function ConfirmDialog({
         </DialogHeader>
 
         <DialogFooter className="mt-6 flex justify-end gap-2">
-          <Button
-            type="button"
-            variant="outline"
-            size="sm"
-            onClick={onClose}
-            disabled={isLoading}
-          >
+          <Button type="button" variant="outline" size="sm" onClick={onClose} disabled={isLoading}>
             {cancelLabel}
           </Button>
           <Button

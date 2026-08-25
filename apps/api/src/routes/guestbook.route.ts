@@ -3,11 +3,7 @@ import { guestbookController } from '@/controllers/guestbook.controller';
 import { authenticateAdmin } from '@/middleware/auth.middleware';
 import { strictRateLimiter } from '@/middleware/rateLimit.middleware';
 import { validateBody, validateParams, validateQuery } from '@/middleware/validate.middleware';
-import {
-  createGuestbookEntrySchema,
-  paginationSchema,
-  uuidParamSchema,
-} from '@portfolio/shared';
+import { createGuestbookEntrySchema, paginationSchema, uuidParamSchema } from '@portfolio/shared';
 
 const router = Router();
 
@@ -21,7 +17,12 @@ router.post(
 );
 
 // Admin Moderation
-router.get('/admin/all', authenticateAdmin, validateQuery(paginationSchema), guestbookController.listAdmin);
+router.get(
+  '/admin/all',
+  authenticateAdmin,
+  validateQuery(paginationSchema),
+  guestbookController.listAdmin,
+);
 router.patch(
   '/admin/:id/moderate',
   authenticateAdmin,

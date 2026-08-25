@@ -39,7 +39,8 @@ export function ContactCTA() {
               Have an ambitious project or engineering challenge?
             </h3>
             <p className="text-xs text-muted leading-relaxed">
-              Whether you need senior technical leadership, architectural guidance, or full-stack execution, my inbox is always open.
+              Whether you need senior technical leadership, architectural guidance, or full-stack
+              execution, my inbox is always open.
             </p>
           </div>
 

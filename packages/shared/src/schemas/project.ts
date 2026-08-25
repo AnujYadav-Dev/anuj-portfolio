@@ -33,7 +33,6 @@ export const createProjectSchema = z
   })
   .merge(seoFieldsSchema);
 
-
 export type CreateProjectInput = z.infer<typeof createProjectSchema>;
 
 /** Update project request validation — all fields optional. */

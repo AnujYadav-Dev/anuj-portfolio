@@ -2,7 +2,14 @@ import * as React from 'react';
 import Link from 'next/link';
 import { ArrowUpRight, ExternalLink } from 'lucide-react';
 import { GitHubIcon } from '@/components/common/Icons';
-import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '@/components/ui/card';
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+  CardContent,
+  CardFooter,
+} from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import type { ProjectListItemDto } from '@portfolio/shared';
 import { cn } from '@/lib/cn';

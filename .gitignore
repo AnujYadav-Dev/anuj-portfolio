@@ -39,3 +39,6 @@ coverage/
 # Misc
 .vercel
 .turbo
+
+# UI Reference
+ui-reference/

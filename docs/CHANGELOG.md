@@ -10,6 +10,7 @@
 ### Phase 2: Data Layer, Prisma Schema, Seeds & Shared Contracts
 
 #### Added: Prisma Database Layer (`apps/api/prisma/`)
+
 - `schema.prisma` — Complete 38-table, 11-enum PostgreSQL schema matching `DATABASE_SCHEMA.md` with relations, cascading rules, and lookup indexes.
 - `prisma.config.ts` — Prisma 7 configuration with environment-driven datasource URL and seed command.
 - `prisma/migrations/20260825053336_init/` — Initial database migration applied to PostgreSQL.
@@ -17,6 +18,7 @@
 - `src/config/prisma.ts` — Centralized Prisma client instance with `@prisma/adapter-pg` driver adapter.
 
 #### Added: Shared Contracts Expansion (`packages/shared/src/`)
+
 - `types/` — Domain-organized TypeScript interfaces and DTOs:
   - `enums.ts` — 11 enum definitions mirroring database enums.
   - `common.ts` — `PaginatedResponse<T>`, `PaginationMeta`, `ApiErrorResponse`, `SortOrder`, `SeoFields`.

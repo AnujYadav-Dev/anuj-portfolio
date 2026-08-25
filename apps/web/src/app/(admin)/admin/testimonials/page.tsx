@@ -180,7 +180,7 @@ export default function AdminTestimonialsPage() {
       header: 'Testimonial Quote',
       render: (item) => (
         <p className="text-xs text-foreground truncate max-w-md leading-relaxed italic">
-          "{item.content}"
+          &ldquo;{item.content}&rdquo;
         </p>
       ),
     },

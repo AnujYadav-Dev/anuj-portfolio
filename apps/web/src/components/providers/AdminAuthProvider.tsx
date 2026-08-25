@@ -107,6 +107,29 @@ export function AdminAuthProvider({ children }: { children: React.ReactNode }) {
     }
   }, []);
 
+  const logout = useCallback(async () => {
+    const currentRefresh = refreshToken || localStorage.getItem('refresh_token');
+    if (currentRefresh) {
+      try {
+        await apiClient.post('/auth/logout', { refreshToken: currentRefresh });
+      } catch {
+        // Ignore logout request errors
+      }
+    }
+
+    localStorage.removeItem('access_token');
+    localStorage.removeItem('refresh_token');
+    localStorage.removeItem('auth_user');
+    localStorage.removeItem('token_expires_at');
+
+    setAccessToken(null);
+    setRefreshToken(null);
+    setAuthor(null);
+    setSecondsRemaining(null);
+
+    router.push('/admin/login');
+  }, [refreshToken, router]);
+
   const renewSession = useCallback(async () => {
     const currentRefresh = refreshToken || localStorage.getItem('refresh_token');
     if (!currentRefresh) {
@@ -134,30 +157,7 @@ export function AdminAuthProvider({ children }: { children: React.ReactNode }) {
     } catch {
       await logout();
     }
-  }, [refreshToken]);
-
-  const logout = useCallback(async () => {
-    const currentRefresh = refreshToken || localStorage.getItem('refresh_token');
-    if (currentRefresh) {
-      try {
-        await apiClient.post('/auth/logout', { refreshToken: currentRefresh });
-      } catch {
-        // Ignore logout request errors
-      }
-    }
-
-    localStorage.removeItem('access_token');
-    localStorage.removeItem('refresh_token');
-    localStorage.removeItem('auth_user');
-    localStorage.removeItem('token_expires_at');
-
-    setAccessToken(null);
-    setRefreshToken(null);
-    setAuthor(null);
-    setSecondsRemaining(null);
-
-    router.push('/admin/login');
-  }, [refreshToken, router]);
+  }, [logout, refreshToken]);
 
   const updateAuthor = useCallback((updatedAuthor: AuthorDto) => {
     setAuthor(updatedAuthor);

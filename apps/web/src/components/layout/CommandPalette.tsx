@@ -146,7 +146,7 @@ export function CommandPalette({ isOpen, onClose }: CommandPaletteProps) {
 
     if (searchResults?.data?.results) {
       for (const item of searchResults.data.results) {
-        let path = item.url;
+        const path = item.url;
         let icon = <FileText className="h-4 w-4" />;
 
         if (item.type === 'project') icon = <Briefcase className="h-4 w-4" />;

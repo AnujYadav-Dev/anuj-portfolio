@@ -99,7 +99,7 @@ export function WorksBento() {
                 </div>
 
                 <div className="pt-6 border-t border-border mt-6 text-[11px] font-mono text-placeholder leading-relaxed">
-                  // Built for resilience, clean code boundaries, and sub-100ms response times.
+                  {'// Built for resilience, clean code boundaries, and sub-100ms response times.'}
                 </div>
               </Card>
             </RevealOnScroll>

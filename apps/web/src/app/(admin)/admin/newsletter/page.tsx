@@ -13,6 +13,7 @@ import { toast } from 'sonner';
 export default function AdminNewsletterPage() {
   const [subscribers, setSubscribers] = useState<NewsletterSubscriberDto[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [statusFilter, setStatusFilter] = useState<string>('all');
   const [search, setSearch] = useState('');
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
@@ -24,9 +25,16 @@ export default function AdminNewsletterPage() {
   const fetchSubscribers = async () => {
     setIsLoading(true);
     try {
+      const params: Record<string, string> = {
+        page: String(page),
+        pageSize: '25',
+      };
+      if (search) params.search = search;
+      if (statusFilter !== 'all') params.status = statusFilter;
+
       const res = await apiClient.get<PaginatedResponse<NewsletterSubscriberDto>>(
         '/newsletter/admin/subscribers',
-        { params: { page: String(page), pageSize: '25', search: search || undefined } },
+        { params },
       );
       setSubscribers(res.data || []);
       setTotalPages(res.pagination.totalPages || 1);
@@ -40,7 +48,7 @@ export default function AdminNewsletterPage() {
 
   useEffect(() => {
     fetchSubscribers();
-  }, [page, search]);
+  }, [page, search, statusFilter]);
 
   const handleExportCSV = () => {
     if (subscribers.length === 0) {
@@ -172,6 +180,24 @@ export default function AdminNewsletterPage() {
         searchPlaceholder="Search subscribers..."
         searchTerm={search}
         onSearchChange={setSearch}
+        filterSlot={
+          <div className="flex items-center gap-1 bg-surface-muted p-1 rounded-lg border border-border">
+            {['all', 'confirmed', 'pending'].map((st) => (
+              <button
+                key={st}
+                type="button"
+                onClick={() => setStatusFilter(st)}
+                className={`px-3 py-1 text-xs font-mono uppercase rounded-md transition-colors ${
+                  statusFilter === st
+                    ? 'bg-surface text-foreground font-bold shadow-sm'
+                    : 'text-muted hover:text-foreground'
+                }`}
+              >
+                {st}
+              </button>
+            ))}
+          </div>
+        }
         pagination={{
           page,
           pageSize: 25,

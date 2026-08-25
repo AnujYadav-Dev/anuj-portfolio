@@ -1,6 +1,6 @@
 import type { Request, Response } from 'express';
 import { newsletterService } from '@/services/newsletter.service';
-import type { NewsletterSubscribeInput, PaginationQuery } from '@portfolio/shared';
+import type { ListNewsletterSubscribersQuery, NewsletterSubscribeInput } from '@portfolio/shared';
 
 export const newsletterController = {
   async subscribe(req: Request, res: Response): Promise<void> {
@@ -22,7 +22,7 @@ export const newsletterController = {
   },
 
   async listSubscribers(req: Request, res: Response): Promise<void> {
-    const query = (req.validatedQuery as PaginationQuery & { isConfirmed?: boolean }) ?? req.query;
+    const query = (req.validatedQuery as ListNewsletterSubscribersQuery) ?? req.query;
     const result = await newsletterService.listSubscribers(query);
     res.json(result);
   },

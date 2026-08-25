@@ -3,7 +3,11 @@ import { newsletterController } from '@/controllers/newsletter.controller';
 import { authenticateAdmin } from '@/middleware/auth.middleware';
 import { strictRateLimiter } from '@/middleware/rateLimit.middleware';
 import { validateBody, validateParams, validateQuery } from '@/middleware/validate.middleware';
-import { newsletterSubscribeSchema, paginationSchema, uuidParamSchema } from '@portfolio/shared';
+import {
+  listNewsletterSubscribersQuerySchema,
+  newsletterSubscribeSchema,
+  uuidParamSchema,
+} from '@portfolio/shared';
 
 const router = Router();
 
@@ -21,7 +25,7 @@ router.post('/unsubscribe', newsletterController.unsubscribe);
 router.get(
   '/admin/subscribers',
   authenticateAdmin,
-  validateQuery(paginationSchema),
+  validateQuery(listNewsletterSubscribersQuerySchema),
   newsletterController.listSubscribers,
 );
 router.get('/admin/export', authenticateAdmin, newsletterController.exportSubscribers);

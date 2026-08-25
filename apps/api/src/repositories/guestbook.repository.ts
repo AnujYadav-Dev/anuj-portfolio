@@ -2,12 +2,17 @@ import { prisma } from '@/config/prisma';
 import type { ModerationStatus, Prisma } from '@prisma/client';
 
 export const guestbookRepository = {
-  async findMany(where?: Prisma.GuestbookEntryWhereInput, skip?: number, take?: number) {
+  async findMany(
+    where?: Prisma.GuestbookEntryWhereInput,
+    skip?: number,
+    take?: number,
+    orderBy: Prisma.GuestbookEntryOrderByWithRelationInput = { createdAt: 'desc' },
+  ) {
     return prisma.guestbookEntry.findMany({
       where,
       skip,
       take,
-      orderBy: { createdAt: 'desc' },
+      orderBy,
     });
   },
 

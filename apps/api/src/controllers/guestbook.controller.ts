@@ -1,8 +1,12 @@
 import type { Request, Response } from 'express';
 import { guestbookService } from '@/services/guestbook.service';
 import { getClientIp, normalizeIpForDb } from '@/utils/ip';
-import type { CreateGuestbookEntryInput, PaginationQuery } from '@portfolio/shared';
-import type { ModerationStatus } from '@prisma/client';
+import type {
+  CreateGuestbookEntryInput,
+  ListGuestbookAdminQuery,
+  ModerateGuestbookInput,
+  PaginationQuery,
+} from '@portfolio/shared';
 
 export const guestbookController = {
   async listPublic(req: Request, res: Response): Promise<void> {
@@ -12,9 +16,7 @@ export const guestbookController = {
   },
 
   async listAdmin(req: Request, res: Response): Promise<void> {
-    const query =
-      (req.validatedQuery as PaginationQuery & { moderationStatus?: ModerationStatus }) ??
-      req.query;
+    const query = (req.validatedQuery as ListGuestbookAdminQuery) ?? req.query;
     const result = await guestbookService.listAdminEntries(query);
     res.json(result);
   },
@@ -28,7 +30,7 @@ export const guestbookController = {
 
   async moderate(req: Request, res: Response): Promise<void> {
     const id = String(req.params.id);
-    const { status } = req.body as { status: ModerationStatus };
+    const { status } = (req.validatedBody as ModerateGuestbookInput) ?? req.body;
     const result = await guestbookService.moderateEntry(id, status);
     res.json({ data: result });
   },

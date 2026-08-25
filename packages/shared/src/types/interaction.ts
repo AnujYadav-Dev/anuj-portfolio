@@ -29,6 +29,7 @@ export interface CreateContactRequest {
 export interface GuestbookEntryDto {
   id: string;
   authorName: string;
+  authorEmail?: string | null;
   message: string;
   moderationStatus: ModerationStatus;
   createdAt: string;

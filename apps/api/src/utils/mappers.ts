@@ -715,6 +715,7 @@ export function mapGuestbookEntryToDto(entry: GuestbookEntry): GuestbookEntryDto
   return {
     id: entry.id,
     authorName: entry.authorName,
+    authorEmail: entry.authorEmail,
     message: entry.message,
     moderationStatus: entry.moderationStatus as ModerationStatus,
     createdAt: entry.createdAt.toISOString(),

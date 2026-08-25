@@ -17,12 +17,18 @@ export const contactRepository = {
     return prisma.contactSubmission.create({ data });
   },
 
-  async findMany(where?: Prisma.ContactSubmissionWhereInput, skip?: number, take?: number) {
+  async findMany(
+    where?: Prisma.ContactSubmissionWhereInput,
+    skip?: number,
+    take?: number,
+    orderBy: Prisma.ContactSubmissionOrderByWithRelationInput = { createdAt: 'desc' },
+  ) {
     return prisma.contactSubmission.findMany({
       where,
       skip,
       take,
-      orderBy: { createdAt: 'desc' },
+      orderBy,
+
       include: {
         visitor: {
           select: {

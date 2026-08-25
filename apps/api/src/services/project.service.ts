@@ -52,6 +52,12 @@ export const projectService = {
     if (query.categoryId) where.categoryId = query.categoryId;
     if (query.isFeatured !== undefined) where.isFeatured = query.isFeatured;
     if (query.authorId) where.authorId = query.authorId;
+    if (query.search) {
+      where.OR = [
+        { title: { contains: query.search, mode: 'insensitive' } },
+        { shortDescription: { contains: query.search, mode: 'insensitive' } },
+      ];
+    }
 
     const { skip, take, orderBy } = getPrismaPagination(query, 'createdAt');
     const [items, totalItems] = await Promise.all([

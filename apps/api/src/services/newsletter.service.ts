@@ -4,11 +4,12 @@ import { buildPagination, getPrismaPagination } from '@/utils/pagination';
 import { NotFoundError, ConflictError } from '@/utils/errors';
 import { generateSecureToken } from '@/utils/hash';
 import type {
+  ListNewsletterSubscribersQuery,
   NewsletterSubscribeInput,
   NewsletterSubscriberDto,
   PaginatedResponse,
-  PaginationQuery,
 } from '@portfolio/shared';
+
 import type { Prisma } from '@prisma/client';
 
 export const newsletterService = {
@@ -46,16 +47,33 @@ export const newsletterService = {
   },
 
   async listSubscribers(
-    query: PaginationQuery & { isConfirmed?: boolean },
+    query: ListNewsletterSubscribersQuery,
   ): Promise<PaginatedResponse<NewsletterSubscriberDto>> {
-    const where: Prisma.NewsletterSubscriberWhereInput = {
-      unsubscribedAt: null,
-    };
-    if (query.isConfirmed !== undefined) where.isConfirmed = query.isConfirmed;
+    const where: Prisma.NewsletterSubscriberWhereInput = {};
 
-    const { skip, take } = getPrismaPagination(query, 'createdAt');
+    if (query.status === 'confirmed' || query.isConfirmed === true) {
+      where.isConfirmed = true;
+      where.unsubscribedAt = null;
+    } else if (query.status === 'pending' || query.isConfirmed === false) {
+      where.isConfirmed = false;
+      where.unsubscribedAt = null;
+    } else if (query.status === 'unsubscribed') {
+      where.unsubscribedAt = { not: null };
+    } else {
+      // Default 'all' active subscribers
+      where.unsubscribedAt = null;
+    }
+
+    if (query.search) {
+      where.OR = [
+        { email: { contains: query.search, mode: 'insensitive' } },
+        { name: { contains: query.search, mode: 'insensitive' } },
+      ];
+    }
+
+    const { skip, take, orderBy } = getPrismaPagination(query, 'createdAt');
     const [items, totalItems] = await Promise.all([
-      newsletterRepository.findMany(where, skip, take),
+      newsletterRepository.findMany(where, skip, take, orderBy as any),
       newsletterRepository.count(where),
     ]);
 

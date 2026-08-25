@@ -2,12 +2,17 @@ import { prisma } from '@/config/prisma';
 import type { Prisma } from '@prisma/client';
 
 export const newsletterRepository = {
-  async findMany(where?: Prisma.NewsletterSubscriberWhereInput, skip?: number, take?: number) {
+  async findMany(
+    where?: Prisma.NewsletterSubscriberWhereInput,
+    skip?: number,
+    take?: number,
+    orderBy: Prisma.NewsletterSubscriberOrderByWithRelationInput = { createdAt: 'desc' },
+  ) {
     return prisma.newsletterSubscriber.findMany({
       where,
       skip,
       take,
-      orderBy: { createdAt: 'desc' },
+      orderBy,
     });
   },
 

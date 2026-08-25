@@ -8,8 +8,15 @@ import { AdminPageHeader } from '@/components/admin/ui/AdminPageHeader';
 import { AdminDataTable, type Column } from '@/components/admin/ui/AdminDataTable';
 import { StatusBadge } from '@/components/admin/ui/StatusBadge';
 import { ConfirmDialog } from '@/components/admin/ui/ConfirmDialog';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
-import { MessageSquare, Check, X, Trash2 } from 'lucide-react';
+import { Check, X, Trash2, Eye } from 'lucide-react';
 import { toast } from 'sonner';
 
 export default function AdminGuestbookPage() {
@@ -20,6 +27,10 @@ export default function AdminGuestbookPage() {
   const [totalPages, setTotalPages] = useState(1);
   const [totalItems, setTotalItems] = useState(0);
 
+  // Inspector Modal
+  const [selectedEntry, setSelectedEntry] = useState<GuestbookEntryDto | null>(null);
+
+  // Deletion state
   const [deleteTarget, setDeleteTarget] = useState<GuestbookEntryDto | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
 
@@ -53,6 +64,9 @@ export default function AdminGuestbookPage() {
         status,
       });
       toast.success(`Entry marked as ${status}`);
+      if (selectedEntry && selectedEntry.id === id) {
+        setSelectedEntry({ ...selectedEntry, moderationStatus: status });
+      }
       fetchEntries();
     } catch (err: any) {
       toast.error(err.message || 'Moderation failed');
@@ -65,6 +79,7 @@ export default function AdminGuestbookPage() {
     try {
       await apiClient.delete(`/guestbook/admin/${deleteTarget.id}`);
       toast.success('Guestbook entry deleted.');
+      if (selectedEntry?.id === deleteTarget.id) setSelectedEntry(null);
       setDeleteTarget(null);
       fetchEntries();
     } catch (err: any) {
@@ -79,7 +94,14 @@ export default function AdminGuestbookPage() {
       key: 'authorName',
       header: 'Author',
       render: (item) => (
-        <span className="font-bold text-foreground truncate block">{item.authorName}</span>
+        <div className="min-w-0">
+          <span className="font-bold text-foreground truncate block">{item.authorName}</span>
+          {item.authorEmail && (
+            <span className="text-[11px] text-accent font-mono truncate block">
+              {item.authorEmail}
+            </span>
+          )}
+        </div>
       ),
     },
     {
@@ -109,6 +131,16 @@ export default function AdminGuestbookPage() {
       className: 'text-right',
       render: (item) => (
         <div className="flex items-center justify-end gap-1" onClick={(e) => e.stopPropagation()}>
+          <Button
+            variant="ghost"
+            size="sm"
+            className="h-7 w-7 p-0 text-muted hover:text-foreground"
+            onClick={() => setSelectedEntry(item)}
+            title="View Details"
+          >
+            <Eye className="w-3.5 h-3.5" />
+          </Button>
+
           {item.moderationStatus !== ModerationStatus.Approved && (
             <Button
               variant="ghost"
@@ -159,6 +191,7 @@ export default function AdminGuestbookPage() {
         data={entries}
         keyExtractor={(item) => item.id}
         isLoading={isLoading}
+        onRowClick={(item) => setSelectedEntry(item)}
         filterSlot={
           <div className="flex items-center gap-1 bg-surface-muted p-1 rounded-lg border border-border">
             {['all', 'pending', 'approved', 'rejected'].map((st) => (
@@ -185,6 +218,75 @@ export default function AdminGuestbookPage() {
           onPageChange: setPage,
         }}
       />
+
+      {/* Guestbook Entry Inspector Modal */}
+      <Dialog
+        open={Boolean(selectedEntry)}
+        onOpenChange={(open) => !open && setSelectedEntry(null)}
+      >
+        <DialogContent className="max-w-xl bg-surface border-border p-6 max-h-[85vh] flex flex-col">
+          {selectedEntry && (
+            <div className="space-y-4 flex-1 flex flex-col">
+              <DialogHeader className="border-b border-border pb-3 flex flex-row items-center justify-between">
+                <div>
+                  <DialogTitle className="text-base font-bold text-foreground">
+                    Guestbook Signature from {selectedEntry.authorName}
+                  </DialogTitle>
+                  <DialogDescription className="text-xs text-muted font-mono mt-0.5">
+                    {selectedEntry.authorEmail ? `Email: ${selectedEntry.authorEmail} • ` : ''}
+                    Submitted: {new Date(selectedEntry.createdAt).toLocaleString()}
+                  </DialogDescription>
+                </div>
+
+                <StatusBadge status={selectedEntry.moderationStatus} />
+              </DialogHeader>
+
+              <div className="flex-1 overflow-y-auto p-4 rounded-lg bg-background border border-border text-xs text-foreground leading-relaxed whitespace-pre-wrap font-sans">
+                {selectedEntry.message}
+              </div>
+
+              <div className="flex items-center justify-between pt-3 border-t border-border">
+                <Button
+                  type="button"
+                  variant="destructive"
+                  size="sm"
+                  className="text-xs"
+                  onClick={() => {
+                    setDeleteTarget(selectedEntry);
+                  }}
+                >
+                  <Trash2 className="w-3.5 h-3.5 mr-1" /> Delete
+                </Button>
+
+                <div className="flex items-center gap-2">
+                  {selectedEntry.moderationStatus !== ModerationStatus.Rejected && (
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      className="text-xs text-destructive hover:bg-destructive/10"
+                      onClick={() => handleModerate(selectedEntry.id, ModerationStatus.Rejected)}
+                    >
+                      <X className="w-3.5 h-3.5 mr-1" /> Reject
+                    </Button>
+                  )}
+                  {selectedEntry.moderationStatus !== ModerationStatus.Approved && (
+                    <Button
+                      type="button"
+                      variant="primary"
+                      size="sm"
+                      className="text-xs"
+                      onClick={() => handleModerate(selectedEntry.id, ModerationStatus.Approved)}
+                    >
+                      <Check className="w-3.5 h-3.5 mr-1" /> Approve Entry
+                    </Button>
+                  )}
+                </div>
+              </div>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
 
       <ConfirmDialog
         isOpen={Boolean(deleteTarget)}

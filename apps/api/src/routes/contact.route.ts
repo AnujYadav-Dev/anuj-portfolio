@@ -1,5 +1,10 @@
 import { Router } from 'express';
-import { createContactSchema, paginationSchema, uuidParamSchema } from '@portfolio/shared';
+import {
+  createContactSchema,
+  listContactSubmissionsQuerySchema,
+  updateContactStatusSchema,
+  uuidParamSchema,
+} from '@portfolio/shared';
 import { contactController } from '@/controllers/contact.controller';
 import { authenticateAdmin } from '@/middleware/auth.middleware';
 import { strictRateLimiter } from '@/middleware/rateLimit.middleware';
@@ -20,7 +25,7 @@ router.post(
 router.get(
   '/admin/submissions',
   authenticateAdmin,
-  validateQuery(paginationSchema),
+  validateQuery(listContactSubmissionsQuerySchema),
   asyncHandler(contactController.listSubmissions),
 );
 router.get(
@@ -33,12 +38,14 @@ router.patch(
   '/admin/submissions/:id/status',
   authenticateAdmin,
   validateParams(uuidParamSchema),
+  validateBody(updateContactStatusSchema),
   asyncHandler(contactController.updateStatus),
 );
 router.put(
   '/admin/submissions/:id/status',
   authenticateAdmin,
   validateParams(uuidParamSchema),
+  validateBody(updateContactStatusSchema),
   asyncHandler(contactController.updateStatus),
 );
 router.delete(

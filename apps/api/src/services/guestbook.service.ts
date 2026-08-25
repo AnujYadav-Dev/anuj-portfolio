@@ -5,6 +5,7 @@ import { NotFoundError } from '@/utils/errors';
 import type {
   CreateGuestbookEntryInput,
   GuestbookEntryDto,
+  ListGuestbookAdminQuery,
   PaginatedResponse,
   PaginationQuery,
 } from '@portfolio/shared';
@@ -16,9 +17,9 @@ export const guestbookService = {
       moderationStatus: ModerationStatus.approved,
     };
 
-    const { skip, take } = getPrismaPagination(query, 'createdAt');
+    const { skip, take, orderBy } = getPrismaPagination(query, 'createdAt');
     const [items, totalItems] = await Promise.all([
-      guestbookRepository.findMany(where, skip, take),
+      guestbookRepository.findMany(where, skip, take, orderBy as any),
       guestbookRepository.count(where),
     ]);
 
@@ -29,14 +30,25 @@ export const guestbookService = {
   },
 
   async listAdminEntries(
-    query: PaginationQuery & { moderationStatus?: ModerationStatus },
+    query: ListGuestbookAdminQuery,
   ): Promise<PaginatedResponse<GuestbookEntryDto>> {
     const where: Prisma.GuestbookEntryWhereInput = {};
-    if (query.moderationStatus) where.moderationStatus = query.moderationStatus;
+    const status = query.status || query.moderationStatus;
+    if (status) {
+      where.moderationStatus = status as ModerationStatus;
+    }
 
-    const { skip, take } = getPrismaPagination(query, 'createdAt');
+    if (query.search) {
+      where.OR = [
+        { authorName: { contains: query.search, mode: 'insensitive' } },
+        { authorEmail: { contains: query.search, mode: 'insensitive' } },
+        { message: { contains: query.search, mode: 'insensitive' } },
+      ];
+    }
+
+    const { skip, take, orderBy } = getPrismaPagination(query, 'createdAt');
     const [items, totalItems] = await Promise.all([
-      guestbookRepository.findMany(where, skip, take),
+      guestbookRepository.findMany(where, skip, take, orderBy as any),
       guestbookRepository.count(where),
     ]);
 
@@ -60,12 +72,12 @@ export const guestbookService = {
     return mapGuestbookEntryToDto(created);
   },
 
-  async moderateEntry(id: string, status: ModerationStatus): Promise<GuestbookEntryDto> {
+  async moderateEntry(id: string, status: string): Promise<GuestbookEntryDto> {
     const entry = await guestbookRepository.findById(id);
     if (!entry) {
       throw new NotFoundError(`Guestbook entry '${id}' not found`);
     }
-    const updated = await guestbookRepository.updateModeration(id, status);
+    const updated = await guestbookRepository.updateModeration(id, status as ModerationStatus);
     return mapGuestbookEntryToDto(updated);
   },
 

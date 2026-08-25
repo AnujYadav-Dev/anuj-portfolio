@@ -79,14 +79,23 @@ export const contactService = {
   },
 
   async listSubmissions(
-    query: PaginationQuery & { status?: ContactStatus },
+    query: PaginationQuery & { status?: ContactStatus; search?: string },
   ): Promise<PaginatedResponse<ContactSubmissionDto>> {
     const where: Prisma.ContactSubmissionWhereInput = {};
     if (query.status) where.status = query.status;
 
-    const { skip, take } = getPrismaPagination(query, 'createdAt');
+    if (query.search) {
+      where.OR = [
+        { name: { contains: query.search, mode: 'insensitive' } },
+        { email: { contains: query.search, mode: 'insensitive' } },
+        { subject: { contains: query.search, mode: 'insensitive' } },
+        { message: { contains: query.search, mode: 'insensitive' } },
+      ];
+    }
+
+    const { skip, take, orderBy } = getPrismaPagination(query, 'createdAt');
     const [items, totalItems] = await Promise.all([
-      contactRepository.findMany(where, skip, take),
+      contactRepository.findMany(where, skip, take, orderBy as any),
       contactRepository.count(where),
     ]);
 

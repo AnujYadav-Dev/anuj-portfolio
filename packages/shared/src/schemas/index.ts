@@ -10,3 +10,4 @@ export * from './profile';
 export * from './site';
 export * from './interaction';
 export * from './analytics';
+export * from './media';

@@ -7,6 +7,51 @@
 
 ## 2025-08-25
 
+### Phase 3: Backend Infrastructure & Core Services
+
+#### Added: Security, Middleware & Logging (`apps/api/src/`)
+
+- `config/logger.ts` — Pino structured logger with pretty output in development.
+- `config/constants.ts` — JWT TTLs, upload limits, rate-limit windows, email retry settings.
+- `middleware/requestId.middleware.ts` — `x-request-id` correlation ID on every request.
+- `middleware/requestLogger.middleware.ts` — `pino-http` request/response logging.
+- `middleware/rateLimit.middleware.ts` — Strict, analytics, and public rate limiters.
+- `middleware/validate.middleware.ts` — Shared Zod validation (`validateBody`, `validateQuery`, `validateParams`).
+- `middleware/auth.middleware.ts` — `authenticateAdmin` JWT guard.
+- Extended `config/env.ts` — SMTP, Cloudinary, storage provider, upload dir, API public URL.
+
+#### Added: Authentication Engine
+
+- `services/token.service.ts` — HS256 access (15 min) and refresh (7 day) JWT signing/verification.
+- `services/auth.service.ts` — Login, refresh rotation, logout with SHA-256 hashed refresh tokens in `sessions`.
+- `controllers/auth.controller.ts`, `routes/auth.route.ts` — `POST /auth/login`, `/refresh`, `/logout`, `GET /auth/me`.
+
+#### Added: Media Pipeline
+
+- `storage/` — `StorageAdapter` interface with `LocalStorageAdapter` and `CloudinaryStorageAdapter`.
+- `services/media.service.ts` — Multer upload, MIME allowlist, image dimensions via `image-size`, `media` table persistence.
+- `routes/media.route.ts` — `POST /api/v1/media` (admin-only multipart upload).
+
+#### Added: Visitor Telemetry Engine
+
+- `services/geo.service.ts` — ip-api geolocation with timeout, in-memory cache, fail-open.
+- `services/tracker.service.ts` — Session upsert, page views, link clicks; respects `analytics_enabled` setting.
+- `routes/analytics.route.ts` — `POST /analytics/session`, `/view`, `/click`.
+
+#### Added: Email & Contact Service
+
+- `services/email.service.ts` — Nodemailer SMTP with 3-retry backoff, Mustache template rendering from `email_templates`.
+- `services/contact.service.ts` — Persist contact submissions, dispatch auto-reply + admin notification emails.
+- `routes/contact.route.ts` — `POST /api/v1/contact` with strict rate limiting.
+
+#### Updated: Shared Contracts (`packages/shared/src/`)
+
+- `constants/index.ts` — Added `RATE_LIMITED` error code and `EMAIL_TEMPLATE_KEYS`.
+- `schemas/media.ts` — Upload metadata schema (`altText`, `caption`).
+- `schemas/interaction.ts` — Optional `sessionId` on contact form for visitor linking.
+
+---
+
 ### Phase 2: Data Layer, Prisma Schema, Seeds & Shared Contracts
 
 #### Added: Prisma Database Layer (`apps/api/prisma/`)

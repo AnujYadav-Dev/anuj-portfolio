@@ -11,8 +11,8 @@
 | ------------ | --------------------------------- | ------------------------------------------------------------------------------ | ------------ |
 | **Phase 1**  | **Monorepo & Scaffolding**        | Workspace setup, tooling, initial API, Next.js baseline, tokens                | ✅ Completed |
 | **Phase 2**  | **Data Layer & Shared Contracts** | Prisma schema (38 tables), DB migrations, seeds, shared Zod schemas/DTOs       | ✅ Completed |
-| **Phase 3**  | **Backend Infrastructure**        | Auth (JWT), security middleware, logging, media upload, email, tracker engine  | ⏳ Next      |
-| **Phase 4**  | **Backend REST API Modules**      | Domain CRUD services, public endpoints, admin endpoints, search                | 📋 Planned   |
+| **Phase 3**  | **Backend Infrastructure**        | Auth (JWT), security middleware, logging, media upload, email, tracker engine  | ✅ Completed |
+| **Phase 4**  | **Backend REST API Modules**      | Domain CRUD services, public endpoints, admin endpoints, search                | ⏳ Next      |
 | **Phase 5**  | **Frontend UI & Data Layer**      | Design system primitives, TanStack Query client, Markdown/MDX engine, theme    | 📋 Planned   |
 | **Phase 6**  | **Public Frontend Pages**         | Dynamic Homepage, Works, Blogs, Research, About, Dynamic Catch-All, Guestbook  | 📋 Planned   |
 | **Phase 7**  | **Admin Dashboard & CMS**         | Auth gate, content editors, layout builder, media manager, analytics dashboard | 📋 Planned   |

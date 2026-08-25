@@ -36,6 +36,10 @@ prisma/migrations/*.sql.bak
 # Test coverage
 coverage/
 
+# Uploads (local media storage)
+uploads/
+apps/api/uploads/
+
 # Misc
 .vercel
 .turbo

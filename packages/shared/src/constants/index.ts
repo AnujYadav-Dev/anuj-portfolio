@@ -9,6 +9,7 @@ export const ERROR_CODES = {
   FORBIDDEN: 'FORBIDDEN',
   INTERNAL_ERROR: 'INTERNAL_ERROR',
   CONFLICT: 'CONFLICT',
+  RATE_LIMITED: 'RATE_LIMITED',
 } as const;
 
 /** Default pagination values. */
@@ -28,6 +29,12 @@ export const DEFAULT_HOMEPAGE_SECTIONS = [
   'latest_articles',
   'contact',
 ] as const;
+
+/** Email template keys stored in `email_templates.template_key`. */
+export const EMAIL_TEMPLATE_KEYS = {
+  CONTACT_AUTO_REPLY: 'contact_auto_reply',
+  CONTACT_ADMIN_NOTIFICATION: 'contact_admin_notification',
+} as const;
 
 /** Reserved site settings keys. */
 export const SITE_SETTING_KEYS = {

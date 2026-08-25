@@ -22,6 +22,7 @@ export interface CreateContactRequest {
   email: string;
   subject?: string;
   message: string;
+  sessionId?: string;
 }
 
 /** Guestbook entry DTO. */

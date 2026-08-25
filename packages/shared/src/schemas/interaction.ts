@@ -8,6 +8,7 @@ export const createContactSchema = z.object({
   email: z.string().email(),
   subject: z.string().max(300).optional(),
   message: z.string().min(1).max(5000),
+  sessionId: z.string().min(1).max(255).optional(),
 });
 
 export type CreateContactInput = z.infer<typeof createContactSchema>;

@@ -117,12 +117,12 @@ All documentation lives in the `docs/` folder. See [README.md](README.md) for th
 
 ## Current Status
 
-- **Phase:** Phase 2 complete — Data Layer, Prisma Schema, Seeds & Shared Contracts.
+- **Phase:** Phase 3 complete — Backend Infrastructure & Core Services.
 - **Database:** PostgreSQL schema fully migrated (38 models, 11 enums, indexes, constraints) and seeded with admin user, settings, homepage sections, navigation, sample content, and taxonomy.
-- **Backend:** Express + TypeScript + Prisma client configured with `@prisma/adapter-pg`.
+- **Backend:** Express API with JWT auth (access + refresh rotation), Pino logging, rate limiting, Zod validation middleware, media upload (local/Cloudinary), visitor telemetry, SMTP email service, and public contact endpoint.
 - **Frontend:** Next.js + Tailwind v4 with design tokens.
 - **Shared:** Complete domain-organized types, DTOs, enums, Zod validation schemas, and constants compiled and verified.
-- **Next step:** Phase 3 — Backend Infrastructure & Core Services (Auth JWT, security middleware, logging, media upload, email, tracker engine).
+- **Next step:** Phase 4 — Backend REST API Domain Modules (projects, blogs, pages, profile, layout, search).
 
 ---
 

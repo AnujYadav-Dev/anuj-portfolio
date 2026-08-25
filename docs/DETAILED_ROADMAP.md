@@ -44,8 +44,8 @@ The goal is to build an **ultra-premium, dynamic, database-driven developer port
 | ------------ | --------------------------------- | ------------------------------------------------------------------------------ | ------------ |
 | **Phase 1**  | **Monorepo & Scaffolding**        | Workspace setup, tooling, initial API, Next.js baseline, tokens                | ✅ Completed |
 | **Phase 2**  | **Data Layer & Shared Contracts** | Prisma schema (38 tables), DB migrations, seeds, shared Zod schemas/DTOs       | ✅ Completed |
-| **Phase 3**  | **Backend Infrastructure**        | Auth (JWT), security middleware, logging, media upload, email, tracker engine  | ⏳ Next      |
-| **Phase 4**  | **Backend REST API Modules**      | Domain CRUD services, public endpoints, admin endpoints, search                | 📋 Planned   |
+| **Phase 3**  | **Backend Infrastructure**        | Auth (JWT), security middleware, logging, media upload, email, tracker engine  | ✅ Completed |
+| **Phase 4**  | **Backend REST API Modules**      | Domain CRUD services, public endpoints, admin endpoints, search                | ⏳ Next      |
 | **Phase 5**  | **Frontend UI & Data Layer**      | Design system primitives, TanStack Query client, Markdown/MDX engine, theme    | 📋 Planned   |
 | **Phase 6**  | **Public Frontend Pages**         | Dynamic Homepage, Works, Blogs, Research, About, Dynamic Catch-All, Guestbook  | 📋 Planned   |
 | **Phase 7**  | **Admin Dashboard & CMS**         | Auth gate, content editors, layout builder, media manager, analytics dashboard | 📋 Planned   |
@@ -113,7 +113,7 @@ Establish the complete PostgreSQL schema in Prisma, create database migration sc
 
 ---
 
-### **PHASE 3: Backend Infrastructure & Core Services (`apps/api`)**
+### **PHASE 3: Backend Infrastructure & Core Services (`apps/api`)** _(Completed)_
 
 #### Objective:
 
@@ -121,41 +121,41 @@ Construct resilient server foundations, authentication mechanisms, file handling
 
 #### 3.1 Security, Middleware & Structured Logging
 
-- Implement **Pino** structured logger with request correlation IDs (`x-request-id`).
-- Rate limiting middleware (`express-rate-limit`) configured per endpoint class (strict on `/auth` & `/contact`, permissive on public GETs).
-- Zod validation middleware (`validateBody`, `validateQuery`, `validateParams`) that returns standard 422 errors.
+- [x] Implement **Pino** structured logger with request correlation IDs (`x-request-id`).
+- [x] Rate limiting middleware (`express-rate-limit`) configured per endpoint class (strict on `/auth` & `/contact`, permissive on public GETs).
+- [x] Zod validation middleware (`validateBody`, `validateQuery`, `validateParams`) that returns standard 422 errors.
 
 #### 3.2 Authentication & Authorization Engine
 
-- **Password Security:** Argon2 or bcrypt password hashing.
-- **JWT Token Service:**
+- [x] **Password Security:** bcrypt password hashing.
+- [x] **JWT Token Service:**
   - Access Token (15-min lifespan, HS256).
   - Refresh Token (7-day lifespan, stored hashed in `sessions` table).
   - Token rotation on refresh; automatic revocation on logout.
-- **Middleware:** `authenticateAdmin` guard verifying valid active session.
+- [x] **Middleware:** `authenticateAdmin` guard verifying valid active session.
 
 #### 3.3 Centralized Media Pipeline (`apps/api/src/services/media.service.ts`)
 
-- Multer file upload handler supporting images (WEBP, PNG, JPG, SVG) and documents (PDF).
-- Storage Adapter Pattern:
+- [x] Multer file upload handler supporting images (WEBP, PNG, JPG, SVG) and documents (PDF).
+- [x] Storage Adapter Pattern:
   - Local instance storage (development).
-  - Cloudinary / S3-compatible Object Storage (production).
-- Media record creation in `media` table with auto-computed dimensions, size, mime type, and alt text.
+  - Cloudinary Object Storage (production).
+- [x] Media record creation in `media` table with auto-computed dimensions, size, mime type, and alt text.
 
 #### 3.4 High-Accuracy Visitor Telemetry Engine (`apps/api/src/services/tracker.service.ts`)
 
-- **Visitor Fingerprinting:** Combine IP hash + User-Agent + Screen/Timezone metadata into a unique `visitor_sessions` record.
-- **Geo-Location Resolver:** MaxMind GeoIP / ip-api lookup (Country, Region, City, Latitude, Longitude, ISP).
-- **Telemetry Collector Endpoints:**
+- [x] **Visitor Fingerprinting:** Client `sessionId` with IP, User-Agent, Screen/Timezone metadata in `visitors` table.
+- [x] **Geo-Location Resolver:** ip-api lookup (Country, Region, City, Latitude, Longitude).
+- [x] **Telemetry Collector Endpoints:**
   - `POST /api/v1/analytics/session`: Registers or refreshes visitor session.
   - `POST /api/v1/analytics/view`: Records exact page view, route, referrer, time spent.
   - `POST /api/v1/analytics/click`: Records outbound link clicks (GitHub, Live demo, Resume download, Social links).
 
 #### 3.5 Communications & Dynamic Email Service
 
-- **Nodemailer SMTP Transporter** configured with retry logic.
-- Dynamic Template Engine: Mustache / lightweight template compiler fetching HTML templates from `email_templates` table.
-- Automatic email dispatch on contact form submission:
+- [x] **Nodemailer SMTP Transporter** configured with retry logic.
+- [x] Dynamic Template Engine: Mustache template compiler fetching HTML templates from `email_templates` table.
+- [x] Automatic email dispatch on contact form submission:
   1. _User Auto-Reply:_ Professional receipt acknowledgment.
   2. _Admin Alert:_ Instant notification with message details and visitor telemetry.
 

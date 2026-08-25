@@ -1,4 +1,4 @@
-// Analytics DTOs — visitor sessions, page views, link clicks.
+// Analytics DTOs — visitor sessions, page views, link clicks, and admin telemetry.
 
 import type { ClickTargetType } from './enums';
 
@@ -79,4 +79,69 @@ export interface RecordClickRequest {
   targetType: ClickTargetType;
   targetUrl: string;
   sourcePath?: string;
+}
+
+// ──────────────────────────────────────────────
+// Admin Analytics Overview & Reporting DTOs
+// ──────────────────────────────────────────────
+
+export type AnalyticsPeriod = '24h' | '7d' | '30d' | '90d' | 'all';
+
+export interface BreakdownItem {
+  name: string;
+  count: number;
+  percentage: number;
+}
+
+export interface AdminAnalyticsOverviewDto {
+  totalPageViews: number;
+  uniqueVisitors: number;
+  totalSessions: number;
+  avgSessionDurationSeconds: number;
+  bounceRatePercent: number;
+  totalLinkClicks: number;
+  topCountries: BreakdownItem[];
+  topReferrers: BreakdownItem[];
+  deviceBreakdown: BreakdownItem[];
+  browserBreakdown: BreakdownItem[];
+  osBreakdown: BreakdownItem[];
+}
+
+export interface AnalyticsTimeSeriesPoint {
+  date: string;
+  pageViews: number;
+  uniqueVisitors: number;
+}
+
+export interface AdminTopPageItem {
+  path: string;
+  title: string | null;
+  views: number;
+  uniqueVisitors: number;
+  avgDurationSeconds: number | null;
+}
+
+export interface AdminVisitorLogItem {
+  id: string;
+  sessionId: string;
+  ipAddress: string;
+  country: string | null;
+  city: string | null;
+  deviceType: string | null;
+  browser: string | null;
+  os: string | null;
+  referrerSource: string | null;
+  firstVisitedAt: string;
+  lastVisitedAt: string;
+  visitCount: number;
+  pageViewsCount: number;
+  recentPages: Array<{ path: string; viewedAt: string; title: string | null }>;
+}
+
+export interface AdminClickItem {
+  targetType: ClickTargetType;
+  targetUrl: string;
+  sourcePath: string | null;
+  count: number;
+  lastClickedAt: string;
 }

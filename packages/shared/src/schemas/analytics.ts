@@ -39,3 +39,10 @@ export const recordClickSchema = z.object({
 });
 
 export type RecordClickInput = z.infer<typeof recordClickSchema>;
+
+/** Admin analytics query schema. */
+export const analyticsQuerySchema = z.object({
+  period: z.enum(['24h', '7d', '30d', '90d', 'all']).default('30d'),
+});
+
+export type AnalyticsQueryInput = z.infer<typeof analyticsQuerySchema>;

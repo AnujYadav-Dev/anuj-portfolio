@@ -1,4 +1,4 @@
-// Media DTO.
+// Media DTOs.
 
 import type { MediaType } from './enums';
 
@@ -15,4 +15,19 @@ export interface MediaDto {
   altText: string | null;
   caption: string | null;
   createdAt: string;
+}
+
+/** Query parameters for listing media assets. */
+export interface ListMediaQuery {
+  page?: number;
+  pageSize?: number;
+  mediaType?: MediaType;
+  search?: string;
+}
+
+/** Update media metadata request. */
+export interface UpdateMediaRequest {
+  filename?: string;
+  altText?: string | null;
+  caption?: string | null;
 }

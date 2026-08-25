@@ -1,10 +1,16 @@
-import type { LoginInput, RefreshTokenInput, AuthResponse } from '@portfolio/shared';
+import type {
+  LoginInput,
+  RefreshTokenInput,
+  AuthResponse,
+  UpdateProfileInput,
+  ChangePasswordInput,
+} from '@portfolio/shared';
 import { authorRepository } from '@/repositories/author.repository';
 import { sessionRepository } from '@/repositories/session.repository';
 import { tokenService } from '@/services/token.service';
-import { verifyPassword } from '@/utils/password';
+import { verifyPassword, hashPassword } from '@/utils/password';
 import { mapAuthorToDto } from '@/utils/mappers';
-import { UnauthorizedError } from '@/utils/errors';
+import { UnauthorizedError, NotFoundError, ValidationError } from '@/utils/errors';
 import { hashToken, generateSecureToken } from '@/utils/hash';
 import { DUMMY_PASSWORD_HASH, REFRESH_TOKEN_TTL_SECONDS } from '@/config/constants';
 
@@ -105,5 +111,47 @@ export const authService = {
   async logout(refreshToken: string): Promise<void> {
     const refreshTokenHash = hashToken(refreshToken);
     await sessionRepository.deleteByRefreshTokenHash(refreshTokenHash);
+  },
+
+  async updateProfile(authorId: string, input: UpdateProfileInput) {
+    const existing = await authorRepository.findByIdWithAvatar(authorId);
+    if (!existing) {
+      throw new NotFoundError('Author not found');
+    }
+
+    if (input.email && input.email !== existing.email) {
+      const emailConflict = await authorRepository.findByEmail(input.email);
+      if (emailConflict && emailConflict.id !== authorId) {
+        throw new ValidationError('Email already in use', {
+          email: ['This email is already registered'],
+        });
+      }
+    }
+
+    const updated = await authorRepository.update(authorId, {
+      displayName: input.displayName,
+      username: input.username,
+      email: input.email,
+      bio: input.bio,
+    });
+
+    return mapAuthorToDto(updated);
+  },
+
+  async changePassword(authorId: string, input: ChangePasswordInput) {
+    const author = await authorRepository.findByIdWithAvatar(authorId);
+    if (!author) {
+      throw new NotFoundError('Author not found');
+    }
+
+    const isValid = await verifyPassword(input.currentPassword, author.passwordHash);
+    if (!isValid) {
+      throw new ValidationError('Invalid current password', {
+        currentPassword: ['Current password does not match'],
+      });
+    }
+
+    const newHash = await hashPassword(input.newPassword);
+    await authorRepository.updatePassword(authorId, newHash);
   },
 };

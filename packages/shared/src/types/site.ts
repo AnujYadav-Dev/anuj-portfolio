@@ -21,6 +21,13 @@ export interface HomepageSectionDto {
   config: Record<string, unknown>;
 }
 
+/** Update homepage section request. */
+export interface UpdateHomepageSectionRequest {
+  title?: string | null;
+  isEnabled?: boolean;
+  config?: Record<string, unknown>;
+}
+
 /** Content block DTO. */
 export interface ContentBlockDto {
   id: string;
@@ -35,6 +42,23 @@ export interface ContentBlockDto {
   homepageSectionId: string | null;
 }
 
+/** Create content block request. */
+export interface CreateContentBlockRequest {
+  blockType: BlockType;
+  title?: string;
+  content?: string;
+  mediaUrl?: string;
+  config?: Record<string, unknown>;
+  sortOrder?: number;
+  isEnabled?: boolean;
+  pageId?: string;
+  homepageSectionId?: string;
+}
+
+/** Update content block request. */
+export interface UpdateContentBlockRequest extends Partial<CreateContentBlockRequest> {}
+
+
 /** Navigation item DTO. */
 export interface NavItemDto {
   id: string;
@@ -47,6 +71,21 @@ export interface NavItemDto {
   parentId: string | null;
   children: NavItemDto[];
 }
+
+/** Create navigation item request. */
+export interface CreateNavItemRequest {
+  label: string;
+  url: string;
+  location?: NavLocation;
+  isExternal?: boolean;
+  sortOrder?: number;
+  isEnabled?: boolean;
+  parentId?: string | null;
+}
+
+/** Update navigation item request. */
+export interface UpdateNavItemRequest extends Partial<CreateNavItemRequest> {}
+
 
 /** Dynamic page DTO. */
 export interface PageDto extends SeoFields {
@@ -61,4 +100,41 @@ export interface PageDto extends SeoFields {
   createdAt: string;
   updatedAt: string;
   contentBlocks: ContentBlockDto[];
+}
+
+/** Create page request payload. */
+export interface CreatePageRequest {
+  title: string;
+  slug: string;
+  content?: string;
+  status?: ContentStatus;
+  isNavVisible?: boolean;
+  sortOrder?: number;
+  seoTitle?: string;
+  seoDescription?: string;
+  seoKeywords?: string;
+  ogImageId?: string;
+}
+
+/** Update page request payload. */
+export interface UpdatePageRequest extends Partial<CreatePageRequest> {}
+
+
+/** Email template DTO. */
+export interface EmailTemplateDto {
+  id: string;
+  templateKey: string;
+  subject: string;
+  bodyHtml: string;
+  bodyText: string | null;
+  variables: string[];
+  createdAt: string;
+  updatedAt: string;
+}
+
+/** Update email template request. */
+export interface UpdateEmailTemplateRequest {
+  subject?: string;
+  bodyHtml?: string;
+  bodyText?: string | null;
 }

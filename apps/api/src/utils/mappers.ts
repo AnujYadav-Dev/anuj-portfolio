@@ -48,7 +48,9 @@ import type {
   ContentBlockDto,
   ContentVersionDto,
   EducationDto,
+  EmailTemplateDto,
   ExperienceDto,
+
   GalleryItemDto,
   GuestbookEntryDto,
   HomepageSectionDto,
@@ -784,4 +786,19 @@ export function mimeTypeToMediaType(mimeType: string): MediaType {
   return MediaType.Other;
 }
 
+export function mapEmailTemplateToDto(t: EmailTemplate): EmailTemplateDto {
+  return {
+    id: t.id,
+    templateKey: t.templateKey,
+    subject: t.subject,
+    bodyHtml: t.bodyHtml,
+    bodyText: t.bodyText,
+    variables: t.variables,
+    createdAt: t.updatedAt.toISOString(),
+    updatedAt: t.updatedAt.toISOString(),
+  };
+}
+
+
 export type { EmailTemplate };
+

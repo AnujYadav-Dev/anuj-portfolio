@@ -166,3 +166,156 @@ export interface GalleryItemDto {
   altText: string | null;
   createdAt: string;
 }
+
+/** Profile request types. */
+export interface CreateAboutSectionRequest {
+  title: string;
+  slug: string;
+  content?: string;
+  icon?: string;
+  sortOrder?: number;
+  isEnabled?: boolean;
+  seoTitle?: string;
+  seoDescription?: string;
+}
+export interface UpdateAboutSectionRequest extends Partial<CreateAboutSectionRequest> {}
+
+export interface CreateSkillCategoryRequest {
+  name: string;
+  slug: string;
+  description?: string;
+  icon?: string;
+  sortOrder?: number;
+  isEnabled?: boolean;
+}
+export interface UpdateSkillCategoryRequest extends Partial<CreateSkillCategoryRequest> {}
+
+export interface CreateSkillRequest {
+  categoryId: string;
+  name: string;
+  slug: string;
+  icon?: string;
+  proficiency?: number;
+  sortOrder?: number;
+  isEnabled?: boolean;
+}
+export interface UpdateSkillRequest extends Partial<CreateSkillRequest> {}
+
+export interface CreateExperienceRequest {
+  companyName: string;
+  role: string;
+  location?: string;
+  startDate: string;
+  endDate?: string;
+  isCurrent?: boolean;
+  description?: string;
+  technologies?: string[];
+  companyUrl?: string;
+  companyLogoId?: string;
+  sortOrder?: number;
+  isEnabled?: boolean;
+}
+export interface UpdateExperienceRequest extends Partial<CreateExperienceRequest> {}
+
+export interface CreateEducationRequest {
+  institution: string;
+  degree: string;
+  fieldOfStudy?: string;
+  location?: string;
+  startDate: string;
+  endDate?: string;
+  isCurrent?: boolean;
+  grade?: string;
+  description?: string;
+  activities?: string;
+  institutionLogoId?: string;
+  sortOrder?: number;
+  isEnabled?: boolean;
+}
+export interface UpdateEducationRequest extends Partial<CreateEducationRequest> {}
+
+export interface CreateCertificateRequest {
+  name: string;
+  issuingOrganization: string;
+  issueDate: string;
+  expiryDate?: string;
+  credentialId?: string;
+  credentialUrl?: string;
+  certificateImageId?: string;
+  sortOrder?: number;
+  isEnabled?: boolean;
+}
+export interface UpdateCertificateRequest extends Partial<CreateCertificateRequest> {}
+
+export interface CreateAchievementRequest {
+  title: string;
+  description?: string;
+  date?: string;
+  issuer?: string;
+  url?: string;
+  imageId?: string;
+  isFeatured?: boolean;
+  sortOrder?: number;
+  isEnabled?: boolean;
+}
+export interface UpdateAchievementRequest extends Partial<CreateAchievementRequest> {}
+
+export interface CreateTimelineEventRequest {
+  title: string;
+  description?: string;
+  eventType: TimelineEventType;
+  date: string;
+  endDate?: string;
+  icon?: string;
+  url?: string;
+  sortOrder?: number;
+  isEnabled?: boolean;
+}
+export interface UpdateTimelineEventRequest extends Partial<CreateTimelineEventRequest> {}
+
+export interface CreateResumeRequest {
+  title: string;
+  versionLabel?: string;
+  fileId?: string;
+  isActive?: boolean;
+}
+export interface UpdateResumeRequest extends Partial<CreateResumeRequest> {}
+
+export interface CreateSocialLinkRequest {
+  platform: string;
+  label: string;
+  url: string;
+  icon?: string;
+  sortOrder?: number;
+  isEnabled?: boolean;
+}
+export interface UpdateSocialLinkRequest extends Partial<CreateSocialLinkRequest> {}
+
+export interface CreateOpensourceRequest {
+  name: string;
+  description?: string;
+  url: string;
+  role?: string;
+  stars?: number;
+  forks?: number;
+  language?: string;
+  isFeatured?: boolean;
+  sortOrder?: number;
+  isEnabled?: boolean;
+}
+export interface UpdateOpensourceRequest extends Partial<CreateOpensourceRequest> {}
+
+export type CreateOpensourceContributionRequest = CreateOpensourceRequest;
+export type UpdateOpensourceContributionRequest = UpdateOpensourceRequest;
+
+export interface CreateGalleryItemRequest {
+  mediaId: string;
+  title?: string | null;
+  description?: string | null;
+  category?: string | null;
+  sortOrder?: number;
+  isEnabled?: boolean;
+}
+export interface UpdateGalleryItemRequest extends Partial<CreateGalleryItemRequest> {}
+
+

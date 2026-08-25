@@ -39,7 +39,9 @@ import { siteSettingRouter } from '@/routes/siteSetting.route';
 import { guestbookRouter } from '@/routes/guestbook.route';
 import { testimonialRouter } from '@/routes/testimonial.route';
 import { newsletterRouter } from '@/routes/newsletter.route';
+import { emailTemplateRouter } from '@/routes/emailTemplate.route';
 import { tagRouter } from '@/routes/tag.route';
+
 import { searchRouter } from '@/routes/search.route';
 import { statsRouter } from '@/routes/stats.route';
 import { schedulerService } from '@/services/scheduler.service';
@@ -109,6 +111,8 @@ apiRouter.use('/contact', contactRouter);
 apiRouter.use('/guestbook', guestbookRouter);
 apiRouter.use('/testimonials', testimonialRouter);
 apiRouter.use('/newsletter', newsletterRouter);
+apiRouter.use('/email-templates', emailTemplateRouter);
+
 
 // Discovery, Taxonomy & Metrics
 apiRouter.use('/tags', tagRouter);

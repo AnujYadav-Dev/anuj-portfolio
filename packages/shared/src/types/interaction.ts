@@ -55,6 +55,23 @@ export interface TestimonialDto {
   isEnabled: boolean;
 }
 
+/** Create testimonial request payload. */
+export interface CreateTestimonialRequest {
+  authorName: string;
+  authorTitle?: string;
+  authorCompany?: string;
+  content: string;
+  authorAvatarId?: string;
+  url?: string;
+  isFeatured?: boolean;
+  sortOrder?: number;
+  isEnabled?: boolean;
+}
+
+/** Update testimonial request payload. */
+export interface UpdateTestimonialRequest extends Partial<CreateTestimonialRequest> {}
+
+
 /** Newsletter subscribe request. */
 export interface NewsletterSubscribeRequest {
   email: string;

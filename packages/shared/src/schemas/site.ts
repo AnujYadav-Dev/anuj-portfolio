@@ -1,5 +1,5 @@
 // Site configuration Zod validation schemas — homepage sections,
-// content blocks, nav items, pages, site settings.
+// content blocks, nav items, pages, site settings, email templates.
 
 import { z } from 'zod';
 import { slugSchema, paginationSchema, seoFieldsSchema } from './common';
@@ -78,3 +78,12 @@ export const listPagesQuerySchema = paginationSchema.extend({
 });
 
 export type ListPagesQuery = z.infer<typeof listPagesQuerySchema>;
+
+/** Update email template schema. */
+export const updateEmailTemplateSchema = z.object({
+  subject: z.string().min(1).max(300).optional(),
+  bodyHtml: z.string().min(1).optional(),
+  bodyText: z.string().nullable().optional(),
+});
+
+export type UpdateEmailTemplateInput = z.infer<typeof updateEmailTemplateSchema>;

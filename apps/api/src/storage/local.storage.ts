@@ -1,4 +1,4 @@
-import { mkdir, writeFile } from 'node:fs/promises';
+import { mkdir, writeFile, unlink } from 'node:fs/promises';
 import path from 'node:path';
 import { config } from '@/config/env';
 import type { StorageAdapter, StorageResult } from '@/storage/storage.adapter';
@@ -19,5 +19,15 @@ export class LocalStorageAdapter implements StorageAdapter {
     const url = `${config.API_PUBLIC_URL.replace(/\/$/, '')}/uploads/${filename}`;
 
     return { url, storedName: filename };
+  }
+
+  async delete(filenameOrUrl: string): Promise<void> {
+    try {
+      const filename = path.basename(filenameOrUrl);
+      const filePath = path.join(this.uploadDir, filename);
+      await unlink(filePath);
+    } catch {
+      // Ignore if file doesn't exist on disk
+    }
   }
 }

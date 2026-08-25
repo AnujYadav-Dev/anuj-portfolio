@@ -5,6 +5,8 @@ import { authenticateAdmin } from '@/middleware/auth.middleware';
 import { asyncHandler } from '@/middleware/errorHandler';
 import { MAX_UPLOAD_BYTES } from '@/config/constants';
 import { ValidationError } from '@/utils/errors';
+import { validateBody, validateParams, validateQuery } from '@/middleware/validate.middleware';
+import { listMediaSchema, updateMediaSchema, uuidParamSchema } from '@portfolio/shared';
 
 const router = Router();
 
@@ -41,6 +43,35 @@ router.post(
     });
   },
   asyncHandler(mediaController.upload),
+);
+
+router.get(
+  '/',
+  authenticateAdmin,
+  validateQuery(listMediaSchema),
+  asyncHandler(mediaController.list),
+);
+
+router.get(
+  '/:id',
+  authenticateAdmin,
+  validateParams(uuidParamSchema),
+  asyncHandler(mediaController.getById),
+);
+
+router.put(
+  '/:id',
+  authenticateAdmin,
+  validateParams(uuidParamSchema),
+  validateBody(updateMediaSchema),
+  asyncHandler(mediaController.update),
+);
+
+router.delete(
+  '/:id',
+  authenticateAdmin,
+  validateParams(uuidParamSchema),
+  asyncHandler(mediaController.delete),
 );
 
 export { router as mediaRouter };

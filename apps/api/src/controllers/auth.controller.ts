@@ -1,7 +1,13 @@
 import type { Request, Response } from 'express';
-import type { LoginInput, RefreshTokenInput } from '@portfolio/shared';
+import type {
+  LoginInput,
+  RefreshTokenInput,
+  UpdateProfileInput,
+  ChangePasswordInput,
+} from '@portfolio/shared';
 import { authService } from '@/services/auth.service';
 import { getClientIp, normalizeIpForDb } from '@/utils/ip';
+import { ValidationError } from '@/utils/errors';
 
 export const authController = {
   async login(req: Request, res: Response): Promise<void> {
@@ -27,5 +33,23 @@ export const authController = {
 
   async me(req: Request, res: Response): Promise<void> {
     res.json({ data: req.author });
+  },
+
+  async updateProfile(req: Request, res: Response): Promise<void> {
+    if (!req.author) {
+      throw new ValidationError('Authentication required');
+    }
+    const input = req.validatedBody as UpdateProfileInput;
+    const result = await authService.updateProfile(req.author.id, input);
+    res.json({ data: result });
+  },
+
+  async changePassword(req: Request, res: Response): Promise<void> {
+    if (!req.author) {
+      throw new ValidationError('Authentication required');
+    }
+    const input = req.validatedBody as ChangePasswordInput;
+    await authService.changePassword(req.author.id, input);
+    res.status(204).send();
   },
 };

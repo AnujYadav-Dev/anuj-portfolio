@@ -31,3 +31,18 @@ export interface AuthResponse {
 export interface RefreshTokenRequest {
   refreshToken: string;
 }
+
+/** Update author profile request. */
+export interface UpdateProfileRequest {
+  displayName?: string;
+  username?: string;
+  email?: string;
+  bio?: string | null;
+  avatarUrl?: string | null;
+}
+
+/** Change password request. */
+export interface ChangePasswordRequest {
+  currentPassword: string;
+  newPassword: string;
+}

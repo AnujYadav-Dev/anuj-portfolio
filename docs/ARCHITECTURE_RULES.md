@@ -47,6 +47,7 @@ portfolio/
 ## 2. Frontend / Backend Separation
 
 ### Frontend (Next.js) responsibilities:
+
 - Rendering pages and components
 - Client-side routing and navigation
 - Design system and styling
@@ -55,6 +56,7 @@ portfolio/
 - SEO rendering (meta tags, JSON-LD from API data)
 
 ### Backend (Express) responsibilities:
+
 - API endpoints and HTTP handling
 - Authentication and authorization
 - Server-side validation (using shared Zod schemas)
@@ -66,6 +68,7 @@ portfolio/
 - Scheduled tasks (content publishing, GitHub sync)
 
 ### Boundary rules:
+
 - The frontend MUST NOT import from `apps/api/`.
 - The backend MUST NOT import from `apps/web/`.
 - Both MUST import shared code only from `packages/shared/`.
@@ -79,15 +82,16 @@ portfolio/
 Request → Route → Middleware → Controller → Service → Repository → Prisma → DB
 ```
 
-| Layer | Responsibility | Rules |
-|---|---|---|
-| **Routes** | Map HTTP methods/paths to controllers | No logic. No DB access. |
-| **Middleware** | Cross-cutting: auth, validation, rate limiting, logging | Reusable. No business logic. |
-| **Controllers** | Parse request, call service, format response | No DB access. No business logic. |
-| **Services** | Business logic, orchestration, DTO mapping | No HTTP concerns. May call multiple repositories. |
-| **Repositories** | Database queries via Prisma | No business logic. Return raw Prisma types. |
+| Layer            | Responsibility                                          | Rules                                             |
+| ---------------- | ------------------------------------------------------- | ------------------------------------------------- |
+| **Routes**       | Map HTTP methods/paths to controllers                   | No logic. No DB access.                           |
+| **Middleware**   | Cross-cutting: auth, validation, rate limiting, logging | Reusable. No business logic.                      |
+| **Controllers**  | Parse request, call service, format response            | No DB access. No business logic.                  |
+| **Services**     | Business logic, orchestration, DTO mapping              | No HTTP concerns. May call multiple repositories. |
+| **Repositories** | Database queries via Prisma                             | No business logic. Return raw Prisma types.       |
 
 ### Rules:
+
 - Controllers MUST NOT call repositories directly.
 - Services MUST NOT access `req` or `res` objects.
 - Repositories MUST NOT throw HTTP errors — throw domain errors.
@@ -100,6 +104,7 @@ Request → Route → Middleware → Controller → Service → Repository → P
 The `packages/shared/` package contains code used by both frontend and backend.
 
 ### What belongs in shared:
+
 - DTOs and response types (e.g., `ProjectResponse`, `BlogPostListItem`)
 - Request types (e.g., `CreateProjectRequest`)
 - Zod validation schemas
@@ -108,6 +113,7 @@ The `packages/shared/` package contains code used by both frontend and backend.
 - Error code constants
 
 ### What does NOT belong in shared:
+
 - React components or hooks
 - Express middleware or request/response types
 - Prisma client or model types
@@ -120,14 +126,15 @@ The `packages/shared/` package contains code used by both frontend and backend.
 
 ### Component categories:
 
-| Category | Location | Purpose |
-|---|---|---|
-| **UI primitives** | `components/ui/` | Design system components: Button, Card, Input, Badge, Modal, etc. |
-| **Feature components** | `components/[feature]/` | Feature-specific: `ProjectCard`, `BlogList`, `TimelineEvent` |
-| **Layout components** | `components/layout/` | Page shells: `Header`, `Footer`, `Sidebar`, `PageContainer` |
-| **Admin components** | `components/admin/` | Admin panel UI: forms, tables, editors |
+| Category               | Location                | Purpose                                                           |
+| ---------------------- | ----------------------- | ----------------------------------------------------------------- |
+| **UI primitives**      | `components/ui/`        | Design system components: Button, Card, Input, Badge, Modal, etc. |
+| **Feature components** | `components/[feature]/` | Feature-specific: `ProjectCard`, `BlogList`, `TimelineEvent`      |
+| **Layout components**  | `components/layout/`    | Page shells: `Header`, `Footer`, `Sidebar`, `PageContainer`       |
+| **Admin components**   | `components/admin/`     | Admin panel UI: forms, tables, editors                            |
 
 ### Rules:
+
 - UI primitives MUST NOT contain business logic or API calls.
 - UI primitives MUST accept data via props — never fetch their own data.
 - Feature components SHOULD compose UI primitives.
@@ -139,10 +146,12 @@ The `packages/shared/` package contains code used by both frontend and backend.
 ## 6. API Layer Rules
 
 ### Versioning:
+
 - All API routes MUST be prefixed with `/api/v1/`.
 - Breaking changes require a new version (`/api/v2/`), not modifications to existing endpoints.
 
 ### Route organization:
+
 ```
 /api/v1/projects         GET, POST
 /api/v1/projects/:id     GET, PUT, DELETE
@@ -155,6 +164,7 @@ The `packages/shared/` package contains code used by both frontend and backend.
 ```
 
 ### Public vs Admin:
+
 - Public endpoints serve published content only (`status = 'published'`).
 - Admin endpoints require authentication and can access all statuses.
 - Admin routes SHOULD be prefixed with `/api/v1/admin/` where the resource semantics differ from public (e.g., listing drafts).
@@ -198,7 +208,7 @@ Do NOT create individual Next.js page files for each dynamic page.
 
 ### Homepage sections:
 
-The homepage MUST fetch its section configuration from the `homepage_sections` API and render sections in the returned order. The frontend MUST have a registry mapping `section_key` → React component, but the *order*, *visibility*, and *configuration* come from the database.
+The homepage MUST fetch its section configuration from the `homepage_sections` API and render sections in the returned order. The frontend MUST have a registry mapping `section_key` → React component, but the _order_, _visibility_, and _configuration_ come from the database.
 
 ```typescript
 // Section registry — maps section_key to component
@@ -232,18 +242,21 @@ Navigation items MUST be fetched from the `nav_items` API. The frontend MUST NOT
 ## 10. Reusable Utility Patterns
 
 ### Frontend utilities (`apps/web/lib/`):
+
 - `api.ts` — API client with base URL, auth headers, error handling.
 - `format.ts` — Date, number, reading time formatters.
 - `seo.ts` — Meta tag and JSON-LD generators.
 - `cn.ts` — Class name merger (clsx + tailwind-merge).
 
 ### Backend utilities (`apps/api/src/utils/`):
+
 - `pagination.ts` — Pagination parameter parsing and response building.
 - `slug.ts` — Slug generation and validation.
 - `mapper.ts` — Prisma model → DTO mapping helpers.
 - `errors.ts` — Custom error classes.
 
 ### Shared utilities (`packages/shared/`):
+
 - Type definitions and Zod schemas only.
 - No runtime logic that depends on Node.js or browser APIs.
 

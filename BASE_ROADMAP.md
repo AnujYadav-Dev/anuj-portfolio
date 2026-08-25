@@ -7,18 +7,18 @@
 
 ## 🚦 Phase Summary
 
-| Phase | Title | Focus Area | Status |
-|---|---|---|---|
-| **Phase 1** | **Monorepo & Scaffolding** | Workspace setup, tooling, initial API, Next.js baseline, tokens | ✅ Completed |
-| **Phase 2** | **Data Layer & Shared Contracts** | Prisma schema (38 tables), DB migrations, seeds, shared Zod schemas/DTOs | ⏳ Next |
-| **Phase 3** | **Backend Infrastructure** | Auth (JWT), security middleware, logging, media upload, email, tracker engine | 📋 Planned |
-| **Phase 4** | **Backend REST API Modules** | Domain CRUD services, public endpoints, admin endpoints, search | 📋 Planned |
-| **Phase 5** | **Frontend UI & Data Layer** | Design system primitives, TanStack Query client, Markdown/MDX engine, theme | 📋 Planned |
-| **Phase 6** | **Public Frontend Pages** | Dynamic Homepage, Works, Blogs, Research, About, Dynamic Catch-All, Guestbook | 📋 Planned |
-| **Phase 7** | **Admin Dashboard & CMS** | Auth gate, content editors, layout builder, media manager, analytics dashboard | 📋 Planned |
-| **Phase 8** | **SEO, RSS, Feeds & Search** | Dynamic sitemap, RSS feed, OpenGraph generation, JSON-LD, Command Palette | 📋 Planned |
-| **Phase 9** | **Testing, QA & Optimization** | Unit/E2E tests, WCAG 2.2 AA audit, Lighthouse 95+, security hardening | 📋 Planned |
-| **Phase 10** | **Deployment & CI/CD** | Database provisioning, API deployment, Next.js deployment, GitHub Actions | 📋 Planned |
+| Phase        | Title                             | Focus Area                                                                     | Status       |
+| ------------ | --------------------------------- | ------------------------------------------------------------------------------ | ------------ |
+| **Phase 1**  | **Monorepo & Scaffolding**        | Workspace setup, tooling, initial API, Next.js baseline, tokens                | ✅ Completed |
+| **Phase 2**  | **Data Layer & Shared Contracts** | Prisma schema (38 tables), DB migrations, seeds, shared Zod schemas/DTOs       | ⏳ Next      |
+| **Phase 3**  | **Backend Infrastructure**        | Auth (JWT), security middleware, logging, media upload, email, tracker engine  | 📋 Planned   |
+| **Phase 4**  | **Backend REST API Modules**      | Domain CRUD services, public endpoints, admin endpoints, search                | 📋 Planned   |
+| **Phase 5**  | **Frontend UI & Data Layer**      | Design system primitives, TanStack Query client, Markdown/MDX engine, theme    | 📋 Planned   |
+| **Phase 6**  | **Public Frontend Pages**         | Dynamic Homepage, Works, Blogs, Research, About, Dynamic Catch-All, Guestbook  | 📋 Planned   |
+| **Phase 7**  | **Admin Dashboard & CMS**         | Auth gate, content editors, layout builder, media manager, analytics dashboard | 📋 Planned   |
+| **Phase 8**  | **SEO, RSS, Feeds & Search**      | Dynamic sitemap, RSS feed, OpenGraph generation, JSON-LD, Command Palette      | 📋 Planned   |
+| **Phase 9**  | **Testing, QA & Optimization**    | Unit/E2E tests, WCAG 2.2 AA audit, Lighthouse 95+, security hardening          | 📋 Planned   |
+| **Phase 10** | **Deployment & CI/CD**            | Database provisioning, API deployment, Next.js deployment, GitHub Actions      | 📋 Planned   |
 
 ---
 

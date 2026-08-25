@@ -1,14 +1,12 @@
-// Shared Zod validation schemas
-// Add request/response validation schemas here as features are built.
+// Shared Zod validation schemas — barrel export.
+// All request and query schemas organized by domain.
 
-import { z } from 'zod';
-
-/** Reusable pagination query parameters. */
-export const paginationSchema = z.object({
-  page: z.coerce.number().int().min(1).default(1),
-  pageSize: z.coerce.number().int().min(1).max(100).default(20),
-  sortBy: z.string().optional(),
-  sortOrder: z.enum(['asc', 'desc']).default('desc'),
-});
-
-export type PaginationQuery = z.infer<typeof paginationSchema>;
+export * from './common';
+export * from './auth';
+export * from './project';
+export * from './blog';
+export * from './research';
+export * from './profile';
+export * from './site';
+export * from './interaction';
+export * from './analytics';

@@ -235,15 +235,15 @@ export function Button({ variant, size, className, ...props }: ButtonProps) {
 
 ## 8. Anti-Patterns
 
-| Anti-Pattern | Correct Approach |
-|---|---|
-| Using raw hex values: `text-[#ff8c42]` | Use token: `text-accent` |
-| Inline styles: `style={{ padding: 16 }}` | Use classes: `p-ds-3` |
-| Excessive class strings (15+ utilities) | Extract a component |
-| Mixing design tokens with Tailwind defaults: `text-gray-500` | Use token: `text-muted` |
-| Using `dark:` when CSS variables already handle it | Remove unnecessary `dark:` |
-| Hardcoded spacing: `mt-[37px]` | Use nearest token: `mt-ds-5` |
-| Applying global styles via Tailwind `@apply` excessively | Use CSS custom properties or component extraction |
+| Anti-Pattern                                                 | Correct Approach                                  |
+| ------------------------------------------------------------ | ------------------------------------------------- |
+| Using raw hex values: `text-[#ff8c42]`                       | Use token: `text-accent`                          |
+| Inline styles: `style={{ padding: 16 }}`                     | Use classes: `p-ds-3`                             |
+| Excessive class strings (15+ utilities)                      | Extract a component                               |
+| Mixing design tokens with Tailwind defaults: `text-gray-500` | Use token: `text-muted`                           |
+| Using `dark:` when CSS variables already handle it           | Remove unnecessary `dark:`                        |
+| Hardcoded spacing: `mt-[37px]`                               | Use nearest token: `mt-ds-5`                      |
+| Applying global styles via Tailwind `@apply` excessively     | Use CSS custom properties or component extraction |
 
 ---
 

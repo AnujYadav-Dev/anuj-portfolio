@@ -7,9 +7,46 @@
 
 ## 2025-08-25
 
+### Phase 2: Data Layer, Prisma Schema, Seeds & Shared Contracts
+
+#### Added: Prisma Database Layer (`apps/api/prisma/`)
+- `schema.prisma` — Complete 38-table, 11-enum PostgreSQL schema matching `DATABASE_SCHEMA.md` with relations, cascading rules, and lookup indexes.
+- `prisma.config.ts` — Prisma 7 configuration with environment-driven datasource URL and seed command.
+- `prisma/migrations/20260825053336_init/` — Initial database migration applied to PostgreSQL.
+- `prisma/seed.ts` — Comprehensive database seed populating default admin author (`anuj`), site settings, homepage sections, navigation menus, about sections, email templates, skill categories & skills, sample project, blog post, research paper, social links, dynamic pages (`/now`, `/uses`, `/stack`), and timeline events.
+- `src/config/prisma.ts` — Centralized Prisma client instance with `@prisma/adapter-pg` driver adapter.
+
+#### Added: Shared Contracts Expansion (`packages/shared/src/`)
+- `types/` — Domain-organized TypeScript interfaces and DTOs:
+  - `enums.ts` — 11 enum definitions mirroring database enums.
+  - `common.ts` — `PaginatedResponse<T>`, `PaginationMeta`, `ApiErrorResponse`, `SortOrder`, `SeoFields`.
+  - `author.ts` — `AuthorDto`, `AuthResponse`, `LoginRequest`, `RefreshTokenRequest`.
+  - `project.ts` — `ProjectDto`, `ProjectListItemDto`, `CreateProjectRequest`, `UpdateProjectRequest`, `ProjectCategoryDto`.
+  - `blog.ts` — `BlogPostDto`, `BlogPostListItemDto`, `CreateBlogPostRequest`, `UpdateBlogPostRequest`, `BlogCategoryDto`.
+  - `research.ts` — `ResearchPaperDto`, `ResearchPaperListItemDto`, `CreateResearchPaperRequest`, `UpdateResearchPaperRequest`.
+  - `profile.ts` — DTOs for about sections, skills, categories, experiences, education, certificates, achievements, timeline events, resumes, social links, open-source contributions.
+  - `site.ts` — DTOs for site settings, homepage sections, content blocks, navigation items, dynamic pages.
+  - `interaction.ts` — DTOs for contact submissions, guestbook entries, testimonials, newsletter subscriptions.
+  - `analytics.ts` — DTOs for visitor sessions, page views, link click events.
+  - `media.ts` — `MediaDto`.
+- `schemas/` — Domain-organized Zod validation schemas:
+  - `common.ts` — `paginationSchema`, `slugSchema`, `seoFieldsSchema`, `uuidParamSchema`.
+  - `auth.ts` — `loginSchema`, `refreshTokenSchema`.
+  - `project.ts` — `createProjectSchema`, `updateProjectSchema`, `listProjectsQuerySchema`.
+  - `blog.ts` — `createBlogPostSchema`, `updateBlogPostSchema`, `listBlogPostsQuerySchema`.
+  - `research.ts` — `createResearchPaperSchema`, `updateResearchPaperSchema`, `listResearchPapersQuerySchema`.
+  - `profile.ts` — CRUD schemas for about sections, skills, categories, experiences, education, certificates, achievements, timeline, social links.
+  - `site.ts` — CRUD schemas for site settings, homepage sections, content blocks, nav items, pages.
+  - `interaction.ts` — Schemas for contact form, guestbook entries, newsletter subscriptions.
+  - `analytics.ts` — Schemas for session registration, page views, link clicks.
+- `constants/` — Domain constants: `DEFAULT_HOMEPAGE_SECTIONS`, `SITE_SETTING_KEYS`, `AVAILABILITY_STATUSES`, `CONTENT_LIMITS`.
+
+---
+
 ### Roadmap Planning & Master Blueprint
 
 #### Added: Master Detailed Roadmap
+
 - [docs/DETAILED_ROADMAP.md](DETAILED_ROADMAP.md) — Comprehensive 10-phase implementation plan covering database schemas, backend services, frontend pages, admin CMS, telemetry tracker, SEO, and deployment.
 - [BASE_ROADMAP.md](../BASE_ROADMAP.md) — Updated root roadmap summary referencing the detailed plan.
 
@@ -18,6 +55,7 @@
 ### Phase 1: Monorepo & Project Initialization
 
 #### Added: Root workspace configuration
+
 - `README.md` — Project root guide, setup instructions, scripts, and documentation links
 - `package.json` — npm workspaces (`apps/*`, `packages/*`), root dev scripts
 - `tsconfig.base.json` — shared strict TypeScript config
@@ -26,6 +64,7 @@
 - `.env.example` — all environment variables documented
 
 #### Added: Backend (`apps/api/`)
+
 - Express + TypeScript + Helmet + CORS
 - Zod-validated environment config (`src/config/env.ts`)
 - Custom error classes: `AppError`, `NotFoundError`, `ValidationError`, `UnauthorizedError`, `ForbiddenError`
@@ -34,6 +73,7 @@
 - Folder stubs for controllers, services, repositories, prisma
 
 #### Added: Frontend (`apps/web/`)
+
 - Next.js 16.3 (App Router) + TypeScript + Tailwind CSS v4
 - Full design token system in `globals.css` (`:root` dark + `.light` themes, `@theme inline` for Tailwind v4)
 - Geist Variable font loaded via `next/font`
@@ -41,11 +81,13 @@
 - Folder stubs for components/ui, components/layout, hooks, lib
 
 #### Added: Shared package (`packages/shared/`)
+
 - `ContentStatus` enum, pagination types, API error response types
 - Pagination Zod schema
 - Error code and pagination default constants
 
 #### Updated: `ARCHITECTURE_RULES.md`
+
 - Project structure diagram now shows `src/` directory inside `apps/web/`
 - Added `docs/` folder to structure diagram
 
@@ -54,6 +96,7 @@
 ### Docs Reorganization
 
 #### Moved: All documentation into `docs/` folder
+
 - All 16 MD files moved from project root to `docs/`
 - Created [docs/README.md](README.md) — documentation index with categorized navigation
 - Updated CONTEXT.md to reflect new location
@@ -63,6 +106,7 @@
 ### Documentation & Architecture Phase
 
 #### Added: Engineering Standards (8 files)
+
 - [PROJECT_GUIDELINES.md](PROJECT_GUIDELINES.md) — Core development principles, dynamic content rules, no-hardcoding policy
 - [AGENT_RULES.md](AGENT_RULES.md) — AI agent rules for consistent codebase contributions
 - [CODING_STANDARDS.md](CODING_STANDARDS.md) — Naming conventions, TypeScript practices, API format, error handling
@@ -73,13 +117,16 @@
 - [CSS_TOKENS.md](CSS_TOKENS.md) — CSS custom property implementation and global styles
 
 #### Added: Database Schema
+
 - [DATABASE_SCHEMA.md](DATABASE_SCHEMA.md) — Complete PostgreSQL schema: 38 tables, 12 enums, full CREATE TABLE SQL, indexes, constraints, ER relationships
 
 #### Added: Project Context & Changelog
+
 - [CONTEXT.md](CONTEXT.md) — Living context document for AI agents and contributors
 - [CHANGELOG.md](CHANGELOG.md) — This file
 
 #### Fixed: Light Theme Color
+
 - [LIGHT_DESIGN.md](LIGHT_DESIGN.md) — Fixed `color.surface.base` from `#000000` (copy error from dark theme) to `#faf8f5` (warm off-white)
 
 ---

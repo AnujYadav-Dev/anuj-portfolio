@@ -38,14 +38,14 @@ All design tokens are defined as CSS custom properties on `:root` (dark theme de
   --font-sans: 'Geist Variable', system-ui, -apple-system, sans-serif;
   --font-mono: 'Geist Mono', ui-monospace, 'Cascadia Code', monospace;
 
-  --text-xs: 0.875rem;   /* 14px */
-  --text-sm: 1rem;        /* 16px */
-  --text-md: 1.25rem;     /* 20px */
-  --text-lg: 1.75rem;     /* 28px */
-  --text-xl: 2.25rem;     /* 36px */
-  --text-2xl: 2.75rem;    /* 44px */
-  --text-3xl: 3.5rem;     /* 56px */
-  --text-4xl: 4.5rem;     /* 72px */
+  --text-xs: 0.875rem; /* 14px */
+  --text-sm: 1rem; /* 16px */
+  --text-md: 1.25rem; /* 20px */
+  --text-lg: 1.75rem; /* 28px */
+  --text-xl: 2.25rem; /* 36px */
+  --text-2xl: 2.75rem; /* 44px */
+  --text-3xl: 3.5rem; /* 56px */
+  --text-4xl: 4.5rem; /* 72px */
 
   --font-normal: 400;
   --font-medium: 500;
@@ -259,19 +259,38 @@ video {
 ```css
 /* ─── Headings ─────────────────────────────────────────── */
 
-h1, h2, h3, h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
   font-weight: var(--font-bold);
   line-height: var(--leading-tight);
   letter-spacing: var(--tracking-tight);
   color: var(--color-foreground);
 }
 
-h1 { font-size: var(--text-3xl); }
-h2 { font-size: var(--text-xl); }
-h3 { font-size: var(--text-lg); }
-h4 { font-size: var(--text-md); }
-h5 { font-size: var(--text-sm); font-weight: var(--font-semibold); }
-h6 { font-size: var(--text-xs); font-weight: var(--font-semibold); }
+h1 {
+  font-size: var(--text-3xl);
+}
+h2 {
+  font-size: var(--text-xl);
+}
+h3 {
+  font-size: var(--text-lg);
+}
+h4 {
+  font-size: var(--text-md);
+}
+h5 {
+  font-size: var(--text-sm);
+  font-weight: var(--font-semibold);
+}
+h6 {
+  font-size: var(--text-xs);
+  font-weight: var(--font-semibold);
+}
 
 /* ─── Paragraphs ───────────────────────────────────────── */
 

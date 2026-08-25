@@ -1,0 +1,39 @@
+// Blog post Zod validation schemas.
+
+import { z } from 'zod';
+import { slugSchema, paginationSchema, seoFieldsSchema } from './common';
+import { ContentStatus } from '../types/enums';
+
+/** Create blog post request validation. */
+export const createBlogPostSchema = z
+  .object({
+    title: z.string().min(1).max(300),
+    slug: slugSchema,
+    content: z.string().min(1),
+    excerpt: z.string().optional(),
+    readingTimeMinutes: z.number().int().min(0).optional(),
+    status: z.nativeEnum(ContentStatus).default(ContentStatus.Draft),
+    isFeatured: z.boolean().default(false),
+    categoryId: z.string().uuid().optional(),
+    coverImageId: z.string().uuid().optional(),
+    tagIds: z.array(z.string().uuid()).optional(),
+  })
+  .merge(seoFieldsSchema);
+
+export type CreateBlogPostInput = z.infer<typeof createBlogPostSchema>;
+
+/** Update blog post request validation — all fields optional. */
+export const updateBlogPostSchema = createBlogPostSchema.partial();
+
+export type UpdateBlogPostInput = z.infer<typeof updateBlogPostSchema>;
+
+/** List blog posts query parameters. */
+export const listBlogPostsQuerySchema = paginationSchema.extend({
+  status: z.nativeEnum(ContentStatus).optional(),
+  categoryId: z.string().uuid().optional(),
+  tag: z.string().optional(),
+  isFeatured: z.coerce.boolean().optional(),
+  authorId: z.string().uuid().optional(),
+});
+
+export type ListBlogPostsQuery = z.infer<typeof listBlogPostsQuerySchema>;

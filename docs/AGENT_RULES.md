@@ -85,4 +85,4 @@
 
 - Each logical change should be a single focused commit.
 - Do not bundle unrelated changes.
-- Commit messages should describe *what* changed and *why*.
+- Commit messages should describe _what_ changed and _why_.

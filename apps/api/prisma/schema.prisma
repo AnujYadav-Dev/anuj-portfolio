@@ -1,0 +1,996 @@
+// ─── Prisma Schema — Dynamic Portfolio Platform ─────────────
+// Source of truth: docs/DATABASE_SCHEMA.md
+// 38 models, 11 enums
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ============================================================
+// ENUMS
+// ============================================================
+
+enum ContentStatus {
+  draft
+  published
+  scheduled
+  archived
+  disabled
+}
+
+enum MediaType {
+  image
+  video
+  pdf
+  document
+  other
+}
+
+enum ProjectType {
+  personal
+  freelance
+  academic
+  professional
+  open_source
+}
+
+enum ProjectStatus {
+  in_progress
+  completed
+  on_hold
+  abandoned
+}
+
+enum TimelineEventType {
+  education
+  job
+  project
+  achievement
+  milestone
+}
+
+enum ModerationStatus {
+  pending
+  approved
+  rejected
+}
+
+enum ContactStatus {
+  unread
+  read
+  replied
+  archived
+}
+
+enum BlockType {
+  text
+  markdown
+  image
+  project_list
+  blog_list
+  stats
+  cta
+}
+
+enum ClickTargetType {
+  github
+  live_demo
+  resume_download
+  social_link
+  contact
+  external
+}
+
+enum EntityType {
+  blog_post
+  project
+  research_paper
+  page
+  achievement
+  opensource_contribution
+}
+
+enum NavLocation {
+  header
+  footer
+  both
+}
+
+// ============================================================
+// MODELS
+// ============================================================
+
+// ─── Media (declared first — referenced by many tables) ─────
+
+model Media {
+  id        String    @id @default(uuid())
+  filename  String    @db.VarChar(255)
+  url       String
+  mediaType MediaType @map("media_type")
+  mimeType  String    @map("mime_type") @db.VarChar(100)
+  sizeBytes Int       @map("size_bytes")
+  width     Int?
+  height    Int?
+  altText   String?   @map("alt_text") @db.VarChar(500)
+  caption   String?
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz()
+
+  // FK: uploaded_by → authors.id
+  uploadedBy   String? @map("uploaded_by")
+  uploadedByAuthor Author? @relation("MediaUploader", fields: [uploadedBy], references: [id], onDelete: SetNull)
+
+  // Reverse relations
+  authorAvatars      Author[]       @relation("AuthorAvatar")
+  aboutSectionImages AboutSection[] @relation("AboutSectionOgImage")
+  projectCoverImages Project[]      @relation("ProjectCover")
+  projectOgImages    Project[]      @relation("ProjectOgImage")
+  projectImages      ProjectImage[]
+  blogCoverImages    BlogPost[]     @relation("BlogCover")
+  blogOgImages       BlogPost[]     @relation("BlogOgImage")
+  researchPdfs       ResearchPaper[] @relation("ResearchPdf")
+  researchOgImages   ResearchPaper[] @relation("ResearchOgImage")
+  galleryItems       GalleryItem[]
+  resumeFiles        Resume[]
+  certificateImages  Certificate[]
+  achievementImages  Achievement[]
+  testimonialAvatars Testimonial[]
+  contentBlockMedia  ContentBlock[]
+  experienceLogos    Experience[]
+  educationLogos     Education[]
+  pageOgImages       Page[]         @relation("PageOgImage")
+
+  @@map("media")
+}
+
+// ─── Identity & Auth ────────────────────────────────────────
+
+model Author {
+  id           String   @id @default(uuid())
+  username     String   @unique @db.VarChar(50)
+  displayName  String   @map("display_name") @db.VarChar(100)
+  email        String   @unique @db.VarChar(255)
+  passwordHash String   @map("password_hash") @db.VarChar(255)
+  bio          String?
+  isAdmin      Boolean  @default(false) @map("is_admin")
+  isEnabled    Boolean  @default(true) @map("is_enabled")
+  createdAt    DateTime @default(now()) @map("created_at") @db.Timestamptz()
+  updatedAt    DateTime @updatedAt @map("updated_at") @db.Timestamptz()
+
+  // FK: avatar_id → media.id
+  avatarId String? @map("avatar_id")
+  avatar   Media?  @relation("AuthorAvatar", fields: [avatarId], references: [id], onDelete: SetNull)
+
+  // Reverse relations
+  sessions         Session[]
+  uploadedMedia    Media[]           @relation("MediaUploader")
+  projects         Project[]
+  blogPosts        BlogPost[]
+  researchPapers   ResearchPaper[]
+  contentVersions  ContentVersion[]
+  activityLogs     ActivityLog[]
+
+  @@map("authors")
+}
+
+model Session {
+  id               String   @id @default(uuid())
+  refreshTokenHash String   @map("refresh_token_hash") @db.VarChar(255)
+  userAgent        String?  @map("user_agent")
+  ipAddress        String?  @map("ip_address") @db.Inet
+  expiresAt        DateTime @map("expires_at") @db.Timestamptz()
+  createdAt        DateTime @default(now()) @map("created_at") @db.Timestamptz()
+
+  // FK: author_id → authors.id
+  authorId String @map("author_id")
+  author   Author @relation(fields: [authorId], references: [id], onDelete: Cascade)
+
+  @@index([authorId], map: "idx_sessions_author_id")
+  @@index([expiresAt], map: "idx_sessions_expires_at")
+  @@map("sessions")
+}
+
+// ─── Site Settings ──────────────────────────────────────────
+
+model SiteSetting {
+  id        String   @id @default(uuid())
+  key       String   @unique @db.VarChar(100)
+  value     String
+  group     String   @default("general") @db.VarChar(50)
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz()
+
+  @@map("site_settings")
+}
+
+// ─── About Sections ─────────────────────────────────────────
+
+model AboutSection {
+  id             String   @id @default(uuid())
+  title          String   @db.VarChar(200)
+  slug           String   @unique @db.VarChar(200)
+  content        String?
+  icon           String?  @db.VarChar(50)
+  sortOrder      Int      @default(0) @map("sort_order")
+  isEnabled      Boolean  @default(true) @map("is_enabled")
+  seoTitle       String?  @map("seo_title") @db.VarChar(200)
+  seoDescription String?  @map("seo_description") @db.VarChar(500)
+  seoKeywords    String?  @map("seo_keywords") @db.VarChar(500)
+  createdAt      DateTime @default(now()) @map("created_at") @db.Timestamptz()
+  updatedAt      DateTime @updatedAt @map("updated_at") @db.Timestamptz()
+
+  // FK: og_image_id → media.id
+  ogImageId String? @map("og_image_id")
+  ogImage   Media?  @relation("AboutSectionOgImage", fields: [ogImageId], references: [id], onDelete: SetNull)
+
+  @@index([sortOrder], map: "idx_about_sections_sort")
+  @@map("about_sections")
+}
+
+// ─── Skills ─────────────────────────────────────────────────
+
+model SkillCategory {
+  id          String   @id @default(uuid())
+  name        String   @unique @db.VarChar(100)
+  slug        String   @unique @db.VarChar(100)
+  description String?
+  icon        String?  @db.VarChar(50)
+  sortOrder   Int      @default(0) @map("sort_order")
+  isEnabled   Boolean  @default(true) @map("is_enabled")
+  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz()
+  updatedAt   DateTime @updatedAt @map("updated_at") @db.Timestamptz()
+
+  // Reverse relations
+  skills Skill[]
+
+  @@index([sortOrder], map: "idx_skill_categories_sort")
+  @@map("skill_categories")
+}
+
+model Skill {
+  id          String   @id @default(uuid())
+  name        String   @db.VarChar(100)
+  slug        String   @db.VarChar(100)
+  icon        String?  @db.VarChar(50)
+  proficiency Int?     @db.SmallInt
+  sortOrder   Int      @default(0) @map("sort_order")
+  isEnabled   Boolean  @default(true) @map("is_enabled")
+  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz()
+  updatedAt   DateTime @updatedAt @map("updated_at") @db.Timestamptz()
+
+  // FK: category_id → skill_categories.id
+  categoryId String        @map("category_id")
+  category   SkillCategory @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+
+  @@unique([categoryId, slug])
+  @@index([categoryId], map: "idx_skills_category_id")
+  @@index([categoryId, sortOrder], map: "idx_skills_sort")
+  @@map("skills")
+}
+
+// ─── Experience ─────────────────────────────────────────────
+
+model Experience {
+  id           String   @id @default(uuid())
+  companyName  String   @map("company_name") @db.VarChar(200)
+  role         String   @db.VarChar(200)
+  location     String?  @db.VarChar(200)
+  startDate    DateTime @map("start_date") @db.Date
+  endDate      DateTime? @map("end_date") @db.Date
+  isCurrent    Boolean  @default(false) @map("is_current")
+  description  String?
+  technologies String[] @default([])
+  companyUrl   String?  @map("company_url")
+  sortOrder    Int      @default(0) @map("sort_order")
+  isEnabled    Boolean  @default(true) @map("is_enabled")
+  createdAt    DateTime @default(now()) @map("created_at") @db.Timestamptz()
+  updatedAt    DateTime @updatedAt @map("updated_at") @db.Timestamptz()
+
+  // FK: company_logo_id → media.id
+  companyLogoId String? @map("company_logo_id")
+  companyLogo   Media?  @relation(fields: [companyLogoId], references: [id], onDelete: SetNull)
+
+  @@index([sortOrder], map: "idx_experiences_sort")
+  @@map("experiences")
+}
+
+// ─── Education ──────────────────────────────────────────────
+
+model Education {
+  id               String   @id @default(uuid())
+  institution      String   @db.VarChar(200)
+  degree           String   @db.VarChar(200)
+  fieldOfStudy     String?  @map("field_of_study") @db.VarChar(200)
+  location         String?  @db.VarChar(200)
+  startDate        DateTime @map("start_date") @db.Date
+  endDate          DateTime? @map("end_date") @db.Date
+  isCurrent        Boolean  @default(false) @map("is_current")
+  grade            String?  @db.VarChar(50)
+  description      String?
+  activities       String?
+  sortOrder        Int      @default(0) @map("sort_order")
+  isEnabled        Boolean  @default(true) @map("is_enabled")
+  createdAt        DateTime @default(now()) @map("created_at") @db.Timestamptz()
+  updatedAt        DateTime @updatedAt @map("updated_at") @db.Timestamptz()
+
+  // FK: institution_logo_id → media.id
+  institutionLogoId String? @map("institution_logo_id")
+  institutionLogo   Media?  @relation(fields: [institutionLogoId], references: [id], onDelete: SetNull)
+
+  @@index([sortOrder], map: "idx_education_sort")
+  @@map("education")
+}
+
+// ─── Certificates ───────────────────────────────────────────
+
+model Certificate {
+  id                   String   @id @default(uuid())
+  name                 String   @db.VarChar(200)
+  issuingOrganization  String   @map("issuing_organization") @db.VarChar(200)
+  issueDate            DateTime @map("issue_date") @db.Date
+  expiryDate           DateTime? @map("expiry_date") @db.Date
+  credentialId         String?  @map("credential_id") @db.VarChar(200)
+  credentialUrl        String?  @map("credential_url")
+  sortOrder            Int      @default(0) @map("sort_order")
+  isEnabled            Boolean  @default(true) @map("is_enabled")
+  createdAt            DateTime @default(now()) @map("created_at") @db.Timestamptz()
+  updatedAt            DateTime @updatedAt @map("updated_at") @db.Timestamptz()
+
+  // FK: certificate_image_id → media.id
+  certificateImageId String? @map("certificate_image_id")
+  certificateImage   Media?  @relation(fields: [certificateImageId], references: [id], onDelete: SetNull)
+
+  @@index([sortOrder], map: "idx_certificates_sort")
+  @@map("certificates")
+}
+
+// ─── Achievements ───────────────────────────────────────────
+
+model Achievement {
+  id         String    @id @default(uuid())
+  title      String    @db.VarChar(200)
+  description String?
+  date       DateTime? @db.Date
+  issuer     String?   @db.VarChar(200)
+  url        String?
+  isFeatured Boolean   @default(false) @map("is_featured")
+  sortOrder  Int       @default(0) @map("sort_order")
+  isEnabled  Boolean   @default(true) @map("is_enabled")
+  createdAt  DateTime  @default(now()) @map("created_at") @db.Timestamptz()
+  updatedAt  DateTime  @updatedAt @map("updated_at") @db.Timestamptz()
+
+  // FK: image_id → media.id
+  imageId String? @map("image_id")
+  image   Media?  @relation(fields: [imageId], references: [id], onDelete: SetNull)
+
+  @@index([sortOrder], map: "idx_achievements_sort")
+  @@map("achievements")
+}
+
+// ─── Project Categories ─────────────────────────────────────
+
+model ProjectCategory {
+  id          String   @id @default(uuid())
+  name        String   @unique @db.VarChar(100)
+  slug        String   @unique @db.VarChar(100)
+  description String?
+  sortOrder   Int      @default(0) @map("sort_order")
+  isEnabled   Boolean  @default(true) @map("is_enabled")
+  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz()
+  updatedAt   DateTime @updatedAt @map("updated_at") @db.Timestamptz()
+
+  // Reverse relations
+  projects Project[]
+
+  @@map("project_categories")
+}
+
+// ─── Projects ───────────────────────────────────────────────
+
+model Project {
+  id               String        @id @default(uuid())
+  title            String        @db.VarChar(300)
+  slug             String        @db.VarChar(300)
+  shortDescription String        @map("short_description")
+  content          String?
+  technologies     String[]      @default([])
+  githubUrl        String?       @map("github_url")
+  liveUrl          String?       @map("live_url")
+  projectType      ProjectType   @default(personal) @map("project_type")
+  projectStatus    ProjectStatus @default(completed) @map("project_status")
+  status           ContentStatus @default(draft)
+  isFeatured       Boolean       @default(false) @map("is_featured")
+  startDate        DateTime?     @map("start_date") @db.Date
+  endDate          DateTime?     @map("end_date") @db.Date
+  sortOrder        Int           @default(0) @map("sort_order")
+  seoTitle         String?       @map("seo_title") @db.VarChar(200)
+  seoDescription   String?       @map("seo_description") @db.VarChar(500)
+  seoKeywords      String?       @map("seo_keywords") @db.VarChar(500)
+  publishedAt      DateTime?     @map("published_at") @db.Timestamptz()
+  scheduledAt      DateTime?     @map("scheduled_at") @db.Timestamptz()
+  createdAt        DateTime      @default(now()) @map("created_at") @db.Timestamptz()
+  updatedAt        DateTime      @updatedAt @map("updated_at") @db.Timestamptz()
+
+  // FK: author_id → authors.id
+  authorId String @map("author_id")
+  author   Author @relation(fields: [authorId], references: [id], onDelete: Restrict)
+
+  // FK: category_id → project_categories.id
+  categoryId String?          @map("category_id")
+  category   ProjectCategory? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+
+  // FK: cover_image_id → media.id
+  coverImageId String? @map("cover_image_id")
+  coverImage   Media?  @relation("ProjectCover", fields: [coverImageId], references: [id], onDelete: SetNull)
+
+  // FK: og_image_id → media.id
+  ogImageId String? @map("og_image_id")
+  ogImage   Media?  @relation("ProjectOgImage", fields: [ogImageId], references: [id], onDelete: SetNull)
+
+  // Reverse relations
+  images ProjectImage[]
+
+  @@unique([authorId, slug])
+  @@index([status], map: "idx_projects_status")
+  @@index([publishedAt(sort: Desc)], map: "idx_projects_published_at")
+  @@index([authorId], map: "idx_projects_author_id")
+  @@index([categoryId], map: "idx_projects_category_id")
+  @@index([projectType], map: "idx_projects_project_type")
+  @@map("projects")
+}
+
+// ─── Project Images ─────────────────────────────────────────
+
+model ProjectImage {
+  id        String @id @default(uuid())
+  caption   String?
+  sortOrder Int    @default(0) @map("sort_order")
+
+  // FK: project_id → projects.id
+  projectId String  @map("project_id")
+  project   Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  // FK: media_id → media.id
+  mediaId String @map("media_id")
+  media   Media  @relation(fields: [mediaId], references: [id], onDelete: Cascade)
+
+  @@unique([projectId, mediaId])
+  @@index([projectId], map: "idx_project_images_project_id")
+  @@map("project_images")
+}
+
+// ─── Blog Categories ────────────────────────────────────────
+
+model BlogCategory {
+  id          String   @id @default(uuid())
+  name        String   @unique @db.VarChar(100)
+  slug        String   @unique @db.VarChar(100)
+  description String?
+  sortOrder   Int      @default(0) @map("sort_order")
+  isEnabled   Boolean  @default(true) @map("is_enabled")
+  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz()
+  updatedAt   DateTime @updatedAt @map("updated_at") @db.Timestamptz()
+
+  // Reverse relations
+  blogPosts BlogPost[]
+
+  @@map("blog_categories")
+}
+
+// ─── Blog Posts ─────────────────────────────────────────────
+
+model BlogPost {
+  id                 String        @id @default(uuid())
+  title              String        @db.VarChar(300)
+  slug               String        @db.VarChar(300)
+  excerpt            String?
+  content            String
+  readingTimeMinutes Int?          @map("reading_time_minutes") @db.SmallInt
+  status             ContentStatus @default(draft)
+  isFeatured         Boolean       @default(false) @map("is_featured")
+  seoTitle           String?       @map("seo_title") @db.VarChar(200)
+  seoDescription     String?       @map("seo_description") @db.VarChar(500)
+  seoKeywords        String?       @map("seo_keywords") @db.VarChar(500)
+  publishedAt        DateTime?     @map("published_at") @db.Timestamptz()
+  scheduledAt        DateTime?     @map("scheduled_at") @db.Timestamptz()
+  createdAt          DateTime      @default(now()) @map("created_at") @db.Timestamptz()
+  updatedAt          DateTime      @updatedAt @map("updated_at") @db.Timestamptz()
+
+  // FK: author_id → authors.id
+  authorId String @map("author_id")
+  author   Author @relation(fields: [authorId], references: [id], onDelete: Restrict)
+
+  // FK: category_id → blog_categories.id
+  categoryId String?       @map("category_id")
+  category   BlogCategory? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+
+  // FK: cover_image_id → media.id
+  coverImageId String? @map("cover_image_id")
+  coverImage   Media?  @relation("BlogCover", fields: [coverImageId], references: [id], onDelete: SetNull)
+
+  // FK: og_image_id → media.id
+  ogImageId String? @map("og_image_id")
+  ogImage   Media?  @relation("BlogOgImage", fields: [ogImageId], references: [id], onDelete: SetNull)
+
+  @@unique([authorId, slug])
+  @@index([status], map: "idx_blog_posts_status")
+  @@index([publishedAt(sort: Desc)], map: "idx_blog_posts_published_at")
+  @@index([authorId], map: "idx_blog_posts_author_id")
+  @@index([categoryId], map: "idx_blog_posts_category_id")
+  @@map("blog_posts")
+}
+
+// ─── Research Papers ────────────────────────────────────────
+
+model ResearchPaper {
+  id              String        @id @default(uuid())
+  title           String        @db.VarChar(300)
+  slug            String        @db.VarChar(300)
+  abstract        String?
+  content         String?
+  doi             String?       @db.VarChar(200)
+  publicationUrl  String?       @map("publication_url")
+  publicationName String?       @map("publication_name") @db.VarChar(200)
+  publicationDate DateTime?     @map("publication_date") @db.Date
+  status          ContentStatus @default(draft)
+  isFeatured      Boolean       @default(false) @map("is_featured")
+  seoTitle        String?       @map("seo_title") @db.VarChar(200)
+  seoDescription  String?       @map("seo_description") @db.VarChar(500)
+  seoKeywords     String?       @map("seo_keywords") @db.VarChar(500)
+  publishedAt     DateTime?     @map("published_at") @db.Timestamptz()
+  scheduledAt     DateTime?     @map("scheduled_at") @db.Timestamptz()
+  createdAt       DateTime      @default(now()) @map("created_at") @db.Timestamptz()
+  updatedAt       DateTime      @updatedAt @map("updated_at") @db.Timestamptz()
+
+  // FK: author_id → authors.id
+  authorId String @map("author_id")
+  author   Author @relation(fields: [authorId], references: [id], onDelete: Restrict)
+
+  // FK: pdf_id → media.id
+  pdfId String? @map("pdf_id")
+  pdf   Media?  @relation("ResearchPdf", fields: [pdfId], references: [id], onDelete: SetNull)
+
+  // FK: og_image_id → media.id
+  ogImageId String? @map("og_image_id")
+  ogImage   Media?  @relation("ResearchOgImage", fields: [ogImageId], references: [id], onDelete: SetNull)
+
+  @@unique([authorId, slug])
+  @@index([status], map: "idx_research_papers_status")
+  @@index([publishedAt(sort: Desc)], map: "idx_research_papers_published_at")
+  @@index([authorId], map: "idx_research_papers_author_id")
+  @@map("research_papers")
+}
+
+// ─── Tags (Polymorphic) ─────────────────────────────────────
+
+model Tag {
+  id        String   @id @default(uuid())
+  name      String   @unique @db.VarChar(100)
+  slug      String   @unique @db.VarChar(100)
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz()
+
+  // Reverse relations
+  entityTags EntityTag[]
+
+  @@map("tags")
+}
+
+model EntityTag {
+  id         String     @id @default(uuid())
+  entityType EntityType @map("entity_type")
+  entityId   String     @map("entity_id")
+
+  // FK: tag_id → tags.id
+  tagId String @map("tag_id")
+  tag   Tag    @relation(fields: [tagId], references: [id], onDelete: Cascade)
+
+  @@unique([tagId, entityType, entityId])
+  @@index([entityType, entityId], map: "idx_entity_tags_entity")
+  @@index([tagId], map: "idx_entity_tags_tag_id")
+  @@map("entity_tags")
+}
+
+// ─── Gallery ────────────────────────────────────────────────
+
+model GalleryItem {
+  id          String   @id @default(uuid())
+  title       String?  @db.VarChar(200)
+  description String?
+  category    String?  @db.VarChar(100)
+  sortOrder   Int      @default(0) @map("sort_order")
+  isEnabled   Boolean  @default(true) @map("is_enabled")
+  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz()
+
+  // FK: media_id → media.id
+  mediaId String @map("media_id")
+  media   Media  @relation(fields: [mediaId], references: [id], onDelete: Cascade)
+
+  @@map("gallery_items")
+}
+
+// ─── Resumes ────────────────────────────────────────────────
+
+model Resume {
+  id           String   @id @default(uuid())
+  title        String   @db.VarChar(200)
+  versionLabel String?  @map("version_label") @db.VarChar(50)
+  isActive     Boolean  @default(false) @map("is_active")
+  createdAt    DateTime @default(now()) @map("created_at") @db.Timestamptz()
+  updatedAt    DateTime @updatedAt @map("updated_at") @db.Timestamptz()
+
+  // FK: file_id → media.id
+  fileId String @map("file_id")
+  file   Media  @relation(fields: [fileId], references: [id], onDelete: Restrict)
+
+  @@map("resumes")
+}
+
+// ─── Social Links ───────────────────────────────────────────
+
+model SocialLink {
+  id        String   @id @default(uuid())
+  platform  String   @db.VarChar(50)
+  label     String   @db.VarChar(100)
+  url       String
+  icon      String?  @db.VarChar(50)
+  sortOrder Int      @default(0) @map("sort_order")
+  isEnabled Boolean  @default(true) @map("is_enabled")
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz()
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz()
+
+  @@index([sortOrder], map: "idx_social_links_sort")
+  @@map("social_links")
+}
+
+// ─── Open Source Contributions ──────────────────────────────
+
+model OpensourceContribution {
+  id          String   @id @default(uuid())
+  name        String   @db.VarChar(200)
+  description String?
+  url         String
+  role        String?  @db.VarChar(100)
+  stars       Int?
+  forks       Int?
+  language    String?  @db.VarChar(50)
+  isFeatured  Boolean  @default(false) @map("is_featured")
+  sortOrder   Int      @default(0) @map("sort_order")
+  isEnabled   Boolean  @default(true) @map("is_enabled")
+  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz()
+  updatedAt   DateTime @updatedAt @map("updated_at") @db.Timestamptz()
+
+  @@map("opensource_contributions")
+}
+
+// ─── Timeline Events ────────────────────────────────────────
+
+model TimelineEvent {
+  id          String            @id @default(uuid())
+  title       String            @db.VarChar(200)
+  description String?
+  eventType   TimelineEventType @map("event_type")
+  date        DateTime          @db.Date
+  endDate     DateTime?         @map("end_date") @db.Date
+  icon        String?           @db.VarChar(50)
+  url         String?
+  sortOrder   Int               @default(0) @map("sort_order")
+  isEnabled   Boolean           @default(true) @map("is_enabled")
+  createdAt   DateTime          @default(now()) @map("created_at") @db.Timestamptz()
+  updatedAt   DateTime          @updatedAt @map("updated_at") @db.Timestamptz()
+
+  @@index([date(sort: Desc)], map: "idx_timeline_events_date")
+  @@map("timeline_events")
+}
+
+// ─── Dynamic Pages ──────────────────────────────────────────
+
+model Page {
+  id             String        @id @default(uuid())
+  title          String        @db.VarChar(300)
+  slug           String        @unique @db.VarChar(300)
+  content        String?
+  status         ContentStatus @default(draft)
+  isNavVisible   Boolean       @default(false) @map("is_nav_visible")
+  sortOrder      Int           @default(0) @map("sort_order")
+  seoTitle       String?       @map("seo_title") @db.VarChar(200)
+  seoDescription String?       @map("seo_description") @db.VarChar(500)
+  seoKeywords    String?       @map("seo_keywords") @db.VarChar(500)
+  publishedAt    DateTime?     @map("published_at") @db.Timestamptz()
+  scheduledAt    DateTime?     @map("scheduled_at") @db.Timestamptz()
+  createdAt      DateTime      @default(now()) @map("created_at") @db.Timestamptz()
+  updatedAt      DateTime      @updatedAt @map("updated_at") @db.Timestamptz()
+
+  // FK: og_image_id → media.id
+  ogImageId String? @map("og_image_id")
+  ogImage   Media?  @relation("PageOgImage", fields: [ogImageId], references: [id], onDelete: SetNull)
+
+  // Reverse relations
+  contentBlocks ContentBlock[]
+
+  @@index([status], map: "idx_pages_status")
+  @@map("pages")
+}
+
+// ─── Homepage Sections ──────────────────────────────────────
+
+model HomepageSection {
+  id         String   @id @default(uuid())
+  sectionKey String   @unique @map("section_key") @db.VarChar(50)
+  title      String?  @db.VarChar(200)
+  sortOrder  Int      @default(0) @map("sort_order")
+  isEnabled  Boolean  @default(true) @map("is_enabled")
+  config     Json     @default("{}")
+  createdAt  DateTime @default(now()) @map("created_at") @db.Timestamptz()
+  updatedAt  DateTime @updatedAt @map("updated_at") @db.Timestamptz()
+
+  // Reverse relations
+  contentBlocks ContentBlock[]
+
+  @@index([sortOrder], map: "idx_homepage_sections_sort")
+  @@map("homepage_sections")
+}
+
+// ─── Content Blocks ─────────────────────────────────────────
+
+model ContentBlock {
+  id        String    @id @default(uuid())
+  blockType BlockType @map("block_type")
+  title     String?   @db.VarChar(200)
+  content   String?
+  config    Json      @default("{}")
+  sortOrder Int       @default(0) @map("sort_order")
+  isEnabled Boolean   @default(true) @map("is_enabled")
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz()
+  updatedAt DateTime  @updatedAt @map("updated_at") @db.Timestamptz()
+
+  // FK: page_id → pages.id (nullable — null means homepage block)
+  pageId String? @map("page_id")
+  page   Page?   @relation(fields: [pageId], references: [id], onDelete: Cascade)
+
+  // FK: homepage_section_id → homepage_sections.id (nullable — null means page block)
+  homepageSectionId String?          @map("homepage_section_id")
+  homepageSection   HomepageSection? @relation(fields: [homepageSectionId], references: [id], onDelete: Cascade)
+
+  // FK: media_id → media.id
+  mediaId String? @map("media_id")
+  media   Media?  @relation(fields: [mediaId], references: [id], onDelete: SetNull)
+
+  @@index([pageId], map: "idx_content_blocks_page_id")
+  @@index([homepageSectionId], map: "idx_content_blocks_homepage_section_id")
+  @@map("content_blocks")
+}
+
+// ─── Visitors ───────────────────────────────────────────────
+
+model Visitor {
+  id             String   @id @default(uuid())
+  sessionId      String   @unique @map("session_id") @db.VarChar(255)
+  ipAddress      String   @map("ip_address") @db.Inet
+  userAgent      String?  @map("user_agent")
+  browser        String?  @db.VarChar(100)
+  browserVersion String?  @map("browser_version") @db.VarChar(50)
+  os             String?  @db.VarChar(100)
+  osVersion      String?  @map("os_version") @db.VarChar(50)
+  deviceType     String?  @map("device_type") @db.VarChar(50)
+  screenWidth    Int?     @map("screen_width")
+  screenHeight   Int?     @map("screen_height")
+  language       String?  @db.VarChar(20)
+  timezone       String?  @db.VarChar(100)
+  country        String?  @db.VarChar(100)
+  region         String?  @db.VarChar(100)
+  city           String?  @db.VarChar(100)
+  latitude       Decimal? @db.Decimal(10, 7)
+  longitude      Decimal? @db.Decimal(10, 7)
+  referrer       String?
+  referrerSource String?  @map("referrer_source") @db.VarChar(100)
+  utmSource      String?  @map("utm_source") @db.VarChar(200)
+  utmMedium      String?  @map("utm_medium") @db.VarChar(200)
+  utmCampaign    String?  @map("utm_campaign") @db.VarChar(200)
+  firstVisitedAt DateTime @default(now()) @map("first_visited_at") @db.Timestamptz()
+  lastVisitedAt  DateTime @default(now()) @map("last_visited_at") @db.Timestamptz()
+  visitCount     Int      @default(1) @map("visit_count")
+
+  // Reverse relations
+  pageViews          PageView[]
+  linkClicks         LinkClick[]
+  contactSubmissions ContactSubmission[]
+
+  @@index([firstVisitedAt(sort: Desc)], map: "idx_visitors_first_visited")
+  @@index([country], map: "idx_visitors_country")
+  @@map("visitors")
+}
+
+// ─── Contact Submissions ────────────────────────────────────
+
+model ContactSubmission {
+  id        String        @id @default(uuid())
+  name      String        @db.VarChar(200)
+  email     String        @db.VarChar(255)
+  subject   String?       @db.VarChar(300)
+  message   String
+  status    ContactStatus @default(unread)
+  ipAddress String?       @map("ip_address") @db.Inet
+  userAgent String?       @map("user_agent")
+  createdAt DateTime      @default(now()) @map("created_at") @db.Timestamptz()
+  readAt    DateTime?     @map("read_at") @db.Timestamptz()
+  repliedAt DateTime?     @map("replied_at") @db.Timestamptz()
+
+  // FK: visitor_id → visitors.id
+  visitorId String?  @map("visitor_id")
+  visitor   Visitor? @relation(fields: [visitorId], references: [id], onDelete: SetNull)
+
+  @@index([status], map: "idx_contact_submissions_status")
+  @@index([createdAt(sort: Desc)], map: "idx_contact_submissions_created_at")
+  @@map("contact_submissions")
+}
+
+// ─── Email Templates ────────────────────────────────────────
+
+model EmailTemplate {
+  id          String   @id @default(uuid())
+  templateKey String   @unique @map("template_key") @db.VarChar(100)
+  name        String   @db.VarChar(200)
+  subject     String   @db.VarChar(300)
+  bodyHtml    String   @map("body_html")
+  bodyText    String?  @map("body_text")
+  variables   String[] @default([])
+  isEnabled   Boolean  @default(true) @map("is_enabled")
+  updatedAt   DateTime @updatedAt @map("updated_at") @db.Timestamptz()
+
+  @@map("email_templates")
+}
+
+// ─── Guestbook ──────────────────────────────────────────────
+
+model GuestbookEntry {
+  id               String           @id @default(uuid())
+  authorName       String           @map("author_name") @db.VarChar(100)
+  authorEmail      String?          @map("author_email") @db.VarChar(255)
+  message          String
+  moderationStatus ModerationStatus @default(pending) @map("moderation_status")
+  ipAddress        String?          @map("ip_address") @db.Inet
+  createdAt        DateTime         @default(now()) @map("created_at") @db.Timestamptz()
+  moderatedAt      DateTime?        @map("moderated_at") @db.Timestamptz()
+
+  @@index([moderationStatus], map: "idx_guestbook_entries_moderation")
+  @@map("guestbook_entries")
+}
+
+// ─── Testimonials ───────────────────────────────────────────
+
+model Testimonial {
+  id            String   @id @default(uuid())
+  authorName    String   @map("author_name") @db.VarChar(200)
+  authorTitle   String?  @map("author_title") @db.VarChar(200)
+  authorCompany String?  @map("author_company") @db.VarChar(200)
+  content       String
+  url           String?
+  isFeatured    Boolean  @default(false) @map("is_featured")
+  sortOrder     Int      @default(0) @map("sort_order")
+  isEnabled     Boolean  @default(true) @map("is_enabled")
+  createdAt     DateTime @default(now()) @map("created_at") @db.Timestamptz()
+  updatedAt     DateTime @updatedAt @map("updated_at") @db.Timestamptz()
+
+  // FK: author_avatar_id → media.id
+  authorAvatarId String? @map("author_avatar_id")
+  authorAvatar   Media?  @relation(fields: [authorAvatarId], references: [id], onDelete: SetNull)
+
+  @@index([sortOrder], map: "idx_testimonials_sort")
+  @@map("testimonials")
+}
+
+// ─── Navigation ─────────────────────────────────────────────
+
+model NavItem {
+  id         String      @id @default(uuid())
+  label      String      @db.VarChar(100)
+  url        String      @db.VarChar(500)
+  location   NavLocation @default(header)
+  isExternal Boolean     @default(false) @map("is_external")
+  sortOrder  Int         @default(0) @map("sort_order")
+  isEnabled  Boolean     @default(true) @map("is_enabled")
+  createdAt  DateTime    @default(now()) @map("created_at") @db.Timestamptz()
+  updatedAt  DateTime    @updatedAt @map("updated_at") @db.Timestamptz()
+
+  // Self-referencing FK: parent_id → nav_items.id
+  parentId String?   @map("parent_id")
+  parent   NavItem?  @relation("NavItemHierarchy", fields: [parentId], references: [id], onDelete: Cascade)
+  children NavItem[] @relation("NavItemHierarchy")
+
+  @@index([location, sortOrder], map: "idx_nav_items_sort")
+  @@map("nav_items")
+}
+
+// ─── Newsletter ─────────────────────────────────────────────
+
+model NewsletterSubscriber {
+  id                String    @id @default(uuid())
+  email             String    @unique @db.VarChar(255)
+  name              String?   @db.VarChar(200)
+  isConfirmed       Boolean   @default(false) @map("is_confirmed")
+  confirmationToken String?   @map("confirmation_token") @db.VarChar(255)
+  unsubscribedAt    DateTime? @map("unsubscribed_at") @db.Timestamptz()
+  createdAt         DateTime  @default(now()) @map("created_at") @db.Timestamptz()
+
+  @@map("newsletter_subscribers")
+}
+
+// ─── Analytics ──────────────────────────────────────────────
+
+model PageView {
+  id              String   @id @default(uuid())
+  path            String   @db.VarChar(500)
+  title           String?  @db.VarChar(300)
+  referrer        String?
+  durationSeconds Int?     @map("duration_seconds")
+  viewedAt        DateTime @default(now()) @map("viewed_at") @db.Timestamptz()
+
+  // FK: visitor_id → visitors.id
+  visitorId String  @map("visitor_id")
+  visitor   Visitor @relation(fields: [visitorId], references: [id], onDelete: Cascade)
+
+  @@index([visitorId], map: "idx_page_views_visitor_id")
+  @@index([path], map: "idx_page_views_path")
+  @@index([viewedAt(sort: Desc)], map: "idx_page_views_viewed_at")
+  @@map("page_views")
+}
+
+model LinkClick {
+  id         String          @id @default(uuid())
+  targetType ClickTargetType @map("target_type")
+  targetUrl  String          @map("target_url")
+  sourcePath String?         @map("source_path") @db.VarChar(500)
+  clickedAt  DateTime        @default(now()) @map("clicked_at") @db.Timestamptz()
+
+  // FK: visitor_id → visitors.id
+  visitorId String?  @map("visitor_id")
+  visitor   Visitor? @relation(fields: [visitorId], references: [id], onDelete: Cascade)
+
+  @@index([visitorId], map: "idx_link_clicks_visitor_id")
+  @@index([targetType], map: "idx_link_clicks_target_type")
+  @@index([clickedAt(sort: Desc)], map: "idx_link_clicks_clicked_at")
+  @@map("link_clicks")
+}
+
+// ─── Content Versioning ─────────────────────────────────────
+
+model ContentVersion {
+  id            String     @id @default(uuid())
+  entityType    EntityType @map("entity_type")
+  entityId      String     @map("entity_id")
+  version       Int
+  snapshot      Json
+  changeSummary String?    @map("change_summary")
+  createdAt     DateTime   @default(now()) @map("created_at") @db.Timestamptz()
+
+  // FK: created_by → authors.id
+  createdById String? @map("created_by")
+  createdBy   Author? @relation(fields: [createdById], references: [id], onDelete: SetNull)
+
+  @@unique([entityType, entityId, version])
+  @@index([entityType, entityId], map: "idx_content_versions_entity")
+  @@map("content_versions")
+}
+
+// ─── Activity Log ───────────────────────────────────────────
+
+model ActivityLog {
+  id         String   @id @default(uuid())
+  action     String   @db.VarChar(100)
+  entityType String?  @map("entity_type") @db.VarChar(50)
+  entityId   String?  @map("entity_id")
+  details    Json?
+  ipAddress  String?  @map("ip_address") @db.Inet
+  createdAt  DateTime @default(now()) @map("created_at") @db.Timestamptz()
+
+  // FK: author_id → authors.id
+  authorId String? @map("author_id")
+  author   Author? @relation(fields: [authorId], references: [id], onDelete: SetNull)
+
+  @@index([authorId], map: "idx_activity_log_author_id")
+  @@index([createdAt(sort: Desc)], map: "idx_activity_log_created_at")
+  @@index([entityType, entityId], map: "idx_activity_log_entity")
+  @@map("activity_log")
+}

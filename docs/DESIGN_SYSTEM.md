@@ -29,16 +29,16 @@ The portfolio is a **premium, minimal, developer-focused** platform. Every visua
 
 ### Type Scale
 
-| Token | Size | Usage |
-|---|---|---|
-| `text-xs` | 14px | Captions, labels, metadata |
-| `text-sm` | 16px (base) | Body text, paragraphs |
-| `text-md` | 20px | Subheadings, lead text |
-| `text-lg` | 28px | Section titles |
-| `text-xl` | 36px | Page titles |
-| `text-2xl` | 44px | Hero subtitles |
-| `text-3xl` | 56px | Hero headlines |
-| `text-4xl` | 72px | Display / splash text |
+| Token      | Size        | Usage                      |
+| ---------- | ----------- | -------------------------- |
+| `text-xs`  | 14px        | Captions, labels, metadata |
+| `text-sm`  | 16px (base) | Body text, paragraphs      |
+| `text-md`  | 20px        | Subheadings, lead text     |
+| `text-lg`  | 28px        | Section titles             |
+| `text-xl`  | 36px        | Page titles                |
+| `text-2xl` | 44px        | Hero subtitles             |
+| `text-3xl` | 56px        | Hero headlines             |
+| `text-4xl` | 72px        | Display / splash text      |
 
 ### Typography Rules
 
@@ -56,31 +56,31 @@ The portfolio is a **premium, minimal, developer-focused** platform. Every visua
 
 ### Dark Theme (Default)
 
-| Token | Value | Usage |
-|---|---|---|
-| `--color-background` | `#000000` | Page background |
-| `--color-surface` | `#111111` | Cards, panels, elevated areas |
-| `--color-surface-muted` | `#1a1a1a` | Subtle backgrounds, hover states |
-| `--color-foreground` | `#ffffff` | Primary text |
-| `--color-muted` | `#b4b4b4` | Secondary text, descriptions |
-| `--color-accent` | `#ff8c42` | Links, highlights, CTAs, interactive elements |
-| `--color-border` | `#262626` | Dividers, card borders |
-| `--color-destructive` | `#ef4444` | Error states, destructive actions |
-| `--color-success` | `#22c55e` | Success states |
+| Token                   | Value     | Usage                                         |
+| ----------------------- | --------- | --------------------------------------------- |
+| `--color-background`    | `#000000` | Page background                               |
+| `--color-surface`       | `#111111` | Cards, panels, elevated areas                 |
+| `--color-surface-muted` | `#1a1a1a` | Subtle backgrounds, hover states              |
+| `--color-foreground`    | `#ffffff` | Primary text                                  |
+| `--color-muted`         | `#b4b4b4` | Secondary text, descriptions                  |
+| `--color-accent`        | `#ff8c42` | Links, highlights, CTAs, interactive elements |
+| `--color-border`        | `#262626` | Dividers, card borders                        |
+| `--color-destructive`   | `#ef4444` | Error states, destructive actions             |
+| `--color-success`       | `#22c55e` | Success states                                |
 
 ### Light Theme
 
-| Token | Value | Usage |
-|---|---|---|
-| `--color-background` | `#faf8f5` | Page background |
-| `--color-surface` | `#ffffff` | Cards, panels, elevated areas |
+| Token                   | Value     | Usage                            |
+| ----------------------- | --------- | -------------------------------- |
+| `--color-background`    | `#faf8f5` | Page background                  |
+| `--color-surface`       | `#ffffff` | Cards, panels, elevated areas    |
 | `--color-surface-muted` | `#e5ded6` | Subtle backgrounds, hover states |
-| `--color-foreground` | `#212529` | Primary text |
-| `--color-muted` | `#4b4b4b` | Secondary text, descriptions |
-| `--color-accent` | `#ff8c42` | Links, highlights, CTAs |
-| `--color-border` | `#d4cdc4` | Dividers, card borders |
-| `--color-destructive` | `#dc2626` | Error states |
-| `--color-success` | `#16a34a` | Success states |
+| `--color-foreground`    | `#212529` | Primary text                     |
+| `--color-muted`         | `#4b4b4b` | Secondary text, descriptions     |
+| `--color-accent`        | `#ff8c42` | Links, highlights, CTAs          |
+| `--color-border`        | `#d4cdc4` | Dividers, card borders           |
+| `--color-destructive`   | `#dc2626` | Error states                     |
+| `--color-success`       | `#16a34a` | Success states                   |
 
 > [!WARNING]
 > **Ambiguity in source docs:** [LIGHT_DESIGN.md](LIGHT_DESIGN.md) lists `color.surface.base=#000000` which appears to be a copy error from the dark theme. This design system uses `#faf8f5` (warm off-white derived from the `surface.muted=#e5ded6` palette) as the light background. **Confirm with the design owner.**
@@ -96,16 +96,16 @@ The portfolio is a **premium, minimal, developer-focused** platform. Every visua
 
 ## 4. Spacing System
 
-| Token | Value | Usage |
-|---|---|---|
-| `--space-1` | 8px | Tight gaps: icon-to-text, inline elements |
-| `--space-2` | 12px | Compact padding: badges, tags, small cards |
-| `--space-3` | 16px | Standard padding: card padding, form fields |
-| `--space-4` | 24px | Component gaps: between card items |
-| `--space-5` | 32px | Section sub-gaps |
-| `--space-6` | 48px | Between content groups |
-| `--space-7` | 64px | Section padding (top/bottom) |
-| `--space-8` | 96px | Major section breaks, hero padding |
+| Token       | Value | Usage                                       |
+| ----------- | ----- | ------------------------------------------- |
+| `--space-1` | 8px   | Tight gaps: icon-to-text, inline elements   |
+| `--space-2` | 12px  | Compact padding: badges, tags, small cards  |
+| `--space-3` | 16px  | Standard padding: card padding, form fields |
+| `--space-4` | 24px  | Component gaps: between card items          |
+| `--space-5` | 32px  | Section sub-gaps                            |
+| `--space-6` | 48px  | Between content groups                      |
+| `--space-7` | 64px  | Section padding (top/bottom)                |
+| `--space-8` | 96px  | Major section breaks, hero padding          |
 
 > **Note:** The source docs define only 5 spacing values (8, 12, 16, 64, 96). The intermediate values (24, 32, 48) are interpolated to avoid jumps between 16px and 64px. This is a pragmatic extension.
 
@@ -133,12 +133,12 @@ The portfolio is a **premium, minimal, developer-focused** platform. Every visua
 
 ### Responsive Breakpoints
 
-| Token | Value | Target |
-|---|---|---|
-| `sm` | 640px | Large phones |
-| `md` | 768px | Tablets |
-| `lg` | 1024px | Small desktops |
-| `xl` | 1280px | Desktops |
+| Token | Value  | Target         |
+| ----- | ------ | -------------- |
+| `sm`  | 640px  | Large phones   |
+| `md`  | 768px  | Tablets        |
+| `lg`  | 1024px | Small desktops |
+| `xl`  | 1280px | Desktops       |
 | `2xl` | 1536px | Large displays |
 
 - Design mobile-first. Base styles are mobile; add complexity at larger breakpoints.
@@ -149,23 +149,23 @@ The portfolio is a **premium, minimal, developer-focused** platform. Every visua
 
 ## 6. Border Radius
 
-| Token | Value | Usage |
-|---|---|---|
-| `--radius-xs` | 4px | Small elements: badges, tags, code blocks |
-| `--radius-sm` | 6px | Buttons, inputs, small cards |
-| `--radius-md` | 8px | Cards, modals, panels |
-| `--radius-lg` | 12px | Large cards, hero elements |
-| `--radius-full` | 9999px | Avatars, circular buttons |
+| Token           | Value  | Usage                                     |
+| --------------- | ------ | ----------------------------------------- |
+| `--radius-xs`   | 4px    | Small elements: badges, tags, code blocks |
+| `--radius-sm`   | 6px    | Buttons, inputs, small cards              |
+| `--radius-md`   | 8px    | Cards, modals, panels                     |
+| `--radius-lg`   | 12px   | Large cards, hero elements                |
+| `--radius-full` | 9999px | Avatars, circular buttons                 |
 
 ---
 
 ## 7. Shadows
 
-| Token | Usage |
-|---|---|
+| Token         | Usage                 |
+| ------------- | --------------------- |
 | `--shadow-sm` | Subtle card elevation |
-| `--shadow-md` | Dropdowns, popovers |
-| `--shadow-lg` | Modals, dialogs |
+| `--shadow-md` | Dropdowns, popovers   |
+| `--shadow-lg` | Modals, dialogs       |
 
 - Dark theme: shadows SHOULD be very subtle (near-invisible) since the dark background already provides separation.
 - Light theme: shadows provide primary depth separation.
@@ -174,12 +174,12 @@ The portfolio is a **premium, minimal, developer-focused** platform. Every visua
 
 ## 8. Motion and Animation
 
-| Token | Value | Usage |
-|---|---|---|
-| `--duration-instant` | 150ms | Hover, focus, active state changes |
-| `--duration-fast` | 300ms | Transitions, small animations |
-| `--duration-normal` | 500ms | Page transitions, content reveals |
-| `--duration-slow` | 700ms | Complex animations, staggered entry |
+| Token                | Value | Usage                               |
+| -------------------- | ----- | ----------------------------------- |
+| `--duration-instant` | 150ms | Hover, focus, active state changes  |
+| `--duration-fast`    | 300ms | Transitions, small animations       |
+| `--duration-normal`  | 500ms | Page transitions, content reveals   |
+| `--duration-slow`    | 700ms | Complex animations, staggered entry |
 
 ### Motion Rules
 
@@ -238,16 +238,16 @@ The portfolio is a **premium, minimal, developer-focused** platform. Every visua
 
 Every interactive element MUST define these states:
 
-| State | Visual Treatment |
-|---|---|
-| **Default** | Base appearance |
-| **Hover** | Subtle background shift, cursor pointer |
-| **Focus-visible** | 2px accent ring (keyboard only) |
-| **Active** | Slightly pressed/darker appearance |
-| **Disabled** | 50% opacity, cursor not-allowed, not interactive |
-| **Loading** | Spinner or skeleton, no interaction |
-| **Error** | Destructive color border/text |
-| **Empty** | Descriptive message, optional illustration or CTA |
+| State             | Visual Treatment                                  |
+| ----------------- | ------------------------------------------------- |
+| **Default**       | Base appearance                                   |
+| **Hover**         | Subtle background shift, cursor pointer           |
+| **Focus-visible** | 2px accent ring (keyboard only)                   |
+| **Active**        | Slightly pressed/darker appearance                |
+| **Disabled**      | 50% opacity, cursor not-allowed, not interactive  |
+| **Loading**       | Spinner or skeleton, no interaction               |
+| **Error**         | Destructive color border/text                     |
+| **Empty**         | Descriptive message, optional illustration or CTA |
 
 ---
 

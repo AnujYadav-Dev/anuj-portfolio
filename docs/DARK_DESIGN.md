@@ -1,15 +1,18 @@
 # Anuj Yadava
 
 ## Mission
+
 Create implementation-ready, token-driven UI guidance for Anuj Yadav that is optimized for consistency, accessibility, and fast delivery across documentation site.
 
 ## Brand
+
 - Product/brand: Zane Chen
 - URL: https://zane-portfolio.kiyo-n-zane.com/
 - Audience: developers and technical teams
 - Product surface: documentation site
 
 ## Style Foundations
+
 - Visual style: minimal, utility-first, accessibility-prioritized
 - Main font style: `font.family.primary=Geist Variable`, `font.family.stack=Geist Variable`, `font.size.base=16px`, `font.weight.base=400`, `font.lineHeight.base=24px`
 - Typography scale: `font.size.xs=14px`, `font.size.sm=16px`, `font.size.md=20px`, `font.size.lg=28px`, `font.size.xl=36px`, `font.size.2xl=44px`, `font.size.3xl=56px`, `font.size.4xl=72px`
@@ -18,15 +21,18 @@ Create implementation-ready, token-driven UI guidance for Anuj Yadav that is opt
 - Radius/shadow/motion tokens: `radius.xs=4px` | `motion.duration.instant=300ms`
 
 ## Accessibility
+
 - Target: WCAG 2.2 AA
 - Keyboard-first interactions required.
 - Focus-visible rules required.
 - Contrast constraints required.
 
 ## Writing Tone
+
 Concise, confident, implementation-focused.
 
 ## Rules: Do
+
 - Use semantic tokens, not raw hex values, in component guidance.
 - Every component must define states for default, hover, focus-visible, active, disabled, loading, and error.
 - Component behavior should specify responsive and edge-case handling.
@@ -34,12 +40,14 @@ Concise, confident, implementation-focused.
 - Accessibility acceptance criteria must be testable in implementation.
 
 ## Rules: Don't
+
 - Do not allow low-contrast text or hidden focus indicators.
 - Do not introduce one-off spacing or typography exceptions.
 - Do not use ambiguous labels or non-descriptive actions.
 - Do not ship component guidance without explicit state rules.
 
 ## Guideline Authoring Workflow
+
 1. Restate design intent in one sentence.
 2. Define foundations and semantic tokens.
 3. Define component anatomy, variants, interactions, and state behavior.
@@ -48,6 +56,7 @@ Concise, confident, implementation-focused.
 6. End with a QA checklist.
 
 ## Required Output Structure
+
 - Context and goals.
 - Design tokens and foundations.
 - Component-level rules (anatomy, variants, states, responsive behavior).
@@ -57,6 +66,7 @@ Concise, confident, implementation-focused.
 - QA checklist.
 
 ## Component Rule Expectations
+
 - Include keyboard, pointer, and touch behavior.
 - Include spacing and typography token requirements.
 - Include long-content, overflow, and empty-state handling.
@@ -65,6 +75,7 @@ Concise, confident, implementation-focused.
 - Extraction diagnostics: Audience and product surface inference confidence is low; verify generated brand context.
 
 ## Quality Gates
+
 - Every non-negotiable rule must use "must".
 - Every recommendation should use "should".
 - Every accessibility rule must be testable in implementation.

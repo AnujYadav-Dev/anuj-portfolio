@@ -8,56 +8,56 @@
 
 ### Files and Folders
 
-| Item | Convention | Example |
-|---|---|---|
-| React components | `PascalCase.tsx` | `ProjectCard.tsx` |
-| React pages (Next.js App Router) | `page.tsx`, `layout.tsx` | `app/blogs/page.tsx` |
-| Hooks | `camelCase.ts`, prefixed `use` | `useProjects.ts` |
-| Utilities | `camelCase.ts` | `formatDate.ts` |
-| Types / Interfaces | `camelCase.ts` | `project.ts` |
-| Constants | `camelCase.ts` | `routes.ts` |
-| Backend routes | `camelCase.route.ts` | `project.route.ts` |
-| Backend controllers | `camelCase.controller.ts` | `project.controller.ts` |
-| Backend services | `camelCase.service.ts` | `project.service.ts` |
-| Backend repositories | `camelCase.repository.ts` | `project.repository.ts` |
-| Middleware | `camelCase.middleware.ts` | `auth.middleware.ts` |
-| Validation schemas | `camelCase.schema.ts` | `project.schema.ts` |
-| Test files | `*.test.ts` or `*.test.tsx` | `project.service.test.ts` |
-| Folders | `kebab-case` | `admin-dashboard/` |
+| Item                             | Convention                     | Example                   |
+| -------------------------------- | ------------------------------ | ------------------------- |
+| React components                 | `PascalCase.tsx`               | `ProjectCard.tsx`         |
+| React pages (Next.js App Router) | `page.tsx`, `layout.tsx`       | `app/blogs/page.tsx`      |
+| Hooks                            | `camelCase.ts`, prefixed `use` | `useProjects.ts`          |
+| Utilities                        | `camelCase.ts`                 | `formatDate.ts`           |
+| Types / Interfaces               | `camelCase.ts`                 | `project.ts`              |
+| Constants                        | `camelCase.ts`                 | `routes.ts`               |
+| Backend routes                   | `camelCase.route.ts`           | `project.route.ts`        |
+| Backend controllers              | `camelCase.controller.ts`      | `project.controller.ts`   |
+| Backend services                 | `camelCase.service.ts`         | `project.service.ts`      |
+| Backend repositories             | `camelCase.repository.ts`      | `project.repository.ts`   |
+| Middleware                       | `camelCase.middleware.ts`      | `auth.middleware.ts`      |
+| Validation schemas               | `camelCase.schema.ts`          | `project.schema.ts`       |
+| Test files                       | `*.test.ts` or `*.test.tsx`    | `project.service.test.ts` |
+| Folders                          | `kebab-case`                   | `admin-dashboard/`        |
 
 ### Variables and Functions
 
-| Item | Convention | Example |
-|---|---|---|
-| Variables | `camelCase` | `projectList` |
-| Constants (module-level) | `UPPER_SNAKE_CASE` | `MAX_PAGE_SIZE` |
-| Functions | `camelCase`, verb prefix | `getProjectBySlug` |
-| Boolean variables | `is`/`has`/`can`/`should` prefix | `isEnabled`, `hasContent` |
-| Event handlers | `handle` prefix | `handleSubmit` |
-| Callback props | `on` prefix | `onSelect` |
+| Item                     | Convention                       | Example                   |
+| ------------------------ | -------------------------------- | ------------------------- |
+| Variables                | `camelCase`                      | `projectList`             |
+| Constants (module-level) | `UPPER_SNAKE_CASE`               | `MAX_PAGE_SIZE`           |
+| Functions                | `camelCase`, verb prefix         | `getProjectBySlug`        |
+| Boolean variables        | `is`/`has`/`can`/`should` prefix | `isEnabled`, `hasContent` |
+| Event handlers           | `handle` prefix                  | `handleSubmit`            |
+| Callback props           | `on` prefix                      | `onSelect`                |
 
 ### Types and Interfaces
 
-| Item | Convention | Example |
-|---|---|---|
-| Interfaces | `PascalCase` | `ProjectResponse` |
-| Types | `PascalCase` | `ContentStatus` |
-| Enums | `PascalCase` | `ProjectType` |
-| Enum values | `PascalCase` | `ProjectType.OpenSource` |
-| Generic parameters | Single uppercase or descriptive | `T`, `TData` |
-| DTO types | `PascalCase` + `Dto` suffix | `CreateProjectDto` |
-| API response types | `PascalCase` + `Response` suffix | `ProjectListResponse` |
-| API request types | `PascalCase` + `Request` suffix | `CreateProjectRequest` |
+| Item               | Convention                       | Example                  |
+| ------------------ | -------------------------------- | ------------------------ |
+| Interfaces         | `PascalCase`                     | `ProjectResponse`        |
+| Types              | `PascalCase`                     | `ContentStatus`          |
+| Enums              | `PascalCase`                     | `ProjectType`            |
+| Enum values        | `PascalCase`                     | `ProjectType.OpenSource` |
+| Generic parameters | Single uppercase or descriptive  | `T`, `TData`             |
+| DTO types          | `PascalCase` + `Dto` suffix      | `CreateProjectDto`       |
+| API response types | `PascalCase` + `Response` suffix | `ProjectListResponse`    |
+| API request types  | `PascalCase` + `Request` suffix  | `CreateProjectRequest`   |
 
 ### Database and API
 
-| Item | Convention | Example |
-|---|---|---|
-| DB tables | `snake_case`, plural | `blog_posts` |
-| DB columns | `snake_case` | `created_at` |
-| Prisma models | `PascalCase`, singular | `BlogPost` |
-| API routes | `kebab-case`, plural nouns | `/api/v1/blog-posts` |
-| Query parameters | `camelCase` | `?pageSize=10&sortBy=createdAt` |
+| Item             | Convention                 | Example                         |
+| ---------------- | -------------------------- | ------------------------------- |
+| DB tables        | `snake_case`, plural       | `blog_posts`                    |
+| DB columns       | `snake_case`               | `created_at`                    |
+| Prisma models    | `PascalCase`, singular     | `BlogPost`                      |
+| API routes       | `kebab-case`, plural nouns | `/api/v1/blog-posts`            |
+| Query parameters | `camelCase`                | `?pageSize=10&sortBy=createdAt` |
 
 ---
 
@@ -263,7 +263,11 @@ export const projectRepository = {
 ```typescript
 export const createProjectSchema = z.object({
   title: z.string().min(1).max(300),
-  slug: z.string().min(1).max(300).regex(/^[a-z0-9-]+$/),
+  slug: z
+    .string()
+    .min(1)
+    .max(300)
+    .regex(/^[a-z0-9-]+$/),
   shortDescription: z.string().min(1),
   projectType: z.nativeEnum(ProjectType).default(ProjectType.Personal),
   status: z.nativeEnum(ContentStatus).default(ContentStatus.Draft),

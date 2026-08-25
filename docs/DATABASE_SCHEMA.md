@@ -21,20 +21,20 @@
 
 ### 1.1 Core Principles
 
-| Principle | Implementation |
-|---|---|
-| **Dynamic admin control** | Every public-facing entity has `is_enabled`, `sort_order`, and/or `status` columns so the admin can enable/disable/reorder without code changes. |
-| **Content status lifecycle** | Content entities use a shared `content_status` enum: `draft → published → scheduled → archived → disabled`. |
-| **Centralized media** | A single `media` table stores every uploaded file. All other tables reference it via foreign key — no duplicated file metadata. |
-| **Markdown for long-form** | Blog body, project case studies, research content, and dynamic pages store Markdown/MDX in a `TEXT` column. Structured metadata (slug, dates, tags) lives in typed columns for querying. |
-| **Content versioning** | A generic `content_versions` table stores JSON snapshots keyed by `(entity_type, entity_id, version)`. This avoids per-table version tables. |
-| **Tagging & categories** | A reusable polymorphic tag system: `tags` + `entity_tags` junction. Categories are separate per-domain (project categories, blog categories) because their semantics differ. |
-| **SEO metadata** | Inlined on every content entity (seo_title, seo_description, seo_keywords, og_image) rather than a separate table, because every page has exactly one SEO record and JOINs add cost for the most latency-sensitive queries. |
-| **Visitor tracking** | Dedicated `visitors` (session-level) and `page_views` (hit-level) tables, plus a `link_clicks` table for outbound-click analytics. |
-| **Dynamic pages** | A `pages` table powers arbitrary routes (`/now`, `/uses`, `/stack`, `/faq`, etc.) with Markdown content and full admin control. |
-| **Homepage sections** | A `homepage_sections` table with `section_type`, `sort_order`, `is_enabled`, and optional `config` JSON for section-specific settings. |
-| **Content blocks** | A `content_blocks` table for reusable page-builder-style blocks (text, markdown, image, stats, CTA, project list, blog list). |
-| **Audit trail** | `created_at` / `updated_at` on every table. The `content_versions` table provides history for content entities. An `activity_log` table records admin actions. |
+| Principle                    | Implementation                                                                                                                                                                                                              |
+| ---------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Dynamic admin control**    | Every public-facing entity has `is_enabled`, `sort_order`, and/or `status` columns so the admin can enable/disable/reorder without code changes.                                                                            |
+| **Content status lifecycle** | Content entities use a shared `content_status` enum: `draft → published → scheduled → archived → disabled`.                                                                                                                 |
+| **Centralized media**        | A single `media` table stores every uploaded file. All other tables reference it via foreign key — no duplicated file metadata.                                                                                             |
+| **Markdown for long-form**   | Blog body, project case studies, research content, and dynamic pages store Markdown/MDX in a `TEXT` column. Structured metadata (slug, dates, tags) lives in typed columns for querying.                                    |
+| **Content versioning**       | A generic `content_versions` table stores JSON snapshots keyed by `(entity_type, entity_id, version)`. This avoids per-table version tables.                                                                                |
+| **Tagging & categories**     | A reusable polymorphic tag system: `tags` + `entity_tags` junction. Categories are separate per-domain (project categories, blog categories) because their semantics differ.                                                |
+| **SEO metadata**             | Inlined on every content entity (seo_title, seo_description, seo_keywords, og_image) rather than a separate table, because every page has exactly one SEO record and JOINs add cost for the most latency-sensitive queries. |
+| **Visitor tracking**         | Dedicated `visitors` (session-level) and `page_views` (hit-level) tables, plus a `link_clicks` table for outbound-click analytics.                                                                                          |
+| **Dynamic pages**            | A `pages` table powers arbitrary routes (`/now`, `/uses`, `/stack`, `/faq`, etc.) with Markdown content and full admin control.                                                                                             |
+| **Homepage sections**        | A `homepage_sections` table with `section_type`, `sort_order`, `is_enabled`, and optional `config` JSON for section-specific settings.                                                                                      |
+| **Content blocks**           | A `content_blocks` table for reusable page-builder-style blocks (text, markdown, image, stats, CTA, project list, blog list).                                                                                               |
+| **Audit trail**              | `created_at` / `updated_at` on every table. The `content_versions` table provides history for content entities. An `activity_log` table records admin actions.                                                              |
 
 ### 1.2 Naming Conventions
 
@@ -47,31 +47,31 @@
 
 ### 1.3 Table Grouping
 
-| Group | Tables |
-|---|---|
-| **Identity & Auth** | `authors`, `sessions` |
-| **Profile & About** | `site_settings`, `about_sections`, `availability_status` (stored in `site_settings`) |
-| **Skills** | `skill_categories`, `skills` |
-| **Experience & Education** | `experiences`, `education` |
-| **Certifications & Achievements** | `certificates`, `achievements` |
-| **Projects** | `projects`, `project_categories`, `project_technologies` |
-| **Writing** | `blog_posts`, `blog_categories`, `research_papers` |
-| **Tags** | `tags`, `entity_tags` |
-| **Media** | `media` |
-| **Gallery** | `gallery_items` |
-| **Resume** | `resumes` |
-| **Social Links** | `social_links` |
-| **Open Source** | `opensource_contributions` |
-| **Timeline** | `timeline_events` |
-| **Dynamic Pages** | `pages` |
-| **Homepage** | `homepage_sections`, `content_blocks` |
-| **Contact** | `contact_submissions`, `email_templates` |
-| **Guestbook** | `guestbook_entries` |
-| **Testimonials** | `testimonials` |
-| **Navigation** | `nav_items` |
-| **Newsletter** | `newsletter_subscribers` |
-| **Analytics** | `visitors`, `page_views`, `link_clicks` |
-| **Versioning & Audit** | `content_versions`, `activity_log` |
+| Group                             | Tables                                                                               |
+| --------------------------------- | ------------------------------------------------------------------------------------ |
+| **Identity & Auth**               | `authors`, `sessions`                                                                |
+| **Profile & About**               | `site_settings`, `about_sections`, `availability_status` (stored in `site_settings`) |
+| **Skills**                        | `skill_categories`, `skills`                                                         |
+| **Experience & Education**        | `experiences`, `education`                                                           |
+| **Certifications & Achievements** | `certificates`, `achievements`                                                       |
+| **Projects**                      | `projects`, `project_categories`, `project_technologies`                             |
+| **Writing**                       | `blog_posts`, `blog_categories`, `research_papers`                                   |
+| **Tags**                          | `tags`, `entity_tags`                                                                |
+| **Media**                         | `media`                                                                              |
+| **Gallery**                       | `gallery_items`                                                                      |
+| **Resume**                        | `resumes`                                                                            |
+| **Social Links**                  | `social_links`                                                                       |
+| **Open Source**                   | `opensource_contributions`                                                           |
+| **Timeline**                      | `timeline_events`                                                                    |
+| **Dynamic Pages**                 | `pages`                                                                              |
+| **Homepage**                      | `homepage_sections`, `content_blocks`                                                |
+| **Contact**                       | `contact_submissions`, `email_templates`                                             |
+| **Guestbook**                     | `guestbook_entries`                                                                  |
+| **Testimonials**                  | `testimonials`                                                                       |
+| **Navigation**                    | `nav_items`                                                                          |
+| **Newsletter**                    | `newsletter_subscribers`                                                             |
+| **Analytics**                     | `visitors`, `page_views`, `link_clicks`                                              |
+| **Versioning & Audit**            | `content_versions`, `activity_log`                                                   |
 
 ---
 
@@ -184,19 +184,19 @@ CREATE TYPE nav_location AS ENUM (
 
 The admin/owner and any additional authors. Supports multi-author content per the URL scheme (`/blogs/by/[author]`).
 
-| Column | Type | Constraints | Notes |
-|---|---|---|---|
-| `id` | `UUID` | PK, DEFAULT `gen_random_uuid()` | |
-| `username` | `VARCHAR(50)` | UNIQUE, NOT NULL | Used in URL slugs: `/blogs/by/{username}` |
-| `display_name` | `VARCHAR(100)` | NOT NULL | |
-| `email` | `VARCHAR(255)` | UNIQUE, NOT NULL | |
-| `password_hash` | `VARCHAR(255)` | NOT NULL | Bcrypt/Argon2 hash |
-| `bio` | `TEXT` | | Short author bio |
-| `avatar_id` | `UUID` | FK → `media.id`, NULLABLE | |
-| `is_admin` | `BOOLEAN` | DEFAULT `false` | |
-| `is_enabled` | `BOOLEAN` | DEFAULT `true` | |
-| `created_at` | `TIMESTAMPTZ` | DEFAULT `NOW()` | |
-| `updated_at` | `TIMESTAMPTZ` | DEFAULT `NOW()` | |
+| Column          | Type           | Constraints                     | Notes                                     |
+| --------------- | -------------- | ------------------------------- | ----------------------------------------- |
+| `id`            | `UUID`         | PK, DEFAULT `gen_random_uuid()` |                                           |
+| `username`      | `VARCHAR(50)`  | UNIQUE, NOT NULL                | Used in URL slugs: `/blogs/by/{username}` |
+| `display_name`  | `VARCHAR(100)` | NOT NULL                        |                                           |
+| `email`         | `VARCHAR(255)` | UNIQUE, NOT NULL                |                                           |
+| `password_hash` | `VARCHAR(255)` | NOT NULL                        | Bcrypt/Argon2 hash                        |
+| `bio`           | `TEXT`         |                                 | Short author bio                          |
+| `avatar_id`     | `UUID`         | FK → `media.id`, NULLABLE       |                                           |
+| `is_admin`      | `BOOLEAN`      | DEFAULT `false`                 |                                           |
+| `is_enabled`    | `BOOLEAN`      | DEFAULT `true`                  |                                           |
+| `created_at`    | `TIMESTAMPTZ`  | DEFAULT `NOW()`                 |                                           |
+| `updated_at`    | `TIMESTAMPTZ`  | DEFAULT `NOW()`                 |                                           |
 
 ---
 
@@ -204,15 +204,15 @@ The admin/owner and any additional authors. Supports multi-author content per th
 
 JWT refresh token tracking for secure auth.
 
-| Column | Type | Constraints | Notes |
-|---|---|---|---|
-| `id` | `UUID` | PK, DEFAULT `gen_random_uuid()` | |
-| `author_id` | `UUID` | FK → `authors.id` ON DELETE CASCADE, NOT NULL | |
-| `refresh_token_hash` | `VARCHAR(255)` | NOT NULL | Hashed refresh token |
-| `user_agent` | `TEXT` | | Browser/device info |
-| `ip_address` | `INET` | | |
-| `expires_at` | `TIMESTAMPTZ` | NOT NULL | |
-| `created_at` | `TIMESTAMPTZ` | DEFAULT `NOW()` | |
+| Column               | Type           | Constraints                                   | Notes                |
+| -------------------- | -------------- | --------------------------------------------- | -------------------- |
+| `id`                 | `UUID`         | PK, DEFAULT `gen_random_uuid()`               |                      |
+| `author_id`          | `UUID`         | FK → `authors.id` ON DELETE CASCADE, NOT NULL |                      |
+| `refresh_token_hash` | `VARCHAR(255)` | NOT NULL                                      | Hashed refresh token |
+| `user_agent`         | `TEXT`         |                                               | Browser/device info  |
+| `ip_address`         | `INET`         |                                               |                      |
+| `expires_at`         | `TIMESTAMPTZ`  | NOT NULL                                      |                      |
+| `created_at`         | `TIMESTAMPTZ`  | DEFAULT `NOW()`                               |                      |
 
 ---
 
@@ -220,13 +220,13 @@ JWT refresh token tracking for secure auth.
 
 Key-value store for global site configuration: site title, availability status, social defaults, theme preferences, and other admin-controlled settings.
 
-| Column | Type | Constraints | Notes |
-|---|---|---|---|
-| `id` | `UUID` | PK, DEFAULT `gen_random_uuid()` | |
-| `key` | `VARCHAR(100)` | UNIQUE, NOT NULL | e.g., `site_title`, `availability_status`, `default_seo_title` |
-| `value` | `TEXT` | NOT NULL | Stored as text; app layer parses |
-| `group` | `VARCHAR(50)` | DEFAULT `'general'` | For admin UI grouping: `general`, `seo`, `social`, `contact`, `theme` |
-| `updated_at` | `TIMESTAMPTZ` | DEFAULT `NOW()` | |
+| Column       | Type           | Constraints                     | Notes                                                                 |
+| ------------ | -------------- | ------------------------------- | --------------------------------------------------------------------- |
+| `id`         | `UUID`         | PK, DEFAULT `gen_random_uuid()` |                                                                       |
+| `key`        | `VARCHAR(100)` | UNIQUE, NOT NULL                | e.g., `site_title`, `availability_status`, `default_seo_title`        |
+| `value`      | `TEXT`         | NOT NULL                        | Stored as text; app layer parses                                      |
+| `group`      | `VARCHAR(50)`  | DEFAULT `'general'`             | For admin UI grouping: `general`, `seo`, `social`, `contact`, `theme` |
+| `updated_at` | `TIMESTAMPTZ`  | DEFAULT `NOW()`                 |                                                                       |
 
 **Reserved keys include:** `site_title`, `site_description`, `availability_status` (values: `available`, `freelance`, `unavailable`), `default_seo_title`, `default_seo_description`, `default_og_image_id`, `analytics_enabled`.
 
@@ -236,20 +236,20 @@ Key-value store for global site configuration: site title, availability status, 
 
 Centralized media library. Every image, PDF, resume file, and document is registered here once and referenced by FK from other tables.
 
-| Column | Type | Constraints | Notes |
-|---|---|---|---|
-| `id` | `UUID` | PK, DEFAULT `gen_random_uuid()` | |
-| `filename` | `VARCHAR(255)` | NOT NULL | Original filename |
-| `url` | `TEXT` | NOT NULL | CDN/storage URL |
-| `media_type` | `media_type` | NOT NULL | Enum: image, video, pdf, document, other |
-| `mime_type` | `VARCHAR(100)` | NOT NULL | e.g., `image/png`, `application/pdf` |
-| `size_bytes` | `INTEGER` | NOT NULL | File size |
-| `width` | `INTEGER` | | For images/videos |
-| `height` | `INTEGER` | | For images/videos |
-| `alt_text` | `VARCHAR(500)` | | Accessibility text |
-| `caption` | `TEXT` | | |
-| `uploaded_by` | `UUID` | FK → `authors.id` ON DELETE SET NULL | |
-| `created_at` | `TIMESTAMPTZ` | DEFAULT `NOW()` | Upload date |
+| Column        | Type           | Constraints                          | Notes                                    |
+| ------------- | -------------- | ------------------------------------ | ---------------------------------------- |
+| `id`          | `UUID`         | PK, DEFAULT `gen_random_uuid()`      |                                          |
+| `filename`    | `VARCHAR(255)` | NOT NULL                             | Original filename                        |
+| `url`         | `TEXT`         | NOT NULL                             | CDN/storage URL                          |
+| `media_type`  | `media_type`   | NOT NULL                             | Enum: image, video, pdf, document, other |
+| `mime_type`   | `VARCHAR(100)` | NOT NULL                             | e.g., `image/png`, `application/pdf`     |
+| `size_bytes`  | `INTEGER`      | NOT NULL                             | File size                                |
+| `width`       | `INTEGER`      |                                      | For images/videos                        |
+| `height`      | `INTEGER`      |                                      | For images/videos                        |
+| `alt_text`    | `VARCHAR(500)` |                                      | Accessibility text                       |
+| `caption`     | `TEXT`         |                                      |                                          |
+| `uploaded_by` | `UUID`         | FK → `authors.id` ON DELETE SET NULL |                                          |
+| `created_at`  | `TIMESTAMPTZ`  | DEFAULT `NOW()`                      | Upload date                              |
 
 ---
 
@@ -257,21 +257,21 @@ Centralized media library. Every image, PDF, resume file, and document is regist
 
 Dynamic sections for the `/about` page. Each section is a separate sub-page (`/about/[slug]`) with Markdown content and independent ordering/visibility.
 
-| Column | Type | Constraints | Notes |
-|---|---|---|---|
-| `id` | `UUID` | PK, DEFAULT `gen_random_uuid()` | |
-| `title` | `VARCHAR(200)` | NOT NULL | e.g., "About Anuj", "Skills", "Timeline" |
-| `slug` | `VARCHAR(200)` | UNIQUE, NOT NULL | URL slug: `/about/{slug}` |
-| `content` | `TEXT` | | Markdown/MDX body |
-| `icon` | `VARCHAR(50)` | | Icon identifier for navigation |
-| `sort_order` | `INTEGER` | DEFAULT `0` | |
-| `is_enabled` | `BOOLEAN` | DEFAULT `true` | |
-| `seo_title` | `VARCHAR(200)` | | |
-| `seo_description` | `VARCHAR(500)` | | |
-| `seo_keywords` | `VARCHAR(500)` | | Comma-separated |
-| `og_image_id` | `UUID` | FK → `media.id` ON DELETE SET NULL | |
-| `created_at` | `TIMESTAMPTZ` | DEFAULT `NOW()` | |
-| `updated_at` | `TIMESTAMPTZ` | DEFAULT `NOW()` | |
+| Column            | Type           | Constraints                        | Notes                                    |
+| ----------------- | -------------- | ---------------------------------- | ---------------------------------------- |
+| `id`              | `UUID`         | PK, DEFAULT `gen_random_uuid()`    |                                          |
+| `title`           | `VARCHAR(200)` | NOT NULL                           | e.g., "About Anuj", "Skills", "Timeline" |
+| `slug`            | `VARCHAR(200)` | UNIQUE, NOT NULL                   | URL slug: `/about/{slug}`                |
+| `content`         | `TEXT`         |                                    | Markdown/MDX body                        |
+| `icon`            | `VARCHAR(50)`  |                                    | Icon identifier for navigation           |
+| `sort_order`      | `INTEGER`      | DEFAULT `0`                        |                                          |
+| `is_enabled`      | `BOOLEAN`      | DEFAULT `true`                     |                                          |
+| `seo_title`       | `VARCHAR(200)` |                                    |                                          |
+| `seo_description` | `VARCHAR(500)` |                                    |                                          |
+| `seo_keywords`    | `VARCHAR(500)` |                                    | Comma-separated                          |
+| `og_image_id`     | `UUID`         | FK → `media.id` ON DELETE SET NULL |                                          |
+| `created_at`      | `TIMESTAMPTZ`  | DEFAULT `NOW()`                    |                                          |
+| `updated_at`      | `TIMESTAMPTZ`  | DEFAULT `NOW()`                    |                                          |
 
 ---
 
@@ -279,17 +279,17 @@ Dynamic sections for the `/about` page. Each section is a separate sub-page (`/a
 
 Grouping for skills: Frontend, Backend, Cloud, Databases, Tools, etc.
 
-| Column | Type | Constraints | Notes |
-|---|---|---|---|
-| `id` | `UUID` | PK, DEFAULT `gen_random_uuid()` | |
-| `name` | `VARCHAR(100)` | UNIQUE, NOT NULL | |
-| `slug` | `VARCHAR(100)` | UNIQUE, NOT NULL | |
-| `description` | `TEXT` | | |
-| `icon` | `VARCHAR(50)` | | |
-| `sort_order` | `INTEGER` | DEFAULT `0` | |
-| `is_enabled` | `BOOLEAN` | DEFAULT `true` | |
-| `created_at` | `TIMESTAMPTZ` | DEFAULT `NOW()` | |
-| `updated_at` | `TIMESTAMPTZ` | DEFAULT `NOW()` | |
+| Column        | Type           | Constraints                     | Notes |
+| ------------- | -------------- | ------------------------------- | ----- |
+| `id`          | `UUID`         | PK, DEFAULT `gen_random_uuid()` |       |
+| `name`        | `VARCHAR(100)` | UNIQUE, NOT NULL                |       |
+| `slug`        | `VARCHAR(100)` | UNIQUE, NOT NULL                |       |
+| `description` | `TEXT`         |                                 |       |
+| `icon`        | `VARCHAR(50)`  |                                 |       |
+| `sort_order`  | `INTEGER`      | DEFAULT `0`                     |       |
+| `is_enabled`  | `BOOLEAN`      | DEFAULT `true`                  |       |
+| `created_at`  | `TIMESTAMPTZ`  | DEFAULT `NOW()`                 |       |
+| `updated_at`  | `TIMESTAMPTZ`  | DEFAULT `NOW()`                 |       |
 
 ---
 
@@ -297,18 +297,18 @@ Grouping for skills: Frontend, Backend, Cloud, Databases, Tools, etc.
 
 Individual skills belonging to a category.
 
-| Column | Type | Constraints | Notes |
-|---|---|---|---|
-| `id` | `UUID` | PK, DEFAULT `gen_random_uuid()` | |
-| `category_id` | `UUID` | FK → `skill_categories.id` ON DELETE CASCADE, NOT NULL | |
-| `name` | `VARCHAR(100)` | NOT NULL | |
-| `slug` | `VARCHAR(100)` | NOT NULL | |
-| `icon` | `VARCHAR(50)` | | Icon class or URL |
-| `proficiency` | `SMALLINT` | CHECK (0–100), NULLABLE | Optional skill level; nullable per spec |
-| `sort_order` | `INTEGER` | DEFAULT `0` | |
-| `is_enabled` | `BOOLEAN` | DEFAULT `true` | |
-| `created_at` | `TIMESTAMPTZ` | DEFAULT `NOW()` | |
-| `updated_at` | `TIMESTAMPTZ` | DEFAULT `NOW()` | |
+| Column        | Type           | Constraints                                            | Notes                                   |
+| ------------- | -------------- | ------------------------------------------------------ | --------------------------------------- |
+| `id`          | `UUID`         | PK, DEFAULT `gen_random_uuid()`                        |                                         |
+| `category_id` | `UUID`         | FK → `skill_categories.id` ON DELETE CASCADE, NOT NULL |                                         |
+| `name`        | `VARCHAR(100)` | NOT NULL                                               |                                         |
+| `slug`        | `VARCHAR(100)` | NOT NULL                                               |                                         |
+| `icon`        | `VARCHAR(50)`  |                                                        | Icon class or URL                       |
+| `proficiency` | `SMALLINT`     | CHECK (0–100), NULLABLE                                | Optional skill level; nullable per spec |
+| `sort_order`  | `INTEGER`      | DEFAULT `0`                                            |                                         |
+| `is_enabled`  | `BOOLEAN`      | DEFAULT `true`                                         |                                         |
+| `created_at`  | `TIMESTAMPTZ`  | DEFAULT `NOW()`                                        |                                         |
+| `updated_at`  | `TIMESTAMPTZ`  | DEFAULT `NOW()`                                        |                                         |
 
 **Unique constraint:** `(category_id, slug)`.
 
@@ -318,23 +318,23 @@ Individual skills belonging to a category.
 
 Professional work experience entries.
 
-| Column | Type | Constraints | Notes |
-|---|---|---|---|
-| `id` | `UUID` | PK, DEFAULT `gen_random_uuid()` | |
-| `company_name` | `VARCHAR(200)` | NOT NULL | |
-| `role` | `VARCHAR(200)` | NOT NULL | |
-| `location` | `VARCHAR(200)` | | |
-| `start_date` | `DATE` | NOT NULL | |
-| `end_date` | `DATE` | | NULL = current role |
-| `is_current` | `BOOLEAN` | DEFAULT `false` | |
-| `description` | `TEXT` | | Responsibilities & achievements (Markdown) |
-| `technologies` | `TEXT[]` | | PostgreSQL text array of tech names |
-| `company_logo_id` | `UUID` | FK → `media.id` ON DELETE SET NULL | |
-| `company_url` | `TEXT` | | External company link |
-| `sort_order` | `INTEGER` | DEFAULT `0` | |
-| `is_enabled` | `BOOLEAN` | DEFAULT `true` | |
-| `created_at` | `TIMESTAMPTZ` | DEFAULT `NOW()` | |
-| `updated_at` | `TIMESTAMPTZ` | DEFAULT `NOW()` | |
+| Column            | Type           | Constraints                        | Notes                                      |
+| ----------------- | -------------- | ---------------------------------- | ------------------------------------------ |
+| `id`              | `UUID`         | PK, DEFAULT `gen_random_uuid()`    |                                            |
+| `company_name`    | `VARCHAR(200)` | NOT NULL                           |                                            |
+| `role`            | `VARCHAR(200)` | NOT NULL                           |                                            |
+| `location`        | `VARCHAR(200)` |                                    |                                            |
+| `start_date`      | `DATE`         | NOT NULL                           |                                            |
+| `end_date`        | `DATE`         |                                    | NULL = current role                        |
+| `is_current`      | `BOOLEAN`      | DEFAULT `false`                    |                                            |
+| `description`     | `TEXT`         |                                    | Responsibilities & achievements (Markdown) |
+| `technologies`    | `TEXT[]`       |                                    | PostgreSQL text array of tech names        |
+| `company_logo_id` | `UUID`         | FK → `media.id` ON DELETE SET NULL |                                            |
+| `company_url`     | `TEXT`         |                                    | External company link                      |
+| `sort_order`      | `INTEGER`      | DEFAULT `0`                        |                                            |
+| `is_enabled`      | `BOOLEAN`      | DEFAULT `true`                     |                                            |
+| `created_at`      | `TIMESTAMPTZ`  | DEFAULT `NOW()`                    |                                            |
+| `updated_at`      | `TIMESTAMPTZ`  | DEFAULT `NOW()`                    |                                            |
 
 ---
 
@@ -342,24 +342,24 @@ Professional work experience entries.
 
 Education entries.
 
-| Column | Type | Constraints | Notes |
-|---|---|---|---|
-| `id` | `UUID` | PK, DEFAULT `gen_random_uuid()` | |
-| `institution` | `VARCHAR(200)` | NOT NULL | |
-| `degree` | `VARCHAR(200)` | NOT NULL | |
-| `field_of_study` | `VARCHAR(200)` | | |
-| `location` | `VARCHAR(200)` | | |
-| `start_date` | `DATE` | NOT NULL | |
-| `end_date` | `DATE` | | NULL = current |
-| `is_current` | `BOOLEAN` | DEFAULT `false` | |
-| `grade` | `VARCHAR(50)` | | GPA, percentage, etc. |
-| `description` | `TEXT` | | Achievements, coursework (Markdown) |
-| `activities` | `TEXT` | | Extracurriculars |
-| `institution_logo_id` | `UUID` | FK → `media.id` ON DELETE SET NULL | |
-| `sort_order` | `INTEGER` | DEFAULT `0` | |
-| `is_enabled` | `BOOLEAN` | DEFAULT `true` | |
-| `created_at` | `TIMESTAMPTZ` | DEFAULT `NOW()` | |
-| `updated_at` | `TIMESTAMPTZ` | DEFAULT `NOW()` | |
+| Column                | Type           | Constraints                        | Notes                               |
+| --------------------- | -------------- | ---------------------------------- | ----------------------------------- |
+| `id`                  | `UUID`         | PK, DEFAULT `gen_random_uuid()`    |                                     |
+| `institution`         | `VARCHAR(200)` | NOT NULL                           |                                     |
+| `degree`              | `VARCHAR(200)` | NOT NULL                           |                                     |
+| `field_of_study`      | `VARCHAR(200)` |                                    |                                     |
+| `location`            | `VARCHAR(200)` |                                    |                                     |
+| `start_date`          | `DATE`         | NOT NULL                           |                                     |
+| `end_date`            | `DATE`         |                                    | NULL = current                      |
+| `is_current`          | `BOOLEAN`      | DEFAULT `false`                    |                                     |
+| `grade`               | `VARCHAR(50)`  |                                    | GPA, percentage, etc.               |
+| `description`         | `TEXT`         |                                    | Achievements, coursework (Markdown) |
+| `activities`          | `TEXT`         |                                    | Extracurriculars                    |
+| `institution_logo_id` | `UUID`         | FK → `media.id` ON DELETE SET NULL |                                     |
+| `sort_order`          | `INTEGER`      | DEFAULT `0`                        |                                     |
+| `is_enabled`          | `BOOLEAN`      | DEFAULT `true`                     |                                     |
+| `created_at`          | `TIMESTAMPTZ`  | DEFAULT `NOW()`                    |                                     |
+| `updated_at`          | `TIMESTAMPTZ`  | DEFAULT `NOW()`                    |                                     |
 
 ---
 
@@ -367,20 +367,20 @@ Education entries.
 
 Professional certifications and credentials.
 
-| Column | Type | Constraints | Notes |
-|---|---|---|---|
-| `id` | `UUID` | PK, DEFAULT `gen_random_uuid()` | |
-| `name` | `VARCHAR(200)` | NOT NULL | |
-| `issuing_organization` | `VARCHAR(200)` | NOT NULL | |
-| `issue_date` | `DATE` | NOT NULL | |
-| `expiry_date` | `DATE` | | |
-| `credential_id` | `VARCHAR(200)` | | |
-| `credential_url` | `TEXT` | | Verification link |
-| `certificate_image_id` | `UUID` | FK → `media.id` ON DELETE SET NULL | Image or PDF |
-| `sort_order` | `INTEGER` | DEFAULT `0` | |
-| `is_enabled` | `BOOLEAN` | DEFAULT `true` | |
-| `created_at` | `TIMESTAMPTZ` | DEFAULT `NOW()` | |
-| `updated_at` | `TIMESTAMPTZ` | DEFAULT `NOW()` | |
+| Column                 | Type           | Constraints                        | Notes             |
+| ---------------------- | -------------- | ---------------------------------- | ----------------- |
+| `id`                   | `UUID`         | PK, DEFAULT `gen_random_uuid()`    |                   |
+| `name`                 | `VARCHAR(200)` | NOT NULL                           |                   |
+| `issuing_organization` | `VARCHAR(200)` | NOT NULL                           |                   |
+| `issue_date`           | `DATE`         | NOT NULL                           |                   |
+| `expiry_date`          | `DATE`         |                                    |                   |
+| `credential_id`        | `VARCHAR(200)` |                                    |                   |
+| `credential_url`       | `TEXT`         |                                    | Verification link |
+| `certificate_image_id` | `UUID`         | FK → `media.id` ON DELETE SET NULL | Image or PDF      |
+| `sort_order`           | `INTEGER`      | DEFAULT `0`                        |                   |
+| `is_enabled`           | `BOOLEAN`      | DEFAULT `true`                     |                   |
+| `created_at`           | `TIMESTAMPTZ`  | DEFAULT `NOW()`                    |                   |
+| `updated_at`           | `TIMESTAMPTZ`  | DEFAULT `NOW()`                    |                   |
 
 ---
 
@@ -388,20 +388,20 @@ Professional certifications and credentials.
 
 Awards, hackathons, competitions, scholarships, and recognitions.
 
-| Column | Type | Constraints | Notes |
-|---|---|---|---|
-| `id` | `UUID` | PK, DEFAULT `gen_random_uuid()` | |
-| `title` | `VARCHAR(200)` | NOT NULL | |
-| `description` | `TEXT` | | |
-| `date` | `DATE` | | |
-| `issuer` | `VARCHAR(200)` | | Organizing body |
-| `url` | `TEXT` | | External link |
-| `image_id` | `UUID` | FK → `media.id` ON DELETE SET NULL | |
-| `is_featured` | `BOOLEAN` | DEFAULT `false` | |
-| `sort_order` | `INTEGER` | DEFAULT `0` | |
-| `is_enabled` | `BOOLEAN` | DEFAULT `true` | |
-| `created_at` | `TIMESTAMPTZ` | DEFAULT `NOW()` | |
-| `updated_at` | `TIMESTAMPTZ` | DEFAULT `NOW()` | |
+| Column        | Type           | Constraints                        | Notes           |
+| ------------- | -------------- | ---------------------------------- | --------------- |
+| `id`          | `UUID`         | PK, DEFAULT `gen_random_uuid()`    |                 |
+| `title`       | `VARCHAR(200)` | NOT NULL                           |                 |
+| `description` | `TEXT`         |                                    |                 |
+| `date`        | `DATE`         |                                    |                 |
+| `issuer`      | `VARCHAR(200)` |                                    | Organizing body |
+| `url`         | `TEXT`         |                                    | External link   |
+| `image_id`    | `UUID`         | FK → `media.id` ON DELETE SET NULL |                 |
+| `is_featured` | `BOOLEAN`      | DEFAULT `false`                    |                 |
+| `sort_order`  | `INTEGER`      | DEFAULT `0`                        |                 |
+| `is_enabled`  | `BOOLEAN`      | DEFAULT `true`                     |                 |
+| `created_at`  | `TIMESTAMPTZ`  | DEFAULT `NOW()`                    |                 |
+| `updated_at`  | `TIMESTAMPTZ`  | DEFAULT `NOW()`                    |                 |
 
 ---
 
@@ -409,16 +409,16 @@ Awards, hackathons, competitions, scholarships, and recognitions.
 
 Categories for filtering projects (e.g., Web App, Mobile App, Library, CLI Tool).
 
-| Column | Type | Constraints | Notes |
-|---|---|---|---|
-| `id` | `UUID` | PK, DEFAULT `gen_random_uuid()` | |
-| `name` | `VARCHAR(100)` | UNIQUE, NOT NULL | |
-| `slug` | `VARCHAR(100)` | UNIQUE, NOT NULL | |
-| `description` | `TEXT` | | |
-| `sort_order` | `INTEGER` | DEFAULT `0` | |
-| `is_enabled` | `BOOLEAN` | DEFAULT `true` | |
-| `created_at` | `TIMESTAMPTZ` | DEFAULT `NOW()` | |
-| `updated_at` | `TIMESTAMPTZ` | DEFAULT `NOW()` | |
+| Column        | Type           | Constraints                     | Notes |
+| ------------- | -------------- | ------------------------------- | ----- |
+| `id`          | `UUID`         | PK, DEFAULT `gen_random_uuid()` |       |
+| `name`        | `VARCHAR(100)` | UNIQUE, NOT NULL                |       |
+| `slug`        | `VARCHAR(100)` | UNIQUE, NOT NULL                |       |
+| `description` | `TEXT`         |                                 |       |
+| `sort_order`  | `INTEGER`      | DEFAULT `0`                     |       |
+| `is_enabled`  | `BOOLEAN`      | DEFAULT `true`                  |       |
+| `created_at`  | `TIMESTAMPTZ`  | DEFAULT `NOW()`                 |       |
+| `updated_at`  | `TIMESTAMPTZ`  | DEFAULT `NOW()`                 |       |
 
 ---
 
@@ -426,34 +426,34 @@ Categories for filtering projects (e.g., Web App, Mobile App, Library, CLI Tool)
 
 Core project records. Routes: `/works`, `/works/by/[author]/[slug]`.
 
-| Column | Type | Constraints | Notes |
-|---|---|---|---|
-| `id` | `UUID` | PK, DEFAULT `gen_random_uuid()` | |
-| `author_id` | `UUID` | FK → `authors.id` ON DELETE RESTRICT, NOT NULL | |
-| `category_id` | `UUID` | FK → `project_categories.id` ON DELETE SET NULL | |
-| `title` | `VARCHAR(300)` | NOT NULL | |
-| `slug` | `VARCHAR(300)` | NOT NULL | |
-| `short_description` | `TEXT` | NOT NULL | Card/listing summary |
-| `content` | `TEXT` | | Full case study in Markdown/MDX |
-| `cover_image_id` | `UUID` | FK → `media.id` ON DELETE SET NULL | |
-| `technologies` | `TEXT[]` | | PostgreSQL text array |
-| `github_url` | `TEXT` | | |
-| `live_url` | `TEXT` | | Demo link |
-| `project_type` | `project_type` | DEFAULT `'personal'` | personal/freelance/academic/professional/open_source |
-| `project_status` | `project_status` | DEFAULT `'completed'` | in_progress/completed/on_hold/abandoned |
-| `status` | `content_status` | DEFAULT `'draft'` | Publishing status |
-| `is_featured` | `BOOLEAN` | DEFAULT `false` | |
-| `start_date` | `DATE` | | |
-| `end_date` | `DATE` | | |
-| `sort_order` | `INTEGER` | DEFAULT `0` | |
-| `seo_title` | `VARCHAR(200)` | | |
-| `seo_description` | `VARCHAR(500)` | | |
-| `seo_keywords` | `VARCHAR(500)` | | |
-| `og_image_id` | `UUID` | FK → `media.id` ON DELETE SET NULL | |
-| `published_at` | `TIMESTAMPTZ` | | Set when status → published |
-| `scheduled_at` | `TIMESTAMPTZ` | | If status = scheduled |
-| `created_at` | `TIMESTAMPTZ` | DEFAULT `NOW()` | |
-| `updated_at` | `TIMESTAMPTZ` | DEFAULT `NOW()` | |
+| Column              | Type             | Constraints                                     | Notes                                                |
+| ------------------- | ---------------- | ----------------------------------------------- | ---------------------------------------------------- |
+| `id`                | `UUID`           | PK, DEFAULT `gen_random_uuid()`                 |                                                      |
+| `author_id`         | `UUID`           | FK → `authors.id` ON DELETE RESTRICT, NOT NULL  |                                                      |
+| `category_id`       | `UUID`           | FK → `project_categories.id` ON DELETE SET NULL |                                                      |
+| `title`             | `VARCHAR(300)`   | NOT NULL                                        |                                                      |
+| `slug`              | `VARCHAR(300)`   | NOT NULL                                        |                                                      |
+| `short_description` | `TEXT`           | NOT NULL                                        | Card/listing summary                                 |
+| `content`           | `TEXT`           |                                                 | Full case study in Markdown/MDX                      |
+| `cover_image_id`    | `UUID`           | FK → `media.id` ON DELETE SET NULL              |                                                      |
+| `technologies`      | `TEXT[]`         |                                                 | PostgreSQL text array                                |
+| `github_url`        | `TEXT`           |                                                 |                                                      |
+| `live_url`          | `TEXT`           |                                                 | Demo link                                            |
+| `project_type`      | `project_type`   | DEFAULT `'personal'`                            | personal/freelance/academic/professional/open_source |
+| `project_status`    | `project_status` | DEFAULT `'completed'`                           | in_progress/completed/on_hold/abandoned              |
+| `status`            | `content_status` | DEFAULT `'draft'`                               | Publishing status                                    |
+| `is_featured`       | `BOOLEAN`        | DEFAULT `false`                                 |                                                      |
+| `start_date`        | `DATE`           |                                                 |                                                      |
+| `end_date`          | `DATE`           |                                                 |                                                      |
+| `sort_order`        | `INTEGER`        | DEFAULT `0`                                     |                                                      |
+| `seo_title`         | `VARCHAR(200)`   |                                                 |                                                      |
+| `seo_description`   | `VARCHAR(500)`   |                                                 |                                                      |
+| `seo_keywords`      | `VARCHAR(500)`   |                                                 |                                                      |
+| `og_image_id`       | `UUID`           | FK → `media.id` ON DELETE SET NULL              |                                                      |
+| `published_at`      | `TIMESTAMPTZ`    |                                                 | Set when status → published                          |
+| `scheduled_at`      | `TIMESTAMPTZ`    |                                                 | If status = scheduled                                |
+| `created_at`        | `TIMESTAMPTZ`    | DEFAULT `NOW()`                                 |                                                      |
+| `updated_at`        | `TIMESTAMPTZ`    | DEFAULT `NOW()`                                 |                                                      |
 
 **Unique constraint:** `(author_id, slug)`.
 
@@ -463,13 +463,13 @@ Core project records. Routes: `/works`, `/works/by/[author]/[slug]`.
 
 Gallery images for a project (multiple screenshots/diagrams per project).
 
-| Column | Type | Constraints | Notes |
-|---|---|---|---|
-| `id` | `UUID` | PK, DEFAULT `gen_random_uuid()` | |
-| `project_id` | `UUID` | FK → `projects.id` ON DELETE CASCADE, NOT NULL | |
-| `media_id` | `UUID` | FK → `media.id` ON DELETE CASCADE, NOT NULL | |
-| `caption` | `TEXT` | | |
-| `sort_order` | `INTEGER` | DEFAULT `0` | |
+| Column       | Type      | Constraints                                    | Notes |
+| ------------ | --------- | ---------------------------------------------- | ----- |
+| `id`         | `UUID`    | PK, DEFAULT `gen_random_uuid()`                |       |
+| `project_id` | `UUID`    | FK → `projects.id` ON DELETE CASCADE, NOT NULL |       |
+| `media_id`   | `UUID`    | FK → `media.id` ON DELETE CASCADE, NOT NULL    |       |
+| `caption`    | `TEXT`    |                                                |       |
+| `sort_order` | `INTEGER` | DEFAULT `0`                                    |       |
 
 **Unique constraint:** `(project_id, media_id)`.
 
@@ -479,16 +479,16 @@ Gallery images for a project (multiple screenshots/diagrams per project).
 
 Categories for blog posts.
 
-| Column | Type | Constraints | Notes |
-|---|---|---|---|
-| `id` | `UUID` | PK, DEFAULT `gen_random_uuid()` | |
-| `name` | `VARCHAR(100)` | UNIQUE, NOT NULL | |
-| `slug` | `VARCHAR(100)` | UNIQUE, NOT NULL | |
-| `description` | `TEXT` | | |
-| `sort_order` | `INTEGER` | DEFAULT `0` | |
-| `is_enabled` | `BOOLEAN` | DEFAULT `true` | |
-| `created_at` | `TIMESTAMPTZ` | DEFAULT `NOW()` | |
-| `updated_at` | `TIMESTAMPTZ` | DEFAULT `NOW()` | |
+| Column        | Type           | Constraints                     | Notes |
+| ------------- | -------------- | ------------------------------- | ----- |
+| `id`          | `UUID`         | PK, DEFAULT `gen_random_uuid()` |       |
+| `name`        | `VARCHAR(100)` | UNIQUE, NOT NULL                |       |
+| `slug`        | `VARCHAR(100)` | UNIQUE, NOT NULL                |       |
+| `description` | `TEXT`         |                                 |       |
+| `sort_order`  | `INTEGER`      | DEFAULT `0`                     |       |
+| `is_enabled`  | `BOOLEAN`      | DEFAULT `true`                  |       |
+| `created_at`  | `TIMESTAMPTZ`  | DEFAULT `NOW()`                 |       |
+| `updated_at`  | `TIMESTAMPTZ`  | DEFAULT `NOW()`                 |       |
 
 ---
 
@@ -496,27 +496,27 @@ Categories for blog posts.
 
 Blog articles with Markdown content. Routes: `/blogs`, `/blogs/by/[author]/[slug]`.
 
-| Column | Type | Constraints | Notes |
-|---|---|---|---|
-| `id` | `UUID` | PK, DEFAULT `gen_random_uuid()` | |
-| `author_id` | `UUID` | FK → `authors.id` ON DELETE RESTRICT, NOT NULL | |
-| `category_id` | `UUID` | FK → `blog_categories.id` ON DELETE SET NULL | |
-| `title` | `VARCHAR(300)` | NOT NULL | |
-| `slug` | `VARCHAR(300)` | NOT NULL | |
-| `excerpt` | `TEXT` | | Short summary for listings |
-| `content` | `TEXT` | NOT NULL | Markdown/MDX body |
-| `cover_image_id` | `UUID` | FK → `media.id` ON DELETE SET NULL | |
-| `reading_time_minutes` | `SMALLINT` | | Computed on save |
-| `status` | `content_status` | DEFAULT `'draft'` | |
-| `is_featured` | `BOOLEAN` | DEFAULT `false` | |
-| `seo_title` | `VARCHAR(200)` | | |
-| `seo_description` | `VARCHAR(500)` | | |
-| `seo_keywords` | `VARCHAR(500)` | | |
-| `og_image_id` | `UUID` | FK → `media.id` ON DELETE SET NULL | |
-| `published_at` | `TIMESTAMPTZ` | | |
-| `scheduled_at` | `TIMESTAMPTZ` | | |
-| `created_at` | `TIMESTAMPTZ` | DEFAULT `NOW()` | |
-| `updated_at` | `TIMESTAMPTZ` | DEFAULT `NOW()` | |
+| Column                 | Type             | Constraints                                    | Notes                      |
+| ---------------------- | ---------------- | ---------------------------------------------- | -------------------------- |
+| `id`                   | `UUID`           | PK, DEFAULT `gen_random_uuid()`                |                            |
+| `author_id`            | `UUID`           | FK → `authors.id` ON DELETE RESTRICT, NOT NULL |                            |
+| `category_id`          | `UUID`           | FK → `blog_categories.id` ON DELETE SET NULL   |                            |
+| `title`                | `VARCHAR(300)`   | NOT NULL                                       |                            |
+| `slug`                 | `VARCHAR(300)`   | NOT NULL                                       |                            |
+| `excerpt`              | `TEXT`           |                                                | Short summary for listings |
+| `content`              | `TEXT`           | NOT NULL                                       | Markdown/MDX body          |
+| `cover_image_id`       | `UUID`           | FK → `media.id` ON DELETE SET NULL             |                            |
+| `reading_time_minutes` | `SMALLINT`       |                                                | Computed on save           |
+| `status`               | `content_status` | DEFAULT `'draft'`                              |                            |
+| `is_featured`          | `BOOLEAN`        | DEFAULT `false`                                |                            |
+| `seo_title`            | `VARCHAR(200)`   |                                                |                            |
+| `seo_description`      | `VARCHAR(500)`   |                                                |                            |
+| `seo_keywords`         | `VARCHAR(500)`   |                                                |                            |
+| `og_image_id`          | `UUID`           | FK → `media.id` ON DELETE SET NULL             |                            |
+| `published_at`         | `TIMESTAMPTZ`    |                                                |                            |
+| `scheduled_at`         | `TIMESTAMPTZ`    |                                                |                            |
+| `created_at`           | `TIMESTAMPTZ`    | DEFAULT `NOW()`                                |                            |
+| `updated_at`           | `TIMESTAMPTZ`    | DEFAULT `NOW()`                                |                            |
 
 **Unique constraint:** `(author_id, slug)`.
 
@@ -526,29 +526,29 @@ Blog articles with Markdown content. Routes: `/blogs`, `/blogs/by/[author]/[slug
 
 Academic publications, whitepapers, and technical reports. Separate from blogs per the docs.
 
-| Column | Type | Constraints | Notes |
-|---|---|---|---|
-| `id` | `UUID` | PK, DEFAULT `gen_random_uuid()` | |
-| `author_id` | `UUID` | FK → `authors.id` ON DELETE RESTRICT, NOT NULL | |
-| `title` | `VARCHAR(300)` | NOT NULL | |
-| `slug` | `VARCHAR(300)` | NOT NULL | |
-| `abstract` | `TEXT` | | Short summary |
-| `content` | `TEXT` | | Markdown/MDX body |
-| `pdf_id` | `UUID` | FK → `media.id` ON DELETE SET NULL | Attached PDF |
-| `doi` | `VARCHAR(200)` | | Digital Object Identifier |
-| `publication_url` | `TEXT` | | External publication link |
-| `publication_name` | `VARCHAR(200)` | | Journal/conference name |
-| `publication_date` | `DATE` | | |
-| `status` | `content_status` | DEFAULT `'draft'` | |
-| `is_featured` | `BOOLEAN` | DEFAULT `false` | |
-| `seo_title` | `VARCHAR(200)` | | |
-| `seo_description` | `VARCHAR(500)` | | |
-| `seo_keywords` | `VARCHAR(500)` | | |
-| `og_image_id` | `UUID` | FK → `media.id` ON DELETE SET NULL | |
-| `published_at` | `TIMESTAMPTZ` | | |
-| `scheduled_at` | `TIMESTAMPTZ` | | |
-| `created_at` | `TIMESTAMPTZ` | DEFAULT `NOW()` | |
-| `updated_at` | `TIMESTAMPTZ` | DEFAULT `NOW()` | |
+| Column             | Type             | Constraints                                    | Notes                     |
+| ------------------ | ---------------- | ---------------------------------------------- | ------------------------- |
+| `id`               | `UUID`           | PK, DEFAULT `gen_random_uuid()`                |                           |
+| `author_id`        | `UUID`           | FK → `authors.id` ON DELETE RESTRICT, NOT NULL |                           |
+| `title`            | `VARCHAR(300)`   | NOT NULL                                       |                           |
+| `slug`             | `VARCHAR(300)`   | NOT NULL                                       |                           |
+| `abstract`         | `TEXT`           |                                                | Short summary             |
+| `content`          | `TEXT`           |                                                | Markdown/MDX body         |
+| `pdf_id`           | `UUID`           | FK → `media.id` ON DELETE SET NULL             | Attached PDF              |
+| `doi`              | `VARCHAR(200)`   |                                                | Digital Object Identifier |
+| `publication_url`  | `TEXT`           |                                                | External publication link |
+| `publication_name` | `VARCHAR(200)`   |                                                | Journal/conference name   |
+| `publication_date` | `DATE`           |                                                |                           |
+| `status`           | `content_status` | DEFAULT `'draft'`                              |                           |
+| `is_featured`      | `BOOLEAN`        | DEFAULT `false`                                |                           |
+| `seo_title`        | `VARCHAR(200)`   |                                                |                           |
+| `seo_description`  | `VARCHAR(500)`   |                                                |                           |
+| `seo_keywords`     | `VARCHAR(500)`   |                                                |                           |
+| `og_image_id`      | `UUID`           | FK → `media.id` ON DELETE SET NULL             |                           |
+| `published_at`     | `TIMESTAMPTZ`    |                                                |                           |
+| `scheduled_at`     | `TIMESTAMPTZ`    |                                                |                           |
+| `created_at`       | `TIMESTAMPTZ`    | DEFAULT `NOW()`                                |                           |
+| `updated_at`       | `TIMESTAMPTZ`    | DEFAULT `NOW()`                                |                           |
 
 **Unique constraint:** `(author_id, slug)`.
 
@@ -558,12 +558,12 @@ Academic publications, whitepapers, and technical reports. Separate from blogs p
 
 Reusable tags applied to multiple entity types (blogs, projects, research, pages, etc.).
 
-| Column | Type | Constraints | Notes |
-|---|---|---|---|
-| `id` | `UUID` | PK, DEFAULT `gen_random_uuid()` | |
-| `name` | `VARCHAR(100)` | UNIQUE, NOT NULL | |
-| `slug` | `VARCHAR(100)` | UNIQUE, NOT NULL | |
-| `created_at` | `TIMESTAMPTZ` | DEFAULT `NOW()` | |
+| Column       | Type           | Constraints                     | Notes |
+| ------------ | -------------- | ------------------------------- | ----- |
+| `id`         | `UUID`         | PK, DEFAULT `gen_random_uuid()` |       |
+| `name`       | `VARCHAR(100)` | UNIQUE, NOT NULL                |       |
+| `slug`       | `VARCHAR(100)` | UNIQUE, NOT NULL                |       |
+| `created_at` | `TIMESTAMPTZ`  | DEFAULT `NOW()`                 |       |
 
 ---
 
@@ -571,12 +571,12 @@ Reusable tags applied to multiple entity types (blogs, projects, research, pages
 
 Polymorphic junction table connecting tags to any taggable entity.
 
-| Column | Type | Constraints | Notes |
-|---|---|---|---|
-| `id` | `UUID` | PK, DEFAULT `gen_random_uuid()` | |
-| `tag_id` | `UUID` | FK → `tags.id` ON DELETE CASCADE, NOT NULL | |
-| `entity_type` | `entity_type` | NOT NULL | Which table this tag belongs to |
-| `entity_id` | `UUID` | NOT NULL | PK of the tagged row |
+| Column        | Type          | Constraints                                | Notes                           |
+| ------------- | ------------- | ------------------------------------------ | ------------------------------- |
+| `id`          | `UUID`        | PK, DEFAULT `gen_random_uuid()`            |                                 |
+| `tag_id`      | `UUID`        | FK → `tags.id` ON DELETE CASCADE, NOT NULL |                                 |
+| `entity_type` | `entity_type` | NOT NULL                                   | Which table this tag belongs to |
+| `entity_id`   | `UUID`        | NOT NULL                                   | PK of the tagged row            |
 
 **Unique constraint:** `(tag_id, entity_type, entity_id)`.
 
@@ -589,16 +589,16 @@ Polymorphic junction table connecting tags to any taggable entity.
 
 Optional gallery for events, achievements, speaking engagements, etc. Separate from project-specific images.
 
-| Column | Type | Constraints | Notes |
-|---|---|---|---|
-| `id` | `UUID` | PK, DEFAULT `gen_random_uuid()` | |
-| `media_id` | `UUID` | FK → `media.id` ON DELETE CASCADE, NOT NULL | |
-| `title` | `VARCHAR(200)` | | |
-| `description` | `TEXT` | | |
-| `category` | `VARCHAR(100)` | | e.g., "events", "conferences", "achievements" |
-| `sort_order` | `INTEGER` | DEFAULT `0` | |
-| `is_enabled` | `BOOLEAN` | DEFAULT `true` | |
-| `created_at` | `TIMESTAMPTZ` | DEFAULT `NOW()` | |
+| Column        | Type           | Constraints                                 | Notes                                         |
+| ------------- | -------------- | ------------------------------------------- | --------------------------------------------- |
+| `id`          | `UUID`         | PK, DEFAULT `gen_random_uuid()`             |                                               |
+| `media_id`    | `UUID`         | FK → `media.id` ON DELETE CASCADE, NOT NULL |                                               |
+| `title`       | `VARCHAR(200)` |                                             |                                               |
+| `description` | `TEXT`         |                                             |                                               |
+| `category`    | `VARCHAR(100)` |                                             | e.g., "events", "conferences", "achievements" |
+| `sort_order`  | `INTEGER`      | DEFAULT `0`                                 |                                               |
+| `is_enabled`  | `BOOLEAN`      | DEFAULT `true`                              |                                               |
+| `created_at`  | `TIMESTAMPTZ`  | DEFAULT `NOW()`                             |                                               |
 
 ---
 
@@ -606,15 +606,15 @@ Optional gallery for events, achievements, speaking engagements, etc. Separate f
 
 Multiple resume versions with one active/public selection.
 
-| Column | Type | Constraints | Notes |
-|---|---|---|---|
-| `id` | `UUID` | PK, DEFAULT `gen_random_uuid()` | |
-| `title` | `VARCHAR(200)` | NOT NULL | e.g., "Full-Stack Resume v3" |
-| `file_id` | `UUID` | FK → `media.id` ON DELETE RESTRICT, NOT NULL | PDF in media library |
-| `version_label` | `VARCHAR(50)` | | e.g., "v3.1" |
-| `is_active` | `BOOLEAN` | DEFAULT `false` | Only one should be true at a time (enforced in app) |
-| `created_at` | `TIMESTAMPTZ` | DEFAULT `NOW()` | |
-| `updated_at` | `TIMESTAMPTZ` | DEFAULT `NOW()` | |
+| Column          | Type           | Constraints                                  | Notes                                               |
+| --------------- | -------------- | -------------------------------------------- | --------------------------------------------------- |
+| `id`            | `UUID`         | PK, DEFAULT `gen_random_uuid()`              |                                                     |
+| `title`         | `VARCHAR(200)` | NOT NULL                                     | e.g., "Full-Stack Resume v3"                        |
+| `file_id`       | `UUID`         | FK → `media.id` ON DELETE RESTRICT, NOT NULL | PDF in media library                                |
+| `version_label` | `VARCHAR(50)`  |                                              | e.g., "v3.1"                                        |
+| `is_active`     | `BOOLEAN`      | DEFAULT `false`                              | Only one should be true at a time (enforced in app) |
+| `created_at`    | `TIMESTAMPTZ`  | DEFAULT `NOW()`                              |                                                     |
+| `updated_at`    | `TIMESTAMPTZ`  | DEFAULT `NOW()`                              |                                                     |
 
 ---
 
@@ -622,17 +622,17 @@ Multiple resume versions with one active/public selection.
 
 Dynamic social/professional profile links managed from admin.
 
-| Column | Type | Constraints | Notes |
-|---|---|---|---|
-| `id` | `UUID` | PK, DEFAULT `gen_random_uuid()` | |
-| `platform` | `VARCHAR(50)` | NOT NULL | e.g., "github", "linkedin", "x", "email" |
-| `label` | `VARCHAR(100)` | NOT NULL | Display text |
-| `url` | `TEXT` | NOT NULL | |
-| `icon` | `VARCHAR(50)` | | Icon class/identifier |
-| `sort_order` | `INTEGER` | DEFAULT `0` | |
-| `is_enabled` | `BOOLEAN` | DEFAULT `true` | |
-| `created_at` | `TIMESTAMPTZ` | DEFAULT `NOW()` | |
-| `updated_at` | `TIMESTAMPTZ` | DEFAULT `NOW()` | |
+| Column       | Type           | Constraints                     | Notes                                    |
+| ------------ | -------------- | ------------------------------- | ---------------------------------------- |
+| `id`         | `UUID`         | PK, DEFAULT `gen_random_uuid()` |                                          |
+| `platform`   | `VARCHAR(50)`  | NOT NULL                        | e.g., "github", "linkedin", "x", "email" |
+| `label`      | `VARCHAR(100)` | NOT NULL                        | Display text                             |
+| `url`        | `TEXT`         | NOT NULL                        |                                          |
+| `icon`       | `VARCHAR(50)`  |                                 | Icon class/identifier                    |
+| `sort_order` | `INTEGER`      | DEFAULT `0`                     |                                          |
+| `is_enabled` | `BOOLEAN`      | DEFAULT `true`                  |                                          |
+| `created_at` | `TIMESTAMPTZ`  | DEFAULT `NOW()`                 |                                          |
+| `updated_at` | `TIMESTAMPTZ`  | DEFAULT `NOW()`                 |                                          |
 
 ---
 
@@ -640,21 +640,21 @@ Dynamic social/professional profile links managed from admin.
 
 Open-source repositories, packages, and contributions.
 
-| Column | Type | Constraints | Notes |
-|---|---|---|---|
-| `id` | `UUID` | PK, DEFAULT `gen_random_uuid()` | |
-| `name` | `VARCHAR(200)` | NOT NULL | Repository or package name |
-| `description` | `TEXT` | | |
-| `url` | `TEXT` | NOT NULL | GitHub/npm/etc. link |
-| `role` | `VARCHAR(100)` | | e.g., "Author", "Contributor" |
-| `stars` | `INTEGER` | | GitHub stars (synced or manual) |
-| `forks` | `INTEGER` | | |
-| `language` | `VARCHAR(50)` | | Primary language |
-| `is_featured` | `BOOLEAN` | DEFAULT `false` | |
-| `sort_order` | `INTEGER` | DEFAULT `0` | |
-| `is_enabled` | `BOOLEAN` | DEFAULT `true` | |
-| `created_at` | `TIMESTAMPTZ` | DEFAULT `NOW()` | |
-| `updated_at` | `TIMESTAMPTZ` | DEFAULT `NOW()` | |
+| Column        | Type           | Constraints                     | Notes                           |
+| ------------- | -------------- | ------------------------------- | ------------------------------- |
+| `id`          | `UUID`         | PK, DEFAULT `gen_random_uuid()` |                                 |
+| `name`        | `VARCHAR(200)` | NOT NULL                        | Repository or package name      |
+| `description` | `TEXT`         |                                 |                                 |
+| `url`         | `TEXT`         | NOT NULL                        | GitHub/npm/etc. link            |
+| `role`        | `VARCHAR(100)` |                                 | e.g., "Author", "Contributor"   |
+| `stars`       | `INTEGER`      |                                 | GitHub stars (synced or manual) |
+| `forks`       | `INTEGER`      |                                 |                                 |
+| `language`    | `VARCHAR(50)`  |                                 | Primary language                |
+| `is_featured` | `BOOLEAN`      | DEFAULT `false`                 |                                 |
+| `sort_order`  | `INTEGER`      | DEFAULT `0`                     |                                 |
+| `is_enabled`  | `BOOLEAN`      | DEFAULT `true`                  |                                 |
+| `created_at`  | `TIMESTAMPTZ`  | DEFAULT `NOW()`                 |                                 |
+| `updated_at`  | `TIMESTAMPTZ`  | DEFAULT `NOW()`                 |                                 |
 
 ---
 
@@ -662,20 +662,20 @@ Open-source repositories, packages, and contributions.
 
 Unified professional/personal timeline combining education, jobs, projects, and achievements.
 
-| Column | Type | Constraints | Notes |
-|---|---|---|---|
-| `id` | `UUID` | PK, DEFAULT `gen_random_uuid()` | |
-| `title` | `VARCHAR(200)` | NOT NULL | |
-| `description` | `TEXT` | | |
-| `event_type` | `timeline_event_type` | NOT NULL | education/job/project/achievement/milestone |
-| `date` | `DATE` | NOT NULL | Primary sort date |
-| `end_date` | `DATE` | | For ranges |
-| `icon` | `VARCHAR(50)` | | |
-| `url` | `TEXT` | | Link to detail page |
-| `sort_order` | `INTEGER` | DEFAULT `0` | Overrides date sort when needed |
-| `is_enabled` | `BOOLEAN` | DEFAULT `true` | |
-| `created_at` | `TIMESTAMPTZ` | DEFAULT `NOW()` | |
-| `updated_at` | `TIMESTAMPTZ` | DEFAULT `NOW()` | |
+| Column        | Type                  | Constraints                     | Notes                                       |
+| ------------- | --------------------- | ------------------------------- | ------------------------------------------- |
+| `id`          | `UUID`                | PK, DEFAULT `gen_random_uuid()` |                                             |
+| `title`       | `VARCHAR(200)`        | NOT NULL                        |                                             |
+| `description` | `TEXT`                |                                 |                                             |
+| `event_type`  | `timeline_event_type` | NOT NULL                        | education/job/project/achievement/milestone |
+| `date`        | `DATE`                | NOT NULL                        | Primary sort date                           |
+| `end_date`    | `DATE`                |                                 | For ranges                                  |
+| `icon`        | `VARCHAR(50)`         |                                 |                                             |
+| `url`         | `TEXT`                |                                 | Link to detail page                         |
+| `sort_order`  | `INTEGER`             | DEFAULT `0`                     | Overrides date sort when needed             |
+| `is_enabled`  | `BOOLEAN`             | DEFAULT `true`                  |                                             |
+| `created_at`  | `TIMESTAMPTZ`         | DEFAULT `NOW()`                 |                                             |
+| `updated_at`  | `TIMESTAMPTZ`         | DEFAULT `NOW()`                 |                                             |
 
 ---
 
@@ -683,23 +683,23 @@ Unified professional/personal timeline combining education, jobs, projects, and 
 
 Dynamic content pages for arbitrary routes: `/now`, `/uses`, `/stack`, `/faq`, `/reading`, `/bookmarks`, `/learning`, `/talks`, `/services`, `/changelog`, `/stats`, `/newsletter`, `/recommendations`, etc.
 
-| Column | Type | Constraints | Notes |
-|---|---|---|---|
-| `id` | `UUID` | PK, DEFAULT `gen_random_uuid()` | |
-| `title` | `VARCHAR(300)` | NOT NULL | |
-| `slug` | `VARCHAR(300)` | UNIQUE, NOT NULL | URL path: `/{slug}` |
-| `content` | `TEXT` | | Markdown/MDX body |
-| `status` | `content_status` | DEFAULT `'draft'` | |
-| `is_nav_visible` | `BOOLEAN` | DEFAULT `false` | Show in site navigation |
-| `sort_order` | `INTEGER` | DEFAULT `0` | |
-| `seo_title` | `VARCHAR(200)` | | |
-| `seo_description` | `VARCHAR(500)` | | |
-| `seo_keywords` | `VARCHAR(500)` | | |
-| `og_image_id` | `UUID` | FK → `media.id` ON DELETE SET NULL | |
-| `published_at` | `TIMESTAMPTZ` | | |
-| `scheduled_at` | `TIMESTAMPTZ` | | |
-| `created_at` | `TIMESTAMPTZ` | DEFAULT `NOW()` | |
-| `updated_at` | `TIMESTAMPTZ` | DEFAULT `NOW()` | |
+| Column            | Type             | Constraints                        | Notes                   |
+| ----------------- | ---------------- | ---------------------------------- | ----------------------- |
+| `id`              | `UUID`           | PK, DEFAULT `gen_random_uuid()`    |                         |
+| `title`           | `VARCHAR(300)`   | NOT NULL                           |                         |
+| `slug`            | `VARCHAR(300)`   | UNIQUE, NOT NULL                   | URL path: `/{slug}`     |
+| `content`         | `TEXT`           |                                    | Markdown/MDX body       |
+| `status`          | `content_status` | DEFAULT `'draft'`                  |                         |
+| `is_nav_visible`  | `BOOLEAN`        | DEFAULT `false`                    | Show in site navigation |
+| `sort_order`      | `INTEGER`        | DEFAULT `0`                        |                         |
+| `seo_title`       | `VARCHAR(200)`   |                                    |                         |
+| `seo_description` | `VARCHAR(500)`   |                                    |                         |
+| `seo_keywords`    | `VARCHAR(500)`   |                                    |                         |
+| `og_image_id`     | `UUID`           | FK → `media.id` ON DELETE SET NULL |                         |
+| `published_at`    | `TIMESTAMPTZ`    |                                    |                         |
+| `scheduled_at`    | `TIMESTAMPTZ`    |                                    |                         |
+| `created_at`      | `TIMESTAMPTZ`    | DEFAULT `NOW()`                    |                         |
+| `updated_at`      | `TIMESTAMPTZ`    | DEFAULT `NOW()`                    |                         |
 
 ---
 
@@ -707,16 +707,16 @@ Dynamic content pages for arbitrary routes: `/now`, `/uses`, `/stack`, `/faq`, `
 
 Controls which sections appear on the homepage, their order, and visibility.
 
-| Column | Type | Constraints | Notes |
-|---|---|---|---|
-| `id` | `UUID` | PK, DEFAULT `gen_random_uuid()` | |
-| `section_key` | `VARCHAR(50)` | UNIQUE, NOT NULL | e.g., `hero`, `about`, `skills`, `featured_projects`, `experience`, `latest_articles`, `contact` |
-| `title` | `VARCHAR(200)` | | Display title |
-| `sort_order` | `INTEGER` | DEFAULT `0` | |
-| `is_enabled` | `BOOLEAN` | DEFAULT `true` | |
-| `config` | `JSONB` | DEFAULT `'{}'` | Section-specific settings (e.g., `{ "limit": 3, "show_cta": true }`) |
-| `created_at` | `TIMESTAMPTZ` | DEFAULT `NOW()` | |
-| `updated_at` | `TIMESTAMPTZ` | DEFAULT `NOW()` | |
+| Column        | Type           | Constraints                     | Notes                                                                                            |
+| ------------- | -------------- | ------------------------------- | ------------------------------------------------------------------------------------------------ |
+| `id`          | `UUID`         | PK, DEFAULT `gen_random_uuid()` |                                                                                                  |
+| `section_key` | `VARCHAR(50)`  | UNIQUE, NOT NULL                | e.g., `hero`, `about`, `skills`, `featured_projects`, `experience`, `latest_articles`, `contact` |
+| `title`       | `VARCHAR(200)` |                                 | Display title                                                                                    |
+| `sort_order`  | `INTEGER`      | DEFAULT `0`                     |                                                                                                  |
+| `is_enabled`  | `BOOLEAN`      | DEFAULT `true`                  |                                                                                                  |
+| `config`      | `JSONB`        | DEFAULT `'{}'`                  | Section-specific settings (e.g., `{ "limit": 3, "show_cta": true }`)                             |
+| `created_at`  | `TIMESTAMPTZ`  | DEFAULT `NOW()`                 |                                                                                                  |
+| `updated_at`  | `TIMESTAMPTZ`  | DEFAULT `NOW()`                 |                                                                                                  |
 
 ---
 
@@ -724,20 +724,20 @@ Controls which sections appear on the homepage, their order, and visibility.
 
 Reusable page-builder-style content blocks that can be placed on any page or homepage section.
 
-| Column | Type | Constraints | Notes |
-|---|---|---|---|
-| `id` | `UUID` | PK, DEFAULT `gen_random_uuid()` | |
-| `page_id` | `UUID` | FK → `pages.id` ON DELETE CASCADE, NULLABLE | NULL = homepage block |
-| `homepage_section_id` | `UUID` | FK → `homepage_sections.id` ON DELETE CASCADE, NULLABLE | NULL = page block |
-| `block_type` | `block_type` | NOT NULL | text/markdown/image/project_list/blog_list/stats/cta |
-| `title` | `VARCHAR(200)` | | |
-| `content` | `TEXT` | | Text/Markdown content |
-| `media_id` | `UUID` | FK → `media.id` ON DELETE SET NULL | For image blocks |
-| `config` | `JSONB` | DEFAULT `'{}'` | Block-specific settings |
-| `sort_order` | `INTEGER` | DEFAULT `0` | |
-| `is_enabled` | `BOOLEAN` | DEFAULT `true` | |
-| `created_at` | `TIMESTAMPTZ` | DEFAULT `NOW()` | |
-| `updated_at` | `TIMESTAMPTZ` | DEFAULT `NOW()` | |
+| Column                | Type           | Constraints                                             | Notes                                                |
+| --------------------- | -------------- | ------------------------------------------------------- | ---------------------------------------------------- |
+| `id`                  | `UUID`         | PK, DEFAULT `gen_random_uuid()`                         |                                                      |
+| `page_id`             | `UUID`         | FK → `pages.id` ON DELETE CASCADE, NULLABLE             | NULL = homepage block                                |
+| `homepage_section_id` | `UUID`         | FK → `homepage_sections.id` ON DELETE CASCADE, NULLABLE | NULL = page block                                    |
+| `block_type`          | `block_type`   | NOT NULL                                                | text/markdown/image/project_list/blog_list/stats/cta |
+| `title`               | `VARCHAR(200)` |                                                         |                                                      |
+| `content`             | `TEXT`         |                                                         | Text/Markdown content                                |
+| `media_id`            | `UUID`         | FK → `media.id` ON DELETE SET NULL                      | For image blocks                                     |
+| `config`              | `JSONB`        | DEFAULT `'{}'`                                          | Block-specific settings                              |
+| `sort_order`          | `INTEGER`      | DEFAULT `0`                                             |                                                      |
+| `is_enabled`          | `BOOLEAN`      | DEFAULT `true`                                          |                                                      |
+| `created_at`          | `TIMESTAMPTZ`  | DEFAULT `NOW()`                                         |                                                      |
+| `updated_at`          | `TIMESTAMPTZ`  | DEFAULT `NOW()`                                         |                                                      |
 
 ---
 
@@ -745,20 +745,20 @@ Reusable page-builder-style content blocks that can be placed on any page or hom
 
 Contact form submissions stored in DB and forwarded to email.
 
-| Column | Type | Constraints | Notes |
-|---|---|---|---|
-| `id` | `UUID` | PK, DEFAULT `gen_random_uuid()` | |
-| `name` | `VARCHAR(200)` | NOT NULL | |
-| `email` | `VARCHAR(255)` | NOT NULL | |
-| `subject` | `VARCHAR(300)` | | |
-| `message` | `TEXT` | NOT NULL | |
-| `status` | `contact_status` | DEFAULT `'unread'` | unread/read/replied/archived |
-| `visitor_id` | `UUID` | FK → `visitors.id` ON DELETE SET NULL | Link to visitor tracking data |
-| `ip_address` | `INET` | | |
-| `user_agent` | `TEXT` | | |
-| `created_at` | `TIMESTAMPTZ` | DEFAULT `NOW()` | Submission time |
-| `read_at` | `TIMESTAMPTZ` | | |
-| `replied_at` | `TIMESTAMPTZ` | | |
+| Column       | Type             | Constraints                           | Notes                         |
+| ------------ | ---------------- | ------------------------------------- | ----------------------------- |
+| `id`         | `UUID`           | PK, DEFAULT `gen_random_uuid()`       |                               |
+| `name`       | `VARCHAR(200)`   | NOT NULL                              |                               |
+| `email`      | `VARCHAR(255)`   | NOT NULL                              |                               |
+| `subject`    | `VARCHAR(300)`   |                                       |                               |
+| `message`    | `TEXT`           | NOT NULL                              |                               |
+| `status`     | `contact_status` | DEFAULT `'unread'`                    | unread/read/replied/archived  |
+| `visitor_id` | `UUID`           | FK → `visitors.id` ON DELETE SET NULL | Link to visitor tracking data |
+| `ip_address` | `INET`           |                                       |                               |
+| `user_agent` | `TEXT`           |                                       |                               |
+| `created_at` | `TIMESTAMPTZ`    | DEFAULT `NOW()`                       | Submission time               |
+| `read_at`    | `TIMESTAMPTZ`    |                                       |                               |
+| `replied_at` | `TIMESTAMPTZ`    |                                       |                               |
 
 ---
 
@@ -766,17 +766,17 @@ Contact form submissions stored in DB and forwarded to email.
 
 Admin-editable email templates for contact auto-reply, admin notification, etc.
 
-| Column | Type | Constraints | Notes |
-|---|---|---|---|
-| `id` | `UUID` | PK, DEFAULT `gen_random_uuid()` | |
-| `template_key` | `VARCHAR(100)` | UNIQUE, NOT NULL | e.g., `contact_auto_reply`, `contact_admin_notification` |
-| `name` | `VARCHAR(200)` | NOT NULL | Human-readable name |
-| `subject` | `VARCHAR(300)` | NOT NULL | Email subject (supports `{{variables}}`) |
-| `body_html` | `TEXT` | NOT NULL | HTML email body (supports `{{variables}}`) |
-| `body_text` | `TEXT` | | Plain-text fallback |
-| `variables` | `TEXT[]` | | List of available template variables |
-| `is_enabled` | `BOOLEAN` | DEFAULT `true` | |
-| `updated_at` | `TIMESTAMPTZ` | DEFAULT `NOW()` | |
+| Column         | Type           | Constraints                     | Notes                                                    |
+| -------------- | -------------- | ------------------------------- | -------------------------------------------------------- |
+| `id`           | `UUID`         | PK, DEFAULT `gen_random_uuid()` |                                                          |
+| `template_key` | `VARCHAR(100)` | UNIQUE, NOT NULL                | e.g., `contact_auto_reply`, `contact_admin_notification` |
+| `name`         | `VARCHAR(200)` | NOT NULL                        | Human-readable name                                      |
+| `subject`      | `VARCHAR(300)` | NOT NULL                        | Email subject (supports `{{variables}}`)                 |
+| `body_html`    | `TEXT`         | NOT NULL                        | HTML email body (supports `{{variables}}`)               |
+| `body_text`    | `TEXT`         |                                 | Plain-text fallback                                      |
+| `variables`    | `TEXT[]`       |                                 | List of available template variables                     |
+| `is_enabled`   | `BOOLEAN`      | DEFAULT `true`                  |                                                          |
+| `updated_at`   | `TIMESTAMPTZ`  | DEFAULT `NOW()`                 |                                                          |
 
 ---
 
@@ -784,16 +784,16 @@ Admin-editable email templates for contact auto-reply, admin notification, etc.
 
 Public guestbook/messages with admin moderation.
 
-| Column | Type | Constraints | Notes |
-|---|---|---|---|
-| `id` | `UUID` | PK, DEFAULT `gen_random_uuid()` | |
-| `author_name` | `VARCHAR(100)` | NOT NULL | Visitor name |
-| `author_email` | `VARCHAR(255)` | | Optional |
-| `message` | `TEXT` | NOT NULL | |
-| `moderation_status` | `moderation_status` | DEFAULT `'pending'` | pending/approved/rejected |
-| `ip_address` | `INET` | | |
-| `created_at` | `TIMESTAMPTZ` | DEFAULT `NOW()` | |
-| `moderated_at` | `TIMESTAMPTZ` | | |
+| Column              | Type                | Constraints                     | Notes                     |
+| ------------------- | ------------------- | ------------------------------- | ------------------------- |
+| `id`                | `UUID`              | PK, DEFAULT `gen_random_uuid()` |                           |
+| `author_name`       | `VARCHAR(100)`      | NOT NULL                        | Visitor name              |
+| `author_email`      | `VARCHAR(255)`      |                                 | Optional                  |
+| `message`           | `TEXT`              | NOT NULL                        |                           |
+| `moderation_status` | `moderation_status` | DEFAULT `'pending'`             | pending/approved/rejected |
+| `ip_address`        | `INET`              |                                 |                           |
+| `created_at`        | `TIMESTAMPTZ`       | DEFAULT `NOW()`                 |                           |
+| `moderated_at`      | `TIMESTAMPTZ`       |                                 |                           |
 
 ---
 
@@ -801,20 +801,20 @@ Public guestbook/messages with admin moderation.
 
 Client/colleague testimonials and recommendations.
 
-| Column | Type | Constraints | Notes |
-|---|---|---|---|
-| `id` | `UUID` | PK, DEFAULT `gen_random_uuid()` | |
-| `author_name` | `VARCHAR(200)` | NOT NULL | Person who gave the testimonial |
-| `author_title` | `VARCHAR(200)` | | Their role/position |
-| `author_company` | `VARCHAR(200)` | | |
-| `author_avatar_id` | `UUID` | FK → `media.id` ON DELETE SET NULL | |
-| `content` | `TEXT` | NOT NULL | Testimonial text |
-| `url` | `TEXT` | | LinkedIn recommendation link, etc. |
-| `is_featured` | `BOOLEAN` | DEFAULT `false` | |
-| `sort_order` | `INTEGER` | DEFAULT `0` | |
-| `is_enabled` | `BOOLEAN` | DEFAULT `true` | |
-| `created_at` | `TIMESTAMPTZ` | DEFAULT `NOW()` | |
-| `updated_at` | `TIMESTAMPTZ` | DEFAULT `NOW()` | |
+| Column             | Type           | Constraints                        | Notes                              |
+| ------------------ | -------------- | ---------------------------------- | ---------------------------------- |
+| `id`               | `UUID`         | PK, DEFAULT `gen_random_uuid()`    |                                    |
+| `author_name`      | `VARCHAR(200)` | NOT NULL                           | Person who gave the testimonial    |
+| `author_title`     | `VARCHAR(200)` |                                    | Their role/position                |
+| `author_company`   | `VARCHAR(200)` |                                    |                                    |
+| `author_avatar_id` | `UUID`         | FK → `media.id` ON DELETE SET NULL |                                    |
+| `content`          | `TEXT`         | NOT NULL                           | Testimonial text                   |
+| `url`              | `TEXT`         |                                    | LinkedIn recommendation link, etc. |
+| `is_featured`      | `BOOLEAN`      | DEFAULT `false`                    |                                    |
+| `sort_order`       | `INTEGER`      | DEFAULT `0`                        |                                    |
+| `is_enabled`       | `BOOLEAN`      | DEFAULT `true`                     |                                    |
+| `created_at`       | `TIMESTAMPTZ`  | DEFAULT `NOW()`                    |                                    |
+| `updated_at`       | `TIMESTAMPTZ`  | DEFAULT `NOW()`                    |                                    |
 
 ---
 
@@ -822,18 +822,18 @@ Client/colleague testimonials and recommendations.
 
 Dynamic navigation menu items for header/footer, managed from admin.
 
-| Column | Type | Constraints | Notes |
-|---|---|---|---|
-| `id` | `UUID` | PK, DEFAULT `gen_random_uuid()` | |
-| `label` | `VARCHAR(100)` | NOT NULL | |
-| `url` | `VARCHAR(500)` | NOT NULL | Internal path or external URL |
-| `location` | `nav_location` | DEFAULT `'header'` | header/footer/both |
-| `parent_id` | `UUID` | FK → `nav_items.id` ON DELETE CASCADE, NULLABLE | For nested/dropdown menus |
-| `is_external` | `BOOLEAN` | DEFAULT `false` | Opens in new tab |
-| `sort_order` | `INTEGER` | DEFAULT `0` | |
-| `is_enabled` | `BOOLEAN` | DEFAULT `true` | |
-| `created_at` | `TIMESTAMPTZ` | DEFAULT `NOW()` | |
-| `updated_at` | `TIMESTAMPTZ` | DEFAULT `NOW()` | |
+| Column        | Type           | Constraints                                     | Notes                         |
+| ------------- | -------------- | ----------------------------------------------- | ----------------------------- |
+| `id`          | `UUID`         | PK, DEFAULT `gen_random_uuid()`                 |                               |
+| `label`       | `VARCHAR(100)` | NOT NULL                                        |                               |
+| `url`         | `VARCHAR(500)` | NOT NULL                                        | Internal path or external URL |
+| `location`    | `nav_location` | DEFAULT `'header'`                              | header/footer/both            |
+| `parent_id`   | `UUID`         | FK → `nav_items.id` ON DELETE CASCADE, NULLABLE | For nested/dropdown menus     |
+| `is_external` | `BOOLEAN`      | DEFAULT `false`                                 | Opens in new tab              |
+| `sort_order`  | `INTEGER`      | DEFAULT `0`                                     |                               |
+| `is_enabled`  | `BOOLEAN`      | DEFAULT `true`                                  |                               |
+| `created_at`  | `TIMESTAMPTZ`  | DEFAULT `NOW()`                                 |                               |
+| `updated_at`  | `TIMESTAMPTZ`  | DEFAULT `NOW()`                                 |                               |
 
 ---
 
@@ -841,15 +841,15 @@ Dynamic navigation menu items for header/footer, managed from admin.
 
 Newsletter subscription management (if enabled).
 
-| Column | Type | Constraints | Notes |
-|---|---|---|---|
-| `id` | `UUID` | PK, DEFAULT `gen_random_uuid()` | |
-| `email` | `VARCHAR(255)` | UNIQUE, NOT NULL | |
-| `name` | `VARCHAR(200)` | | |
-| `is_confirmed` | `BOOLEAN` | DEFAULT `false` | Double opt-in |
-| `confirmation_token` | `VARCHAR(255)` | | |
-| `unsubscribed_at` | `TIMESTAMPTZ` | | |
-| `created_at` | `TIMESTAMPTZ` | DEFAULT `NOW()` | |
+| Column               | Type           | Constraints                     | Notes         |
+| -------------------- | -------------- | ------------------------------- | ------------- |
+| `id`                 | `UUID`         | PK, DEFAULT `gen_random_uuid()` |               |
+| `email`              | `VARCHAR(255)` | UNIQUE, NOT NULL                |               |
+| `name`               | `VARCHAR(200)` |                                 |               |
+| `is_confirmed`       | `BOOLEAN`      | DEFAULT `false`                 | Double opt-in |
+| `confirmation_token` | `VARCHAR(255)` |                                 |               |
+| `unsubscribed_at`    | `TIMESTAMPTZ`  |                                 |               |
+| `created_at`         | `TIMESTAMPTZ`  | DEFAULT `NOW()`                 |               |
 
 ---
 
@@ -857,34 +857,34 @@ Newsletter subscription management (if enabled).
 
 Session-level visitor tracking. Captures maximum available information per Feature #44.
 
-| Column | Type | Constraints | Notes |
-|---|---|---|---|
-| `id` | `UUID` | PK, DEFAULT `gen_random_uuid()` | |
-| `session_id` | `VARCHAR(255)` | UNIQUE, NOT NULL | Generated fingerprint/cookie ID |
-| `ip_address` | `INET` | NOT NULL | |
-| `user_agent` | `TEXT` | | |
-| `browser` | `VARCHAR(100)` | | Parsed from UA |
-| `browser_version` | `VARCHAR(50)` | | |
-| `os` | `VARCHAR(100)` | | |
-| `os_version` | `VARCHAR(50)` | | |
-| `device_type` | `VARCHAR(50)` | | desktop/mobile/tablet |
-| `screen_width` | `INTEGER` | | |
-| `screen_height` | `INTEGER` | | |
-| `language` | `VARCHAR(20)` | | Browser language |
-| `timezone` | `VARCHAR(100)` | | |
-| `country` | `VARCHAR(100)` | | From IP geolocation |
-| `region` | `VARCHAR(100)` | | State/province |
-| `city` | `VARCHAR(100)` | | |
-| `latitude` | `DECIMAL(10, 7)` | | |
-| `longitude` | `DECIMAL(10, 7)` | | |
-| `referrer` | `TEXT` | | Traffic source URL |
-| `referrer_source` | `VARCHAR(100)` | | Parsed: google, twitter, direct, etc. |
-| `utm_source` | `VARCHAR(200)` | | |
-| `utm_medium` | `VARCHAR(200)` | | |
-| `utm_campaign` | `VARCHAR(200)` | | |
-| `first_visited_at` | `TIMESTAMPTZ` | DEFAULT `NOW()` | |
-| `last_visited_at` | `TIMESTAMPTZ` | DEFAULT `NOW()` | |
-| `visit_count` | `INTEGER` | DEFAULT `1` | |
+| Column             | Type             | Constraints                     | Notes                                 |
+| ------------------ | ---------------- | ------------------------------- | ------------------------------------- |
+| `id`               | `UUID`           | PK, DEFAULT `gen_random_uuid()` |                                       |
+| `session_id`       | `VARCHAR(255)`   | UNIQUE, NOT NULL                | Generated fingerprint/cookie ID       |
+| `ip_address`       | `INET`           | NOT NULL                        |                                       |
+| `user_agent`       | `TEXT`           |                                 |                                       |
+| `browser`          | `VARCHAR(100)`   |                                 | Parsed from UA                        |
+| `browser_version`  | `VARCHAR(50)`    |                                 |                                       |
+| `os`               | `VARCHAR(100)`   |                                 |                                       |
+| `os_version`       | `VARCHAR(50)`    |                                 |                                       |
+| `device_type`      | `VARCHAR(50)`    |                                 | desktop/mobile/tablet                 |
+| `screen_width`     | `INTEGER`        |                                 |                                       |
+| `screen_height`    | `INTEGER`        |                                 |                                       |
+| `language`         | `VARCHAR(20)`    |                                 | Browser language                      |
+| `timezone`         | `VARCHAR(100)`   |                                 |                                       |
+| `country`          | `VARCHAR(100)`   |                                 | From IP geolocation                   |
+| `region`           | `VARCHAR(100)`   |                                 | State/province                        |
+| `city`             | `VARCHAR(100)`   |                                 |                                       |
+| `latitude`         | `DECIMAL(10, 7)` |                                 |                                       |
+| `longitude`        | `DECIMAL(10, 7)` |                                 |                                       |
+| `referrer`         | `TEXT`           |                                 | Traffic source URL                    |
+| `referrer_source`  | `VARCHAR(100)`   |                                 | Parsed: google, twitter, direct, etc. |
+| `utm_source`       | `VARCHAR(200)`   |                                 |                                       |
+| `utm_medium`       | `VARCHAR(200)`   |                                 |                                       |
+| `utm_campaign`     | `VARCHAR(200)`   |                                 |                                       |
+| `first_visited_at` | `TIMESTAMPTZ`    | DEFAULT `NOW()`                 |                                       |
+| `last_visited_at`  | `TIMESTAMPTZ`    | DEFAULT `NOW()`                 |                                       |
+| `visit_count`      | `INTEGER`        | DEFAULT `1`                     |                                       |
 
 ---
 
@@ -892,15 +892,15 @@ Session-level visitor tracking. Captures maximum available information per Featu
 
 Individual page view events for analytics.
 
-| Column | Type | Constraints | Notes |
-|---|---|---|---|
-| `id` | `UUID` | PK, DEFAULT `gen_random_uuid()` | |
-| `visitor_id` | `UUID` | FK → `visitors.id` ON DELETE CASCADE, NOT NULL | |
-| `path` | `VARCHAR(500)` | NOT NULL | e.g., `/blogs/by/anuj/my-article` |
-| `title` | `VARCHAR(300)` | | Page title at time of view |
-| `referrer` | `TEXT` | | Page-level referrer |
-| `duration_seconds` | `INTEGER` | | Time spent on page |
-| `viewed_at` | `TIMESTAMPTZ` | DEFAULT `NOW()` | |
+| Column             | Type           | Constraints                                    | Notes                             |
+| ------------------ | -------------- | ---------------------------------------------- | --------------------------------- |
+| `id`               | `UUID`         | PK, DEFAULT `gen_random_uuid()`                |                                   |
+| `visitor_id`       | `UUID`         | FK → `visitors.id` ON DELETE CASCADE, NOT NULL |                                   |
+| `path`             | `VARCHAR(500)` | NOT NULL                                       | e.g., `/blogs/by/anuj/my-article` |
+| `title`            | `VARCHAR(300)` |                                                | Page title at time of view        |
+| `referrer`         | `TEXT`         |                                                | Page-level referrer               |
+| `duration_seconds` | `INTEGER`      |                                                | Time spent on page                |
+| `viewed_at`        | `TIMESTAMPTZ`  | DEFAULT `NOW()`                                |                                   |
 
 ---
 
@@ -908,14 +908,14 @@ Individual page view events for analytics.
 
 Outbound link click tracking for analytics (GitHub, live demos, resume downloads, etc.).
 
-| Column | Type | Constraints | Notes |
-|---|---|---|---|
-| `id` | `UUID` | PK, DEFAULT `gen_random_uuid()` | |
-| `visitor_id` | `UUID` | FK → `visitors.id` ON DELETE CASCADE | |
-| `target_type` | `click_target_type` | NOT NULL | github/live_demo/resume_download/social_link/contact/external |
-| `target_url` | `TEXT` | NOT NULL | |
-| `source_path` | `VARCHAR(500)` | | Page the click originated from |
-| `clicked_at` | `TIMESTAMPTZ` | DEFAULT `NOW()` | |
+| Column        | Type                | Constraints                          | Notes                                                         |
+| ------------- | ------------------- | ------------------------------------ | ------------------------------------------------------------- |
+| `id`          | `UUID`              | PK, DEFAULT `gen_random_uuid()`      |                                                               |
+| `visitor_id`  | `UUID`              | FK → `visitors.id` ON DELETE CASCADE |                                                               |
+| `target_type` | `click_target_type` | NOT NULL                             | github/live_demo/resume_download/social_link/contact/external |
+| `target_url`  | `TEXT`              | NOT NULL                             |                                                               |
+| `source_path` | `VARCHAR(500)`      |                                      | Page the click originated from                                |
+| `clicked_at`  | `TIMESTAMPTZ`       | DEFAULT `NOW()`                      |                                                               |
 
 ---
 
@@ -923,16 +923,16 @@ Outbound link click tracking for analytics (GitHub, live demos, resume downloads
 
 Generic version history for content entities. Stores a JSON snapshot of the entity at each version.
 
-| Column | Type | Constraints | Notes |
-|---|---|---|---|
-| `id` | `UUID` | PK, DEFAULT `gen_random_uuid()` | |
-| `entity_type` | `entity_type` | NOT NULL | blog_post/project/research_paper/page |
-| `entity_id` | `UUID` | NOT NULL | PK of the versioned row |
-| `version` | `INTEGER` | NOT NULL | Incrementing version number |
-| `snapshot` | `JSONB` | NOT NULL | Full JSON snapshot of the entity state |
-| `change_summary` | `TEXT` | | Optional description of what changed |
-| `created_by` | `UUID` | FK → `authors.id` ON DELETE SET NULL | |
-| `created_at` | `TIMESTAMPTZ` | DEFAULT `NOW()` | |
+| Column           | Type          | Constraints                          | Notes                                  |
+| ---------------- | ------------- | ------------------------------------ | -------------------------------------- |
+| `id`             | `UUID`        | PK, DEFAULT `gen_random_uuid()`      |                                        |
+| `entity_type`    | `entity_type` | NOT NULL                             | blog_post/project/research_paper/page  |
+| `entity_id`      | `UUID`        | NOT NULL                             | PK of the versioned row                |
+| `version`        | `INTEGER`     | NOT NULL                             | Incrementing version number            |
+| `snapshot`       | `JSONB`       | NOT NULL                             | Full JSON snapshot of the entity state |
+| `change_summary` | `TEXT`        |                                      | Optional description of what changed   |
+| `created_by`     | `UUID`        | FK → `authors.id` ON DELETE SET NULL |                                        |
+| `created_at`     | `TIMESTAMPTZ` | DEFAULT `NOW()`                      |                                        |
 
 **Unique constraint:** `(entity_type, entity_id, version)`.
 
@@ -942,16 +942,16 @@ Generic version history for content entities. Stores a JSON snapshot of the enti
 
 Admin audit trail. Records who did what and when.
 
-| Column | Type | Constraints | Notes |
-|---|---|---|---|
-| `id` | `UUID` | PK, DEFAULT `gen_random_uuid()` | |
-| `author_id` | `UUID` | FK → `authors.id` ON DELETE SET NULL | |
-| `action` | `VARCHAR(100)` | NOT NULL | e.g., `create`, `update`, `delete`, `publish`, `login` |
-| `entity_type` | `VARCHAR(50)` | | Table/entity affected |
-| `entity_id` | `UUID` | | PK of affected row |
-| `details` | `JSONB` | | Additional context |
-| `ip_address` | `INET` | | |
-| `created_at` | `TIMESTAMPTZ` | DEFAULT `NOW()` | |
+| Column        | Type           | Constraints                          | Notes                                                  |
+| ------------- | -------------- | ------------------------------------ | ------------------------------------------------------ |
+| `id`          | `UUID`         | PK, DEFAULT `gen_random_uuid()`      |                                                        |
+| `author_id`   | `UUID`         | FK → `authors.id` ON DELETE SET NULL |                                                        |
+| `action`      | `VARCHAR(100)` | NOT NULL                             | e.g., `create`, `update`, `delete`, `publish`, `login` |
+| `entity_type` | `VARCHAR(50)`  |                                      | Table/entity affected                                  |
+| `entity_id`   | `UUID`         |                                      | PK of affected row                                     |
+| `details`     | `JSONB`        |                                      | Additional context                                     |
+| `ip_address`  | `INET`         |                                      |                                                        |
+| `created_at`  | `TIMESTAMPTZ`  | DEFAULT `NOW()`                      |                                                        |
 
 ---
 
@@ -1000,23 +1000,23 @@ erDiagram
 
 ### Key Relationship Summary
 
-| Relationship | Type | Notes |
-|---|---|---|
-| `authors` → `blog_posts` | 1:N | Author writes many posts |
-| `authors` → `projects` | 1:N | Author owns many projects |
-| `authors` → `research_papers` | 1:N | Author writes many papers |
-| `skill_categories` → `skills` | 1:N | Category groups many skills |
-| `project_categories` → `projects` | 1:N | Category groups many projects |
-| `blog_categories` → `blog_posts` | 1:N | Category groups many posts |
-| `projects` → `project_images` | 1:N | Project has many gallery images |
-| `media` → (many tables) | 1:N | Central media referenced everywhere |
-| `tags` → `entity_tags` → (entities) | M:N (polymorphic) | Tags shared across entity types |
-| `visitors` → `page_views` | 1:N | Visitor has many page views |
-| `visitors` → `link_clicks` | 1:N | Visitor has many click events |
-| `nav_items` → `nav_items` | Self-referencing 1:N | Nested navigation |
-| `pages` → `content_blocks` | 1:N | Page has many blocks |
-| `homepage_sections` → `content_blocks` | 1:N | Section has many blocks |
-| `content_versions` → (entities) | Polymorphic N:1 | Version history for any content |
+| Relationship                           | Type                 | Notes                               |
+| -------------------------------------- | -------------------- | ----------------------------------- |
+| `authors` → `blog_posts`               | 1:N                  | Author writes many posts            |
+| `authors` → `projects`                 | 1:N                  | Author owns many projects           |
+| `authors` → `research_papers`          | 1:N                  | Author writes many papers           |
+| `skill_categories` → `skills`          | 1:N                  | Category groups many skills         |
+| `project_categories` → `projects`      | 1:N                  | Category groups many projects       |
+| `blog_categories` → `blog_posts`       | 1:N                  | Category groups many posts          |
+| `projects` → `project_images`          | 1:N                  | Project has many gallery images     |
+| `media` → (many tables)                | 1:N                  | Central media referenced everywhere |
+| `tags` → `entity_tags` → (entities)    | M:N (polymorphic)    | Tags shared across entity types     |
+| `visitors` → `page_views`              | 1:N                  | Visitor has many page views         |
+| `visitors` → `link_clicks`             | 1:N                  | Visitor has many click events       |
+| `nav_items` → `nav_items`              | Self-referencing 1:N | Nested navigation                   |
+| `pages` → `content_blocks`             | 1:N                  | Page has many blocks                |
+| `homepage_sections` → `content_blocks` | 1:N                  | Section has many blocks             |
+| `content_versions` → (entities)        | Polymorphic N:1      | Version history for any content     |
 
 ---
 
@@ -1794,22 +1794,22 @@ CREATE INDEX idx_research_papers_search ON research_papers USING GIN (
 
 ### Flagged Ambiguities
 
-| # | Topic | Resolution / Note |
-|---|---|---|
-| 1 | **`/about/[section]` vs dedicated tables** | The docs show `/about/skills`, `/about/timeline`, etc. as dynamic sub-pages. The `about_sections` table powers the parent `/about` listing and the per-section pages. Sections like "skills" and "timeline" that have their own structured tables (`skills`, `timeline_events`) are rendered by the frontend using both the `about_sections` metadata (for SEO, title, ordering) and the dedicated data tables. `about_sections.content` is used for sections without their own table (e.g., "interests"). |
-| 2 | **Multi-author scope** | The URL scheme (`/blogs/by/[author]`, `/works/by/[author]`) implies multi-author support. The `authors` table supports this. However, the docs describe a personal portfolio — most deployments will have a single admin author. The schema supports both without overhead. |
-| 3 | **Resume "only one active" constraint** | Enforced at the application layer (set all `is_active = false`, then set one `true` in a transaction) rather than a partial unique index, to keep Prisma compatibility simple. |
-| 4 | **`entity_tags` polymorphic FK** | `entity_id` has no DB-level FK because it can point to any of several tables. Referential integrity is enforced in the application layer. This is a documented trade-off. |
-| 5 | **Command palette / search** | Powered by PostgreSQL full-text search using GIN indexes on `blog_posts`, `projects`, and `research_papers`. No additional table needed; the API layer issues `to_tsquery` queries. |
-| 6 | **Dark/light theme preference** | Stored client-side (localStorage). No database table needed. |
-| 7 | **GitHub stats sync** | `opensource_contributions.stars` and `.forks` can be updated by a cron job calling the GitHub API. The schema stores the cached values; sync logic is in the application layer. |
-| 8 | **Structured data / JSON-LD** | Generated at render time by the Next.js frontend from existing table data (author, projects, blog_posts, research_papers). No additional table needed. |
-| 9 | **Sitemap & RSS** | Generated dynamically by querying published content. No additional table needed. |
-| 10 | **Content preview** | Uses the existing `content` field. Preview is a frontend-only concern (render Markdown without publishing). |
-| 11 | **"Currently Working On" / Now page** | Modeled via the `pages` table with slug `now`. Content is Markdown, updated from admin. |
-| 12 | **API access** | The schema supports it natively — the Express API serves data from these tables. Public vs private endpoints are an application-layer concern. |
-| 13 | **`/uses`, `/stack`, `/reading`, `/bookmarks`, `/learning`, `/talks`, `/services`, `/faq`, `/changelog`, `/stats`, `/newsletter`, `/recommendations`** | All powered by the `pages` table. Each is a page with a unique slug. For pages that need structured data (e.g., `/faq` with Q&A pairs, `/bookmarks` with categorized links), the `content_blocks` table with `config` JSONB provides structured sub-content, or the page's Markdown content can be used directly. |
-| 14 | **Newsletter** | `newsletter_subscribers` handles subscription. Newsletter content/archive can be managed via the `pages` table (slug: `newsletter`). Sending emails is an application-layer concern using the email template system. |
+| #   | Topic                                                                                                                                                  | Resolution / Note                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
+| --- | ------------------------------------------------------------------------------------------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1   | **`/about/[section]` vs dedicated tables**                                                                                                             | The docs show `/about/skills`, `/about/timeline`, etc. as dynamic sub-pages. The `about_sections` table powers the parent `/about` listing and the per-section pages. Sections like "skills" and "timeline" that have their own structured tables (`skills`, `timeline_events`) are rendered by the frontend using both the `about_sections` metadata (for SEO, title, ordering) and the dedicated data tables. `about_sections.content` is used for sections without their own table (e.g., "interests"). |
+| 2   | **Multi-author scope**                                                                                                                                 | The URL scheme (`/blogs/by/[author]`, `/works/by/[author]`) implies multi-author support. The `authors` table supports this. However, the docs describe a personal portfolio — most deployments will have a single admin author. The schema supports both without overhead.                                                                                                                                                                                                                                |
+| 3   | **Resume "only one active" constraint**                                                                                                                | Enforced at the application layer (set all `is_active = false`, then set one `true` in a transaction) rather than a partial unique index, to keep Prisma compatibility simple.                                                                                                                                                                                                                                                                                                                             |
+| 4   | **`entity_tags` polymorphic FK**                                                                                                                       | `entity_id` has no DB-level FK because it can point to any of several tables. Referential integrity is enforced in the application layer. This is a documented trade-off.                                                                                                                                                                                                                                                                                                                                  |
+| 5   | **Command palette / search**                                                                                                                           | Powered by PostgreSQL full-text search using GIN indexes on `blog_posts`, `projects`, and `research_papers`. No additional table needed; the API layer issues `to_tsquery` queries.                                                                                                                                                                                                                                                                                                                        |
+| 6   | **Dark/light theme preference**                                                                                                                        | Stored client-side (localStorage). No database table needed.                                                                                                                                                                                                                                                                                                                                                                                                                                               |
+| 7   | **GitHub stats sync**                                                                                                                                  | `opensource_contributions.stars` and `.forks` can be updated by a cron job calling the GitHub API. The schema stores the cached values; sync logic is in the application layer.                                                                                                                                                                                                                                                                                                                            |
+| 8   | **Structured data / JSON-LD**                                                                                                                          | Generated at render time by the Next.js frontend from existing table data (author, projects, blog_posts, research_papers). No additional table needed.                                                                                                                                                                                                                                                                                                                                                     |
+| 9   | **Sitemap & RSS**                                                                                                                                      | Generated dynamically by querying published content. No additional table needed.                                                                                                                                                                                                                                                                                                                                                                                                                           |
+| 10  | **Content preview**                                                                                                                                    | Uses the existing `content` field. Preview is a frontend-only concern (render Markdown without publishing).                                                                                                                                                                                                                                                                                                                                                                                                |
+| 11  | **"Currently Working On" / Now page**                                                                                                                  | Modeled via the `pages` table with slug `now`. Content is Markdown, updated from admin.                                                                                                                                                                                                                                                                                                                                                                                                                    |
+| 12  | **API access**                                                                                                                                         | The schema supports it natively — the Express API serves data from these tables. Public vs private endpoints are an application-layer concern.                                                                                                                                                                                                                                                                                                                                                             |
+| 13  | **`/uses`, `/stack`, `/reading`, `/bookmarks`, `/learning`, `/talks`, `/services`, `/faq`, `/changelog`, `/stats`, `/newsletter`, `/recommendations`** | All powered by the `pages` table. Each is a page with a unique slug. For pages that need structured data (e.g., `/faq` with Q&A pairs, `/bookmarks` with categorized links), the `content_blocks` table with `config` JSONB provides structured sub-content, or the page's Markdown content can be used directly.                                                                                                                                                                                          |
+| 14  | **Newsletter**                                                                                                                                         | `newsletter_subscribers` handles subscription. Newsletter content/archive can be managed via the `pages` table (slug: `newsletter`). Sending emails is an application-layer concern using the email template system.                                                                                                                                                                                                                                                                                       |
 
 ### Design for Future Expansion
 
@@ -1828,30 +1828,30 @@ CREATE INDEX idx_research_papers_search ON research_papers USING GIN (
 
 ## Table Count Summary
 
-| Group | Tables | Count |
-|---|---|---|
-| Identity & Auth | `authors`, `sessions` | 2 |
-| Configuration | `site_settings` | 1 |
-| Profile & About | `about_sections` | 1 |
-| Skills | `skill_categories`, `skills` | 2 |
-| Experience & Education | `experiences`, `education` | 2 |
-| Certifications & Achievements | `certificates`, `achievements` | 2 |
-| Projects | `project_categories`, `projects`, `project_images` | 3 |
-| Writing | `blog_categories`, `blog_posts`, `research_papers` | 3 |
-| Tags | `tags`, `entity_tags` | 2 |
-| Media | `media` | 1 |
-| Gallery | `gallery_items` | 1 |
-| Resume | `resumes` | 1 |
-| Social | `social_links` | 1 |
-| Open Source | `opensource_contributions` | 1 |
-| Timeline | `timeline_events` | 1 |
-| Pages | `pages` | 1 |
-| Homepage | `homepage_sections`, `content_blocks` | 2 |
-| Contact | `contact_submissions`, `email_templates` | 2 |
-| Guestbook | `guestbook_entries` | 1 |
-| Testimonials | `testimonials` | 1 |
-| Navigation | `nav_items` | 1 |
-| Newsletter | `newsletter_subscribers` | 1 |
-| Analytics | `visitors`, `page_views`, `link_clicks` | 3 |
-| Versioning & Audit | `content_versions`, `activity_log` | 2 |
-| **Total** | | **38** |
+| Group                         | Tables                                             | Count  |
+| ----------------------------- | -------------------------------------------------- | ------ |
+| Identity & Auth               | `authors`, `sessions`                              | 2      |
+| Configuration                 | `site_settings`                                    | 1      |
+| Profile & About               | `about_sections`                                   | 1      |
+| Skills                        | `skill_categories`, `skills`                       | 2      |
+| Experience & Education        | `experiences`, `education`                         | 2      |
+| Certifications & Achievements | `certificates`, `achievements`                     | 2      |
+| Projects                      | `project_categories`, `projects`, `project_images` | 3      |
+| Writing                       | `blog_categories`, `blog_posts`, `research_papers` | 3      |
+| Tags                          | `tags`, `entity_tags`                              | 2      |
+| Media                         | `media`                                            | 1      |
+| Gallery                       | `gallery_items`                                    | 1      |
+| Resume                        | `resumes`                                          | 1      |
+| Social                        | `social_links`                                     | 1      |
+| Open Source                   | `opensource_contributions`                         | 1      |
+| Timeline                      | `timeline_events`                                  | 1      |
+| Pages                         | `pages`                                            | 1      |
+| Homepage                      | `homepage_sections`, `content_blocks`              | 2      |
+| Contact                       | `contact_submissions`, `email_templates`           | 2      |
+| Guestbook                     | `guestbook_entries`                                | 1      |
+| Testimonials                  | `testimonials`                                     | 1      |
+| Navigation                    | `nav_items`                                        | 1      |
+| Newsletter                    | `newsletter_subscribers`                           | 1      |
+| Analytics                     | `visitors`, `page_views`, `link_clicks`            | 3      |
+| Versioning & Audit            | `content_versions`, `activity_log`                 | 2      |
+| **Total**                     |                                                    | **38** |

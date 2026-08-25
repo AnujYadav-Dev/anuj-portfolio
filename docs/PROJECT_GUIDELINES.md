@@ -32,17 +32,17 @@
 
 The following MUST NOT be hardcoded in frontend or backend code:
 
-| What | Where it belongs |
-|---|---|
-| Site title, description, availability status | `site_settings` table |
-| Navigation links | `nav_items` table |
-| Social links | `social_links` table |
-| Homepage section order and visibility | `homepage_sections` table |
-| SEO defaults | `site_settings` table |
-| Email templates | `email_templates` table |
-| Color values in components | CSS custom properties / design tokens |
-| API URLs | Environment variables |
-| Feature text, labels, descriptions | Database or i18n layer |
+| What                                         | Where it belongs                      |
+| -------------------------------------------- | ------------------------------------- |
+| Site title, description, availability status | `site_settings` table                 |
+| Navigation links                             | `nav_items` table                     |
+| Social links                                 | `social_links` table                  |
+| Homepage section order and visibility        | `homepage_sections` table             |
+| SEO defaults                                 | `site_settings` table                 |
+| Email templates                              | `email_templates` table               |
+| Color values in components                   | CSS custom properties / design tokens |
+| API URLs                                     | Environment variables                 |
+| Feature text, labels, descriptions           | Database or i18n layer                |
 
 **Acceptable hardcoding:** structural layout (grid definitions, component shells), error boundary messages, HTTP status codes, validation rules, route path patterns.
 
@@ -123,7 +123,7 @@ When adding a new feature:
 
 - Every non-trivial module SHOULD have a brief comment explaining its purpose.
 - Public API endpoints MUST be documented (route, method, request/response shapes).
-- Complex business logic MUST have inline comments explaining *why*, not *what*.
+- Complex business logic MUST have inline comments explaining _why_, not _what_.
 - Architecture changes MUST be reflected in the relevant guideline files.
 
 ---

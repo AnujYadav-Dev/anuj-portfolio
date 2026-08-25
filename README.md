@@ -8,13 +8,13 @@ All content is managed from an admin panel and served via API — no hardcoded p
 
 ## Tech Stack
 
-| Layer | Technology |
-|---|---|
-| Frontend | Next.js 16 (App Router), TypeScript, Tailwind CSS v4 |
-| Backend | Node.js, Express.js, TypeScript |
-| Database | PostgreSQL, Prisma ORM |
-| Validation | Zod (shared between frontend and backend) |
-| Auth | JWT + Refresh Tokens |
+| Layer      | Technology                                           |
+| ---------- | ---------------------------------------------------- |
+| Frontend   | Next.js 16 (App Router), TypeScript, Tailwind CSS v4 |
+| Backend    | Node.js, Express.js, TypeScript                      |
+| Database   | PostgreSQL, Prisma ORM                               |
+| Validation | Zod (shared between frontend and backend)            |
+| Auth       | JWT + Refresh Tokens                                 |
 
 ---
 
@@ -83,16 +83,16 @@ Open [http://localhost:3000](http://localhost:3000) for the frontend and [http:/
 
 ## Available Scripts
 
-| Command | Description |
-|---|---|
-| `npm run dev:api` | Start the backend dev server |
-| `npm run dev:web` | Start the frontend dev server |
-| `npm run build:shared` | Build the shared package |
-| `npm run build:api` | Build the backend for production |
-| `npm run build:web` | Build the frontend for production |
-| `npm run build` | Build everything (shared → api → web) |
-| `npm run lint` | Run linting across all workspaces |
-| `npm run format` | Format all files with Prettier |
+| Command                | Description                              |
+| ---------------------- | ---------------------------------------- |
+| `npm run dev:api`      | Start the backend dev server             |
+| `npm run dev:web`      | Start the frontend dev server            |
+| `npm run build:shared` | Build the shared package                 |
+| `npm run build:api`    | Build the backend for production         |
+| `npm run build:web`    | Build the frontend for production        |
+| `npm run build`        | Build everything (shared → api → web)    |
+| `npm run lint`         | Run linting across all workspaces        |
+| `npm run format`       | Format all files with Prettier           |
 | `npm run format:check` | Check formatting without modifying files |
 
 ---
@@ -101,16 +101,16 @@ Open [http://localhost:3000](http://localhost:3000) for the frontend and [http:/
 
 All documentation is in the [`docs/`](docs/) folder. See [`docs/README.md`](docs/README.md) for the full index.
 
-| Document | Purpose |
-|---|---|
-| [CONTEXT.md](docs/CONTEXT.md) | Living project context and current status |
-| [CHANGELOG.md](docs/CHANGELOG.md) | Record of all changes |
-| [PROJECT_GUIDELINES.md](docs/PROJECT_GUIDELINES.md) | Development principles |
-| [CODING_STANDARDS.md](docs/CODING_STANDARDS.md) | Naming and coding conventions |
-| [ARCHITECTURE_RULES.md](docs/ARCHITECTURE_RULES.md) | Structural boundaries and patterns |
-| [DESIGN_SYSTEM.md](docs/DESIGN_SYSTEM.md) | Visual design guidelines |
-| [DESIGN_TOKENS.md](docs/DESIGN_TOKENS.md) | Semantic token definitions |
-| [DATABASE_SCHEMA.md](docs/DATABASE_SCHEMA.md) | PostgreSQL schema (38 tables) |
+| Document                                            | Purpose                                   |
+| --------------------------------------------------- | ----------------------------------------- |
+| [CONTEXT.md](docs/CONTEXT.md)                       | Living project context and current status |
+| [CHANGELOG.md](docs/CHANGELOG.md)                   | Record of all changes                     |
+| [PROJECT_GUIDELINES.md](docs/PROJECT_GUIDELINES.md) | Development principles                    |
+| [CODING_STANDARDS.md](docs/CODING_STANDARDS.md)     | Naming and coding conventions             |
+| [ARCHITECTURE_RULES.md](docs/ARCHITECTURE_RULES.md) | Structural boundaries and patterns        |
+| [DESIGN_SYSTEM.md](docs/DESIGN_SYSTEM.md)           | Visual design guidelines                  |
+| [DESIGN_TOKENS.md](docs/DESIGN_TOKENS.md)           | Semantic token definitions                |
+| [DATABASE_SCHEMA.md](docs/DATABASE_SCHEMA.md)       | PostgreSQL schema (38 tables)             |
 
 ---
 

@@ -110,13 +110,14 @@ export default function AdminExperiencePage() {
         role,
         location: location || undefined,
         companyUrl: companyUrl || undefined,
-        startDate: new Date(startDate).toISOString(),
-        endDate: isCurrent || !endDate ? undefined : new Date(endDate).toISOString(),
+        startDate,
+        endDate: isCurrent || !endDate ? undefined : endDate,
         isCurrent,
         description: description || undefined,
         technologies,
         isEnabled,
       };
+
 
       if (editingExp) {
         await apiClient.put(`/experiences/${editingExp.id}`, payload);

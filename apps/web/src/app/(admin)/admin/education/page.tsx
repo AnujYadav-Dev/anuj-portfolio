@@ -90,11 +90,12 @@ export default function AdminEducationPage() {
         institution,
         degree,
         fieldOfStudy: fieldOfStudy || undefined,
-        startDate: new Date(startDate).toISOString(),
-        endDate: endDate ? new Date(endDate).toISOString() : undefined,
+        startDate,
+        endDate: endDate || undefined,
         grade: grade || undefined,
         description: description || undefined,
       };
+
 
 
       if (editingEdu) {

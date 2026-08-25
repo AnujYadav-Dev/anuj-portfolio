@@ -3,7 +3,14 @@
 // resumes, social links.
 
 import { z } from 'zod';
-import { slugSchema, seoFieldsSchema } from './common';
+import {
+  slugSchema,
+  seoFieldsSchema,
+  dateStringSchema,
+  optionalDateStringSchema,
+  optionalUuidSchema,
+  optionalUrlSchema,
+} from './common';
 import { TimelineEventType } from '../types/enums';
 
 /** Create/update about section. */
@@ -50,13 +57,13 @@ export const upsertExperienceSchema = z.object({
   companyName: z.string().min(1).max(200),
   role: z.string().min(1).max(200),
   location: z.string().max(200).optional(),
-  startDate: z.string().date(),
-  endDate: z.string().date().optional(),
+  startDate: dateStringSchema,
+  endDate: optionalDateStringSchema,
   isCurrent: z.boolean().default(false),
   description: z.string().optional(),
   technologies: z.array(z.string()).optional(),
-  companyUrl: z.string().url().optional().or(z.literal('')),
-  companyLogoId: z.string().uuid().optional(),
+  companyUrl: optionalUrlSchema,
+  companyLogoId: optionalUuidSchema,
   sortOrder: z.number().int().default(0),
   isEnabled: z.boolean().default(true),
 });
@@ -69,13 +76,13 @@ export const upsertEducationSchema = z.object({
   degree: z.string().min(1).max(200),
   fieldOfStudy: z.string().max(200).optional(),
   location: z.string().max(200).optional(),
-  startDate: z.string().date(),
-  endDate: z.string().date().optional(),
+  startDate: dateStringSchema,
+  endDate: optionalDateStringSchema,
   isCurrent: z.boolean().default(false),
   grade: z.string().max(50).optional(),
   description: z.string().optional(),
   activities: z.string().optional(),
-  institutionLogoId: z.string().uuid().optional(),
+  institutionLogoId: optionalUuidSchema,
   sortOrder: z.number().int().default(0),
   isEnabled: z.boolean().default(true),
 });
@@ -86,11 +93,11 @@ export type UpsertEducationInput = z.infer<typeof upsertEducationSchema>;
 export const upsertCertificateSchema = z.object({
   name: z.string().min(1).max(200),
   issuingOrganization: z.string().min(1).max(200),
-  issueDate: z.string().date(),
-  expiryDate: z.string().date().optional(),
+  issueDate: dateStringSchema,
+  expiryDate: optionalDateStringSchema,
   credentialId: z.string().max(200).optional(),
-  credentialUrl: z.string().url().optional().or(z.literal('')),
-  certificateImageId: z.string().uuid().optional(),
+  credentialUrl: optionalUrlSchema,
+  certificateImageId: optionalUuidSchema,
   sortOrder: z.number().int().default(0),
   isEnabled: z.boolean().default(true),
 });
@@ -101,10 +108,10 @@ export type UpsertCertificateInput = z.infer<typeof upsertCertificateSchema>;
 export const upsertAchievementSchema = z.object({
   title: z.string().min(1).max(200),
   description: z.string().optional(),
-  date: z.string().date().optional(),
+  date: optionalDateStringSchema,
   issuer: z.string().max(200).optional(),
-  url: z.string().url().optional().or(z.literal('')),
-  imageId: z.string().uuid().optional(),
+  url: optionalUrlSchema,
+  imageId: optionalUuidSchema,
   isFeatured: z.boolean().default(false),
   sortOrder: z.number().int().default(0),
   isEnabled: z.boolean().default(true),
@@ -117,10 +124,10 @@ export const upsertTimelineEventSchema = z.object({
   title: z.string().min(1).max(200),
   description: z.string().optional(),
   eventType: z.nativeEnum(TimelineEventType),
-  date: z.string().date(),
-  endDate: z.string().date().optional(),
+  date: dateStringSchema,
+  endDate: optionalDateStringSchema,
   icon: z.string().max(50).optional(),
-  url: z.string().url().optional().or(z.literal('')),
+  url: optionalUrlSchema,
   sortOrder: z.number().int().default(0),
   isEnabled: z.boolean().default(true),
 });
@@ -138,6 +145,7 @@ export const upsertSocialLinkSchema = z.object({
 });
 
 export type UpsertSocialLinkInput = z.infer<typeof upsertSocialLinkSchema>;
+
 
 /** Create resume schema. */
 export const createResumeSchema = z.object({

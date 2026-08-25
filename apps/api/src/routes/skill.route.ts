@@ -10,36 +10,23 @@ import {
 
 const router = Router();
 
-// Public
-router.get('/', skillController.listSkillsPublic);
-router.get('/:id', validateParams(uuidParamSchema), skillController.getSkillById);
+// Reorder routes (must precede /:id)
+router.patch('/admin/reorder', authenticateAdmin, validateBody(reorderSchema), skillController.reorderSkills);
+router.put('/admin/reorder', authenticateAdmin, validateBody(reorderSchema), skillController.reorderSkills);
+router.patch('/reorder', authenticateAdmin, validateBody(reorderSchema), skillController.reorderSkills);
+router.put('/reorder', authenticateAdmin, validateBody(reorderSchema), skillController.reorderSkills);
 
-// Admin
+// Admin collection routes (must precede /:id)
 router.get('/admin/all', authenticateAdmin, skillController.listSkillsAdmin);
-router.post(
-  '/',
-  authenticateAdmin,
-  validateBody(upsertSkillSchema),
-  skillController.createSkill,
-);
-router.put(
-  '/:id',
-  authenticateAdmin,
-  validateParams(uuidParamSchema),
-  validateBody(upsertSkillSchema.partial()),
-  skillController.updateSkill,
-);
-router.delete(
-  '/:id',
-  authenticateAdmin,
-  validateParams(uuidParamSchema),
-  skillController.deleteSkill,
-);
-router.patch(
-  '/admin/reorder',
-  authenticateAdmin,
-  validateBody(reorderSchema),
-  skillController.reorderSkills,
-);
+router.get('/admin/:id', authenticateAdmin, validateParams(uuidParamSchema), skillController.getSkillById);
+
+// Public list
+router.get('/', skillController.listSkillsPublic);
+
+// Generic ID routes
+router.get('/:id', validateParams(uuidParamSchema), skillController.getSkillById);
+router.post('/', authenticateAdmin, validateBody(upsertSkillSchema), skillController.createSkill);
+router.put('/:id', authenticateAdmin, validateParams(uuidParamSchema), validateBody(upsertSkillSchema.partial()), skillController.updateSkill);
+router.delete('/:id', authenticateAdmin, validateParams(uuidParamSchema), skillController.deleteSkill);
 
 export { router as skillRouter };

@@ -1,7 +1,11 @@
-// Blog post Zod validation schemas.
-
 import { z } from 'zod';
-import { slugSchema, paginationSchema, seoFieldsSchema } from './common';
+import {
+  slugSchema,
+  paginationSchema,
+  seoFieldsSchema,
+  optionalUuidSchema,
+} from './common';
+
 import { ContentStatus } from '../types/enums';
 
 /** Create blog post request validation. */
@@ -14,11 +18,12 @@ export const createBlogPostSchema = z
     readingTimeMinutes: z.number().int().min(0).optional(),
     status: z.nativeEnum(ContentStatus).default(ContentStatus.Draft),
     isFeatured: z.boolean().default(false),
-    categoryId: z.string().uuid().optional(),
-    coverImageId: z.string().uuid().optional(),
+    categoryId: optionalUuidSchema,
+    coverImageId: optionalUuidSchema,
     tagIds: z.array(z.string().uuid()).optional(),
   })
   .merge(seoFieldsSchema);
+
 
 export type CreateBlogPostInput = z.infer<typeof createBlogPostSchema>;
 

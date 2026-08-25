@@ -53,7 +53,12 @@ app.set('trust proxy', 1);
 app.use(requestIdMiddleware);
 app.use(requestLoggerMiddleware);
 
-app.use(helmet());
+app.use(
+  helmet({
+    crossOriginResourcePolicy: { policy: 'cross-origin' },
+    crossOriginEmbedderPolicy: false,
+  }),
+);
 app.use(
   cors({
     origin: config.CORS_ORIGIN,
@@ -66,8 +71,18 @@ app.use(express.urlencoded({ extended: true }));
 
 if (config.STORAGE_PROVIDER === 'local') {
   const uploadPath = path.resolve(process.cwd(), config.UPLOAD_DIR);
-  app.use('/uploads', express.static(uploadPath));
+  app.use(
+    '/uploads',
+    (_req, res, next) => {
+      res.setHeader('Cross-Origin-Resource-Policy', 'cross-origin');
+      res.setHeader('Access-Control-Allow-Origin', '*');
+      next();
+    },
+    express.static(uploadPath),
+  );
 }
+
+
 
 const apiRouter = express.Router();
 apiRouter.use(publicRateLimiter);

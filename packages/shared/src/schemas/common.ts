@@ -22,13 +22,39 @@ export const slugSchema = z
   .max(300)
   .regex(SLUG_REGEX, 'Slug must be lowercase alphanumeric with hyphens');
 
+/** Reusable date string schema — accepts YYYY-MM-DD or ISO 8601 strings. */
+export const dateStringSchema = z
+  .string()
+  .min(1, 'Date is required')
+  .refine(
+    (val) => !isNaN(Date.parse(val)),
+    { message: 'Invalid date format' },
+  );
+
+/** Reusable optional date string schema. */
+export const optionalDateStringSchema = z
+  .string()
+  .optional()
+  .or(z.literal(''))
+  .refine(
+    (val) => !val || !isNaN(Date.parse(val)),
+    { message: 'Invalid date format' },
+  );
+
+/** Reusable optional UUID schema. */
+export const optionalUuidSchema = z.string().uuid().optional().or(z.literal(''));
+
+/** Reusable optional URL schema. */
+export const optionalUrlSchema = z.string().url().optional().or(z.literal(''));
+
 /** Reusable SEO fields schema (all optional). */
 export const seoFieldsSchema = z.object({
   seoTitle: z.string().max(200).optional(),
   seoDescription: z.string().max(500).optional(),
   seoKeywords: z.string().max(500).optional(),
-  ogImageId: z.string().uuid().optional(),
+  ogImageId: optionalUuidSchema,
 });
+
 
 /** UUID param schema. */
 export const uuidParamSchema = z.object({

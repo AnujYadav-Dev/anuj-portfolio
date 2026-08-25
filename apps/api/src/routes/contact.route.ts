@@ -35,6 +35,12 @@ router.patch(
   validateParams(uuidParamSchema),
   asyncHandler(contactController.updateStatus),
 );
+router.put(
+  '/admin/submissions/:id/status',
+  authenticateAdmin,
+  validateParams(uuidParamSchema),
+  asyncHandler(contactController.updateStatus),
+);
 router.delete(
   '/admin/submissions/:id',
   authenticateAdmin,

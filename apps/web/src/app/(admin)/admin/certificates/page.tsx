@@ -93,12 +93,13 @@ export default function AdminCertificatesPage() {
       const payload: CreateCertificateRequest | UpdateCertificateRequest = {
         name,
         issuingOrganization,
-        issueDate: new Date(issueDate).toISOString(),
-        expiryDate: expiryDate ? new Date(expiryDate).toISOString() : undefined,
+        issueDate,
+        expiryDate: expiryDate || undefined,
         credentialId: credentialId || undefined,
         credentialUrl: credentialUrl || undefined,
         isEnabled,
       };
+
 
       if (editingCert) {
         await apiClient.put(`/certificates/${editingCert.id}`, payload);

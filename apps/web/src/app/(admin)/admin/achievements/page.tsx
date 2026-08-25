@@ -94,12 +94,13 @@ export default function AdminAchievementsPage() {
       const payload: CreateAchievementRequest | UpdateAchievementRequest = {
         title,
         issuer: issuer || undefined,
-        date: date ? new Date(date).toISOString() : undefined,
+        date: date || undefined,
         description: description || undefined,
         url: url || undefined,
         isFeatured,
         isEnabled,
       };
+
 
       if (editingAch) {
         await apiClient.put(`/achievements/${editingAch.id}`, payload);

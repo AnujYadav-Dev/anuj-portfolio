@@ -1,8 +1,11 @@
-// Site configuration Zod validation schemas — homepage sections,
-// content blocks, nav items, pages, site settings, email templates.
-
 import { z } from 'zod';
-import { slugSchema, paginationSchema, seoFieldsSchema } from './common';
+import {
+  slugSchema,
+  paginationSchema,
+  seoFieldsSchema,
+  optionalUuidSchema,
+} from './common';
+
 import { ContentStatus, BlockType, NavLocation } from '../types/enums';
 
 /** Update site setting. */
@@ -30,12 +33,12 @@ export const upsertContentBlockSchema = z.object({
   blockType: z.nativeEnum(BlockType),
   title: z.string().max(200).optional(),
   content: z.string().optional(),
-  mediaId: z.string().uuid().optional(),
+  mediaId: optionalUuidSchema,
   config: z.record(z.unknown()).default({}),
   sortOrder: z.number().int().default(0),
   isEnabled: z.boolean().default(true),
-  pageId: z.string().uuid().optional(),
-  homepageSectionId: z.string().uuid().optional(),
+  pageId: optionalUuidSchema,
+  homepageSectionId: optionalUuidSchema,
 });
 
 export type UpsertContentBlockInput = z.infer<typeof upsertContentBlockSchema>;
@@ -48,10 +51,11 @@ export const upsertNavItemSchema = z.object({
   isExternal: z.boolean().default(false),
   sortOrder: z.number().int().default(0),
   isEnabled: z.boolean().default(true),
-  parentId: z.string().uuid().optional(),
+  parentId: optionalUuidSchema,
 });
 
 export type UpsertNavItemInput = z.infer<typeof upsertNavItemSchema>;
+
 
 /** Create page request validation. */
 export const createPageSchema = z

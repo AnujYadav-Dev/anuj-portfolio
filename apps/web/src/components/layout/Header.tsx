@@ -41,8 +41,8 @@ export function Header() {
 
   const navLinks =
     navData?.data && navData.data.length > 0
-      ? navData.data.map((item) => ({ label: item.label, href: item.url }))
-      : defaultNavLinks;
+      ? navData.data.map((item) => ({ id: item.id, label: item.label, href: item.url }))
+      : defaultNavLinks.map((item, idx) => ({ id: `default-${idx}`, ...item }));
 
   return (
     <>
@@ -58,7 +58,7 @@ export function Header() {
 
           {/* Desktop Navigation Links */}
           <nav className="hidden md:flex items-center gap-6 text-xs font-medium">
-            {navLinks.map((link) => {
+            {navLinks.map((link, idx) => {
               const isActive =
                 link.href === '/'
                   ? pathname === '/'
@@ -66,7 +66,7 @@ export function Header() {
 
               return (
                 <Link
-                  key={link.href}
+                  key={link.id || `${link.href}-${idx}`}
                   href={link.href}
                   className={cn(
                     'transition-colors py-1 hover:text-accent',
@@ -80,6 +80,7 @@ export function Header() {
               );
             })}
           </nav>
+
 
           {/* Right Action Tools */}
           <div className="flex items-center gap-2">

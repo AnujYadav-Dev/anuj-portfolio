@@ -45,8 +45,8 @@ export function MobileNav({ isOpen, onClose }: MobileNavProps) {
 
   const links =
     navData?.data && navData.data.length > 0
-      ? navData.data.map((item) => ({ label: item.label, href: item.url }))
-      : defaultNavLinks;
+      ? navData.data.map((item) => ({ id: item.id, label: item.label, href: item.url }))
+      : defaultNavLinks.map((item, idx) => ({ id: `default-${idx}`, ...item }));
 
   if (!isOpen) return null;
 
@@ -76,7 +76,7 @@ export function MobileNav({ isOpen, onClose }: MobileNavProps) {
 
         {/* Links */}
         <nav className="flex flex-col gap-1 py-6 overflow-y-auto">
-          {links.map((link) => {
+          {links.map((link, idx) => {
             const isActive =
               link.href === '/'
                 ? pathname === '/'
@@ -84,7 +84,7 @@ export function MobileNav({ isOpen, onClose }: MobileNavProps) {
 
             return (
               <Link
-                key={link.href}
+                key={link.id || `${link.href}-${idx}`}
                 href={link.href}
                 onClick={onClose}
                 className={cn(
@@ -100,6 +100,7 @@ export function MobileNav({ isOpen, onClose }: MobileNavProps) {
             );
           })}
         </nav>
+
 
         {/* Footer actions */}
         <div className="mt-auto pt-4 border-t border-border flex flex-col gap-4">

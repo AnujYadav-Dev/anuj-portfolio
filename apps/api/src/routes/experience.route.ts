@@ -10,36 +10,23 @@ import {
 
 const router = Router();
 
-// Public
-router.get('/', experienceController.listPublic);
-router.get('/:id', validateParams(uuidParamSchema), experienceController.getById);
+// Reorder routes (must precede /:id)
+router.patch('/admin/reorder', authenticateAdmin, validateBody(reorderSchema), experienceController.reorder);
+router.put('/admin/reorder', authenticateAdmin, validateBody(reorderSchema), experienceController.reorder);
+router.patch('/reorder', authenticateAdmin, validateBody(reorderSchema), experienceController.reorder);
+router.put('/reorder', authenticateAdmin, validateBody(reorderSchema), experienceController.reorder);
 
-// Admin
+// Admin collection routes (must precede /:id)
 router.get('/admin/all', authenticateAdmin, experienceController.listAdmin);
-router.post(
-  '/',
-  authenticateAdmin,
-  validateBody(upsertExperienceSchema),
-  experienceController.create,
-);
-router.put(
-  '/:id',
-  authenticateAdmin,
-  validateParams(uuidParamSchema),
-  validateBody(upsertExperienceSchema.partial()),
-  experienceController.update,
-);
-router.delete(
-  '/:id',
-  authenticateAdmin,
-  validateParams(uuidParamSchema),
-  experienceController.delete,
-);
-router.patch(
-  '/admin/reorder',
-  authenticateAdmin,
-  validateBody(reorderSchema),
-  experienceController.reorder,
-);
+router.get('/admin/:id', authenticateAdmin, validateParams(uuidParamSchema), experienceController.getById);
+
+// Public list
+router.get('/', experienceController.listPublic);
+
+// Generic ID routes
+router.get('/:id', validateParams(uuidParamSchema), experienceController.getById);
+router.post('/', authenticateAdmin, validateBody(upsertExperienceSchema), experienceController.create);
+router.put('/:id', authenticateAdmin, validateParams(uuidParamSchema), validateBody(upsertExperienceSchema.partial()), experienceController.update);
+router.delete('/:id', authenticateAdmin, validateParams(uuidParamSchema), experienceController.delete);
 
 export { router as experienceRouter };

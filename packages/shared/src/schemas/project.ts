@@ -1,7 +1,14 @@
 // Project Zod validation schemas.
 
 import { z } from 'zod';
-import { slugSchema, paginationSchema, seoFieldsSchema } from './common';
+import {
+  slugSchema,
+  paginationSchema,
+  seoFieldsSchema,
+  optionalDateStringSchema,
+  optionalUuidSchema,
+  optionalUrlSchema,
+} from './common';
 import { ContentStatus, ProjectType, ProjectStatus } from '../types/enums';
 
 /** Create project request validation. */
@@ -12,19 +19,20 @@ export const createProjectSchema = z
     shortDescription: z.string().min(1),
     content: z.string().optional(),
     technologies: z.array(z.string()).optional(),
-    githubUrl: z.string().url().optional().or(z.literal('')),
-    liveUrl: z.string().url().optional().or(z.literal('')),
+    githubUrl: optionalUrlSchema,
+    liveUrl: optionalUrlSchema,
     projectType: z.nativeEnum(ProjectType).default(ProjectType.Personal),
     projectStatus: z.nativeEnum(ProjectStatus).default(ProjectStatus.Completed),
     status: z.nativeEnum(ContentStatus).default(ContentStatus.Draft),
     isFeatured: z.boolean().default(false),
-    startDate: z.string().date().optional(),
-    endDate: z.string().date().optional(),
-    categoryId: z.string().uuid().optional(),
-    coverImageId: z.string().uuid().optional(),
+    startDate: optionalDateStringSchema,
+    endDate: optionalDateStringSchema,
+    categoryId: optionalUuidSchema,
+    coverImageId: optionalUuidSchema,
     tagIds: z.array(z.string().uuid()).optional(),
   })
   .merge(seoFieldsSchema);
+
 
 export type CreateProjectInput = z.infer<typeof createProjectSchema>;
 

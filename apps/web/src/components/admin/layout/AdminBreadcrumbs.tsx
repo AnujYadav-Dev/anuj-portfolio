@@ -69,8 +69,9 @@ export function AdminBreadcrumbs() {
         <Home className="w-3.5 h-3.5" />
       </Link>
       {items.slice(1).map((item, idx) => (
-        <React.Fragment key={item.href}>
+        <React.Fragment key={`${item.href}-${idx}`}>
           <ChevronRight className="w-3 h-3 text-placeholder" />
+
           {item.isLast ? (
             <span className="font-semibold text-foreground truncate max-w-[200px]">
               {item.name}

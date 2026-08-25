@@ -1,7 +1,13 @@
-// Research paper Zod validation schemas.
-
 import { z } from 'zod';
-import { slugSchema, paginationSchema, seoFieldsSchema } from './common';
+import {
+  slugSchema,
+  paginationSchema,
+  seoFieldsSchema,
+  optionalDateStringSchema,
+  optionalUuidSchema,
+  optionalUrlSchema,
+} from './common';
+
 import { ContentStatus } from '../types/enums';
 
 /** Create research paper request validation. */
@@ -12,15 +18,16 @@ export const createResearchPaperSchema = z
     abstract: z.string().optional(),
     content: z.string().optional(),
     doi: z.string().max(200).optional(),
-    publicationUrl: z.string().url().optional().or(z.literal('')),
+    publicationUrl: optionalUrlSchema,
     publicationName: z.string().max(200).optional(),
-    publicationDate: z.string().date().optional(),
+    publicationDate: optionalDateStringSchema,
     status: z.nativeEnum(ContentStatus).default(ContentStatus.Draft),
     isFeatured: z.boolean().default(false),
-    pdfId: z.string().uuid().optional(),
+    pdfId: optionalUuidSchema,
     tagIds: z.array(z.string().uuid()).optional(),
   })
   .merge(seoFieldsSchema);
+
 
 export type CreateResearchPaperInput = z.infer<typeof createResearchPaperSchema>;
 

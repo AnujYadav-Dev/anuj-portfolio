@@ -5,6 +5,50 @@
 
 ---
 
+## 2026-08-25
+
+### Phase 4: Backend REST API Domain Modules
+
+#### Added: Shared Contracts & Utilities (`packages/shared/src/`, `apps/api/src/utils/`)
+- Shared DTOs: `SearchType`, `SearchResultItemDto`, `SearchResultsDto`, `PublicStatsDto`, `TagDto`, `TagWithCountDto`, `ContentVersionDto`, `GalleryItemDto`, `NewsletterSubscriberDto`.
+- Shared Zod Schemas: `searchQuerySchema`, `createTagSchema`, `updateTagSchema`, `listTagsQuerySchema`, `restoreVersionParamsSchema`, `reorderSchema`, `slugParamSchema`, `upsertProjectCategorySchema`, `upsertBlogCategorySchema`, `createResumeSchema`, `upsertOpensourceSchema`, `upsertGalleryItemSchema`, `upsertTestimonialSchema`.
+- Backend Utilities: `calculateReadingTime` (WPM estimation for markdown), `saveContentVersion` (automatic snapshotting to `content_versions`), `buildPagination`/`getPrismaPagination`, `map*ToDto` comprehensive domain mappers across all 20+ models.
+
+#### Added: Content Domain Modules (`apps/api/src/`)
+- **Projects & Categories** (`/api/v1/projects`, `/api/v1/project-categories`): Full CRUD, slug routing, pagination, category filtering, featured filters, image galleries, tags association, and content versioning.
+- **Blog Posts & Categories** (`/api/v1/blogs`, `/api/v1/blog-categories`): Full CRUD, reading time auto-calculation, tags association, and content version history rollback (`GET /blogs/:id/versions`, `POST /blogs/:id/versions/:version/restore`).
+- **Research Papers** (`/api/v1/research`): CRUD, status management, pagination, and direct PDF download/redirect (`GET /research/:slug/download`).
+- **Dynamic Pages & Content Blocks** (`/api/v1/pages`, `/api/v1/content-blocks`): Custom markdown pages (`/now`, `/uses`, `/stack`) with associated reusable content blocks and reordering.
+
+#### Added: Profile & Portfolio Modules (`apps/api/src/`)
+- **About Sections** (`/api/v1/about-sections`): Reorderable markdown sections.
+- **Skills & Categories** (`/api/v1/skills`, `/api/v1/skill-categories`): Categorized skills with proficiency scores, icons, and category reordering.
+- **Experiences & Education** (`/api/v1/experiences`, `/api/v1/education`): Chronological career history and academic credentials with institution logo relations.
+- **Certificates & Achievements** (`/api/v1/certificates`, `/api/v1/achievements`): Badges, credentials with validation URLs, awards, and recognitions.
+- **Timeline Events** (`/api/v1/timeline-events`): Chronological milestone events with career/education/life classifications.
+- **Resumes** (`/api/v1/resumes`): Versioned PDF resume store, active resume download redirect (`GET /resumes/active/download`), and single-active transaction toggle.
+- **Social Links & Open Source** (`/api/v1/social-links`, `/api/v1/opensource`): Social profiles and public GitHub repositories with star/fork metrics.
+- **Gallery** (`/api/v1/gallery`): Media gallery with categories, captions, and sort ordering.
+
+#### Added: Layout & Site Configuration Modules (`apps/api/src/`)
+- **Homepage Sections** (`/api/v1/homepage-sections`): Modular homepage layouts with dynamic JSON configuration and block relations.
+- **Navigation Menus** (`/api/v1/nav-items`): Hierarchical tree builder supporting header, footer, or both locations with nested children.
+- **Site Settings** (`/api/v1/site-settings`): Dynamic key-value configuration with public map projection and bulk admin upsert.
+
+#### Added: Interactions, Moderation & Communications (`apps/api/src/`)
+- **Contact Submissions Inbox** (`/api/v1/contact`): Admin submissions inbox with pagination, read/replied status tracking, and deletion.
+- **Guestbook** (`/api/v1/guestbook`): Public message submissions with moderation workflows (`approved`, `rejected`, `pending`).
+- **Testimonials** (`/api/v1/testimonials`): Client and peer testimonials with avatar relations and featured flags.
+- **Newsletter** (`/api/v1/newsletter`): Double opt-in subscriptions, confirmation tokens, unsubscriptions, and admin export.
+
+#### Added: Discovery, Taxonomy & Background Jobs (`apps/api/src/`)
+- **Tags Taxonomy** (`/api/v1/tags`): Global tag taxonomy with entity usage counts and slug-based lookup.
+- **Global Search Engine** (`/api/v1/search`): Unified multi-entity search spanning projects, blogs, research papers, pages, skills, and about sections.
+- **Public Aggregated Stats** (`/api/v1/stats`): Aggregated public metrics (projects, blogs, papers, skills, experience duration, stars).
+- **Scheduled Content Publisher** (`services/scheduler.service.ts`): Background job auto-publishing scheduled articles, projects, papers, and pages.
+
+---
+
 ## 2025-08-25
 
 ### Phase 3: Backend Infrastructure & Core Services

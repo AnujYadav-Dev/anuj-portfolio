@@ -60,3 +60,12 @@ export interface NewsletterSubscribeRequest {
   email: string;
   name?: string;
 }
+
+/** Newsletter subscriber DTO. */
+export interface NewsletterSubscriberDto {
+  id: string;
+  email: string;
+  name: string | null;
+  isConfirmed: boolean;
+  createdAt: string;
+}

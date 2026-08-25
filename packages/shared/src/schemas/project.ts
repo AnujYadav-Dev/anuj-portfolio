@@ -44,3 +44,14 @@ export const listProjectsQuerySchema = paginationSchema.extend({
 });
 
 export type ListProjectsQuery = z.infer<typeof listProjectsQuerySchema>;
+
+/** Create/update project category schema. */
+export const upsertProjectCategorySchema = z.object({
+  name: z.string().min(1).max(100),
+  slug: slugSchema.optional(),
+  description: z.string().optional(),
+  sortOrder: z.number().int().default(0),
+  isEnabled: z.boolean().default(true),
+});
+
+export type UpsertProjectCategoryInput = z.infer<typeof upsertProjectCategorySchema>;

@@ -1,7 +1,18 @@
 import { z } from 'zod';
 import dotenv from 'dotenv';
 
-dotenv.config();
+import path from 'node:path';
+import fs from 'node:fs';
+
+const localEnv = path.resolve(process.cwd(), '.env');
+const apiEnv = path.resolve(process.cwd(), 'apps/api/.env');
+if (fs.existsSync(localEnv)) {
+  dotenv.config({ path: localEnv });
+} else if (fs.existsSync(apiEnv)) {
+  dotenv.config({ path: apiEnv });
+} else {
+  dotenv.config();
+}
 
 const optionalString = z.preprocess(
   (value) => (value === '' || value === undefined ? undefined : value),

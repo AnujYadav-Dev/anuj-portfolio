@@ -34,3 +34,24 @@ export const seoFieldsSchema = z.object({
 export const uuidParamSchema = z.object({
   id: z.string().uuid(),
 });
+
+export type UuidParam = z.infer<typeof uuidParamSchema>;
+
+/** Reorder items schema (batch update sort orders). */
+export const reorderSchema = z.object({
+  items: z.array(
+    z.object({
+      id: z.string().uuid(),
+      sortOrder: z.number().int(),
+    }),
+  ).min(1),
+});
+
+export type ReorderInput = z.infer<typeof reorderSchema>;
+
+/** Slug param schema. */
+export const slugParamSchema = z.object({
+  slug: z.string().min(1),
+});
+
+export type SlugParam = z.infer<typeof slugParamSchema>;

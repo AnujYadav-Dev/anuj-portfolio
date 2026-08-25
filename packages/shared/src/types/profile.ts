@@ -153,3 +153,16 @@ export interface OpensourceContributionDto {
   sortOrder: number;
   isEnabled: boolean;
 }
+
+/** Gallery item DTO. */
+export interface GalleryItemDto {
+  id: string;
+  title: string | null;
+  description: string | null;
+  category: string | null;
+  sortOrder: number;
+  isEnabled: boolean;
+  mediaUrl: string;
+  altText: string | null;
+  createdAt: string;
+}

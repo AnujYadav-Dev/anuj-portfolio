@@ -12,8 +12,8 @@ export class AppError extends Error {
 }
 
 export class NotFoundError extends AppError {
-  constructor(entity: string, identifier: string) {
-    super('NOT_FOUND', `${entity} '${identifier}' not found`, 404);
+  constructor(entity: string, identifier?: string) {
+    super('NOT_FOUND', identifier ? `${entity} '${identifier}' not found` : entity, 404);
     this.name = 'NotFoundError';
   }
 }
@@ -36,5 +36,19 @@ export class ForbiddenError extends AppError {
   constructor(message = 'Insufficient permissions') {
     super('FORBIDDEN', message, 403);
     this.name = 'ForbiddenError';
+  }
+}
+
+export class ConflictError extends AppError {
+  constructor(message: string) {
+    super('CONFLICT', message, 409);
+    this.name = 'ConflictError';
+  }
+}
+
+export class BadRequestError extends AppError {
+  constructor(message: string, details?: Record<string, unknown>) {
+    super('BAD_REQUEST', message, 400, details);
+    this.name = 'BadRequestError';
   }
 }

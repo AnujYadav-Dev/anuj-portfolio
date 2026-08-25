@@ -12,3 +12,7 @@ export * from './site';
 export * from './interaction';
 export * from './analytics';
 export * from './media';
+export * from './search';
+export * from './stats';
+export * from './tag';
+export * from './version';

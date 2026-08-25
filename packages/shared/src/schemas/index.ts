@@ -11,3 +11,6 @@ export * from './site';
 export * from './interaction';
 export * from './analytics';
 export * from './media';
+export * from './search';
+export * from './tag';
+export * from './version';

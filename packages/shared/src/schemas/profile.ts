@@ -138,3 +138,41 @@ export const upsertSocialLinkSchema = z.object({
 });
 
 export type UpsertSocialLinkInput = z.infer<typeof upsertSocialLinkSchema>;
+
+/** Create resume schema. */
+export const createResumeSchema = z.object({
+  title: z.string().min(1).max(200),
+  versionLabel: z.string().max(50).optional(),
+  fileId: z.string().uuid(),
+  isActive: z.boolean().default(false),
+});
+
+export type CreateResumeInput = z.infer<typeof createResumeSchema>;
+
+/** Create/update open source contribution schema. */
+export const upsertOpensourceSchema = z.object({
+  name: z.string().min(1).max(200),
+  description: z.string().optional(),
+  url: z.string().url(),
+  role: z.string().max(100).optional(),
+  stars: z.number().int().min(0).optional(),
+  forks: z.number().int().min(0).optional(),
+  language: z.string().max(50).optional(),
+  isFeatured: z.boolean().default(false),
+  sortOrder: z.number().int().default(0),
+  isEnabled: z.boolean().default(true),
+});
+
+export type UpsertOpensourceInput = z.infer<typeof upsertOpensourceSchema>;
+
+/** Create/update gallery item schema. */
+export const upsertGalleryItemSchema = z.object({
+  title: z.string().max(200).optional(),
+  description: z.string().optional(),
+  category: z.string().max(100).optional(),
+  mediaId: z.string().uuid(),
+  sortOrder: z.number().int().default(0),
+  isEnabled: z.boolean().default(true),
+});
+
+export type UpsertGalleryItemInput = z.infer<typeof upsertGalleryItemSchema>;

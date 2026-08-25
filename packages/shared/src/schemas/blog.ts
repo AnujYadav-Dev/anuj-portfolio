@@ -37,3 +37,14 @@ export const listBlogPostsQuerySchema = paginationSchema.extend({
 });
 
 export type ListBlogPostsQuery = z.infer<typeof listBlogPostsQuerySchema>;
+
+/** Create/update blog category schema. */
+export const upsertBlogCategorySchema = z.object({
+  name: z.string().min(1).max(100),
+  slug: slugSchema.optional(),
+  description: z.string().optional(),
+  sortOrder: z.number().int().default(0),
+  isEnabled: z.boolean().default(true),
+});
+
+export type UpsertBlogCategoryInput = z.infer<typeof upsertBlogCategorySchema>;

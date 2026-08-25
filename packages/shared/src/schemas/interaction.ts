@@ -29,3 +29,18 @@ export const newsletterSubscribeSchema = z.object({
 });
 
 export type NewsletterSubscribeInput = z.infer<typeof newsletterSubscribeSchema>;
+
+/** Create/update testimonial schema. */
+export const upsertTestimonialSchema = z.object({
+  authorName: z.string().min(1).max(200),
+  authorTitle: z.string().max(200).optional(),
+  authorCompany: z.string().max(200).optional(),
+  authorAvatarId: z.string().uuid().optional(),
+  content: z.string().min(1),
+  url: z.string().url().optional().or(z.literal('')),
+  isFeatured: z.boolean().default(false),
+  sortOrder: z.number().int().default(0),
+  isEnabled: z.boolean().default(true),
+});
+
+export type UpsertTestimonialInput = z.infer<typeof upsertTestimonialSchema>;

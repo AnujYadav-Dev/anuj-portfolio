@@ -117,12 +117,12 @@ All documentation lives in the `docs/` folder. See [README.md](README.md) for th
 
 ## Current Status
 
-- **Phase:** Phase 3 complete — Backend Infrastructure & Core Services.
+- **Phase:** Phase 4 complete — Backend REST API Domain Modules.
 - **Database:** PostgreSQL schema fully migrated (38 models, 11 enums, indexes, constraints) and seeded with admin user, settings, homepage sections, navigation, sample content, and taxonomy.
-- **Backend:** Express API with JWT auth (access + refresh rotation), Pino logging, rate limiting, Zod validation middleware, media upload (local/Cloudinary), visitor telemetry, SMTP email service, and public contact endpoint.
+- **Backend:** Express API with all 20+ domain modules implemented (Projects, Blog Posts with version rollback, Research Papers with PDF download, Dynamic Pages, Content Blocks, About Sections, Skills & Categories, Experience, Education, Certificates, Achievements, Timeline Events, Resumes with active PDF redirect, Social Links, Open Source Repositories, Gallery, Homepage Sections, Navigation Trees, Site Settings, Contact Inbox, Guestbook with moderation, Testimonials, Newsletter with confirmation tokens, Global Search Engine, Tags Taxonomy, Public Stats, Background Scheduler).
 - **Frontend:** Next.js + Tailwind v4 with design tokens.
 - **Shared:** Complete domain-organized types, DTOs, enums, Zod validation schemas, and constants compiled and verified.
-- **Next step:** Phase 4 — Backend REST API Domain Modules (projects, blogs, pages, profile, layout, search).
+- **Next step:** Phase 5 — Public Frontend Pages & Layouts (Next.js App Router, dynamic server/client components, TanStack Query, animations, SEO metadata).
 
 ---
 

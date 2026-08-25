@@ -117,12 +117,12 @@ All documentation lives in the `docs/` folder. See [README.md](README.md) for th
 
 ## Current Status
 
-- **Phase:** Phase 4 complete — Backend REST API Domain Modules.
+- **Phase:** Phase 5 complete — Frontend Design System Primitives & Client Infrastructure.
 - **Database:** PostgreSQL schema fully migrated (38 models, 11 enums, indexes, constraints) and seeded with admin user, settings, homepage sections, navigation, sample content, and taxonomy.
-- **Backend:** Express API with all 20+ domain modules implemented (Projects, Blog Posts with version rollback, Research Papers with PDF download, Dynamic Pages, Content Blocks, About Sections, Skills & Categories, Experience, Education, Certificates, Achievements, Timeline Events, Resumes with active PDF redirect, Social Links, Open Source Repositories, Gallery, Homepage Sections, Navigation Trees, Site Settings, Contact Inbox, Guestbook with moderation, Testimonials, Newsletter with confirmation tokens, Global Search Engine, Tags Taxonomy, Public Stats, Background Scheduler).
-- **Frontend:** Next.js + Tailwind v4 with design tokens.
+- **Backend:** Express API with all 20+ domain modules implemented and verified.
+- **Frontend:** Next.js 16 (Turbopack) + Tailwind v4 with design tokens, typed API client (`apiClient`), TanStack Query layer with custom hooks across all domains, zero-flicker theme provider (dark/light), Sonner toast queue, full suite of accessible UI primitives (`Button`, `Card`, `Badge`, `Input`, `Textarea`, `Dialog`, `Popover`, `Tabs`, `Accordion`, `Skeleton`, `Spinner`, `Separator`, `Avatar`, `Tooltip`, `ThemeToggle`), unified scroll-reveal motion engine (`RevealOnScroll`), and rich Markdown/MDX engine (`MarkdownRenderer` with syntax highlighting, copy code, alert callouts, TOC scroll-spy, and zoomable images).
 - **Shared:** Complete domain-organized types, DTOs, enums, Zod validation schemas, and constants compiled and verified.
-- **Next step:** Phase 5 — Public Frontend Pages & Layouts (Next.js App Router, dynamic server/client components, TanStack Query, animations, SEO metadata).
+- **Next step:** Phase 6 — Public-Facing Application Pages (`apps/web/src/app` routes, Header, Footer, Dynamic Homepage, Works, Blogs, Research, About, Timeline, dynamic dynamic `/about/[section]`, `/pages/[slug]`, Contact & Guestbook).
 
 ---
 

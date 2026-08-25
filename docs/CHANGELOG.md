@@ -7,6 +7,47 @@
 
 ## 2026-08-25
 
+### Phase 5: Frontend Design System Primitives & Client Infrastructure
+
+#### Added: Core Client Infrastructure (`apps/web/src/`)
+- `lib/api.ts` — Unified typed API client with base URL configuration, bearer token synchronization, and error normalization.
+- `lib/queryClient.ts` — TanStack Query client factory with 5-minute public stale time and exponential retry backoff.
+- `components/providers/` — Complete provider hierarchy (`QueryProvider`, `ThemeProvider` with zero-flicker sync, `ToastProvider` with Sonner, `AppProviders` composer).
+- Updated `app/layout.tsx` — Wrapped application tree in `AppProviders`.
+
+#### Added: Accessible Design System Primitives (`apps/web/src/components/ui/`)
+- `button.tsx` — Button variants (`primary`, `secondary`, `outline`, `ghost`, `destructive`, `link`), sizes (`sm`, `md`, `lg`, `icon`), loading spinner state, and focus rings.
+- `card.tsx` — Surface card container with `CardHeader`, `CardTitle`, `CardDescription`, `CardContent`, and `CardFooter`.
+- `badge.tsx` — Compact pill badges with semantic variants (`default`, `accent`, `outline`, `muted`, `success`, `warning`, `destructive`).
+- `input.tsx` & `textarea.tsx` — Accessible form inputs with label, helper text, error states, and focus rings.
+- `dialog.tsx` — Accessible modal dialog with focus trapping, backdrop blur, Escape dismissal, and portal mounting.
+- `popover.tsx` & `dropdown.tsx` — Floating popovers and dropdown menus with click-outside listener.
+- `tabs.tsx` & `accordion.tsx` — Keyboard-navigable tab panels and expandable accordions with smooth state transitions.
+- `skeleton.tsx` & `spinner.tsx` — Pulse placeholder loaders and rotating SVG spinners.
+- `separator.tsx` — Full-width horizontal and vertical section dividers.
+- `avatar.tsx` — User and author avatars with fallback initials and image error handling.
+- `tooltip.tsx` — Accessible hover/focus helper tooltips.
+- `theme-toggle.tsx` — Theme switcher button cycling dark/light modes with animated icons.
+
+#### Added: Motion & Scroll Reveal (`apps/web/src/components/motion/`, `hooks/`)
+- `hooks/useScrollReveal.ts` — IntersectionObserver hook tracking viewport visibility.
+- `components/motion/RevealOnScroll.tsx` — Wrapper component implementing the unified global motion rule (`translateY(16px)` $\to$ `0`, `opacity: 0` $\to$ `1`, `600ms cubic-bezier(0.16, 1, 0.3, 1)`) with stagger delays and `prefers-reduced-motion` safety.
+- Updated `globals.css` with `.reveal-on-scroll`, `.is-revealed`, and `.reveal-delay-*` classes.
+
+#### Added: Rich Long-Form Markdown / MDX Engine (`apps/web/src/components/content/`)
+- `CodeBlock.tsx` — Syntax-highlighted code block with language pill badge, line numbers, and copy code button with toast feedback.
+- `Callout.tsx` — GitHub-style alert callout boxes (`NOTE`, `TIP`, `IMPORTANT`, `WARNING`, `CAUTION`) with left border accents and icons.
+- `TableOfContents.tsx` — Auto-generated heading hierarchy with active scroll-spy heading highlighting and smooth jump navigation.
+- `ZoomableImage.tsx` — Responsive markdown image with caption and click-to-zoom lightbox modal.
+- `MarkdownRenderer.tsx` — Unified markdown renderer composing code blocks, callouts, images, blockquotes, tables, and anchor links.
+
+#### Added: Domain Data Fetching Hooks (`apps/web/src/hooks/`)
+- `useProjects.ts`, `useBlogPosts.ts`, `useResearch.ts`, `useProfile.ts`, `useLayout.ts`, `useInteractions.ts`, `useDiscovery.ts`, `useAnalyticsTracker.ts` — Comprehensive TanStack Query hooks covering all 20+ backend REST API domain modules and automated visitor telemetry.
+
+---
+
+## 2026-08-25
+
 ### Phase 4: Backend REST API Domain Modules
 
 #### Added: Shared Contracts & Utilities (`packages/shared/src/`, `apps/api/src/utils/`)

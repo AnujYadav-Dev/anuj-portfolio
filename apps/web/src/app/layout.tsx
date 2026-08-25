@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { Geist, Geist_Mono } from 'next/font/google';
+import { AppProviders } from '@/components/providers/AppProviders';
 import './globals.css';
 
 const geistSans = Geist({
@@ -14,17 +15,23 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: 'Anuj Yadav - Portfolio',
-  description: 'Developer portfolio and documentation site',
+  description: 'Developer portfolio and documentation platform',
 };
 
-export default function RootLayout({ children }: LayoutProps<'/'>) {
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
     <html
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable}`}
       suppressHydrationWarning
     >
-      <body className="min-h-screen bg-background text-foreground antialiased">{children}</body>
+      <body className="min-h-screen bg-background text-foreground antialiased selection:bg-accent selection:text-accent-foreground">
+        <AppProviders>{children}</AppProviders>
+      </body>
     </html>
   );
 }

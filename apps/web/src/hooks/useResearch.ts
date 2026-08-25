@@ -9,7 +9,7 @@ import type {
   ResearchPaperListItemDto,
 } from '@portfolio/shared';
 
-export function useResearchPapers(query?: ListResearchPapersQuery) {
+export function useResearchPapers(query?: Partial<ListResearchPapersQuery>) {
   return useQuery<PaginatedResponse<ResearchPaperListItemDto>>({
     queryKey: ['research', query],
     queryFn: () =>

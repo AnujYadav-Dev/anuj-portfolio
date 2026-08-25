@@ -258,7 +258,7 @@ Construct the UI component library, data fetching infrastructure, markdown rende
 
 ---
 
-### **PHASE 6: Public-Facing Application Pages (`apps/web/src/app`)**
+### **PHASE 6: Public-Facing Application Pages (`apps/web/src/app`) [COMPLETED]**
 
 #### Objective:
 
@@ -303,15 +303,19 @@ Build all public routes defined in `docs/URL_IDEAS.md`, ensuring mobile-first re
 
 #### 6.6 Dynamic Generic Pages Catch-All (`/[slug]`)
 
-- Dynamic route handler that resolves routes from the `pages` table (`/now`, `/uses`, `/stack`, `/reading`, `/bookmarks`, `/learning`, `/opensource`, `/talks`, `/services`, `/testimonials`, `/faq`, `/changelog`, `/stats`, `/recommendations`).
-- Renders dynamic metadata, MDX content, and attached reusable content blocks.
+- Dynamic catch-all route handler (`apps/web/src/app/(public)/[slug]/page.tsx`) resolving custom database pages from the `pages` table (`/now`, `/uses`, `/stack`, `/reading`, `/bookmarks`, `/learning`, `/talks`, `/services`, `/faq`, `/changelog`, `/recommendations`).
+- Renders dynamic SEO metadata, MDX content, and attached reusable content blocks.
 
-#### 6.7 Interactive Pages
+#### 6.7 Dedicated Interactive Hubs & Community Pages
 
-- `/contact`: Interactive form with real-time validation, status toast, direct contact info, and PGP/social links.
+- `/opensource`: Public open-source repositories and packages showcase with GitHub stars, forks, and language badges.
+- `/testimonials`: Recommendations and endorsements from clients, colleagues, and collaborators.
+- `/stats`: Platform metrics and telemetry dashboard (projects, blog posts, papers, skills, experience, GitHub stars).
+- `/newsletter`: Dedicated engineering newsletter subscription hub and archive overview.
+- `/contact`: Interactive form with real-time validation, status toast, direct contact info, and email dispatch.
 - `/resume`: Clean online resume viewer with direct PDF download button.
 - `/guestbook`: Community message board with submission form, character limit, and moderated visitor comments.
-- `/search`: Full-page search with instant keyboard navigation.
+- `/search`: Full-page search with instant keyboard navigation and entity filtering.
 
 #### 6.8 Command Palette (`Ctrl/Cmd + K`)
 
@@ -319,8 +323,8 @@ Build all public routes defined in `docs/URL_IDEAS.md`, ensuring mobile-first re
 
 #### 6.9 Fallback & Error Pages
 
-- `/404`: Custom retro/developer not-found screen with search input and quick navigational links.
-- `/500` & `error.tsx`: Graceful recovery screen with error report trigger.
+- `/404` (`not-found.tsx`): Custom retro developer not-found screen with search input and quick navigational links.
+- `/500` (`error.tsx`): Graceful recovery screen with error boundary recovery.
 
 ---
 

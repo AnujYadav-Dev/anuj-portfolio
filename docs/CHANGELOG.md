@@ -7,6 +7,59 @@
 
 ## 2026-08-25
 
+### Phase 6: Public-Facing Application Pages & Navigation
+
+#### Added: Global Layout Shell, Navigation & Telemetry (`apps/web/src/components/layout/`, `app/(public)/`)
+- `components/layout/SkipLink.tsx` — Accessible skip link for keyboard navigation.
+- `components/layout/TelemetryTracker.tsx` — Headless analytics component sending page view and click telemetry to `/api/v1/analytics/collect`.
+- `components/layout/CommandPalette.tsx` — Global overlay modal (`Ctrl+K` / `Cmd+K`) supporting instant full-text search, direct route navigation, theme switching, email copy, and resume download.
+- `components/layout/MobileNav.tsx` — Responsive sliding navigation drawer with dynamic navigation items, social links, theme toggle, and resume CTA.
+- `components/layout/Header.tsx` — Sticky glassmorphism header with logo watermark `ANUJ.Y`, dynamic navigation links, command palette search trigger, theme toggle, and mobile drawer hamburger.
+- `components/layout/Footer.tsx` — Global footer with giant watermark typography `ANUJ YADAV`, live availability indicator, dynamic social links, copyright, and newsletter subscription form.
+- `components/common/SplitSection.tsx` & `PageHeader.tsx` — Split 2-column framing component (left 30% label, right 70% stream) and consistent sub-page headers.
+- `app/(public)/layout.tsx` — Public route group shell wrapping all public portfolio pages.
+
+#### Added: Dynamic Homepage Engine (`apps/web/src/components/features/home/`, `app/(public)/page.tsx`)
+- `HeroSection.tsx` — Headline tagline, dynamic availability badge, CTA links with warm orange underlines, and bottom giant watermark `FULL STACK ENGINEER`.
+- `AboutPreview.tsx` — Split 2-column narrative overview with warm orange highlighted phrases and quick jump to `/about`.
+- `WorksBento.tsx` — Bento grid pairing live monospace terminal verbs on the left with a featured project case study on the right.
+- `SkillsOverview.tsx` — Categorized technical skill pills with discipline grouping.
+- `ExperienceHighlights.tsx` — Career journey preview highlighting recent roles and achievements.
+- `LatestBlogsSection.tsx` — Expandable blog post rows with hover previews, reading times, and publication dates.
+- `ContactCTA.tsx` — Bottom inquiry callout with direct message prompt and one-click email copy.
+- `app/(public)/page.tsx` — Dynamic homepage page resolving section order dynamically from `useHomepageSections()`.
+
+#### Added: Works & Projects Ecosystem (`apps/web/src/app/(public)/works/`, `components/features/works/`)
+- `ProjectCard.tsx` — Rich project card with thumbnail preview, category badge, tech tags, and case study links.
+- `ProjectFilters.tsx` — Interactive filter bar supporting live search, category pill switching, and tag selection.
+- `ProjectCaseStudy.tsx` — Deep case study reader featuring metadata matrix, live demo/source links, zoomable interface screenshots, and rendered markdown architecture notes.
+- Routes: `/works`, `/works/[slug]`, `/works/by/[author]`, `/works/by/[author]/[slug]`.
+
+#### Added: Blogs & Research Ecosystem (`apps/web/src/app/(public)/blogs/`, `research/`, `components/features/blogs/`, `research/`)
+- `BlogListRow.tsx` — Expandable article list rows with hover details and reading times.
+- `BlogReader.tsx` — Long-form reading experience featuring squircle mosaic backdrop header, sticky table of contents sidebar with scroll-spy, share actions, and author bio card.
+- `ResearchPaperCard.tsx` — Academic paper card with conference/journal badge, abstract, DOI link, and PDF download action.
+- Routes: `/blogs`, `/blogs/[slug]`, `/blogs/by/[author]`, `/blogs/by/[author]/[slug]`, `/research`, `/research/[slug]`.
+
+#### Added: Profile, Journey & Interactive Public Hubs (`apps/web/src/app/(public)/`, `components/features/`)
+- `about/TimelineList.tsx` & `/my-timeline` — Chronological journey milestone viewer grouped by year with event type badges.
+- `about/SkillsMatrix.tsx` & `/skills` — Technical proficiency matrix with discipline tabs and animated progress tracks.
+- `about/CertificatesGallery.tsx` & `/certificates-achievements` — Dual gallery for professional certifications and competition awards with verification links.
+- `opensource/page.tsx` & `/opensource` — Public open-source repositories and packages showcase with GitHub stars, forks, and language badges.
+- `testimonials/page.tsx` & `/testimonials` — Client and colleague endorsements with avatar, company, role, and verification links.
+- `stats/page.tsx` & `/stats` — Platform metrics and telemetry dashboard (projects, blog posts, papers, skills, experience, GitHub stars).
+- `newsletter/page.tsx` & `/newsletter` — Dedicated engineering newsletter subscription hub and archive overview.
+- `pages/DynamicPageRenderer.tsx` & `/[slug]` — Dynamic generic catch-all route rendering custom pages (`/now`, `/uses`, `/stack`, `/reading`, `/bookmarks`, `/learning`, `/talks`, `/services`, `/faq`, `/changelog`, `/recommendations`) with attached content blocks.
+- `contact/ContactForm.tsx` & `/contact` — Secure inquiry form with validation, status feedback, and direct email contacts.
+- `resume/ResumeViewer.tsx` & `/resume` — Print-friendly online resume with PDF download trigger.
+- `guestbook/` & `/guestbook` — Public visitor guestbook form and moderation-filtered greeting feed.
+- `search/SearchInterface.tsx` & `/search` — Multi-domain instant search interface with category filtering.
+- `app/not-found.tsx` & `app/error.tsx` — Developer-themed retro 404 screen and error boundary recovery.
+
+---
+
+## 2026-08-25
+
 ### Phase 5: Frontend Design System Primitives & Client Infrastructure
 
 #### Added: Core Client Infrastructure (`apps/web/src/`)

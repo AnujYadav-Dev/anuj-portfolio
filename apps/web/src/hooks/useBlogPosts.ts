@@ -10,7 +10,7 @@ import type {
   PaginatedResponse,
 } from '@portfolio/shared';
 
-export function useBlogPosts(query?: ListBlogPostsQuery) {
+export function useBlogPosts(query?: Partial<ListBlogPostsQuery>) {
   return useQuery<PaginatedResponse<BlogPostListItemDto>>({
     queryKey: ['blogs', query],
     queryFn: () =>

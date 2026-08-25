@@ -10,7 +10,7 @@ import type {
   ProjectListItemDto,
 } from '@portfolio/shared';
 
-export function useProjects(query?: ListProjectsQuery) {
+export function useProjects(query?: Partial<ListProjectsQuery>) {
   return useQuery<PaginatedResponse<ProjectListItemDto>>({
     queryKey: ['projects', query],
     queryFn: () =>

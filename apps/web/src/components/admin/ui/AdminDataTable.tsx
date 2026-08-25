@@ -26,8 +26,9 @@ export interface Column<T> {
 interface AdminDataTableProps<T> {
   columns: Column<T>[];
   data: T[];
-  keyExtractor: (item: T) => string;
+  keyExtractor: (item: T, index?: number) => string;
   isLoading?: boolean;
+
   searchPlaceholder?: string;
   searchTerm?: string;
   onSearchChange?: (term: string) => void;
@@ -114,7 +115,7 @@ export function AdminDataTable<T>({
   const isAllSelected =
     selectedIds &&
     displayData.length > 0 &&
-    displayData.every((item) => selectedIds.includes(keyExtractor(item)));
+    displayData.every((item, idx) => selectedIds.includes(keyExtractor(item, idx)));
 
   return (
     <div className="space-y-4">
@@ -215,13 +216,14 @@ export function AdminDataTable<T>({
                 </tr>
               ) : (
                 displayData.map((item, index) => {
-                  const id = keyExtractor(item);
+                  const id = keyExtractor(item, index);
                   const isSelected = selectedIds?.includes(id);
 
                   return (
                     <tr
-                      key={id}
+                      key={`${id}-${index}`}
                       onClick={() => onRowClick?.(item)}
+
                       className={cn(
                         'hover:bg-surface-muted/60 transition-colors',
                         onRowClick && 'cursor-pointer',

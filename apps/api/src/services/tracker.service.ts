@@ -28,6 +28,8 @@ function getSinceDate(period?: AnalyticsPeriod): Date | undefined {
       return new Date(now - 24 * 60 * 60 * 1000);
     case '7d':
       return new Date(now - 7 * 24 * 60 * 60 * 1000);
+    case '14d':
+      return new Date(now - 14 * 24 * 60 * 60 * 1000);
     case '30d':
       return new Date(now - 30 * 24 * 60 * 60 * 1000);
     case '90d':

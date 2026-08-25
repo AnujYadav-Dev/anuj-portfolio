@@ -85,7 +85,7 @@ export interface RecordClickRequest {
 // Admin Analytics Overview & Reporting DTOs
 // ──────────────────────────────────────────────
 
-export type AnalyticsPeriod = '24h' | '7d' | '30d' | '90d' | 'all';
+export type AnalyticsPeriod = '24h' | '7d' | '14d' | '30d' | '90d' | 'all';
 
 export interface BreakdownItem {
   name: string;

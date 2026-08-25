@@ -388,7 +388,7 @@ export default function AdminAnalyticsDashboardPage() {
         <AdminDataTable
           columns={topPageColumns}
           data={topPages}
-          keyExtractor={(item) => item.path}
+          keyExtractor={(item, index) => `${item.path}-${index}`}
         />
       </div>
 
@@ -401,7 +401,9 @@ export default function AdminAnalyticsDashboardPage() {
         <AdminDataTable
           columns={clickColumns}
           data={clickStats}
-          keyExtractor={(item) => `${item.targetUrl}-${item.sourcePath}`}
+          keyExtractor={(item, index) =>
+            `${item.targetUrl}-${item.sourcePath || 'direct'}-${index}`
+          }
         />
       </div>
 

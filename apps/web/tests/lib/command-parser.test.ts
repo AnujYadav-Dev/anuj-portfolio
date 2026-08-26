@@ -1,9 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import {
-  parseCommandQuery,
-  createScopedQueryString,
-  SCOPE_REGISTRY,
-} from '@/lib/command-parser';
+import { parseCommandQuery, createScopedQueryString, SCOPE_REGISTRY } from '@/lib/command-parser';
 
 describe('command-parser', () => {
   describe('parseCommandQuery', () => {

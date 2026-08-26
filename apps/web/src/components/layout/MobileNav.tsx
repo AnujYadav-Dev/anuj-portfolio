@@ -61,7 +61,6 @@ export function MobileNav({ isOpen, onClose }: MobileNavProps) {
       aria-label="Mobile Navigation Menu"
       className="fixed inset-0 z-modal md:hidden flex justify-end animate-in fade-in-0 duration-fast"
     >
-
       {/* Backdrop */}
       <div
         className="fixed inset-0 bg-background/80 backdrop-blur-sm transition-opacity"
@@ -230,7 +229,9 @@ function MobileNavTreeItem({
           )}
         </div>
         {item.description && (
-          <p className="text-[10px] text-muted leading-tight mt-0.5 line-clamp-2">{item.description}</p>
+          <p className="text-[10px] text-muted leading-tight mt-0.5 line-clamp-2">
+            {item.description}
+          </p>
         )}
       </Link>
     );

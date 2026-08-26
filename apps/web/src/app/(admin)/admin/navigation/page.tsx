@@ -11,10 +11,8 @@ import {
   type UpdateNavItemRequest,
 } from '@portfolio/shared';
 
-
 import { AdminPageHeader } from '@/components/admin/ui/AdminPageHeader';
 import {
-
   Dialog,
   DialogContent,
   DialogHeader,
@@ -99,7 +97,9 @@ export default function AdminNavigationPage() {
 
   // Config Fields
   const [dropdownLayout, setDropdownLayout] = useState<'columns' | 'stack'>('columns');
-  const [buttonVariant, setButtonVariant] = useState<'primary' | 'secondary' | 'outline'>('primary');
+  const [buttonVariant, setButtonVariant] = useState<'primary' | 'secondary' | 'outline'>(
+    'primary',
+  );
   const [isFeaturedCard, setIsFeaturedCard] = useState(false);
   const [isFooterBar, setIsFooterBar] = useState(false);
   const [hotkey, setHotkey] = useState('');
@@ -125,8 +125,6 @@ export default function AdminNavigationPage() {
   useEffect(() => {
     fetchNav();
   }, [fetchNav]);
-
-
 
   // Collect all eligible parents (items that can hold children)
   const eligibleParents = React.useMemo(() => {
@@ -198,10 +196,11 @@ export default function AdminNavigationPage() {
     setIsFeaturedCard(Boolean(item.config?.isFeaturedCard));
     setIsFooterBar(Boolean(item.config?.isFooterBar));
     setHotkey(item.config?.hotkey ? String(item.config.hotkey) : '');
-    setCommandPaletteScope(item.config?.commandPaletteScope ? String(item.config.commandPaletteScope) : '');
+    setCommandPaletteScope(
+      item.config?.commandPaletteScope ? String(item.config.commandPaletteScope) : '',
+    );
     setIsModalOpen(true);
   };
-
 
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -249,8 +248,6 @@ export default function AdminNavigationPage() {
         delete config.hotkey;
       }
 
-
-
       const payload: CreateNavItemRequest | UpdateNavItemRequest = {
         label: label || 'Divider',
         url:
@@ -268,7 +265,6 @@ export default function AdminNavigationPage() {
         isEnabled,
         parentId: parentId ? parentId : undefined,
       };
-
 
       if (editingItem) {
         await apiClient.put(`/nav-items/${editingItem.id}`, payload);
@@ -503,7 +499,6 @@ export default function AdminNavigationPage() {
             <Layers className="w-3 h-3 mr-1.5 text-accent" />
             <span>Empty Dropdown</span>
           </Button>
-
         </div>
       </div>
 
@@ -538,7 +533,9 @@ export default function AdminNavigationPage() {
                 >
                   {item.icon && <NavIcon name={item.icon} className="w-3 h-3 text-accent" />}
                   <span>{item.label}</span>
-                  {item.itemType === 'dropdown' && <span className="text-[10px] text-muted">▾</span>}
+                  {item.itemType === 'dropdown' && (
+                    <span className="text-[10px] text-muted">▾</span>
+                  )}
                   {item.badge && (
                     <span className="text-[9px] font-mono px-1 py-0.1 bg-surface-muted text-accent border border-border rounded-xs">
                       {item.badge}
@@ -571,7 +568,8 @@ export default function AdminNavigationPage() {
           </div>
         ) : items.length === 0 ? (
           <div className="p-8 text-center text-xs text-muted bg-surface border border-border rounded-lg">
-            No navigation items configured. Click &quot;Add Navigation Item&quot; or use a preset to get started.
+            No navigation items configured. Click &quot;Add Navigation Item&quot; or use a preset to
+            get started.
           </div>
         ) : (
           <div className="space-y-2">
@@ -632,8 +630,6 @@ export default function AdminNavigationPage() {
                 ))}
               </div>
             </div>
-
-
 
             {/* Label & Route Fields */}
             {itemType !== 'divider' && (
@@ -957,12 +953,7 @@ export default function AdminNavigationPage() {
             sub-items will also be removed.
           </p>
           <DialogFooter className="flex justify-end gap-2 pt-2">
-            <Button
-              type="button"
-              variant="outline"
-              size="sm"
-              onClick={() => setDeleteTarget(null)}
-            >
+            <Button type="button" variant="outline" size="sm" onClick={() => setDeleteTarget(null)}>
               Cancel
             </Button>
             <Button
@@ -1018,7 +1009,6 @@ function NavTreeNode({
     link: 'bg-blue-500/10 text-blue-800 dark:text-blue-300 border-blue-300 dark:border-blue-800/60 dark:bg-blue-950/40',
   };
 
-
   return (
     <div className={cn('space-y-1', depth > 0 && 'ml-6 border-l-2 border-border/80 pl-3')}>
       <div className="flex items-center justify-between gap-3 p-2.5 rounded-lg bg-surface border border-border hover:border-muted/60 transition-colors">
@@ -1062,7 +1052,6 @@ function NavTreeNode({
             >
               {depth > 0 && item.itemType === 'dropdown' ? 'Flyout' : item.itemType}
             </span>
-
 
             {item.icon && (
               <div className="w-6 h-6 rounded bg-surface-muted border border-border flex items-center justify-center text-accent">
@@ -1154,7 +1143,6 @@ function NavTreeNode({
               <span>Add Child</span>
             </Button>
           )}
-
 
           <Button
             variant="ghost"

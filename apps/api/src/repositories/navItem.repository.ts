@@ -36,7 +36,6 @@ const navItemAdminInclude = {
   },
 };
 
-
 export const navItemRepository = {
   async findTree(location?: NavLocation, onlyEnabled = true) {
     const where: Prisma.NavItemWhereInput = {

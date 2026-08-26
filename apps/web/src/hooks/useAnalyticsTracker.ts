@@ -75,6 +75,5 @@ export function useAnalyticsTracker() {
     [pathname, sessionId],
   );
 
-
   return { sessionId, trackClick };
 }

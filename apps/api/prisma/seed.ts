@@ -205,7 +205,8 @@ async function main() {
   await prisma.navItem.create({
     data: {
       label: 'Portfolio & Headless CMS',
-      description: 'Next.js 16, Express REST API, PostgreSQL, and high-accuracy telemetry platform.',
+      description:
+        'Next.js 16, Express REST API, PostgreSQL, and high-accuracy telemetry platform.',
       url: '/works',
       location: 'header',
       itemType: 'link',
@@ -443,7 +444,6 @@ async function main() {
       { label: 'Changelog', url: '/changelog', location: 'footer', itemType: 'link', sortOrder: 4 },
     ],
   });
-
 
   // ─── 5. Dynamic About Sections ──────────────────────────────
   console.log('📖 Seeding about sections...');

@@ -72,4 +72,3 @@ export function NavIcon({ name, ...props }: NavIconProps) {
   const IconComponent = ICON_MAP[normalizedKey] || LinkIcon;
   return <IconComponent {...props} />;
 }
-

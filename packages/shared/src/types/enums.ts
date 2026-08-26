@@ -106,4 +106,3 @@ export enum NavItemType {
   Group = 'group',
   Divider = 'divider',
 }
-

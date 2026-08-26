@@ -58,7 +58,6 @@ export const navItemService = {
     return mapNavItemToDto(updated);
   },
 
-
   async deleteNavItem(id: string): Promise<void> {
     await navItemService.getNavItemById(id);
     await navItemRepository.delete(id);

@@ -54,9 +54,7 @@ export const upsertNavItemSchema = z.object({
   parentId: optionalUuidSchema,
 });
 
-
 export type UpsertNavItemInput = z.infer<typeof upsertNavItemSchema>;
-
 
 /** Create page request validation. */
 export const createPageSchema = z

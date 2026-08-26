@@ -16,7 +16,6 @@ import { type NavItemDto } from '@portfolio/shared';
 
 import { cn } from '@/lib/cn';
 
-
 export function Header() {
   const pathname = usePathname();
   const router = useRouter();
@@ -102,8 +101,6 @@ export function Header() {
     setIsCommandOpen(true);
   };
 
-
-
   return (
     <>
       <header className="sticky top-0 z-sticky w-full border-b border-border bg-background/80 backdrop-blur-md transition-colors duration-fast">
@@ -143,8 +140,7 @@ export function Header() {
               }
 
               // 3. Standard Navigation Link
-              const isActive =
-                item.url === '/' ? pathname === '/' : pathname.startsWith(item.url);
+              const isActive = item.url === '/' ? pathname === '/' : pathname.startsWith(item.url);
 
               return (
                 <Link

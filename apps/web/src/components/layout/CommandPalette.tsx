@@ -57,7 +57,6 @@ export function CommandPalette({ isOpen, onClose, initialQuery = '' }: CommandPa
     limit: 10,
   });
 
-
   const { data: resumeData } = useActiveResume();
   const { data: settingsData } = useSiteSettings();
 
@@ -264,7 +263,6 @@ export function CommandPalette({ isOpen, onClose, initialQuery = '' }: CommandPa
           </button>
         </div>
 
-
         {/* Results / Action list */}
         <div
           id="command-palette-results"
@@ -336,4 +334,3 @@ export function CommandPalette({ isOpen, onClose, initialQuery = '' }: CommandPa
     </Dialog>
   );
 }
-

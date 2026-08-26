@@ -62,7 +62,8 @@ export function SplitNavButton({ item, pathname }: SplitNavButtonProps) {
         };
       case 'outline':
         return {
-          wrapper: 'bg-transparent border-border hover:border-accent text-foreground hover:text-accent',
+          wrapper:
+            'bg-transparent border-border hover:border-accent text-foreground hover:text-accent',
           link: '!text-foreground hover:!text-accent font-medium',
           iconColor: 'text-accent',
           splitBorder: 'border-border',
@@ -72,7 +73,8 @@ export function SplitNavButton({ item, pathname }: SplitNavButtonProps) {
       case 'primary':
       default:
         return {
-          wrapper: 'bg-accent border-accent text-black font-semibold hover:bg-accent-hover shadow-sm',
+          wrapper:
+            'bg-accent border-accent text-black font-semibold hover:bg-accent-hover shadow-sm',
           link: '!text-black hover:!text-black font-bold',
           iconColor: 'text-black',
           splitBorder: 'border-black/25',
@@ -96,7 +98,10 @@ export function SplitNavButton({ item, pathname }: SplitNavButtonProps) {
         )}
       >
         {item.icon && (
-          <NavIcon name={item.icon} className={cn('w-3.5 h-3.5 shrink-0', variantStyles.iconColor)} />
+          <NavIcon
+            name={item.icon}
+            className={cn('w-3.5 h-3.5 shrink-0', variantStyles.iconColor)}
+          />
         )}
         <span>{item.label}</span>
         {hotkey && (
@@ -288,7 +293,6 @@ export function SplitNavButton({ item, pathname }: SplitNavButtonProps) {
                 );
               })}
             </div>
-
           </div>
         </div>
       )}

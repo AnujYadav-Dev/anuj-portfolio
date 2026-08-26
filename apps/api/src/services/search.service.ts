@@ -7,7 +7,6 @@ export const searchService = {
     const limit = query.limit ?? 20;
     const type = query.type ?? 'all';
 
-
     const results: SearchResultItemDto[] = [];
 
     if (type === 'all' || type === 'project') {

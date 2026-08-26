@@ -23,7 +23,6 @@ export function useSearch(query: SearchQuery) {
     enabled: Boolean(
       (query.q && query.q.trim().length > 0) || (query.type && query.type !== 'all'),
     ),
-
   });
 }
 

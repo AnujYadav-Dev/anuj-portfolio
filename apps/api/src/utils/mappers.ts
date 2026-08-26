@@ -88,7 +88,6 @@ import {
   TimelineEventType,
 } from '@portfolio/shared';
 
-
 type AuthorWithAvatar = Author & { avatar?: { url: string } | null };
 
 /** Map Prisma Author to public AuthorDto. */
@@ -706,7 +705,6 @@ export function mapNavItemToDto(nav: NavItemWithChildren): NavItemDto {
     children: nav.children?.map(mapNavItemToDto) ?? [],
   };
 }
-
 
 /** Map Prisma SiteSetting to SiteSettingDto. */
 export function mapSiteSettingToDto(setting: SiteSetting): SiteSettingDto {

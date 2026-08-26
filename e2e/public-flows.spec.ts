@@ -12,14 +12,15 @@ test.describe('Public Visitor Flows', () => {
     await expect(brand).toBeVisible();
 
     // Check header tools (search / command palette trigger)
-    const searchTrigger = header.getByRole('button', { name: /Open Command Palette|Search/i }).first();
+    const searchTrigger = header
+      .getByRole('button', { name: /Open Command Palette|Search/i })
+      .first();
     await expect(searchTrigger).toBeVisible();
 
     // Check footer exists
     const footer = page.getByRole('contentinfo');
     await expect(footer).toBeVisible();
   });
-
 
   test('Skip Link becomes visible on focus and jumps to main content', async ({ page }) => {
     await page.goto('/');

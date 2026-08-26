@@ -39,7 +39,6 @@ export const recordClickSchema = z.object({
   label: z.string().max(200).nullish(),
 });
 
-
 export type RecordClickInput = z.infer<typeof recordClickSchema>;
 
 /** Admin analytics query schema. */

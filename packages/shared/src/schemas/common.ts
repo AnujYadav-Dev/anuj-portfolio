@@ -42,7 +42,6 @@ export const optionalUuidSchema = z.string().uuid().nullish().or(z.literal(''));
 /** Reusable optional URL schema. */
 export const optionalUrlSchema = z.string().url().nullish().or(z.literal(''));
 
-
 /** Reusable SEO fields schema (all optional). */
 export const seoFieldsSchema = z.object({
   seoTitle: z.string().max(200).optional(),

@@ -37,7 +37,6 @@
 
 ### Phase 9: Quality Assurance, Accessibility, Performance & Security
 
-
 #### Added: Monorepo Testing Infrastructure (`vitest`, `@testing-library`, `supertest`, `@playwright/test`)
 
 - `apps/api/vitest.config.mts` & `tests/setup.ts` — Vitest test runner configuration for Express backend with path aliases, isolated test suites, and environment loading.

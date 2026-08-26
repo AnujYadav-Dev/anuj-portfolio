@@ -293,7 +293,11 @@ export function NavDropdown({ item, pathname, onOpenCommandPalette }: NavDropdow
               <div className="mt-3 pt-3 border-t border-border/80">
                 {footerItems.length === 1 ? (
                   /* Single Full-Width Footer Banner */
-                  <FooterStripItem item={footerItems[0]} pathname={pathname} onClose={() => setIsOpen(false)} />
+                  <FooterStripItem
+                    item={footerItems[0]}
+                    pathname={pathname}
+                    onClose={() => setIsOpen(false)}
+                  />
                 ) : (
                   /* Multiple Footer Strip Actions Toolbar */
                   <div className="flex flex-wrap items-center justify-between gap-2 p-1.5 rounded-sm bg-surface-muted/50 border border-border/60">
@@ -324,7 +328,9 @@ export function NavDropdown({ item, pathname, onOpenCommandPalette }: NavDropdow
                   className="flex items-center gap-1 text-accent hover:underline font-mono cursor-pointer"
                 >
                   <span>Search</span>
-                  <kbd className="px-1 py-0.2 bg-surface-muted border border-border rounded-xs">⌘ K</kbd>
+                  <kbd className="px-1 py-0.2 bg-surface-muted border border-border rounded-xs">
+                    ⌘ K
+                  </kbd>
                 </button>
               </div>
             )}
@@ -357,7 +363,8 @@ function FooterStripItem({
 
   // Button inside Footer Strip
   if (item.itemType === 'button') {
-    const variant = (item.config?.buttonVariant as 'primary' | 'secondary' | 'outline' | 'ghost') || 'primary';
+    const variant =
+      (item.config?.buttonVariant as 'primary' | 'secondary' | 'outline' | 'ghost') || 'primary';
     return (
       <Link
         href={item.url || '#'}
@@ -369,7 +376,11 @@ function FooterStripItem({
         <Button variant={variant} size="sm" className={cn('text-xs', !isCompact && 'w-full')}>
           {item.icon && <NavIcon name={item.icon} className="w-3.5 h-3.5 mr-1.5" />}
           <span>{item.label}</span>
-          {item.badge && <Badge variant="outline" size="sm" className="ml-1.5">{item.badge}</Badge>}
+          {item.badge && (
+            <Badge variant="outline" size="sm" className="ml-1.5">
+              {item.badge}
+            </Badge>
+          )}
         </Button>
       </Link>
     );
@@ -420,7 +431,8 @@ function DynamicDropdownItem({
   onClose: () => void;
 }) {
   const hasChildren = item.children && item.children.length > 0;
-  const isNestedDropdown = item.itemType === 'dropdown' || (hasChildren && item.itemType !== 'group');
+  const isNestedDropdown =
+    item.itemType === 'dropdown' || (hasChildren && item.itemType !== 'group');
 
   // Divider
   if (item.itemType === 'divider') {
@@ -434,7 +446,8 @@ function DynamicDropdownItem({
 
   // Standalone Button Inside Dropdown / Group
   if (item.itemType === 'button') {
-    const variant = (item.config?.buttonVariant as 'primary' | 'secondary' | 'outline' | 'ghost') || 'primary';
+    const variant =
+      (item.config?.buttonVariant as 'primary' | 'secondary' | 'outline' | 'ghost') || 'primary';
     return (
       <div className="py-1 px-1">
         <Link
@@ -449,7 +462,11 @@ function DynamicDropdownItem({
               {item.icon && <NavIcon name={item.icon} className="w-3.5 h-3.5" />}
               <span>{item.label}</span>
             </span>
-            {item.badge && <Badge variant="outline" size="sm">{item.badge}</Badge>}
+            {item.badge && (
+              <Badge variant="outline" size="sm">
+                {item.badge}
+              </Badge>
+            )}
           </Button>
         </Link>
       </div>
@@ -490,7 +507,9 @@ function DynamicDropdownItem({
           <span
             className={cn(
               'text-xs font-medium transition-colors',
-              isItemActive ? '!text-accent font-semibold' : '!text-foreground group-hover:!text-accent',
+              isItemActive
+                ? '!text-accent font-semibold'
+                : '!text-foreground group-hover:!text-accent',
             )}
           >
             {item.label}
@@ -627,13 +646,7 @@ function CascadingFlyoutSubmenu({
 }
 
 /** Featured Bento Showcase Card */
-function BentoShowcaseCard({
-  item,
-  onClose,
-}: {
-  item: NavItemDto;
-  onClose: () => void;
-}) {
+function BentoShowcaseCard({ item, onClose }: { item: NavItemDto; onClose: () => void }) {
   return (
     <Link
       href={item.url || '#'}

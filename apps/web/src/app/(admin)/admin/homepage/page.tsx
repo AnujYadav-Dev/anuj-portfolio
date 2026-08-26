@@ -74,7 +74,6 @@ export default function AdminHomepageLayoutPage() {
     } finally {
       setIsSaving(false);
     }
-
   };
 
   const handleToggleVisibility = async (sec: HomepageSectionDto) => {

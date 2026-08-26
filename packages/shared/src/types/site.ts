@@ -164,4 +164,3 @@ export interface SyndicationFeedItem {
   guid: string;
   category?: string;
 }
-

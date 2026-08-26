@@ -28,7 +28,6 @@ export async function generateMetadata({ params }: GenericDynamicPageProps): Pro
     keywords: page.seoKeywords || undefined,
     type: 'website',
   });
-
 }
 
 export default async function GenericDynamicPage({ params }: GenericDynamicPageProps) {

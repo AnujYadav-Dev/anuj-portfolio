@@ -98,7 +98,6 @@ async function main() {
     },
   ];
 
-
   for (const setting of siteSettings) {
     await prisma.siteSetting.upsert({
       where: { key: setting.key },

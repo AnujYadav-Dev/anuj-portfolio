@@ -357,7 +357,6 @@ export default function AdminTestimonialsPage() {
                       className="text-xs"
                       onClick={() => setIsAvatarPickerOpen(true)}
                     >
-
                       Change Photo
                     </Button>
                   </div>

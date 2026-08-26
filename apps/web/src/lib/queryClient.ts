@@ -17,7 +17,6 @@ export function makeQueryClient(): QueryClient {
           }
           return failureCount < 2;
         },
-
       },
     },
   });

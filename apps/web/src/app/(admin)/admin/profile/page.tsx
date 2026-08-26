@@ -18,8 +18,6 @@ import { Textarea } from '@/components/ui/textarea';
 import { User, KeyRound, Save, ShieldCheck } from 'lucide-react';
 import { toast } from 'sonner';
 
-
-
 export default function AdminProfilePage() {
   const { author, updateAuthor } = useAdminAuth();
   const [isMediaPickerOpen, setIsMediaPickerOpen] = useState(false);

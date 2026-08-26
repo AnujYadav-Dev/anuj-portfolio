@@ -147,7 +147,6 @@ export default function AdminOpensourcePage() {
     }
   };
 
-
   const columns: Column<OpensourceContributionDto>[] = [
     {
       key: 'name',

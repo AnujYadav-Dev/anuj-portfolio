@@ -22,7 +22,6 @@ export default function AdminEditProjectPage({ params }: { params: Promise<{ id:
       } catch {
         toast.error('Failed to load project details');
       } finally {
-
         setIsLoading(false);
       }
     }

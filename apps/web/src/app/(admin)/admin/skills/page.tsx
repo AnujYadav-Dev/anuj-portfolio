@@ -181,7 +181,6 @@ export default function AdminSkillsPage() {
     }
   };
 
-
   const filteredSkills = skills.filter((s) => {
     const matchesSearch = s.name.toLowerCase().includes(search.toLowerCase());
     const matchesCat = categoryFilter === 'all' || s.categoryId === categoryFilter;

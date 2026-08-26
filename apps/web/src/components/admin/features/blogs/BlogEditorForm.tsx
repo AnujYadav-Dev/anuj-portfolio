@@ -189,7 +189,6 @@ export function BlogEditorForm({ initialData, isNew = false }: BlogEditorFormPro
     }
   };
 
-
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
       {/* Header Bar */}
@@ -526,7 +525,6 @@ export function BlogEditorForm({ initialData, isNew = false }: BlogEditorFormPro
                   No prior versions recorded
                 </p>
               ) : (
-
                 versions.map((v) => (
                   <button
                     type="button"

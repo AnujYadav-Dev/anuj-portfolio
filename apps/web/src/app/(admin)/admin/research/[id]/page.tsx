@@ -22,7 +22,6 @@ export default function AdminEditResearchPage({ params }: { params: Promise<{ id
       } catch {
         toast.error('Failed to load research paper');
       } finally {
-
         setIsLoading(false);
       }
     }

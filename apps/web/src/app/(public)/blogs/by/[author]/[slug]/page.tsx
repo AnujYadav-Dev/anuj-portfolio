@@ -23,7 +23,10 @@ export async function generateMetadata({ params }: AuthorSingleBlogPageProps): P
 
   return constructMetadata({
     title: post.seoTitle || post.title,
-    description: post.seoDescription || post.excerpt || `Read ${post.title} by ${post.author?.displayName || author}`,
+    description:
+      post.seoDescription ||
+      post.excerpt ||
+      `Read ${post.title} by ${post.author?.displayName || author}`,
     canonicalPath: `/blogs/by/${author}/${post.slug}`,
     keywords: post.seoKeywords || post.tags?.join(', '),
     type: 'article',

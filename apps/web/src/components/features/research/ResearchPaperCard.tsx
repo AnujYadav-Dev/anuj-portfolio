@@ -1,12 +1,6 @@
 import * as React from 'react';
 import Link from 'next/link';
-import {
-  Card,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-  CardFooter,
-} from '@/components/ui/card';
+import { Card, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import type { ResearchPaperListItemDto } from '@portfolio/shared';
@@ -22,7 +16,6 @@ export function ResearchPaperCard({ paper }: ResearchPaperCardProps) {
         year: 'numeric',
       })
     : '';
-
 
   return (
     <Card className="bg-surface border-border hover:border-muted transition-all duration-fast">

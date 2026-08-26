@@ -65,7 +65,6 @@ export default function AdminResearchListPage() {
     }
   };
 
-
   const columns: Column<ResearchPaperListItemDto>[] = [
     {
       key: 'title',

@@ -85,7 +85,6 @@ export default function AdminProjectsListPage() {
             </div>
           )}
           <div className="min-w-0">
-
             <div className="flex items-center gap-1.5">
               <span className="font-bold text-foreground hover:text-accent truncate transition-colors">
                 {item.title}

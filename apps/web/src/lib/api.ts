@@ -138,7 +138,6 @@ async function request<T>(path: string, options: RequestOptions = {}): Promise<T
     data = null;
   }
 
-
   if (!response.ok) {
     const errorBody = data as ApiErrorResponse | null;
     const code = errorBody?.error?.code || 'UNKNOWN_ERROR';

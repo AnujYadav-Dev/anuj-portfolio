@@ -23,7 +23,10 @@ export async function generateMetadata({ params }: SingleProjectPageProps): Prom
 
   return constructMetadata({
     title: project.seoTitle || `${project.title} — Case Study`,
-    description: project.seoDescription || project.shortDescription || `Explore ${project.title} architecture case study.`,
+    description:
+      project.seoDescription ||
+      project.shortDescription ||
+      `Explore ${project.title} architecture case study.`,
     canonicalPath: `/works/${project.slug}`,
     keywords: project.seoKeywords || project.technologies?.join(', '),
     type: 'website',

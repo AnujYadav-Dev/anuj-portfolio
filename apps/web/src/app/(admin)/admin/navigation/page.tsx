@@ -133,7 +133,6 @@ export default function AdminNavigationPage() {
     }
   };
 
-
   return (
     <div className="space-y-6">
       <AdminPageHeader

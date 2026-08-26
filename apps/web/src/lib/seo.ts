@@ -7,7 +7,6 @@ import type {
   SiteSettingsMap,
 } from '@portfolio/shared';
 
-
 /** Returns the canonical site URL from environment or default. */
 export function getSiteUrl(): string {
   const url = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
@@ -151,11 +150,7 @@ export function generateWebSiteJsonLd(settings?: SiteSettingsMap) {
 }
 
 /** Generate Person / Profile Schema JSON-LD. */
-export function generatePersonJsonLd(
-  author?: AuthorDto | null,
-  settings?: SiteSettingsMap,
-) {
-
+export function generatePersonJsonLd(author?: AuthorDto | null, settings?: SiteSettingsMap) {
   const siteUrl = getSiteUrl();
   const displayName = author?.displayName || settings?.author_name || 'Anuj Yadav';
   const bio =
@@ -170,7 +165,9 @@ export function generatePersonJsonLd(
     name: displayName,
     jobTitle,
     url: siteUrl,
-    image: author?.avatarUrl || `${siteUrl}/api/og?title=${encodeURIComponent(displayName)}&type=profile`,
+    image:
+      author?.avatarUrl ||
+      `${siteUrl}/api/og?title=${encodeURIComponent(displayName)}&type=profile`,
     description: bio,
     sameAs: [
       settings?.twitter_handle ? `https://x.com/${settings.twitter_handle.replace('@', '')}` : '',
@@ -271,9 +268,7 @@ export function generateScholarlyArticleJsonLd(paper: ResearchPaperDto) {
 }
 
 /** Generate BreadcrumbList Schema JSON-LD. */
-export function generateBreadcrumbsJsonLd(
-  items: Array<{ name: string; path: string }>,
-) {
+export function generateBreadcrumbsJsonLd(items: Array<{ name: string; path: string }>) {
   const siteUrl = getSiteUrl();
   return {
     '@context': 'https://schema.org',

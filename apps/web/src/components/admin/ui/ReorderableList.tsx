@@ -9,8 +9,6 @@ export interface ReorderableItem {
   sortOrder: number;
 }
 
-
-
 interface ReorderableListProps<T extends ReorderableItem> {
   items: T[];
   onReorder: (newItems: T[]) => void | Promise<void>;

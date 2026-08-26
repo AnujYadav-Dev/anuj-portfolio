@@ -2,13 +2,7 @@
 
 import * as React from 'react';
 import { PageHeader } from '@/components/common/PageHeader';
-import {
-  Card,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-  CardFooter,
-} from '@/components/ui/card';
+import { Card, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
 import { RevealOnScroll } from '@/components/motion/RevealOnScroll';

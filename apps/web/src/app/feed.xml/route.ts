@@ -55,7 +55,8 @@ export async function GET() {
       })),
     ].sort((a, b) => new Date(b.pubDate).getTime() - new Date(a.pubDate).getTime());
 
-    const lastBuildDate = items.length > 0 ? new Date(items[0].pubDate).toUTCString() : new Date().toUTCString();
+    const lastBuildDate =
+      items.length > 0 ? new Date(items[0].pubDate).toUTCString() : new Date().toUTCString();
 
     const itemsXml = items
       .map(

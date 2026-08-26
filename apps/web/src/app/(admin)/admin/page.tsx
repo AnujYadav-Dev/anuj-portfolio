@@ -15,8 +15,6 @@ import { TimeSeriesChart, Sparkline } from '@/components/admin/ui/SimpleChart';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { buttonVariants } from '@/components/ui/button';
 
-
-
 import { Spinner } from '@/components/ui/spinner';
 import {
   Eye,

@@ -9,7 +9,9 @@ interface AuthorSingleProjectPageProps {
   params: Promise<{ author: string; slug: string }>;
 }
 
-export async function generateMetadata({ params }: AuthorSingleProjectPageProps): Promise<Metadata> {
+export async function generateMetadata({
+  params,
+}: AuthorSingleProjectPageProps): Promise<Metadata> {
   const { author, slug } = await params;
   const project = await serverApi.getProjectBySlug(slug);
 
@@ -23,7 +25,10 @@ export async function generateMetadata({ params }: AuthorSingleProjectPageProps)
 
   return constructMetadata({
     title: project.seoTitle || `${project.title} — Case Study`,
-    description: project.seoDescription || project.shortDescription || `Explore ${project.title} architecture case study.`,
+    description:
+      project.seoDescription ||
+      project.shortDescription ||
+      `Explore ${project.title} architecture case study.`,
     canonicalPath: `/works/by/${author}/${project.slug}`,
     keywords: project.seoKeywords || project.technologies?.join(', '),
     type: 'website',

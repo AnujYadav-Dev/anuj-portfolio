@@ -147,7 +147,6 @@ export default function AdminTimelinePage() {
     }
   };
 
-
   return (
     <div className="space-y-6">
       <AdminPageHeader

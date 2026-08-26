@@ -114,7 +114,6 @@ export function AdminDataTable<T>({
     });
   }
 
-
   const isAllSelected =
     selectedIds &&
     displayData.length > 0 &&
@@ -253,7 +252,6 @@ export function AdminDataTable<T>({
                             : (item as Record<string, unknown>)[col.key] != null
                               ? String((item as Record<string, unknown>)[col.key])
                               : '—'}
-
                         </td>
                       ))}
                     </tr>

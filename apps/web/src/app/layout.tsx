@@ -64,8 +64,7 @@ export const metadata: Metadata = {
   twitter: {
     card: 'summary_large_image',
     title: 'Anuj Yadav — Full-Stack Engineer & Architect',
-    description:
-      'Full-Stack Developer, Systems Architect & Open Source Contributor.',
+    description: 'Full-Stack Developer, Systems Architect & Open Source Contributor.',
     creator: '@anujyadav',
     images: [`${siteUrl}/twitter-image`],
   },

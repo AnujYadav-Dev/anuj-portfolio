@@ -130,7 +130,6 @@ All documentation lives in the `docs/` folder. See [README.md](README.md) for th
 - **Shared:** Complete domain-organized types, DTOs, request payloads, enums, Zod validation schemas, and constants compiled and verified across all workspaces.
 - **Next step:** Phase 9 — Quality Assurance, Accessibility, Performance & Security (Testing suite, WCAG 2.2 AA audit, Lighthouse optimization, and security hardening).
 
-
 ---
 
 ## How to Update This File

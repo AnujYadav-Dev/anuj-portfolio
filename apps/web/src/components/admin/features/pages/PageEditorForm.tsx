@@ -74,7 +74,6 @@ export function PageEditorForm({ initialData, isNew = false }: PageEditorFormPro
     } finally {
       setIsSubmitting(false);
     }
-
   };
 
   return (

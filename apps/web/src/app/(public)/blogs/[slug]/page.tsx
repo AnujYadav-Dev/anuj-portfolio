@@ -23,7 +23,10 @@ export async function generateMetadata({ params }: SingleBlogPageProps): Promise
 
   return constructMetadata({
     title: post.seoTitle || post.title,
-    description: post.seoDescription || post.excerpt || `Read ${post.title} by ${post.author?.displayName || 'Anuj Yadav'}`,
+    description:
+      post.seoDescription ||
+      post.excerpt ||
+      `Read ${post.title} by ${post.author?.displayName || 'Anuj Yadav'}`,
     canonicalPath: `/blogs/${post.slug}`,
     keywords: post.seoKeywords || post.tags?.join(', '),
     type: 'article',

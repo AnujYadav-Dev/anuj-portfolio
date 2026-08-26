@@ -94,7 +94,6 @@ export default function AdminNewsletterPage() {
     }
   };
 
-
   const columns: Column<NewsletterSubscriberDto>[] = [
     {
       key: 'email',

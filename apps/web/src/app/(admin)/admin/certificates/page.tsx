@@ -149,7 +149,6 @@ export default function AdminCertificatesPage() {
     }
   };
 
-
   return (
     <div className="space-y-6">
       <AdminPageHeader

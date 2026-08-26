@@ -78,7 +78,6 @@ export const listPagesQuerySchema = paginationSchema.extend({
 
 export type ListPagesQuery = z.infer<typeof listPagesQuerySchema>;
 
-
 /** Update email template schema. */
 export const updateEmailTemplateSchema = z.object({
   subject: z.string().min(1).max(300).optional(),

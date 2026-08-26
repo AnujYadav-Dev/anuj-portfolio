@@ -116,7 +116,6 @@ export default function AdminTagsPage() {
     }
   };
 
-
   const columns: Column<TagDto>[] = [
     {
       key: 'name',

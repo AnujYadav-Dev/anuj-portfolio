@@ -23,8 +23,6 @@ import { Textarea } from '@/components/ui/textarea';
 import { Plus, Edit2, Trash2, Briefcase } from 'lucide-react';
 import { toast } from 'sonner';
 
-
-
 export default function AdminExperiencePage() {
   const [experiences, setExperiences] = useState<ExperienceDto[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -168,7 +166,6 @@ export default function AdminExperiencePage() {
       setIsDeleting(false);
     }
   };
-
 
   return (
     <div className="space-y-6">

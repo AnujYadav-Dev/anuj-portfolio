@@ -36,13 +36,15 @@ export default function AdminLoginPage() {
       toast.success('Successfully authenticated. Welcome back!');
       router.replace(redirectTarget);
     } catch (err: unknown) {
-      const message = err instanceof Error ? err.message : 'Authentication failed. Please check your credentials.';
+      const message =
+        err instanceof Error
+          ? err.message
+          : 'Authentication failed. Please check your credentials.';
       setErrorMsg(message);
       toast.error(message);
     } finally {
       setIsSubmitting(false);
     }
-
   };
 
   return (

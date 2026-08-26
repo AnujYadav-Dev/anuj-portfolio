@@ -36,7 +36,6 @@ export const siteSettingController = {
     res.json({ data: updated });
   },
 
-
   async delete(req: Request, res: Response): Promise<void> {
     const key = String(req.params.key);
     await siteSettingService.deleteSetting(key);

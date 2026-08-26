@@ -137,7 +137,6 @@ export default function AdminSocialPage() {
     }
   };
 
-
   return (
     <div className="space-y-6">
       <AdminPageHeader

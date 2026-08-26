@@ -20,7 +20,6 @@ export default function AdminEditBlogPage({ params }: { params: Promise<{ id: st
       } catch {
         toast.error('Failed to load blog post');
       } finally {
-
         setIsLoading(false);
       }
     }

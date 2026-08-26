@@ -158,7 +158,6 @@ export function AdminAuthProvider({ children }: { children: React.ReactNode }) {
     }
   }, []);
 
-
   const updateAuthor = useCallback((updatedAuthor: AuthorDto) => {
     setAuthor(updatedAuthor);
     localStorage.setItem('auth_user', JSON.stringify(updatedAuthor));

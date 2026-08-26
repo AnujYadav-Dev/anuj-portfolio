@@ -15,14 +15,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Spinner } from '@/components/ui/spinner';
-import {
-  UploadCloud,
-  Search,
-  Copy,
-  Trash2,
-  FileText,
-  HardDrive,
-} from 'lucide-react';
+import { UploadCloud, Search, Copy, Trash2, FileText, HardDrive } from 'lucide-react';
 
 import { toast } from 'sonner';
 import { cn } from '@/lib/cn';
@@ -250,7 +243,6 @@ export default function AdminMediaLibraryPage() {
                     <FileText className="w-8 h-8 text-accent" />
                   )}
 
-
                   {/* Quick Copy Button */}
                   <button
                     type="button"
@@ -399,7 +391,6 @@ export default function AdminMediaLibraryPage() {
                     <FileText className="w-16 h-16 text-accent" />
                   )}
                 </div>
-
 
                 <div className="space-y-3 text-xs">
                   <div className="p-2.5 rounded bg-background border border-border space-y-1 font-mono text-[11px]">

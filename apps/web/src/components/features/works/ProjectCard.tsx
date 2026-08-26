@@ -45,7 +45,6 @@ export function ProjectCard({ project, className }: ProjectCardProps) {
           </div>
         )}
 
-
         <CardHeader>
           <div className="flex items-center justify-between gap-2 mb-2">
             {project.category && (

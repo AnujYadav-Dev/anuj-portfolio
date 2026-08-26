@@ -11,7 +11,6 @@ import { TableOfContents, extractHeadings } from '@/components/content/TableOfCo
 import type { BlogPostDto } from '@portfolio/shared';
 import { toast } from 'sonner';
 
-
 export interface BlogReaderProps {
   post: BlogPostDto;
 }

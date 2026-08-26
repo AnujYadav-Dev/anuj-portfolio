@@ -132,7 +132,6 @@ export default function AdminResumePage() {
     }
   };
 
-
   const columns: Column<ResumeDto>[] = [
     {
       key: 'title',

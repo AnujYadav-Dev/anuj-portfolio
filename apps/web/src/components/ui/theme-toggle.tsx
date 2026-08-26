@@ -9,7 +9,6 @@ export function ThemeToggle({ className }: { className?: string }) {
   const { setTheme, resolvedTheme } = useTheme();
   const [mounted, setMounted] = React.useState(false);
 
-
   React.useEffect(() => {
     setMounted(true);
   }, []);

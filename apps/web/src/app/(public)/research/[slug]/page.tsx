@@ -1,7 +1,11 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { serverApi } from '@/lib/server-api';
-import { constructMetadata, generateScholarlyArticleJsonLd, generateBreadcrumbsJsonLd } from '@/lib/seo';
+import {
+  constructMetadata,
+  generateScholarlyArticleJsonLd,
+  generateBreadcrumbsJsonLd,
+} from '@/lib/seo';
 import { JsonLd } from '@/components/seo/JsonLd';
 import { ResearchDetailsClient } from '@/components/features/research/ResearchDetailsClient';
 
@@ -23,7 +27,8 @@ export async function generateMetadata({ params }: SingleResearchPageProps): Pro
 
   return constructMetadata({
     title: paper.seoTitle || paper.title,
-    description: paper.seoDescription || paper.abstract || `Explore ${paper.title} research publication.`,
+    description:
+      paper.seoDescription || paper.abstract || `Explore ${paper.title} research publication.`,
     canonicalPath: `/research/${paper.slug}`,
     keywords: paper.seoKeywords || paper.tags?.join(', '),
     type: 'article',

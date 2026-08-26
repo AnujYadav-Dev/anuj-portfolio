@@ -19,15 +19,7 @@ import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { MarkdownEditor } from '@/components/admin/ui/MarkdownEditor';
 import { MediaPickerModal } from '@/components/admin/ui/MediaPickerModal';
 import { toast } from 'sonner';
-import {
-  Save,
-  Image as ImageIcon,
-  ExternalLink,
-  FolderGit2,
-  Star,
-  Sparkles,
-} from 'lucide-react';
-
+import { Save, Image as ImageIcon, ExternalLink, FolderGit2, Star, Sparkles } from 'lucide-react';
 
 interface ProjectEditorFormProps {
   initialData?: ProjectDto;
@@ -157,7 +149,6 @@ export function ProjectEditorForm({ initialData, isNew = false }: ProjectEditorF
     } finally {
       setIsSubmitting(false);
     }
-
   };
 
   return (
@@ -399,7 +390,6 @@ export function ProjectEditorForm({ initialData, isNew = false }: ProjectEditorF
                     className="w-full h-full object-cover"
                   />
                   <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
-
                     <Button
                       type="button"
                       variant="outline"

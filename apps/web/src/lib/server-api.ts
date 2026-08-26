@@ -12,11 +12,8 @@ import type {
   SiteSettingsMap,
 } from '@portfolio/shared';
 
-
 const SERVER_API_URL =
-  process.env.INTERNAL_API_URL ||
-  process.env.NEXT_PUBLIC_API_URL ||
-  'http://localhost:3001/api/v1';
+  process.env.INTERNAL_API_URL || process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001/api/v1';
 
 async function serverFetch<T>(path: string, options: RequestInit = {}): Promise<T | null> {
   const cleanPath = path.startsWith('/') ? path : `/${path}`;
@@ -58,7 +55,6 @@ export const serverApi = {
     const res = await serverFetch<{ data: AuthorDto }>('/auth/profile');
     return res?.data || null;
   },
-
 
   /** Fetch all published blog posts for sitemap/feed/lists. */
   async getAllPublishedBlogs(pageSize = 100): Promise<BlogPostListItemDto[]> {

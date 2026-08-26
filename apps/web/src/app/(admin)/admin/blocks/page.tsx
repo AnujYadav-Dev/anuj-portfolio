@@ -130,7 +130,6 @@ export default function AdminContentBlocksPage() {
     }
   };
 
-
   const columns: Column<ContentBlockDto>[] = [
     {
       key: 'title',

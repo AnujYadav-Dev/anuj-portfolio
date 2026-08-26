@@ -20,7 +20,6 @@ export default function AdminEditPage({ params }: { params: Promise<{ id: string
       } catch {
         toast.error('Failed to load page');
       } finally {
-
         setIsLoading(false);
       }
     }

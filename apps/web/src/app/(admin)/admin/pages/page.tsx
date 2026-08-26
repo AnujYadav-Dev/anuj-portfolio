@@ -54,7 +54,6 @@ export default function AdminPagesListPage() {
     } finally {
       setIsDeleting(false);
     }
-
   };
 
   const columns: Column<PageDto>[] = [

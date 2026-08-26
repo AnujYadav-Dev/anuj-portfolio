@@ -45,7 +45,6 @@
 
 ### Phase 7: Admin Panel & Content Management System (CMS) Platform
 
-
 #### Added: Admin Layout & Security Infrastructure (`apps/web/src/app/(admin)/`, `components/admin/`)
 
 - `components/admin/layout/AdminAuthProvider.tsx` & `useAdminAuth.ts` — Authentication state provider with active session monitoring, 15-minute token TTL countdown, and silent background token refresh.

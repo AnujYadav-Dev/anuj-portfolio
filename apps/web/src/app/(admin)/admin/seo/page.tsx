@@ -21,7 +21,9 @@ export default function AdminSeoPage() {
   const [description, setDescription] = useState(
     'Explore the portfolio, projects, writing, and research of Anuj Yadav.',
   );
-  const [keywords, setKeywords] = useState('distributed systems, nextjs, backend, postgresql, typescript');
+  const [keywords, setKeywords] = useState(
+    'distributed systems, nextjs, backend, postgresql, typescript',
+  );
   const [ogImageUrl, setOgImageUrl] = useState('');
   const [twitterHandle, setTwitterHandle] = useState('@anujyadav');
   const [siteUrl, setSiteUrl] = useState('http://localhost:3000');
@@ -79,7 +81,11 @@ export default function AdminSeoPage() {
         { key: 'seo_og_image', value: ogImageUrl, group: 'seo' },
         { key: 'twitter_handle', value: twitterHandle, group: 'social' },
         { key: 'site_url', value: siteUrl, group: 'general' },
-        { key: 'robots_indexing_enabled', value: isIndexingEnabled ? 'true' : 'false', group: 'seo' },
+        {
+          key: 'robots_indexing_enabled',
+          value: isIndexingEnabled ? 'true' : 'false',
+          group: 'seo',
+        },
       ];
 
       await apiClient.put('/site-settings/bulk', { settings: updates });
@@ -92,8 +98,6 @@ export default function AdminSeoPage() {
       setIsSaving(false);
     }
   };
-
-
 
   if (isLoading) {
     return (
@@ -197,8 +201,12 @@ export default function AdminSeoPage() {
 
               <div className="pt-2 pb-1 flex items-center justify-between border-t border-b border-border/60 py-3">
                 <div className="flex flex-col">
-                  <span className="text-xs font-semibold text-foreground">Search Engine Indexing (Robots.txt)</span>
-                  <span className="text-[11px] text-muted">Allow Google, Bing, and web crawlers to index public pages.</span>
+                  <span className="text-xs font-semibold text-foreground">
+                    Search Engine Indexing (Robots.txt)
+                  </span>
+                  <span className="text-[11px] text-muted">
+                    Allow Google, Bing, and web crawlers to index public pages.
+                  </span>
                 </div>
                 <button
                   type="button"
@@ -221,7 +229,13 @@ export default function AdminSeoPage() {
                 </label>
                 {ogImageUrl ? (
                   <div className="relative aspect-video w-full rounded border border-border overflow-hidden bg-surface-muted">
-                    <Image src={ogImageUrl} alt="OG Card" fill unoptimized className="object-cover" />
+                    <Image
+                      src={ogImageUrl}
+                      alt="OG Card"
+                      fill
+                      unoptimized
+                      className="object-cover"
+                    />
                     <Button
                       type="button"
                       variant="outline"

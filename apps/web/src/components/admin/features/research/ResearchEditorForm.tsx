@@ -19,8 +19,6 @@ import { MediaPickerModal } from '@/components/admin/ui/MediaPickerModal';
 import { Save, FileText, Sparkles } from 'lucide-react';
 import { toast } from 'sonner';
 
-
-
 interface ResearchEditorFormProps {
   initialData?: ResearchPaperDto;
   isNew?: boolean;
@@ -96,7 +94,6 @@ export function ResearchEditorForm({ initialData, isNew = false }: ResearchEdito
     } finally {
       setIsSubmitting(false);
     }
-
   };
 
   return (

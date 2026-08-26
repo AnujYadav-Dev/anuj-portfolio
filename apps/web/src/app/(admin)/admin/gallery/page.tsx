@@ -251,7 +251,6 @@ export default function AdminGalleryPage() {
                       className="absolute bottom-2 right-2 text-xs"
                       onClick={() => setIsMediaPickerOpen(true)}
                     >
-
                       Change
                     </Button>
                   </div>

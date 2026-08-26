@@ -101,7 +101,6 @@ export function MediaPickerModal({
     }
   };
 
-
   return (
     <Dialog isOpen={isOpen} onClose={onClose}>
       <DialogContent className="max-w-3xl bg-surface border-border p-6 max-h-[85vh] flex flex-col">
@@ -195,7 +194,6 @@ export function MediaPickerModal({
                           ) : (
                             <FileText className="w-8 h-8 text-accent" />
                           )}
-
 
                           {isSelected && (
                             <div className="absolute top-1.5 right-1.5 w-5 h-5 rounded-full bg-accent text-black flex items-center justify-center shadow-md">

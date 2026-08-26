@@ -82,10 +82,12 @@ import {
   MediaType,
   ModerationStatus,
   NavLocation,
+  NavItemType,
   ProjectStatus,
   ProjectType,
   TimelineEventType,
 } from '@portfolio/shared';
+
 
 type AuthorWithAvatar = Author & { avatar?: { url: string } | null };
 
@@ -692,6 +694,11 @@ export function mapNavItemToDto(nav: NavItemWithChildren): NavItemDto {
     label: nav.label,
     url: nav.url,
     location: nav.location as NavLocation,
+    itemType: (nav.itemType as NavItemType) ?? NavItemType.Link,
+    description: nav.description,
+    icon: nav.icon,
+    badge: nav.badge,
+    config: (nav.config as Record<string, unknown>) ?? {},
     isExternal: nav.isExternal,
     sortOrder: nav.sortOrder,
     isEnabled: nav.isEnabled,
@@ -699,6 +706,7 @@ export function mapNavItemToDto(nav: NavItemWithChildren): NavItemDto {
     children: nav.children?.map(mapNavItemToDto) ?? [],
   };
 }
+
 
 /** Map Prisma SiteSetting to SiteSettingDto. */
 export function mapSiteSettingToDto(setting: SiteSetting): SiteSettingDto {

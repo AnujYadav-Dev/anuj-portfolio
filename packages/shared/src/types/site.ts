@@ -1,6 +1,6 @@
 // Site configuration, layout, and navigation DTOs.
 
-import type { ContentStatus, BlockType, NavLocation } from './enums';
+import type { ContentStatus, BlockType, NavLocation, NavItemType } from './enums';
 import type { SeoFields } from './common';
 
 /** Site setting DTO. */
@@ -58,12 +58,29 @@ export interface CreateContentBlockRequest {
 /** Update content block request. */
 export interface UpdateContentBlockRequest extends Partial<CreateContentBlockRequest> {}
 
+/** Configuration metadata for navigation items. */
+export interface NavItemConfig {
+  layout?: 'stack' | 'columns';
+  columns?: number;
+  buttonVariant?: 'primary' | 'secondary' | 'outline' | 'ghost';
+  isFeaturedCard?: boolean;
+  isFooterBar?: boolean;
+  hotkey?: string;
+  commandPaletteScope?: string;
+  [key: string]: unknown;
+}
+
 /** Navigation item DTO. */
 export interface NavItemDto {
   id: string;
   label: string;
   url: string;
   location: NavLocation;
+  itemType: NavItemType;
+  description: string | null;
+  icon: string | null;
+  badge: string | null;
+  config: NavItemConfig;
   isExternal: boolean;
   sortOrder: number;
   isEnabled: boolean;
@@ -76,6 +93,11 @@ export interface CreateNavItemRequest {
   label: string;
   url: string;
   location?: NavLocation;
+  itemType?: NavItemType;
+  description?: string | null;
+  icon?: string | null;
+  badge?: string | null;
+  config?: NavItemConfig;
   isExternal?: boolean;
   sortOrder?: number;
   isEnabled?: boolean;

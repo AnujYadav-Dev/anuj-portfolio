@@ -21,8 +21,13 @@ export const navItemService = {
   async createNavItem(input: UpsertNavItemInput): Promise<NavItemDto> {
     const created = await navItemRepository.create({
       label: input.label,
-      url: input.url,
+      url: input.url ?? '',
       location: input.location as any,
+      itemType: (input.itemType as any) ?? 'link',
+      description: input.description ?? null,
+      icon: input.icon ?? null,
+      badge: input.badge ?? null,
+      config: (input.config as any) ?? {},
       isExternal: input.isExternal ?? false,
       sortOrder: input.sortOrder ?? 0,
       isEnabled: input.isEnabled ?? true,
@@ -36,8 +41,14 @@ export const navItemService = {
 
     const updateData: Prisma.NavItemUncheckedUpdateInput = {};
     if (input.label !== undefined) updateData.label = input.label;
-    if (input.url !== undefined) updateData.url = input.url;
+    if (input.url !== undefined) updateData.url = input.url ?? '';
     if (input.location !== undefined) updateData.location = input.location as any;
+
+    if (input.itemType !== undefined) updateData.itemType = input.itemType as any;
+    if (input.description !== undefined) updateData.description = input.description;
+    if (input.icon !== undefined) updateData.icon = input.icon;
+    if (input.badge !== undefined) updateData.badge = input.badge;
+    if (input.config !== undefined) updateData.config = input.config as any;
     if (input.isExternal !== undefined) updateData.isExternal = input.isExternal;
     if (input.sortOrder !== undefined) updateData.sortOrder = input.sortOrder;
     if (input.isEnabled !== undefined) updateData.isEnabled = input.isEnabled;
@@ -46,6 +57,7 @@ export const navItemService = {
     const updated = await navItemRepository.update(id, updateData);
     return mapNavItemToDto(updated);
   },
+
 
   async deleteNavItem(id: string): Promise<void> {
     await navItemService.getNavItemById(id);

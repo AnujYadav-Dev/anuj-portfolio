@@ -21,6 +21,7 @@ import {
 import { useSearch } from '@/hooks/useDiscovery';
 import { useActiveResume } from '@/hooks/useProfile';
 import { useSiteSettings } from '@/hooks/useLayout';
+import { parseCommandQuery } from '@/lib/command-parser';
 import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { Badge } from '@/components/ui/badge';
 import { toast } from 'sonner';
@@ -29,15 +30,34 @@ import { cn } from '@/lib/cn';
 export interface CommandPaletteProps {
   isOpen: boolean;
   onClose: () => void;
+  initialQuery?: string;
 }
 
-export function CommandPalette({ isOpen, onClose }: CommandPaletteProps) {
+export function CommandPalette({ isOpen, onClose, initialQuery = '' }: CommandPaletteProps) {
   const router = useRouter();
   const { resolvedTheme, setTheme } = useTheme();
-  const [query, setQuery] = React.useState('');
+  const [query, setQuery] = React.useState(initialQuery);
   const [selectedIndex, setSelectedIndex] = React.useState(0);
 
-  const { data: searchResults, isLoading } = useSearch({ q: query, type: 'all', limit: 8 });
+  React.useEffect(() => {
+    if (isOpen) {
+      setQuery(initialQuery);
+    }
+  }, [isOpen, initialQuery]);
+
+  // Pure registry-driven query & scope resolution
+  const { cleanSearchTerm, searchType, scopeBadge } = React.useMemo(
+    () => parseCommandQuery(query),
+    [query],
+  );
+
+  const { data: searchResults, isLoading } = useSearch({
+    q: cleanSearchTerm,
+    type: searchType,
+    limit: 10,
+  });
+
+
   const { data: resumeData } = useActiveResume();
   const { data: settingsData } = useSiteSettings();
 
@@ -132,7 +152,8 @@ export function CommandPalette({ isOpen, onClose }: CommandPaletteProps) {
   );
 
   const displayedItems = React.useMemo(() => {
-    if (!query.trim()) return defaultActions;
+    // If no active query and no scoped search, show default actions
+    if (!cleanSearchTerm && searchType === 'all' && !scopeBadge) return defaultActions;
 
     const results: Array<{
       id: string;
@@ -143,7 +164,7 @@ export function CommandPalette({ isOpen, onClose }: CommandPaletteProps) {
       meta?: string;
     }> = [];
 
-    if (searchResults?.data?.results) {
+    if (searchResults?.data?.results && searchResults.data.results.length > 0) {
       for (const item of searchResults.data.results) {
         const path = item.url;
         let icon = <FileText className="h-4 w-4" />;
@@ -164,10 +185,20 @@ export function CommandPalette({ isOpen, onClose }: CommandPaletteProps) {
       }
     }
 
-    return results.length > 0
-      ? results
-      : defaultActions.filter((a) => a.title.toLowerCase().includes(query.toLowerCase()));
-  }, [query, defaultActions, searchResults, router]);
+    if (results.length > 0) {
+      return results;
+    }
+
+    // If API returned 0 results, check if any default actions match cleanSearchTerm
+    if (cleanSearchTerm) {
+      const matchingActions = defaultActions.filter((a) =>
+        a.title.toLowerCase().includes(cleanSearchTerm.toLowerCase()),
+      );
+      if (matchingActions.length > 0) return matchingActions;
+    }
+
+    return [];
+  }, [cleanSearchTerm, searchType, scopeBadge, defaultActions, searchResults, router]);
 
   React.useEffect(() => {
     setSelectedIndex(0);
@@ -176,10 +207,10 @@ export function CommandPalette({ isOpen, onClose }: CommandPaletteProps) {
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === 'ArrowDown') {
       e.preventDefault();
-      setSelectedIndex((prev) => (prev + 1) % displayedItems.length);
+      setSelectedIndex((prev) => (prev + 1) % (displayedItems.length || 1));
     } else if (e.key === 'ArrowUp') {
       e.preventDefault();
-      setSelectedIndex((prev) => (prev - 1 + displayedItems.length) % displayedItems.length);
+      setSelectedIndex((prev) => (prev - 1 + displayedItems.length) % (displayedItems.length || 1));
     } else if (e.key === 'Enter') {
       e.preventDefault();
       const current = displayedItems[selectedIndex];
@@ -192,7 +223,10 @@ export function CommandPalette({ isOpen, onClose }: CommandPaletteProps) {
 
   return (
     <Dialog isOpen={isOpen} onClose={onClose}>
-      <DialogContent className="max-w-2xl p-0 overflow-hidden border-border bg-surface shadow-2xl">
+      <DialogContent
+        showClose={false}
+        className="max-w-2xl p-0 overflow-hidden border-border bg-surface shadow-2xl"
+      >
         {/* Search input bar */}
         <div className="flex items-center px-4 py-3 border-b border-border gap-3">
           <Search className="h-4 w-4 text-muted shrink-0" />
@@ -213,15 +247,23 @@ export function CommandPalette({ isOpen, onClose }: CommandPaletteProps) {
             <button
               onClick={() => setQuery('')}
               aria-label="Clear search input"
-              className="text-muted hover:text-foreground p-1"
+              className="text-muted hover:text-foreground p-1 cursor-pointer"
             >
               <X className="h-3.5 w-3.5" />
             </button>
           )}
-          <Badge variant="outline" size="sm">
-            ESC
-          </Badge>
+          <button
+            type="button"
+            onClick={onClose}
+            aria-label="Close command palette"
+            className="cursor-pointer focus:outline-none"
+          >
+            <Badge variant="outline" size="sm" className="hover:bg-surface-muted transition-colors">
+              ESC
+            </Badge>
+          </button>
         </div>
+
 
         {/* Results / Action list */}
         <div
@@ -231,7 +273,7 @@ export function CommandPalette({ isOpen, onClose }: CommandPaletteProps) {
         >
           {displayedItems.length === 0 ? (
             <div className="py-12 text-center text-xs text-muted">
-              {isLoading ? 'Searching...' : `No results found for "${query}"`}
+              {isLoading ? 'Searching...' : `No results found for "${cleanSearchTerm || query}"`}
             </div>
           ) : (
             displayedItems.map((item, index) => {
@@ -276,7 +318,7 @@ export function CommandPalette({ isOpen, onClose }: CommandPaletteProps) {
         </div>
 
         {/* Footer shortcuts */}
-        <div className="flex items-center justify-between px-4 py-2 border-t border-border bg-surface-muted/50 text-[11px] text-muted font-mono">
+        <div className="flex items-center justify-between px-4 py-2 border-t border-border bg-surface-muted/50 text-[11px] text-muted font-mono select-none">
           <div className="flex items-center gap-2">
             <span>
               Navigate{' '}
@@ -294,3 +336,4 @@ export function CommandPalette({ isOpen, onClose }: CommandPaletteProps) {
     </Dialog>
   );
 }
+

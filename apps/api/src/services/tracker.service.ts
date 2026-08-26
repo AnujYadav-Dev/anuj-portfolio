@@ -69,7 +69,8 @@ export const trackerService = {
       return mapVisitorToDto(updated);
     }
 
-    const parsedUa = parseUserAgent(context.userAgent ?? input.userAgent);
+    const parsedUa = parseUserAgent(context.userAgent ?? (input.userAgent || undefined));
+
     const geo = await geoService.lookup(context.ip);
     const referrer = input.referrer ?? null;
 

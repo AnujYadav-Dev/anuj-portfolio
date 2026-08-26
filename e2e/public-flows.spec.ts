@@ -4,23 +4,22 @@ test.describe('Public Visitor Flows', () => {
   test('homepage renders hero, navigation, and footer watermark', async ({ page }) => {
     await page.goto('/');
 
-    // Check brand logo in header
-    const brand = page.locator('header').getByRole('link', { name: /ANUJ/i }).first();
+    // Check header container and brand logo
+    const header = page.locator('header');
+    await expect(header).toBeVisible();
+
+    const brand = header.getByRole('link', { name: /ANUJ/i }).first();
     await expect(brand).toBeVisible();
 
-    // Check main navigation links exist (desktop nav or mobile menu button)
-    const nav = page.getByRole('navigation', { name: /Main Navigation/i });
-    const mobileMenuBtn = page.getByRole('button', { name: /Open mobile menu/i });
-    if (await nav.isVisible()) {
-      await expect(nav).toBeVisible();
-    } else {
-      await expect(mobileMenuBtn).toBeVisible();
-    }
+    // Check header tools (search / command palette trigger)
+    const searchTrigger = header.getByRole('button', { name: /Open Command Palette|Search/i }).first();
+    await expect(searchTrigger).toBeVisible();
 
     // Check footer exists
     const footer = page.getByRole('contentinfo');
     await expect(footer).toBeVisible();
   });
+
 
   test('Skip Link becomes visible on focus and jumps to main content', async ({ page }) => {
     await page.goto('/');

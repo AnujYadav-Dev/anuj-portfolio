@@ -6,15 +6,15 @@ import { ClickTargetType } from '../types/enums';
 /** Register visitor session request. */
 export const registerSessionSchema = z.object({
   sessionId: z.string().min(1).max(255),
-  userAgent: z.string().optional(),
-  screenWidth: z.number().int().positive().optional(),
-  screenHeight: z.number().int().positive().optional(),
-  language: z.string().max(20).optional(),
-  timezone: z.string().max(100).optional(),
-  referrer: z.string().optional(),
-  utmSource: z.string().max(200).optional(),
-  utmMedium: z.string().max(200).optional(),
-  utmCampaign: z.string().max(200).optional(),
+  userAgent: z.string().nullish(),
+  screenWidth: z.number().int().positive().nullish(),
+  screenHeight: z.number().int().positive().nullish(),
+  language: z.string().max(50).nullish(),
+  timezone: z.string().max(100).nullish(),
+  referrer: z.string().nullish(),
+  utmSource: z.string().max(200).nullish(),
+  utmMedium: z.string().max(200).nullish(),
+  utmCampaign: z.string().max(200).nullish(),
 });
 
 export type RegisterSessionInput = z.infer<typeof registerSessionSchema>;
@@ -23,20 +23,22 @@ export type RegisterSessionInput = z.infer<typeof registerSessionSchema>;
 export const recordViewSchema = z.object({
   sessionId: z.string().min(1).max(255),
   path: z.string().min(1).max(500),
-  title: z.string().max(300).optional(),
-  referrer: z.string().optional(),
-  durationSeconds: z.number().int().min(0).optional(),
+  title: z.string().max(300).nullish(),
+  referrer: z.string().nullish(),
+  durationSeconds: z.number().int().min(0).nullish(),
 });
 
 export type RecordViewInput = z.infer<typeof recordViewSchema>;
 
 /** Record link click request. */
 export const recordClickSchema = z.object({
-  sessionId: z.string().max(255).optional(),
-  targetType: z.nativeEnum(ClickTargetType),
+  sessionId: z.string().max(255).nullish(),
+  targetType: z.nativeEnum(ClickTargetType).or(z.string()),
   targetUrl: z.string().min(1),
-  sourcePath: z.string().max(500).optional(),
+  sourcePath: z.string().max(500).nullish(),
+  label: z.string().max(200).nullish(),
 });
+
 
 export type RecordClickInput = z.infer<typeof recordClickSchema>;
 

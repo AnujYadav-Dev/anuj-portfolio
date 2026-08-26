@@ -32,15 +32,16 @@ export const dateStringSchema = z
 /** Reusable optional date string schema. */
 export const optionalDateStringSchema = z
   .string()
-  .optional()
+  .nullish()
   .or(z.literal(''))
   .refine((val) => !val || !isNaN(Date.parse(val)), { message: 'Invalid date format' });
 
 /** Reusable optional UUID schema. */
-export const optionalUuidSchema = z.string().uuid().optional().or(z.literal(''));
+export const optionalUuidSchema = z.string().uuid().nullish().or(z.literal(''));
 
 /** Reusable optional URL schema. */
-export const optionalUrlSchema = z.string().url().optional().or(z.literal(''));
+export const optionalUrlSchema = z.string().url().nullish().or(z.literal(''));
+
 
 /** Reusable SEO fields schema (all optional). */
 export const seoFieldsSchema = z.object({

@@ -175,32 +175,275 @@ async function main() {
 
   // ─── 4. Navigation Items ────────────────────────────────────
   console.log('🧭 Seeding navigation items...');
-  const navItems = [
-    // Header Navigation
-    { label: 'Home', url: '/', location: 'header' as const, sortOrder: 0 },
-    { label: 'Works', url: '/works', location: 'header' as const, sortOrder: 1 },
-    { label: 'Blogs', url: '/blogs', location: 'header' as const, sortOrder: 2 },
-    { label: 'Research', url: '/research', location: 'header' as const, sortOrder: 3 },
-    { label: 'About', url: '/about', location: 'header' as const, sortOrder: 4 },
-    { label: 'Contact', url: '/contact', location: 'header' as const, sortOrder: 5 },
-    // Footer Navigation
-    { label: 'Works', url: '/works', location: 'footer' as const, sortOrder: 0 },
-    { label: 'Blogs', url: '/blogs', location: 'footer' as const, sortOrder: 1 },
-    { label: 'Resume', url: '/resume', location: 'footer' as const, sortOrder: 2 },
-    { label: 'Guestbook', url: '/guestbook', location: 'footer' as const, sortOrder: 3 },
-    { label: 'Changelog', url: '/changelog', location: 'footer' as const, sortOrder: 4 },
-  ];
 
-  for (const item of navItems) {
-    const existing = await prisma.navItem.findFirst({
-      where: { label: item.label, location: item.location, parentId: null },
-    });
-    if (!existing) {
-      await prisma.navItem.create({
-        data: item,
-      });
-    }
-  }
+  // Clear existing nav items for a clean seed of the new rich structure
+  await prisma.navItem.deleteMany({});
+
+  // 1. Works & Engineering Dropdown (Parallel columns + Featured Bento Card + Footer Bar)
+  const worksDropdown = await prisma.navItem.create({
+    data: {
+      label: 'Works',
+      url: '/works',
+      location: 'header',
+      itemType: 'dropdown',
+      sortOrder: 0,
+      config: { layout: 'columns', columns: 2, hotkey: 'W' },
+    },
+  });
+
+  const worksFeaturedGroup = await prisma.navItem.create({
+    data: {
+      label: 'Featured Project',
+      url: '',
+      location: 'header',
+      itemType: 'group',
+      sortOrder: 0,
+      parentId: worksDropdown.id,
+    },
+  });
+
+  await prisma.navItem.create({
+    data: {
+      label: 'Portfolio & Headless CMS',
+      description: 'Next.js 16, Express REST API, PostgreSQL, and high-accuracy telemetry platform.',
+      url: '/works',
+      location: 'header',
+      itemType: 'link',
+      icon: 'sparkles',
+      badge: 'Featured',
+      sortOrder: 0,
+      parentId: worksFeaturedGroup.id,
+      config: { isFeaturedCard: true },
+    },
+  });
+
+  const worksCategoriesGroup = await prisma.navItem.create({
+    data: {
+      label: 'Categories',
+      url: '',
+      location: 'header',
+      itemType: 'group',
+      sortOrder: 1,
+      parentId: worksDropdown.id,
+    },
+  });
+
+  await prisma.navItem.createMany({
+    data: [
+      {
+        label: 'Engineering Case Studies',
+        description: 'Architectural deep-dives and full-stack solutions.',
+        url: '/works',
+        location: 'header',
+        itemType: 'link',
+        icon: 'folder-git-2',
+        sortOrder: 0,
+        parentId: worksCategoriesGroup.id,
+      },
+      {
+        label: 'Open Source Contributions',
+        description: 'Libraries, developer CLI tools, and packages.',
+        url: '/works?category=open-source',
+        location: 'header',
+        itemType: 'link',
+        icon: 'git-branch',
+        sortOrder: 1,
+        parentId: worksCategoriesGroup.id,
+      },
+      {
+        label: 'Systems & Architecture',
+        description: 'Distributed services and high-scale backends.',
+        url: '/works?category=backend',
+        location: 'header',
+        itemType: 'link',
+        icon: 'cpu',
+        sortOrder: 2,
+        parentId: worksCategoriesGroup.id,
+      },
+    ],
+  });
+
+  const worksFooterGroup = await prisma.navItem.create({
+    data: {
+      label: 'Explore Complete Works Archive →',
+      url: '/works',
+      location: 'header',
+      itemType: 'group',
+      sortOrder: 2,
+      parentId: worksDropdown.id,
+      config: { isFooterBar: true },
+    },
+  });
+
+  // 2. Writing & Knowledge Dropdown
+  const writingDropdown = await prisma.navItem.create({
+    data: {
+      label: 'Writing',
+      url: '/blogs',
+      location: 'header',
+      itemType: 'dropdown',
+      sortOrder: 1,
+      config: { layout: 'columns', columns: 2, hotkey: 'B' },
+    },
+  });
+
+  const writingPubsGroup = await prisma.navItem.create({
+    data: {
+      label: 'Publications',
+      url: '',
+      location: 'header',
+      itemType: 'group',
+      sortOrder: 0,
+      parentId: writingDropdown.id,
+    },
+  });
+
+  await prisma.navItem.createMany({
+    data: [
+      {
+        label: 'Technical Blog',
+        description: 'System design, TypeScript, and modern frontend patterns.',
+        url: '/blogs',
+        location: 'header',
+        itemType: 'link',
+        icon: 'book-open',
+        badge: 'Articles',
+        sortOrder: 0,
+        parentId: writingPubsGroup.id,
+      },
+      {
+        label: 'Research Papers',
+        description: 'Academic whitepapers and technical research.',
+        url: '/research',
+        location: 'header',
+        itemType: 'link',
+        icon: 'file-text',
+        badge: 'Papers',
+        sortOrder: 1,
+        parentId: writingPubsGroup.id,
+      },
+    ],
+  });
+
+  const writingExploreGroup = await prisma.navItem.create({
+    data: {
+      label: 'Live Notes',
+      url: '',
+      location: 'header',
+      itemType: 'group',
+      sortOrder: 1,
+      parentId: writingDropdown.id,
+    },
+  });
+
+  await prisma.navItem.createMany({
+    data: [
+      {
+        label: 'What I Am Doing Now',
+        description: 'Current focus, active readings, and exploration.',
+        url: '/now',
+        location: 'header',
+        itemType: 'link',
+        icon: 'activity',
+        sortOrder: 0,
+        parentId: writingExploreGroup.id,
+      },
+      {
+        label: 'Tools & Hardware (Uses)',
+        description: 'Development environment, gear, and software.',
+        url: '/uses',
+        location: 'header',
+        itemType: 'link',
+        icon: 'terminal',
+        sortOrder: 1,
+        parentId: writingExploreGroup.id,
+      },
+    ],
+  });
+
+  // 3. About Link
+  await prisma.navItem.create({
+    data: {
+      label: 'About',
+      url: '/about',
+      location: 'header',
+      itemType: 'link',
+      sortOrder: 2,
+      config: { hotkey: 'A' },
+    },
+  });
+
+  // 4. Timeline Link
+  await prisma.navItem.create({
+    data: {
+      label: 'Timeline',
+      url: '/my-timeline',
+      location: 'header',
+      itemType: 'link',
+      sortOrder: 3,
+      config: { hotkey: 'T' },
+    },
+  });
+
+  // 5. Split Action CTA Button ("Get in Touch")
+  const ctaButton = await prisma.navItem.create({
+    data: {
+      label: 'Get in Touch',
+      url: '/contact',
+      location: 'header',
+      itemType: 'button',
+      sortOrder: 4,
+      config: { buttonVariant: 'primary', hotkey: 'C' },
+    },
+  });
+
+  await prisma.navItem.createMany({
+    data: [
+      {
+        label: 'Send Direct Message',
+        description: 'Send an inquiry through the portfolio contact portal.',
+        url: '/contact',
+        location: 'header',
+        itemType: 'link',
+        icon: 'mail',
+        sortOrder: 0,
+        parentId: ctaButton.id,
+      },
+      {
+        label: 'View Active Resume',
+        description: 'Inspect verified professional background and resume.',
+        url: '/resume',
+        location: 'header',
+        itemType: 'link',
+        icon: 'file-user',
+        sortOrder: 1,
+        parentId: ctaButton.id,
+      },
+      {
+        label: 'GitHub Profile',
+        description: 'Review open-source code repositories & commits.',
+        url: 'https://github.com/AnujYadav-Dev',
+        location: 'header',
+        itemType: 'link',
+        icon: 'github',
+        isExternal: true,
+        sortOrder: 2,
+        parentId: ctaButton.id,
+      },
+    ],
+  });
+
+  // Footer Navigation Items
+  await prisma.navItem.createMany({
+    data: [
+      { label: 'Works', url: '/works', location: 'footer', itemType: 'link', sortOrder: 0 },
+      { label: 'Blogs', url: '/blogs', location: 'footer', itemType: 'link', sortOrder: 1 },
+      { label: 'Resume', url: '/resume', location: 'footer', itemType: 'link', sortOrder: 2 },
+      { label: 'Guestbook', url: '/guestbook', location: 'footer', itemType: 'link', sortOrder: 3 },
+      { label: 'Changelog', url: '/changelog', location: 'footer', itemType: 'link', sortOrder: 4 },
+    ],
+  });
+
 
   // ─── 5. Dynamic About Sections ──────────────────────────────
   console.log('📖 Seeding about sections...');

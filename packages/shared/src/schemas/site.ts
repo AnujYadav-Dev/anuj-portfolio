@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import { slugSchema, paginationSchema, seoFieldsSchema, optionalUuidSchema } from './common';
 
-import { ContentStatus, BlockType, NavLocation } from '../types/enums';
+import { ContentStatus, BlockType, NavLocation, NavItemType } from '../types/enums';
 
 /** Update site setting. */
 export const updateSiteSettingSchema = z.object({
@@ -41,15 +41,22 @@ export type UpsertContentBlockInput = z.infer<typeof upsertContentBlockSchema>;
 /** Create/update nav item. */
 export const upsertNavItemSchema = z.object({
   label: z.string().min(1).max(100),
-  url: z.string().min(1).max(500),
+  url: z.string().max(500).nullish().default(''),
   location: z.nativeEnum(NavLocation).default(NavLocation.Header),
+  itemType: z.nativeEnum(NavItemType).default(NavItemType.Link),
+  description: z.string().max(300).nullish(),
+  icon: z.string().max(50).nullish(),
+  badge: z.string().max(50).nullish(),
+  config: z.record(z.unknown()).default({}),
   isExternal: z.boolean().default(false),
   sortOrder: z.number().int().default(0),
   isEnabled: z.boolean().default(true),
   parentId: optionalUuidSchema,
 });
 
+
 export type UpsertNavItemInput = z.infer<typeof upsertNavItemSchema>;
+
 
 /** Create page request validation. */
 export const createPageSchema = z

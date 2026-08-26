@@ -100,6 +100,15 @@ enum NavLocation {
   both
 }
 
+enum NavItemType {
+  link
+  dropdown
+  button
+  group
+  divider
+}
+
+
 // ============================================================
 // MODELS
 // ============================================================
@@ -884,15 +893,20 @@ model Testimonial {
 // ─── Navigation ─────────────────────────────────────────────
 
 model NavItem {
-  id         String      @id @default(uuid())
-  label      String      @db.VarChar(100)
-  url        String      @db.VarChar(500)
-  location   NavLocation @default(header)
-  isExternal Boolean     @default(false) @map("is_external")
-  sortOrder  Int         @default(0) @map("sort_order")
-  isEnabled  Boolean     @default(true) @map("is_enabled")
-  createdAt  DateTime    @default(now()) @map("created_at") @db.Timestamptz()
-  updatedAt  DateTime    @updatedAt @map("updated_at") @db.Timestamptz()
+  id          String      @id @default(uuid())
+  label       String      @db.VarChar(100)
+  url         String      @default("") @db.VarChar(500)
+  location    NavLocation @default(header)
+  itemType    NavItemType @default(link) @map("item_type")
+  description String?     @db.VarChar(300)
+  icon        String?     @db.VarChar(50)
+  badge       String?     @db.VarChar(50)
+  config      Json        @default("{}")
+  isExternal  Boolean     @default(false) @map("is_external")
+  sortOrder   Int         @default(0) @map("sort_order")
+  isEnabled   Boolean     @default(true) @map("is_enabled")
+  createdAt   DateTime    @default(now()) @map("created_at") @db.Timestamptz()
+  updatedAt   DateTime    @updatedAt @map("updated_at") @db.Timestamptz()
 
   // Self-referencing FK: parent_id → nav_items.id
   parentId String?   @map("parent_id")
@@ -902,6 +916,7 @@ model NavItem {
   @@index([location, sortOrder], map: "idx_nav_items_sort")
   @@map("nav_items")
 }
+
 
 // ─── Newsletter ─────────────────────────────────────────────
 

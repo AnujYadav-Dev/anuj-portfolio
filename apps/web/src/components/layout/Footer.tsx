@@ -7,6 +7,7 @@ import { useSiteSettings } from '@/hooks/useLayout';
 import { useNewsletterMutation } from '@/hooks/useInteractions';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { ThemeToggle } from '@/components/ui/theme-toggle';
 import { Send } from 'lucide-react';
 
 import { toast } from 'sonner';
@@ -115,7 +116,7 @@ export function Footer() {
         </div>
       </div>
 
-      {/* Bottom Bar: Copyright & Links */}
+      {/* Bottom Bar: Copyright, Links & Theme Toggle */}
       <div className="border-t border-border bg-surface/30">
         <div className="max-w-[1200px] mx-auto px-4 md:px-8 py-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-muted">
           <div>
@@ -146,9 +147,13 @@ export function Footer() {
             >
               RSS
             </Link>
+            <div className="pl-2 border-l border-border flex items-center">
+              <ThemeToggle className="h-7 w-7" />
+            </div>
           </div>
         </div>
       </div>
     </footer>
   );
 }
+

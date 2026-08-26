@@ -3,9 +3,10 @@ import type { SearchQuery, SearchResultItemDto, SearchResultsDto } from '@portfo
 
 export const searchService = {
   async search(query: SearchQuery): Promise<SearchResultsDto> {
-    const q = query.q.trim();
+    const q = (query.q ?? '').trim();
     const limit = query.limit ?? 20;
     const type = query.type ?? 'all';
+
 
     const results: SearchResultItemDto[] = [];
 

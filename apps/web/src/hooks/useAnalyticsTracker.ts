@@ -29,9 +29,11 @@ export function useAnalyticsTracker() {
     apiClient
       .post('/analytics/session', {
         sessionId: currentSessionId,
-        referrer: document.referrer || null,
-        language: navigator.language || null,
-        screenResolution: `${window.screen.width}x${window.screen.height}`,
+        referrer: document.referrer || undefined,
+        language: navigator.language || undefined,
+        screenWidth: window.screen.width > 0 ? window.screen.width : undefined,
+        screenHeight: window.screen.height > 0 ? window.screen.height : undefined,
+        timezone: Intl.DateTimeFormat().resolvedOptions().timeZone || undefined,
       })
       .catch(() => {
         // Fail silently for telemetry
@@ -45,10 +47,9 @@ export function useAnalyticsTracker() {
     apiClient
       .post('/analytics/view', {
         sessionId,
-        url: window.location.href,
         path: pathname,
-        title: document.title,
-        referrer: document.referrer || null,
+        title: document.title || undefined,
+        referrer: document.referrer || undefined,
       })
       .catch(() => {
         // Fail silently for telemetry
@@ -62,17 +63,18 @@ export function useAnalyticsTracker() {
       apiClient
         .post('/analytics/click', {
           sessionId,
-          url: window.location.href,
+          sourcePath: pathname,
           targetUrl,
           targetType,
-          label,
+          label: label || undefined,
         })
         .catch(() => {
           // Fail silently for telemetry
         });
     },
-    [sessionId],
+    [pathname, sessionId],
   );
+
 
   return { sessionId, trackClick };
 }

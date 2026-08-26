@@ -97,3 +97,13 @@ export enum NavLocation {
   Footer = 'footer',
   Both = 'both',
 }
+
+/** Navigation item type. */
+export enum NavItemType {
+  Link = 'link',
+  Dropdown = 'dropdown',
+  Button = 'button',
+  Group = 'group',
+  Divider = 'divider',
+}
+

@@ -9,6 +9,12 @@ const navItemInclude = {
       children: {
         where: { isEnabled: true },
         orderBy: { sortOrder: 'asc' as const },
+        include: {
+          children: {
+            where: { isEnabled: true },
+            orderBy: { sortOrder: 'asc' as const },
+          },
+        },
       },
     },
   },
@@ -20,10 +26,16 @@ const navItemAdminInclude = {
     include: {
       children: {
         orderBy: { sortOrder: 'asc' as const },
+        include: {
+          children: {
+            orderBy: { sortOrder: 'asc' as const },
+          },
+        },
       },
     },
   },
 };
+
 
 export const navItemRepository = {
   async findTree(location?: NavLocation, onlyEnabled = true) {

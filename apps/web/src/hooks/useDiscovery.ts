@@ -20,7 +20,10 @@ export function useSearch(query: SearchQuery) {
           limit: query.limit,
         },
       }),
-    enabled: Boolean(query.q && query.q.trim().length > 0),
+    enabled: Boolean(
+      (query.q && query.q.trim().length > 0) || (query.type && query.type !== 'all'),
+    ),
+
   });
 }
 

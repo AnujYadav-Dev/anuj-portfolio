@@ -46,7 +46,10 @@ export function Header() {
 
   return (
     <>
-      <header className="sticky top-0 z-sticky backdrop-blur-md bg-background/80 border-b border-border transition-colors duration-fast">
+      <header
+        role="banner"
+        className="sticky top-0 z-sticky backdrop-blur-md bg-background/80 border-b border-border transition-colors duration-fast"
+      >
         <div className="max-w-[1200px] mx-auto px-4 md:px-8 h-16 flex items-center justify-between">
           {/* Brand Watermark Logo */}
           <Link
@@ -57,7 +60,10 @@ export function Header() {
           </Link>
 
           {/* Desktop Navigation Links */}
-          <nav className="hidden md:flex items-center gap-6 text-xs font-medium">
+          <nav
+            aria-label="Main Navigation"
+            className="hidden md:flex items-center gap-6 text-xs font-medium"
+          >
             {navLinks.map((link, idx) => {
               const isActive =
                 link.href === '/' ? pathname === '/' : pathname.startsWith(link.href);
@@ -66,6 +72,7 @@ export function Header() {
                 <Link
                   key={link.id || `${link.href}-${idx}`}
                   href={link.href}
+                  aria-current={isActive ? 'page' : undefined}
                   className={cn(
                     'transition-colors py-1 hover:text-accent',
                     isActive ? 'text-accent font-semibold' : 'text-muted hover:text-foreground',
@@ -100,6 +107,8 @@ export function Header() {
             <button
               type="button"
               onClick={() => setIsMobileNavOpen(true)}
+              aria-expanded={isMobileNavOpen}
+              aria-controls="mobile-nav-drawer"
               className="md:hidden flex items-center justify-center h-9 w-9 rounded-sm border border-border bg-surface text-muted hover:text-foreground hover:bg-surface-muted transition-colors cursor-pointer"
               aria-label="Open mobile menu"
             >

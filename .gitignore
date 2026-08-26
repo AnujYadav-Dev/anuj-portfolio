@@ -5,6 +5,7 @@ node_modules/
 dist/
 .next/
 out/
+build/
 
 # Environment
 .env
@@ -13,19 +14,20 @@ out/
 .env.test.local
 .env.production.local
 
-# IDE
+# IDE & OS
 .vscode/
 .idea/
 *.swp
 *.swo
-
-# OS
 .DS_Store
 Thumbs.db
 
 # Logs
 *.log
 npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
 
 # Prisma
 prisma/migrations/*.sql.bak
@@ -33,8 +35,18 @@ prisma/migrations/*.sql.bak
 # TypeScript
 *.tsbuildinfo
 
-# Test coverage
+# Test outputs & Coverage
 coverage/
+*/coverage/
+apps/*/coverage/
+packages/*/coverage/
+.vitest/
+
+# Playwright Test Reports & Artifacts
+test-results/
+playwright-report/
+blob-report/
+playwright/.cache/
 
 # Uploads (local media storage)
 uploads/

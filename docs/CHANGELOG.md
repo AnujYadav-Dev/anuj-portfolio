@@ -7,6 +7,44 @@
 
 ## 2026-08-26
 
+### Phase 9: Quality Assurance, Accessibility, Performance & Security
+
+#### Added: Monorepo Testing Infrastructure (`vitest`, `@testing-library`, `supertest`, `@playwright/test`)
+
+- `apps/api/vitest.config.mts` & `tests/setup.ts` — Vitest test runner configuration for Express backend with path aliases, isolated test suites, and environment loading.
+- `apps/api/tests/helpers/testApp.ts` — Supertest test client wrapper and mock admin JWT generator for authorized fixtures.
+- `apps/api/tests/unit/` (`token.service.test.ts`, `validate.middleware.test.ts`, `rateLimit.middleware.test.ts`) — Unit tests verifying JWT signing/verification, Zod request payload schema parsing with structured 422 error outputs, and rate limiting.
+- `apps/api/tests/integration/` (`health.test.ts`, `auth.test.ts`, `content.test.ts`, `interactions.test.ts`, `search.test.ts`) — Integration test suite verifying HTTP routes, auth guards, published content scoping, guestbook moderation, and aggregate telemetry.
+- `apps/web/vitest.config.mts` & `tests/setup.ts` — JSDOM test runner configuration with React testing library, matchMedia, IntersectionObserver, and router mocks.
+- `apps/web/tests/components/` (`button.test.tsx`, `input.test.tsx`, `dialog.test.tsx`, `theme-toggle.test.tsx`, `badge.test.tsx`, `SkipLink.test.tsx`, `MarkdownRenderer.test.tsx`) — Unit and accessibility assertions for UI primitives, modal dialogs, theme switches, skip navigation, and markdown rendering.
+- `playwright.config.ts` & `e2e/` (`public-flows.spec.ts`, `admin-flows.spec.ts`) — End-to-End test suite covering public portfolio navigation, command palette search, contact inquiry submission, admin route guarding, and dashboard access across Chromium, Firefox, WebKit, and Mobile Chrome.
+
+#### Hardened: WCAG 2.2 AA Accessibility & Usability
+
+- `apps/web/src/app/globals.css` — Calibrated `.light` theme token `--color-accent-foreground: #000000;` (7.9:1 contrast on `#ff8c42`) and text link contrast (`#c95600`, 4.6:1) for WCAG 2.2 AA compliance.
+- `apps/web/src/components/ui/button.tsx` — Added `aria-busy` and disabled state synchronization during async mutation pending states.
+- `apps/web/src/components/ui/input.tsx` & `textarea.tsx` — Added `aria-invalid`, `aria-describedby` linking to dynamic error message elements with `role="alert"`, and explicit label associations.
+- `apps/web/src/components/ui/dialog.tsx` — Implemented Tab/Shift+Tab focus boundary trapping, `role="dialog"`, `aria-modal="true"`, and Escape key dismissal.
+- `apps/web/src/components/layout/MobileNav.tsx` — Added `id="mobile-nav-drawer"`, `role="dialog"`, `aria-modal="true"`, and `Escape` key close listener.
+- `apps/web/src/components/content/ZoomableImage.tsx` — Added `role="button"`, `tabIndex={0}`, accessible `aria-label`, and `Enter`/`Space` keyboard zoom triggers.
+- `apps/web/src/components/layout/Header.tsx` — Added `role="banner"`, `<nav aria-label="Main Navigation">`, `aria-current="page"` on active routes, and `aria-expanded`/`aria-controls` on mobile drawer trigger.
+- `apps/web/src/components/layout/Footer.tsx` — Added `role="contentinfo"` and explicit accessible label on newsletter subscription input.
+- `apps/web/src/components/layout/CommandPalette.tsx` — Added ARIA combobox pattern (`role="combobox"`, `role="listbox"`, `role="option"`, `aria-selected`, `aria-controls`).
+
+#### Hardened: Performance Optimization, Architecture & Security
+
+- `apps/web/src/components/content/MarkdownRenderer.tsx` — Integrated `rehype-sanitize` with a strict element/attribute whitelist to neutralize XSS vectors (`<script>`, `<iframe>`, `javascript:` URLs).
+- `apps/web/next.config.ts` — Configured image optimization remote patterns (Unsplash, Cloudinary, GitHub, Localhost), AVIF/WebP formats, `compress: true`, `reactStrictMode: true`, and security/caching response headers.
+- `apps/api/src/index.ts` — Enhanced Helmet with `frameguard: { action: 'deny' }`, HSTS (`max-age=31536000`, preload), Referrer-Policy (`strict-origin-when-cross-origin`), and multi-origin CORS whitelist support.
+- `apps/api/src/middleware/errorHandler.ts` — Added Prisma database error interceptors mapping `P2002` (unique constraint) to HTTP 409 `CONFLICT` and `P2025` to HTTP 404 `NOT_FOUND`.
+- `apps/api/src/routes/health.route.ts` — Architecturally separated `/api/v1/health` (process liveness) and `/api/v1/health/ready` (PostgreSQL readiness).
+- `playwright.config.ts` — Configured automated `webServer` lifecycle management with dev server reuse for self-contained multi-browser testing.
+- `package.json` & `.gitignore` — Added root monorepo scripts (`npm run test`, `npm run test:api`, `npm run test:web`, `npm run test:e2e`, `npm run test:coverage`) and cleaned test report artifacts.
+
+---
+
+## 2026-08-26
+
 ### Phase 8: SEO, Syndication & Search Optimization
 
 #### Added: Core SEO & Syndication Infrastructure (`apps/web/src/lib/`, `components/seo/`, `packages/shared/`)

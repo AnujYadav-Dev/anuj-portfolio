@@ -23,6 +23,10 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
           id={inputId}
           type={type}
           ref={ref}
+          aria-invalid={Boolean(error) || undefined}
+          aria-describedby={
+            error ? `${inputId}-error` : helperText ? `${inputId}-helper` : undefined
+          }
           className={cn(
             'flex h-10 w-full rounded-sm border border-input-border bg-input px-3 py-2 text-xs text-foreground placeholder:text-placeholder focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-accent focus-visible:border-accent disabled:cursor-not-allowed disabled:opacity-50 transition-colors',
             error &&
@@ -31,8 +35,16 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
           )}
           {...props}
         />
-        {error && <p className="text-[11px] text-destructive">{error}</p>}
-        {!error && helperText && <p className="text-[11px] text-muted">{helperText}</p>}
+        {error && (
+          <p id={`${inputId}-error`} role="alert" className="text-[11px] text-destructive">
+            {error}
+          </p>
+        )}
+        {!error && helperText && (
+          <p id={`${inputId}-helper`} className="text-[11px] text-muted">
+            {helperText}
+          </p>
+        )}
       </div>
     );
   },

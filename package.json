@@ -15,10 +15,16 @@
     "build:web": "npm run build -w @portfolio/web",
     "build": "npm run build:shared && npm run build:api && npm run build:web",
     "lint": "npm run lint --workspaces --if-present",
+    "test": "npm run test:api && npm run test:web",
+    "test:api": "npm run test -w @portfolio/api",
+    "test:web": "npm run test -w @portfolio/web",
+    "test:e2e": "playwright test",
+    "test:coverage": "npm run test:coverage -w @portfolio/api && npm run test:coverage -w @portfolio/web",
     "format": "prettier --write \"**/*.{ts,tsx,json,md,css}\" --ignore-path .gitignore",
     "format:check": "prettier --check \"**/*.{ts,tsx,json,md,css}\" --ignore-path .gitignore"
   },
   "devDependencies": {
+    "@playwright/test": "^1.62.1",
     "prettier": "^3.3.0",
     "typescript": "^5.5.0"
   },

@@ -19,8 +19,17 @@ export function ZoomableImage({ src, alt = '', caption, className }: ZoomableIma
     <>
       <figure className={cn('my-6 group flex flex-col items-center', className)}>
         <div
+          role="button"
+          tabIndex={0}
+          aria-label={`Zoom image${alt || caption ? `: ${alt || caption}` : ''}`}
           onClick={() => setIsZoomed(true)}
-          className="relative overflow-hidden rounded-md border border-border bg-surface-muted cursor-zoom-in group-hover:border-muted transition-colors max-w-full"
+          onKeyDown={(e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              e.preventDefault();
+              setIsZoomed(true);
+            }
+          }}
+          className="relative overflow-hidden rounded-md border border-border bg-surface-muted cursor-zoom-in group-hover:border-muted transition-colors max-w-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
         >
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img

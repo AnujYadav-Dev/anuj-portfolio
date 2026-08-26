@@ -199,6 +199,10 @@ export function CommandPalette({ isOpen, onClose }: CommandPaletteProps) {
           <input
             autoFocus
             type="text"
+            role="combobox"
+            aria-expanded="true"
+            aria-controls="command-palette-results"
+            aria-label="Search portfolio content or trigger commands"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             onKeyDown={handleKeyDown}
@@ -206,7 +210,11 @@ export function CommandPalette({ isOpen, onClose }: CommandPaletteProps) {
             className="w-full bg-transparent text-sm text-foreground placeholder:text-placeholder focus:outline-none font-sans"
           />
           {query && (
-            <button onClick={() => setQuery('')} className="text-muted hover:text-foreground p-1">
+            <button
+              onClick={() => setQuery('')}
+              aria-label="Clear search input"
+              className="text-muted hover:text-foreground p-1"
+            >
               <X className="h-3.5 w-3.5" />
             </button>
           )}
@@ -216,7 +224,11 @@ export function CommandPalette({ isOpen, onClose }: CommandPaletteProps) {
         </div>
 
         {/* Results / Action list */}
-        <div className="max-h-[380px] overflow-y-auto p-2 divide-y divide-border/30">
+        <div
+          id="command-palette-results"
+          role="listbox"
+          className="max-h-[380px] overflow-y-auto p-2 divide-y divide-border/30"
+        >
           {displayedItems.length === 0 ? (
             <div className="py-12 text-center text-xs text-muted">
               {isLoading ? 'Searching...' : `No results found for "${query}"`}
@@ -227,6 +239,8 @@ export function CommandPalette({ isOpen, onClose }: CommandPaletteProps) {
               return (
                 <div
                   key={item.id}
+                  role="option"
+                  aria-selected={isSelected}
                   onClick={() => {
                     item.action();
                     onClose();

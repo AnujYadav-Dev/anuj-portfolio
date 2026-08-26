@@ -17,20 +17,21 @@ A **dynamic portfolio platform** for a developer/professional, where all content
 
 ## Technology Stack
 
-| Layer         | Technology                                                |
-| ------------- | --------------------------------------------------------- |
-| Frontend      | Next.js (App Router), TypeScript, Tailwind CSS, shadcn/ui |
-| Backend       | Node.js, Express.js, TypeScript                           |
-| Database      | PostgreSQL                                                |
-| ORM           | Prisma                                                    |
-| Validation    | Zod (shared between frontend and backend)                 |
-| Data fetching | TanStack Query                                            |
-| Forms         | React Hook Form                                           |
-| Auth          | JWT + Refresh Tokens                                      |
-| Rich content  | Markdown / MDX                                            |
-| File storage  | Cloudinary or instance storage                            |
-| Email         | SMTP                                                      |
-| Deployment    | Any instance (frontend + backend independently)           |
+| Layer         | Technology                                                 |
+| ------------- | ---------------------------------------------------------- |
+| Frontend      | Next.js (App Router), TypeScript, Tailwind CSS, shadcn/ui  |
+| Backend       | Node.js, Express.js, TypeScript                            |
+| Database      | PostgreSQL                                                 |
+| ORM           | Prisma                                                     |
+| Validation    | Zod (shared between frontend and backend)                  |
+| Data fetching | TanStack Query                                             |
+| Forms         | React Hook Form                                            |
+| Auth          | JWT + Refresh Tokens                                       |
+| Rich content  | Markdown / MDX                                             |
+| Testing       | Vitest, Supertest, React Testing Library, Playwright (E2E) |
+| File storage  | Cloudinary or instance storage                             |
+| Email         | SMTP                                                       |
+| Deployment    | Any instance (frontend + backend independently)            |
 
 ---
 
@@ -117,18 +118,17 @@ All documentation lives in the `docs/` folder. See [README.md](README.md) for th
 
 ## Current Status
 
-- **Phase:** Phase 8 complete — SEO, Syndication & Search Optimization.
+- **Phase:** Phase 9 complete — Quality Assurance, Accessibility, Performance & Security.
 - **Database:** PostgreSQL schema fully migrated (38 models, 11 enums, indexes, constraints) and seeded with admin user, complete SEO site settings (`site_url`, `robots_indexing_enabled`, `twitter_handle`, `author_name`), homepage sections, navigation, sample content, and taxonomy.
-- **Backend:** Express API with all 20+ domain modules, admin analytics endpoints, media management, email templates, and auth profile/password handlers implemented and verified.
+- **Backend:** Express API with all 20+ domain modules, comprehensive Vitest + Supertest unit and integration test suite, Helmet security hardening (CSP, HSTS, X-Frame-Options), strict multi-origin CORS whitelisting, rate limiting, and parameterized database queries.
 - **Frontend:** Next.js 16 (Turbopack) with 76 optimized production routes compiled with zero type errors:
-  - **SEO & Search Optimization:** Server Components across all public routes with tailored static and dynamic `generateMetadata`, canonical URLs, and robots indexing directives.
-  - **Structured Data:** Type-safe Schema.org JSON-LD scripts embedded across routes for `WebSite`, `Person`, `BlogPosting`, `SoftwareApplication`, `ScholarlyArticle`, and `BreadcrumbList`.
-  - **Social Sharing & OG Cards:** Dynamic 1200x630 OpenGraph and Twitter social card generators powered by `next/og` (`/api/og` endpoint, root `opengraph-image.tsx`, and route-level card generators for `/blogs/[slug]`, `/works/[slug]`, `/research/[slug]`, and `/[slug]`).
-  - **Automated Sitemap & Robots:** Dynamic `/sitemap.xml` querying all static routes and published entities, and configurable `/robots.txt` honoring `site_settings`.
-  - **RSS & Atom Syndication:** Dynamic `/feed.xml` and `/rss.xml` generating standard RSS 2.0 XML with Atom namespaces for blog articles and research papers.
-  - **Admin Infrastructure & CMS:** Full 24-route admin panel with session monitor, editors, and analytics telemetry.
+  - **Testing & QA:** Vitest + React Testing Library unit & accessibility test suite covering UI primitives, layout shells, command palette, and markdown rendering.
+  - **E2E Automation:** Playwright test suite for critical public and admin user journeys across Chromium, Firefox, WebKit, and Mobile Chrome.
+  - **WCAG 2.2 AA Accessibility:** Screen reader landmarks (`role="main"`, `role="banner"`, `role="contentinfo"`), ARIA combobox and modal dialog patterns, focus trap management, SkipLink, and contrast ratio compliance.
+  - **Performance Optimization:** Next.js image optimization (AVIF/WebP, remote patterns), compression, font preloading, and caching headers.
+  - **Security Hardening:** XSS prevention via `rehype-sanitize` in markdown pipeline, parameter validation, and secure authentication rotation.
 - **Shared:** Complete domain-organized types, DTOs, request payloads, enums, Zod validation schemas, and constants compiled and verified across all workspaces.
-- **Next step:** Phase 9 — Quality Assurance, Accessibility, Performance & Security (Testing suite, WCAG 2.2 AA audit, Lighthouse optimization, and security hardening).
+- **Next step:** Phase 10 — Production Deployment & CI/CD (Database provisioning, containerized Express deployment, Next.js Vercel/Node deployment, and GitHub Actions automation).
 
 ---
 

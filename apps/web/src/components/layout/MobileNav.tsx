@@ -26,11 +26,18 @@ export function MobileNav({ isOpen, onClose }: MobileNavProps) {
   React.useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = 'hidden';
+      const handleKeyDown = (e: KeyboardEvent) => {
+        if (e.key === 'Escape') {
+          onClose();
+        }
+      };
+      window.addEventListener('keydown', handleKeyDown);
+      return () => {
+        document.body.style.overflow = '';
+        window.removeEventListener('keydown', handleKeyDown);
+      };
     }
-    return () => {
-      document.body.style.overflow = '';
-    };
-  }, [isOpen]);
+  }, [isOpen, onClose]);
 
   const defaultNavLinks = [
     { label: 'Works', href: '/works' },
@@ -51,7 +58,13 @@ export function MobileNav({ isOpen, onClose }: MobileNavProps) {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-modal flex md:hidden">
+    <div
+      id="mobile-nav-drawer"
+      role="dialog"
+      aria-modal="true"
+      aria-label="Mobile Navigation Menu"
+      className="fixed inset-0 z-modal flex md:hidden"
+    >
       {/* Backdrop */}
       <div className="fixed inset-0 bg-background/80 backdrop-blur-md" onClick={onClose} />
 

@@ -4,6 +4,7 @@ import * as React from 'react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import rehypeRaw from 'rehype-raw';
+import rehypeSanitize, { defaultSchema } from 'rehype-sanitize';
 import { CodeBlock } from './CodeBlock';
 import { Callout, type CalloutType } from './Callout';
 import { ZoomableImage } from './ZoomableImage';
@@ -13,6 +14,17 @@ export interface MarkdownRendererProps {
   content: string;
   className?: string;
 }
+
+const customSanitizeSchema = {
+  ...defaultSchema,
+  attributes: {
+    ...defaultSchema.attributes,
+    code: [...(defaultSchema.attributes?.code || []), 'className', 'inline'],
+    span: [...(defaultSchema.attributes?.span || []), 'className'],
+    div: [...(defaultSchema.attributes?.div || []), 'className'],
+    a: [...(defaultSchema.attributes?.a || []), 'target', 'rel', 'className'],
+  },
+};
 
 function parseCallout(text: string): { type: CalloutType; content: string } | null {
   const match = text.match(/^\[!(NOTE|TIP|IMPORTANT|WARNING|CAUTION)\]\s*([\s\S]*)$/i);
@@ -35,7 +47,7 @@ export function MarkdownRenderer({ content, className }: MarkdownRendererProps) 
     >
       <ReactMarkdown
         remarkPlugins={[remarkGfm]}
-        rehypePlugins={[rehypeRaw]}
+        rehypePlugins={[rehypeRaw, [rehypeSanitize, customSanitizeSchema]]}
         components={{
           h1: ({ children }) => {
             const text = String(children);

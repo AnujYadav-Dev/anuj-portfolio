@@ -115,7 +115,7 @@
   --color-muted: #4b4b4b;
   --color-accent: #ff8c42;
   --color-accent-hover: #e67a30;
-  --color-accent-foreground: #ffffff;
+  --color-accent-foreground: #000000;
   --color-border: #d4cdc4;
   --color-ring: #ff8c42;
   --color-destructive: #dc2626;
@@ -132,6 +132,14 @@
   --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.07);
   --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
   --shadow-xl: 0 20px 25px rgba(0, 0, 0, 0.1);
+}
+
+.light a {
+  color: #c95600;
+}
+
+.light a:hover {
+  color: #9e4300;
 }
 
 /* ═══════════════════════════════════════════════════════

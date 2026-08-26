@@ -47,7 +47,10 @@ export function Footer() {
   const socials = socialData?.data && socialData.data.length > 0 ? socialData.data : defaultSocials;
 
   return (
-    <footer className="w-full bg-background border-t border-border mt-auto transition-colors duration-fast">
+    <footer
+      role="contentinfo"
+      className="w-full bg-background border-t border-border mt-auto transition-colors duration-fast"
+    >
       {/* Top Footer Section: Newsletter & Availability */}
       <div className="max-w-[1200px] mx-auto px-4 md:px-8 py-12 md:py-16">
         <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-start">
@@ -82,6 +85,7 @@ export function Footer() {
               <Input
                 type="email"
                 placeholder="developer@example.com"
+                aria-label="Email address for newsletter subscription"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 className="h-9 text-xs"

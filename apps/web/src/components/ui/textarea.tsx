@@ -22,6 +22,10 @@ export const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
         <textarea
           id={textareaId}
           ref={ref}
+          aria-invalid={Boolean(error) || undefined}
+          aria-describedby={
+            error ? `${textareaId}-error` : helperText ? `${textareaId}-helper` : undefined
+          }
           className={cn(
             'flex min-h-[100px] w-full rounded-sm border border-input-border bg-input px-3 py-2 text-xs text-foreground placeholder:text-placeholder focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-accent focus-visible:border-accent disabled:cursor-not-allowed disabled:opacity-50 transition-colors resize-y leading-relaxed',
             error &&
@@ -30,8 +34,16 @@ export const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
           )}
           {...props}
         />
-        {error && <p className="text-[11px] text-destructive">{error}</p>}
-        {!error && helperText && <p className="text-[11px] text-muted">{helperText}</p>}
+        {error && (
+          <p id={`${textareaId}-error`} role="alert" className="text-[11px] text-destructive">
+            {error}
+          </p>
+        )}
+        {!error && helperText && (
+          <p id={`${textareaId}-helper`} className="text-[11px] text-muted">
+            {helperText}
+          </p>
+        )}
       </div>
     );
   },

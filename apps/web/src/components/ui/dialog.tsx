@@ -22,6 +22,7 @@ export interface DialogProps {
 
 export function Dialog({ isOpen, onClose, open, onOpenChange, children }: DialogProps) {
   const activeOpen = open !== undefined ? open : Boolean(isOpen);
+  const containerRef = React.useRef<HTMLDivElement>(null);
 
   const handleClose = React.useCallback(() => {
     onClose?.();
@@ -32,6 +33,24 @@ export function Dialog({ isOpen, onClose, open, onOpenChange, children }: Dialog
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape' && activeOpen) {
         handleClose();
+      }
+
+      if (e.key === 'Tab' && activeOpen && containerRef.current) {
+        const focusable = containerRef.current.querySelectorAll<HTMLElement>(
+          'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])',
+        );
+        if (focusable.length > 0) {
+          const firstElement = focusable[0];
+          const lastElement = focusable[focusable.length - 1];
+
+          if (e.shiftKey && document.activeElement === firstElement) {
+            e.preventDefault();
+            lastElement?.focus();
+          } else if (!e.shiftKey && document.activeElement === lastElement) {
+            e.preventDefault();
+            firstElement?.focus();
+          }
+        }
       }
     };
     if (activeOpen) {
@@ -55,7 +74,14 @@ export function Dialog({ isOpen, onClose, open, onOpenChange, children }: Dialog
           onClick={handleClose}
         />
         {/* Dialog Frame */}
-        <div className="relative z-modal w-full max-w-lg">{children}</div>
+        <div
+          ref={containerRef}
+          role="dialog"
+          aria-modal="true"
+          className="relative z-modal w-full max-w-lg"
+        >
+          {children}
+        </div>
       </div>
     </DialogContext.Provider>,
     document.body,

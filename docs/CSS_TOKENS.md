@@ -120,7 +120,7 @@ All design tokens are defined as CSS custom properties on `:root` (dark theme de
   --color-muted: #4b4b4b;
   --color-accent: #ff8c42;
   --color-accent-hover: #e67a30;
-  --color-accent-foreground: #ffffff;
+  --color-accent-foreground: #000000;
   --color-border: #d4cdc4;
   --color-ring: #ff8c42;
   --color-destructive: #dc2626;

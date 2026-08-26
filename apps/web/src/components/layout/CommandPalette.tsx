@@ -10,15 +10,14 @@ import {
   BookOpen,
   User,
   Clock,
-  Sparkles,
   Sun,
   Moon,
   Mail,
   Download,
-  ExternalLink,
   X,
   Code,
 } from 'lucide-react';
+
 import { useSearch } from '@/hooks/useDiscovery';
 import { useActiveResume } from '@/hooks/useProfile';
 import { useSiteSettings } from '@/hooks/useLayout';

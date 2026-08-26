@@ -17,9 +17,10 @@ export default function AdminEditBlogPage({ params }: { params: Promise<{ id: st
       try {
         const res = await apiClient.get<{ data: BlogPostDto }>(`/blogs/admin/${resolvedParams.id}`);
         setBlog(res.data);
-      } catch (err: any) {
+      } catch {
         toast.error('Failed to load blog post');
       } finally {
+
         setIsLoading(false);
       }
     }

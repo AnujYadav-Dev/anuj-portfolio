@@ -3,8 +3,8 @@
 import * as React from 'react';
 import Link from 'next/link';
 import { Clock } from 'lucide-react';
-import { Badge } from '@/components/ui/badge';
 import type { BlogPostListItemDto } from '@portfolio/shared';
+
 import { cn } from '@/lib/cn';
 
 export interface BlogListRowProps {

@@ -2,7 +2,8 @@
 
 import * as React from 'react';
 import Link from 'next/link';
-import { ArrowRight, Copy, Mail, Sparkles } from 'lucide-react';
+import { ArrowRight, Copy, Sparkles } from 'lucide-react';
+
 import { SplitSection } from '@/components/common/SplitSection';
 import { Button } from '@/components/ui/button';
 import { RevealOnScroll } from '@/components/motion/RevealOnScroll';

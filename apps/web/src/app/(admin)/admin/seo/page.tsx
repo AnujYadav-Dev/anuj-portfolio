@@ -1,20 +1,22 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
+import Image from 'next/image';
+
 import { apiClient } from '@/lib/api';
+
 import type { SiteSettingDto, MediaDto } from '@portfolio/shared';
 import { AdminPageHeader } from '@/components/admin/ui/AdminPageHeader';
 import { MediaPickerModal } from '@/components/admin/ui/MediaPickerModal';
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
+import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Spinner } from '@/components/ui/spinner';
-import { Globe, Save, Sparkles, Image as ImageIcon, Search, Share2 } from 'lucide-react';
+import { Globe, Save, Image as ImageIcon, Search, Share2 } from 'lucide-react';
 import { toast } from 'sonner';
 
 export default function AdminSeoPage() {
-  const [settings, setSettings] = useState<SiteSettingDto[]>([]);
   const [title, setTitle] = useState('Anuj Yadav — Full-Stack Engineer & Architect');
   const [description, setDescription] = useState(
     'Explore the portfolio, projects, writing, and research of Anuj Yadav.',
@@ -32,7 +34,6 @@ export default function AdminSeoPage() {
     setIsLoading(true);
     try {
       const res = await apiClient.get<{ data: SiteSettingDto[] }>('/site-settings/admin/all');
-      setSettings(res.data || []);
       const map: Record<string, string> = {};
       (res.data || []).forEach((s) => {
         map[s.key] = s.value;
@@ -84,12 +85,14 @@ export default function AdminSeoPage() {
       await apiClient.put('/site-settings/bulk', { settings: updates });
       toast.success('SEO defaults saved successfully!');
       fetchSettings();
-    } catch (err: any) {
-      toast.error(err.message || 'Failed to save SEO defaults');
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : 'Failed to save SEO defaults';
+      toast.error(msg);
     } finally {
       setIsSaving(false);
     }
   };
+
 
 
   if (isLoading) {
@@ -212,19 +215,18 @@ export default function AdminSeoPage() {
                 </button>
               </div>
 
-
               <div className="space-y-1.5">
                 <label className="text-xs font-semibold text-foreground">
                   Default Social Share Image (OG Image)
                 </label>
                 {ogImageUrl ? (
                   <div className="relative aspect-video w-full rounded border border-border overflow-hidden bg-surface-muted">
-                    <img src={ogImageUrl} alt="OG Card" className="w-full h-full object-cover" />
+                    <Image src={ogImageUrl} alt="OG Card" fill unoptimized className="object-cover" />
                     <Button
                       type="button"
                       variant="outline"
                       size="sm"
-                      className="absolute bottom-2 right-2 text-xs"
+                      className="absolute bottom-2 right-2 text-xs z-10"
                       onClick={() => setIsMediaPickerOpen(true)}
                     >
                       Change Image
@@ -235,11 +237,11 @@ export default function AdminSeoPage() {
                     type="button"
                     variant="outline"
                     size="sm"
-                    className="w-full text-xs"
+                    className="w-full h-24 border-dashed flex flex-col items-center justify-center gap-2 text-xs text-muted hover:text-accent"
                     onClick={() => setIsMediaPickerOpen(true)}
                   >
-                    <ImageIcon className="w-3.5 h-3.5 mr-1.5 text-accent" />
-                    <span>Select OpenGraph Image from Library</span>
+                    <ImageIcon className="w-5 h-5" />
+                    <span>Upload or Select Default OG Image</span>
                   </Button>
                 )}
               </div>
@@ -285,9 +287,9 @@ export default function AdminSeoPage() {
             </CardHeader>
             <CardContent className="pt-4">
               <div className="rounded-xl border border-border overflow-hidden bg-background">
-                <div className="aspect-video w-full bg-surface-muted flex items-center justify-center overflow-hidden">
+                <div className="relative aspect-video w-full bg-surface-muted flex items-center justify-center overflow-hidden">
                   {ogImageUrl ? (
-                    <img src={ogImageUrl} alt="" className="w-full h-full object-cover" />
+                    <Image src={ogImageUrl} alt="" fill unoptimized className="object-cover" />
                   ) : (
                     <div className="p-6 text-center text-muted text-xs font-mono">
                       <ImageIcon className="w-8 h-8 text-placeholder mx-auto mb-2" />
@@ -295,6 +297,7 @@ export default function AdminSeoPage() {
                     </div>
                   )}
                 </div>
+
                 <div className="p-3 border-t border-border space-y-1">
                   <span className="text-[10px] font-mono text-muted uppercase tracking-wider block">
                     {siteUrl.replace(/^https?:\/\//, '')}

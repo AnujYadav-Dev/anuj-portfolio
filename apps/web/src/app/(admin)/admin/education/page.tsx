@@ -112,8 +112,9 @@ export default function AdminEducationPage() {
       }
       setIsModalOpen(false);
       fetchEducation();
-    } catch (err: any) {
-      toast.error(err.message || 'Failed to save education');
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : 'Failed to save education';
+      toast.error(msg);
     } finally {
       setIsSaving(false);
     }
@@ -140,12 +141,14 @@ export default function AdminEducationPage() {
       toast.success(`Education at '${deleteTarget.institution}' deleted.`);
       setDeleteTarget(null);
       fetchEducation();
-    } catch (err: any) {
-      toast.error(err.message || 'Failed to delete education');
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : 'Failed to delete education';
+      toast.error(msg);
     } finally {
       setIsDeleting(false);
     }
   };
+
 
   return (
     <div className="space-y-6">

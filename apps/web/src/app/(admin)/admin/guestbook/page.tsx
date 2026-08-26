@@ -34,10 +34,13 @@ export default function AdminGuestbookPage() {
   const [deleteTarget, setDeleteTarget] = useState<GuestbookEntryDto | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
 
-  const fetchEntries = async () => {
+  const fetchEntries = React.useCallback(async () => {
     setIsLoading(true);
     try {
-      const params: Record<string, string> = { page: String(page), pageSize: '20' };
+      const params: Record<string, string> = {
+        page: String(page),
+        pageSize: '20',
+      };
       if (statusFilter !== 'all') params.status = statusFilter;
 
       const res = await apiClient.get<PaginatedResponse<GuestbookEntryDto>>(
@@ -52,11 +55,11 @@ export default function AdminGuestbookPage() {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [page, statusFilter]);
 
   useEffect(() => {
     fetchEntries();
-  }, [page, statusFilter]);
+  }, [fetchEntries]);
 
   const handleModerate = async (id: string, status: ModerationStatus) => {
     try {
@@ -68,8 +71,9 @@ export default function AdminGuestbookPage() {
         setSelectedEntry({ ...selectedEntry, moderationStatus: status });
       }
       fetchEntries();
-    } catch (err: any) {
-      toast.error(err.message || 'Moderation failed');
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : 'Moderation failed';
+      toast.error(msg);
     }
   };
 
@@ -82,8 +86,9 @@ export default function AdminGuestbookPage() {
       if (selectedEntry?.id === deleteTarget.id) setSelectedEntry(null);
       setDeleteTarget(null);
       fetchEntries();
-    } catch (err: any) {
-      toast.error(err.message || 'Failed to delete entry');
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : 'Failed to delete entry';
+      toast.error(msg);
     } finally {
       setIsDeleting(false);
     }

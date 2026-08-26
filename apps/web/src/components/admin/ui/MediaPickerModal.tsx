@@ -1,6 +1,7 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
+
 import {
   Dialog,
   DialogContent,
@@ -44,7 +45,7 @@ export function MediaPickerModal({
   const [caption, setCaption] = useState('');
   const [isUploading, setIsUploading] = useState(false);
 
-  const fetchMedia = async () => {
+  const fetchMedia = useCallback(async () => {
     if (!isOpen) return;
     setIsLoading(true);
     try {
@@ -54,18 +55,18 @@ export function MediaPickerModal({
 
       const res = await apiClient.get<PaginatedResponse<MediaDto>>('/media', { params });
       setMediaList(res.data || []);
-    } catch (err: any) {
+    } catch {
       toast.error('Failed to load media library');
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [isOpen, acceptType, search]);
 
   useEffect(() => {
     if (isOpen) {
       fetchMedia();
     }
-  }, [isOpen, search, acceptType]);
+  }, [isOpen, fetchMedia]);
 
   const handleUpload = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -85,8 +86,9 @@ export function MediaPickerModal({
       toast.success('Asset uploaded successfully!');
       onSelect(res.data);
       onClose();
-    } catch (err: any) {
-      toast.error(err.message || 'Upload failed');
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : 'Upload failed';
+      toast.error(msg);
     } finally {
       setIsUploading(false);
     }
@@ -98,6 +100,7 @@ export function MediaPickerModal({
       onClose();
     }
   };
+
 
   return (
     <Dialog isOpen={isOpen} onClose={onClose}>
@@ -183,6 +186,7 @@ export function MediaPickerModal({
                       >
                         <div className="aspect-square w-full rounded bg-surface-muted overflow-hidden flex items-center justify-center relative">
                           {isImage ? (
+                            /* eslint-disable-next-line @next/next/no-img-element */
                             <img
                               src={item.url}
                               alt={item.altText || item.filename}
@@ -191,6 +195,7 @@ export function MediaPickerModal({
                           ) : (
                             <FileText className="w-8 h-8 text-accent" />
                           )}
+
 
                           {isSelected && (
                             <div className="absolute top-1.5 right-1.5 w-5 h-5 rounded-full bg-accent text-black flex items-center justify-center shadow-md">

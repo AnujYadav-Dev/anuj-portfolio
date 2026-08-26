@@ -105,8 +105,9 @@ export default function AdminAboutPage() {
       }
       setIsModalOpen(false);
       fetchSections();
-    } catch (err: any) {
-      toast.error(err.message || 'Failed to save section');
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : 'Failed to save section';
+      toast.error(msg);
     } finally {
       setIsSaving(false);
     }
@@ -133,12 +134,14 @@ export default function AdminAboutPage() {
       toast.success(`Section '${deleteTarget.title}' deleted.`);
       setDeleteTarget(null);
       fetchSections();
-    } catch (err: any) {
-      toast.error(err.message || 'Failed to delete section');
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : 'Failed to delete section';
+      toast.error(msg);
     } finally {
       setIsDeleting(false);
     }
   };
+
 
   return (
     <div className="space-y-6">

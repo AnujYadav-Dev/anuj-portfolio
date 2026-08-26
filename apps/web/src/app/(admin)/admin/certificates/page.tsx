@@ -112,8 +112,9 @@ export default function AdminCertificatesPage() {
       }
       setIsModalOpen(false);
       fetchCertificates();
-    } catch (err: any) {
-      toast.error(err.message || 'Failed to save certificate');
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : 'Failed to save certificate';
+      toast.error(msg);
     } finally {
       setIsSaving(false);
     }
@@ -140,12 +141,14 @@ export default function AdminCertificatesPage() {
       toast.success(`Certificate '${deleteTarget.name}' deleted.`);
       setDeleteTarget(null);
       fetchCertificates();
-    } catch (err: any) {
-      toast.error(err.message || 'Failed to delete certificate');
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : 'Failed to delete certificate';
+      toast.error(msg);
     } finally {
       setIsDeleting(false);
     }
   };
+
 
   return (
     <div className="space-y-6">

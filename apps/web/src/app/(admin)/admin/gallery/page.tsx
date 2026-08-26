@@ -116,8 +116,9 @@ export default function AdminGalleryPage() {
       }
       setIsModalOpen(false);
       fetchGallery();
-    } catch (err: any) {
-      toast.error(err.message || 'Failed to save item');
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : 'Failed to save item';
+      toast.error(msg);
     } finally {
       setIsSaving(false);
     }
@@ -131,8 +132,9 @@ export default function AdminGalleryPage() {
       toast.success('Item deleted from gallery');
       setDeleteTarget(null);
       fetchGallery();
-    } catch (err: any) {
-      toast.error(err.message || 'Failed to delete item');
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : 'Failed to delete item';
+      toast.error(msg);
     } finally {
       setIsDeleting(false);
     }
@@ -152,19 +154,20 @@ export default function AdminGalleryPage() {
       />
 
       {isLoading ? (
-        <div className="py-24 flex flex-col items-center justify-center gap-3">
+        <div className="py-20 flex flex-col items-center justify-center gap-3">
           <Spinner className="w-8 h-8 text-accent" />
-          <span className="text-xs font-mono text-muted">Loading gallery...</span>
+          <span className="text-xs font-mono text-muted uppercase tracking-wider">
+            Loading Gallery...
+          </span>
         </div>
       ) : items.length === 0 ? (
-        <div className="py-24 text-center border border-dashed border-border rounded-xl p-8 bg-surface">
-          <ImageIcon className="w-10 h-10 text-placeholder mx-auto mb-2" />
-          <p className="text-sm font-semibold text-foreground">No gallery items yet</p>
-          <p className="text-xs text-muted mt-1">
-            Add screenshots, workspace photos, and diagrams.
+        <div className="rounded-lg border border-border bg-surface p-12 text-center">
+          <p className="text-sm font-semibold text-foreground">No gallery media uploaded yet</p>
+          <p className="text-xs text-muted mt-1 max-w-sm mx-auto">
+            Upload architecture blueprints, project screenshots, or setup photography.
           </p>
           <Button variant="primary" size="sm" onClick={openCreateModal} className="mt-4">
-            Add First Item
+            <Plus className="w-3.5 h-3.5 mr-1.5" /> Add First Item
           </Button>
         </div>
       ) : (
@@ -176,6 +179,7 @@ export default function AdminGalleryPage() {
             >
               <div className="aspect-square w-full bg-surface-muted overflow-hidden relative">
                 {item.mediaUrl ? (
+                  /* eslint-disable-next-line @next/next/no-img-element */
                   <img
                     src={item.mediaUrl}
                     alt={item.title || ''}
@@ -238,6 +242,7 @@ export default function AdminGalleryPage() {
                 <label className="text-xs font-semibold text-foreground">Media Asset</label>
                 {mediaUrl ? (
                   <div className="relative aspect-video w-full rounded border border-border overflow-hidden bg-surface-muted">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img src={mediaUrl} alt="" className="w-full h-full object-cover" />
                     <Button
                       type="button"
@@ -246,6 +251,7 @@ export default function AdminGalleryPage() {
                       className="absolute bottom-2 right-2 text-xs"
                       onClick={() => setIsMediaPickerOpen(true)}
                     >
+
                       Change
                     </Button>
                   </div>

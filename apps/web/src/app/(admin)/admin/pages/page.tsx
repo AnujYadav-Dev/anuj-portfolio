@@ -11,7 +11,8 @@ import { StatusBadge } from '@/components/admin/ui/StatusBadge';
 import { ConfirmDialog } from '@/components/admin/ui/ConfirmDialog';
 import { Button, buttonVariants } from '@/components/ui/button';
 
-import { Plus, Edit2, Trash2, ExternalLink } from 'lucide-react';
+import { Plus, Edit2, Trash2 } from 'lucide-react';
+
 import { toast } from 'sonner';
 
 export default function AdminPagesListPage() {
@@ -47,11 +48,13 @@ export default function AdminPagesListPage() {
       toast.success(`Page '${deleteTarget.title}' deleted.`);
       setDeleteTarget(null);
       fetchPages();
-    } catch (err: any) {
-      toast.error(err.message || 'Failed to delete page');
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : 'Failed to delete page';
+      toast.error(msg);
     } finally {
       setIsDeleting(false);
     }
+
   };
 
   const columns: Column<PageDto>[] = [

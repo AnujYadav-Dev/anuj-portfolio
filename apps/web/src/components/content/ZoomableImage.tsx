@@ -22,6 +22,7 @@ export function ZoomableImage({ src, alt = '', caption, className }: ZoomableIma
           onClick={() => setIsZoomed(true)}
           className="relative overflow-hidden rounded-md border border-border bg-surface-muted cursor-zoom-in group-hover:border-muted transition-colors max-w-full"
         >
+          {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={src}
             alt={alt || caption || ''}
@@ -48,11 +49,13 @@ export function ZoomableImage({ src, alt = '', caption, className }: ZoomableIma
           >
             <X className="h-5 w-5" />
           </button>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={src}
             alt={alt || caption || ''}
             className="w-auto h-auto max-h-[85vh] max-w-full rounded-md object-contain border border-border shadow-2xl"
           />
+
           {caption && (
             <p className="mt-3 text-center text-xs text-muted font-mono bg-surface/80 px-3 py-1 rounded-sm border border-border">
               {caption}

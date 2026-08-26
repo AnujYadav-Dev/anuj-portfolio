@@ -25,7 +25,7 @@ export default function AdminBlogsListPage() {
   const [deleteTarget, setDeleteTarget] = useState<BlogPostListItemDto | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
 
-  const fetchBlogs = async () => {
+  const fetchBlogs = React.useCallback(async () => {
     setIsLoading(true);
     try {
       const res = await apiClient.get<PaginatedResponse<BlogPostListItemDto>>('/blogs/admin/all', {
@@ -39,11 +39,11 @@ export default function AdminBlogsListPage() {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [page, search]);
 
   useEffect(() => {
     fetchBlogs();
-  }, [page, search]);
+  }, [fetchBlogs]);
 
   const handleDelete = async () => {
     if (!deleteTarget) return;
@@ -53,8 +53,9 @@ export default function AdminBlogsListPage() {
       toast.success(`Post '${deleteTarget.title}' deleted.`);
       setDeleteTarget(null);
       fetchBlogs();
-    } catch (err: any) {
-      toast.error(err.message || 'Failed to delete blog post');
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : 'Failed to delete blog post';
+      toast.error(msg);
     } finally {
       setIsDeleting(false);
     }
@@ -68,11 +69,13 @@ export default function AdminBlogsListPage() {
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded bg-surface-muted border border-border flex items-center justify-center shrink-0 overflow-hidden">
             {item.coverImageUrl ? (
+              /* eslint-disable-next-line @next/next/no-img-element */
               <img src={item.coverImageUrl} alt="" className="w-full h-full object-cover" />
             ) : (
               <Eye className="w-4 h-4 text-placeholder" />
             )}
           </div>
+
           <div className="min-w-0">
             <div className="flex items-center gap-2">
               <span className="font-bold text-foreground truncate">{item.title}</span>

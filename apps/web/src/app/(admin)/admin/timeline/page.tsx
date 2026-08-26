@@ -21,7 +21,8 @@ import {
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import { Plus, Edit2, Trash2, Milestone, Calendar } from 'lucide-react';
+import { Plus, Edit2, Trash2, Milestone } from 'lucide-react';
+
 import { toast } from 'sonner';
 
 export default function AdminTimelinePage() {
@@ -109,8 +110,9 @@ export default function AdminTimelinePage() {
       }
       setIsModalOpen(false);
       fetchEvents();
-    } catch (err: any) {
-      toast.error(err.message || 'Failed to save timeline event');
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : 'Failed to save timeline event';
+      toast.error(msg);
     } finally {
       setIsSaving(false);
     }
@@ -137,12 +139,14 @@ export default function AdminTimelinePage() {
       toast.success(`Event '${deleteTarget.title}' deleted.`);
       setDeleteTarget(null);
       fetchEvents();
-    } catch (err: any) {
-      toast.error(err.message || 'Failed to delete event');
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : 'Failed to delete event';
+      toast.error(msg);
     } finally {
       setIsDeleting(false);
     }
   };
+
 
   return (
     <div className="space-y-6">

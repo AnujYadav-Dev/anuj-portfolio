@@ -3,11 +3,11 @@
 import * as React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { X, ExternalLink, Download } from 'lucide-react';
+import { X, Download } from 'lucide-react';
 import { ThemeToggle } from '@/components/ui/theme-toggle';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Separator } from '@/components/ui/separator';
+
 import { useNavItems } from '@/hooks/useLayout';
 import { useSocialLinks, useActiveResume } from '@/hooks/useProfile';
 import { cn } from '@/lib/cn';

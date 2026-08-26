@@ -96,8 +96,9 @@ export default function AdminNavigationPage() {
       }
       setIsModalOpen(false);
       fetchNav();
-    } catch (err: any) {
-      toast.error(err.message || 'Failed to save navigation link');
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : 'Failed to save navigation link';
+      toast.error(msg);
     } finally {
       setIsSaving(false);
     }
@@ -124,12 +125,14 @@ export default function AdminNavigationPage() {
       toast.success(`Nav item '${deleteTarget.label}' deleted.`);
       setDeleteTarget(null);
       fetchNav();
-    } catch (err: any) {
-      toast.error(err.message || 'Failed to delete nav item');
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : 'Failed to delete nav item';
+      toast.error(msg);
     } finally {
       setIsDeleting(false);
     }
   };
+
 
   return (
     <div className="space-y-6">

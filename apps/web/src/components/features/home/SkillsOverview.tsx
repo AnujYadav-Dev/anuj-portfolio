@@ -2,7 +2,8 @@
 
 import * as React from 'react';
 import Link from 'next/link';
-import { ArrowUpRight, Code2 } from 'lucide-react';
+import { ArrowUpRight } from 'lucide-react';
+
 import { SplitSection } from '@/components/common/SplitSection';
 import { Badge } from '@/components/ui/badge';
 import { RevealOnScroll } from '@/components/motion/RevealOnScroll';

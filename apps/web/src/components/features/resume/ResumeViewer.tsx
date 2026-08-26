@@ -1,10 +1,10 @@
 'use client';
 
 import * as React from 'react';
-import { Download, Printer, ExternalLink, Mail, MapPin } from 'lucide-react';
+import { Download, Printer, Mail, MapPin } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Card } from '@/components/ui/card';
+
 import { useActiveResume, useExperiences, useEducation, useSkills } from '@/hooks/useProfile';
 import { useSiteSettings } from '@/hooks/useLayout';
 

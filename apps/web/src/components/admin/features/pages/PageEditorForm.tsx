@@ -68,11 +68,13 @@ export function PageEditorForm({ initialData, isNew = false }: PageEditorFormPro
 
       router.push('/admin/pages');
       router.refresh();
-    } catch (err: any) {
-      toast.error(err.message || 'Failed to save page');
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : 'Failed to save page';
+      toast.error(msg);
     } finally {
       setIsSubmitting(false);
     }
+
   };
 
   return (

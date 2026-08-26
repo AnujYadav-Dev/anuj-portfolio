@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { apiClient } from '@/lib/api';
 import type { EmailTemplateDto, UpdateEmailTemplateRequest } from '@portfolio/shared';
 import { AdminPageHeader } from '@/components/admin/ui/AdminPageHeader';
@@ -9,7 +9,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Spinner } from '@/components/ui/spinner';
-import { Mail, Save, Variable, Eye, Code } from 'lucide-react';
+import { Save, Variable, Eye, Code } from 'lucide-react';
 import { toast } from 'sonner';
 import { cn } from '@/lib/cn';
 
@@ -23,28 +23,27 @@ export default function AdminEmailsPage() {
   const [isSaving, setIsSaving] = useState(false);
   const [previewMode, setPreviewMode] = useState<'html' | 'preview' | 'text'>('html');
 
-  const fetchTemplates = async () => {
+  const fetchTemplates = useCallback(async () => {
     setIsLoading(true);
     try {
       const res = await apiClient.get<{ data: EmailTemplateDto[] }>('/email-templates');
       setTemplates(res.data || []);
-      if (res.data && res.data.length > 0) {
-        const active = res.data.find((t) => t.templateKey === selectedKey) || res.data[0]!;
-        setSelectedKey(active.templateKey);
-        setSubject(active.subject);
-        setBodyHtml(active.bodyHtml);
-        setBodyText(active.bodyText || '');
+      if (res.data && res.data.length > 0 && !selectedKey) {
+        setSelectedKey(res.data[0]!.templateKey);
+        setSubject(res.data[0]!.subject);
+        setBodyHtml(res.data[0]!.bodyHtml);
+        setBodyText(res.data[0]!.bodyText || '');
       }
     } catch {
       toast.error('Failed to load email templates');
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [selectedKey]);
 
   useEffect(() => {
     fetchTemplates();
-  }, []);
+  }, [fetchTemplates]);
 
   const currentTemplate = templates.find((t) => t.templateKey === selectedKey);
 
@@ -70,8 +69,9 @@ export default function AdminEmailsPage() {
       await apiClient.put(`/email-templates/${selectedKey}`, payload);
       toast.success('Email template updated successfully!');
       fetchTemplates();
-    } catch (err: any) {
-      toast.error(err.message || 'Failed to save template');
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : 'Failed to save template';
+      toast.error(msg);
     } finally {
       setIsSaving(false);
     }

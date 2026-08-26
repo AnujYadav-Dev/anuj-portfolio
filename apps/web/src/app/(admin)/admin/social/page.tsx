@@ -100,8 +100,9 @@ export default function AdminSocialPage() {
       }
       setIsModalOpen(false);
       fetchLinks();
-    } catch (err: any) {
-      toast.error(err.message || 'Failed to save social link');
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : 'Failed to save social link';
+      toast.error(msg);
     } finally {
       setIsSaving(false);
     }
@@ -128,12 +129,14 @@ export default function AdminSocialPage() {
       toast.success(`Social link for '${deleteTarget.platform}' deleted.`);
       setDeleteTarget(null);
       fetchLinks();
-    } catch (err: any) {
-      toast.error(err.message || 'Failed to delete social link');
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : 'Failed to delete social link';
+      toast.error(msg);
     } finally {
       setIsDeleting(false);
     }
   };
+
 
   return (
     <div className="space-y-6">

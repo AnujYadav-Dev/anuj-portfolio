@@ -3,9 +3,8 @@
 import * as React from 'react';
 import Link from 'next/link';
 import { ArrowUpRight, Download, Mail } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
 import { RevealOnScroll } from '@/components/motion/RevealOnScroll';
+
 import { useSiteSettings } from '@/hooks/useLayout';
 import { useActiveResume } from '@/hooks/useProfile';
 

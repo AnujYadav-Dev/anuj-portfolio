@@ -95,22 +95,25 @@ export function AdminDataTable<T>({
   let displayData = [...data];
   if (!onSearchChange && activeSearch) {
     const term = activeSearch.toLowerCase();
-    displayData = displayData.filter((item: any) =>
-      Object.values(item).some((val) => val && String(val).toLowerCase().includes(term)),
+    displayData = displayData.filter((item: T) =>
+      Object.values(item as Record<string, unknown>).some(
+        (val) => val != null && String(val).toLowerCase().includes(term),
+      ),
     );
   }
 
   if (sortKey) {
-    displayData.sort((a: any, b: any) => {
-      const valA = a[sortKey];
-      const valB = b[sortKey];
+    displayData.sort((a: T, b: T) => {
+      const valA = (a as Record<string, unknown>)[sortKey];
+      const valB = (b as Record<string, unknown>)[sortKey];
       if (valA === valB) return 0;
       if (valA == null) return 1;
       if (valB == null) return -1;
-      const res = valA < valB ? -1 : 1;
+      const res = String(valA) < String(valB) ? -1 : 1;
       return sortDir === 'asc' ? res : -res;
     });
   }
+
 
   const isAllSelected =
     selectedIds &&
@@ -247,9 +250,10 @@ export function AdminDataTable<T>({
                         >
                           {col.render
                             ? col.render(item, index)
-                            : (item as any)[col.key] != null
-                              ? String((item as any)[col.key])
+                            : (item as Record<string, unknown>)[col.key] != null
+                              ? String((item as Record<string, unknown>)[col.key])
                               : '—'}
+
                         </td>
                       ))}
                     </tr>

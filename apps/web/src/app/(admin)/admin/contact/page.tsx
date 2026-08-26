@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { apiClient } from '@/lib/api';
 import type { ContactSubmissionDto, PaginatedResponse } from '@portfolio/shared';
 import { ContactStatus } from '@portfolio/shared';
@@ -14,11 +14,10 @@ import {
   DialogHeader,
   DialogTitle,
   DialogDescription,
-  DialogFooter,
 } from '@/components/ui/dialog';
 import { Button, buttonVariants } from '@/components/ui/button';
 
-import { Inbox, Mail, Trash2, CheckCircle2, Reply, Archive } from 'lucide-react';
+import { Mail, Trash2, CheckCircle2, Reply, Archive } from 'lucide-react';
 import { toast } from 'sonner';
 
 export default function AdminContactInboxPage() {
@@ -29,14 +28,14 @@ export default function AdminContactInboxPage() {
   const [totalPages, setTotalPages] = useState(1);
   const [totalItems, setTotalItems] = useState(0);
 
-  // Message Inspector Modal
+  // Inspector modal
   const [selectedMessage, setSelectedMessage] = useState<ContactSubmissionDto | null>(null);
 
   // Deletion state
   const [deleteTarget, setDeleteTarget] = useState<ContactSubmissionDto | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
 
-  const fetchMessages = async () => {
+  const fetchMessages = useCallback(async () => {
     setIsLoading(true);
     try {
       const params: Record<string, string> = { page: String(page), pageSize: '20' };
@@ -50,15 +49,15 @@ export default function AdminContactInboxPage() {
       setTotalPages(res.pagination.totalPages || 1);
       setTotalItems(res.pagination.totalItems || 0);
     } catch {
-      toast.error('Failed to load contact messages');
+      toast.error('Failed to load contact submissions');
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [page, statusFilter]);
 
   useEffect(() => {
     fetchMessages();
-  }, [page, statusFilter]);
+  }, [fetchMessages]);
 
   const handleOpenMessage = async (msg: ContactSubmissionDto) => {
     setSelectedMessage(msg);
@@ -84,8 +83,9 @@ export default function AdminContactInboxPage() {
         setSelectedMessage({ ...selectedMessage, status: newStatus });
       }
       fetchMessages();
-    } catch (err: any) {
-      toast.error(err.message || 'Failed to update status');
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : 'Failed to update status';
+      toast.error(msg);
     }
   };
 
@@ -98,8 +98,9 @@ export default function AdminContactInboxPage() {
       setDeleteTarget(null);
       if (selectedMessage?.id === deleteTarget.id) setSelectedMessage(null);
       fetchMessages();
-    } catch (err: any) {
-      toast.error(err.message || 'Failed to delete message');
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : 'Failed to delete message';
+      toast.error(msg);
     } finally {
       setIsDeleting(false);
     }

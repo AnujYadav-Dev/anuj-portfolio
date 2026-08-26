@@ -7,12 +7,17 @@ export function makeQueryClient(): QueryClient {
         staleTime: 5 * 60 * 1000, // 5 minutes for public content
         gcTime: 10 * 60 * 1000, // 10 minutes cache retention
         refetchOnWindowFocus: false,
-        retry: (failureCount, error: any) => {
-          if (error?.statusCode === 404 || error?.statusCode === 401 || error?.statusCode === 403) {
+        retry: (failureCount, error: unknown) => {
+          const status =
+            typeof error === 'object' && error !== null && 'statusCode' in error
+              ? (error as { statusCode?: number }).statusCode
+              : undefined;
+          if (status === 404 || status === 401 || status === 403) {
             return false;
           }
           return failureCount < 2;
         },
+
       },
     },
   });

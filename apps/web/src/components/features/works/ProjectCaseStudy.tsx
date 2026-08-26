@@ -2,12 +2,12 @@
 
 import * as React from 'react';
 import Link from 'next/link';
-import { ArrowLeft, ExternalLink, Calendar, Layers, User, Sparkles } from 'lucide-react';
+import { ArrowLeft, ExternalLink } from 'lucide-react';
 import { GitHubIcon } from '@/components/common/Icons';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Separator } from '@/components/ui/separator';
 import { MarkdownRenderer } from '@/components/content/MarkdownRenderer';
+
 import { ZoomableImage } from '@/components/content/ZoomableImage';
 import { RevealOnScroll } from '@/components/motion/RevealOnScroll';
 import type { ProjectDto } from '@portfolio/shared';

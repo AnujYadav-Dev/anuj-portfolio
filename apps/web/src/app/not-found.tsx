@@ -1,6 +1,7 @@
 import * as React from 'react';
 import Link from 'next/link';
-import { Terminal, ArrowLeft, Home, Search } from 'lucide-react';
+import { Terminal, Home, Search } from 'lucide-react';
+
 import { Button } from '@/components/ui/button';
 
 export default function NotFound() {

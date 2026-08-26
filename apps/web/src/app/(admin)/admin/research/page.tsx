@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { apiClient } from '@/lib/api';
@@ -11,7 +11,7 @@ import { StatusBadge } from '@/components/admin/ui/StatusBadge';
 import { ConfirmDialog } from '@/components/admin/ui/ConfirmDialog';
 import { Button, buttonVariants } from '@/components/ui/button';
 
-import { Plus, Edit2, Trash2, FileText, Download } from 'lucide-react';
+import { Plus, Edit2, Trash2 } from 'lucide-react';
 import { toast } from 'sonner';
 
 export default function AdminResearchListPage() {
@@ -26,7 +26,7 @@ export default function AdminResearchListPage() {
   const [deleteTarget, setDeleteTarget] = useState<ResearchPaperListItemDto | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
 
-  const fetchPapers = async () => {
+  const fetchPapers = useCallback(async () => {
     setIsLoading(true);
     try {
       const res = await apiClient.get<PaginatedResponse<ResearchPaperListItemDto>>(
@@ -43,11 +43,11 @@ export default function AdminResearchListPage() {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [page, search]);
 
   useEffect(() => {
     fetchPapers();
-  }, [page, search]);
+  }, [fetchPapers]);
 
   const handleDelete = async () => {
     if (!deleteTarget) return;
@@ -57,12 +57,14 @@ export default function AdminResearchListPage() {
       toast.success(`Research paper '${deleteTarget.title}' deleted.`);
       setDeleteTarget(null);
       fetchPapers();
-    } catch (err: any) {
-      toast.error(err.message || 'Failed to delete paper');
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : 'Failed to delete paper';
+      toast.error(msg);
     } finally {
       setIsDeleting(false);
     }
   };
+
 
   const columns: Column<ResearchPaperListItemDto>[] = [
     {

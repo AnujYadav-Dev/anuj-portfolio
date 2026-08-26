@@ -92,8 +92,9 @@ export default function AdminTagsPage() {
       }
       setIsModalOpen(false);
       fetchTags();
-    } catch (err: any) {
-      toast.error(err.message || 'Failed to save tag');
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : 'Failed to save tag';
+      toast.error(msg);
     } finally {
       setIsSaving(false);
     }
@@ -107,12 +108,14 @@ export default function AdminTagsPage() {
       toast.success(`Tag '${deleteTarget.name}' deleted.`);
       setDeleteTarget(null);
       fetchTags();
-    } catch (err: any) {
-      toast.error(err.message || 'Failed to delete tag');
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : 'Failed to delete tag';
+      toast.error(msg);
     } finally {
       setIsDeleting(false);
     }
   };
+
 
   const columns: Column<TagDto>[] = [
     {

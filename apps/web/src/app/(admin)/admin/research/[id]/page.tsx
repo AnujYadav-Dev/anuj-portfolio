@@ -19,9 +19,10 @@ export default function AdminEditResearchPage({ params }: { params: Promise<{ id
           `/research/admin/${resolvedParams.id}`,
         );
         setPaper(res.data);
-      } catch (err: any) {
+      } catch {
         toast.error('Failed to load research paper');
       } finally {
+
         setIsLoading(false);
       }
     }

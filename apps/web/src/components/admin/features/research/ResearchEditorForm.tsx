@@ -16,8 +16,10 @@ import { Textarea } from '@/components/ui/textarea';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { MarkdownEditor } from '@/components/admin/ui/MarkdownEditor';
 import { MediaPickerModal } from '@/components/admin/ui/MediaPickerModal';
+import { Save, FileText, Sparkles } from 'lucide-react';
 import { toast } from 'sonner';
-import { Save, FileText, Sparkles, ExternalLink } from 'lucide-react';
+
+
 
 interface ResearchEditorFormProps {
   initialData?: ResearchPaperDto;
@@ -88,11 +90,13 @@ export function ResearchEditorForm({ initialData, isNew = false }: ResearchEdito
 
       router.push('/admin/research');
       router.refresh();
-    } catch (err: any) {
-      toast.error(err.message || 'Failed to save research paper');
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : 'Failed to save research paper';
+      toast.error(msg);
     } finally {
       setIsSubmitting(false);
     }
+
   };
 
   return (

@@ -25,9 +25,9 @@ import {
   ExternalLink,
   FolderGit2,
   Star,
-  Layers,
   Sparkles,
 } from 'lucide-react';
+
 
 interface ProjectEditorFormProps {
   initialData?: ProjectDto;
@@ -151,11 +151,13 @@ export function ProjectEditorForm({ initialData, isNew = false }: ProjectEditorF
 
       router.push('/admin/works');
       router.refresh();
-    } catch (err: any) {
-      toast.error(err.message || 'Failed to save project');
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : 'Failed to save project';
+      toast.error(msg);
     } finally {
       setIsSubmitting(false);
     }
+
   };
 
   return (
@@ -390,12 +392,14 @@ export function ProjectEditorForm({ initialData, isNew = false }: ProjectEditorF
             <CardContent className="space-y-3">
               {coverImageUrl ? (
                 <div className="relative aspect-video w-full rounded-lg border border-border overflow-hidden group bg-surface-muted">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     src={coverImageUrl}
                     alt="Cover preview"
                     className="w-full h-full object-cover"
                   />
                   <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
+
                     <Button
                       type="button"
                       variant="outline"

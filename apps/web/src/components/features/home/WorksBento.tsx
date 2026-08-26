@@ -2,8 +2,7 @@
 
 import * as React from 'react';
 import Link from 'next/link';
-import { ArrowUpRight, Code, Terminal, ExternalLink } from 'lucide-react';
-import { GitHubIcon } from '@/components/common/Icons';
+import { ArrowUpRight, Terminal } from 'lucide-react';
 import { SplitSection } from '@/components/common/SplitSection';
 import {
   Card,
@@ -19,7 +18,8 @@ import { RevealOnScroll } from '@/components/motion/RevealOnScroll';
 import { useProjects } from '@/hooks/useProjects';
 
 export function WorksBento() {
-  const { data: projectsData, isLoading } = useProjects({ isFeatured: true, pageSize: 2 });
+  const { data: projectsData } = useProjects({ isFeatured: true, pageSize: 2 });
+
   const featuredProject = projectsData?.data?.[0];
 
   const verbs = [

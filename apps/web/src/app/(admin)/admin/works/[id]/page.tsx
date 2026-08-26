@@ -19,9 +19,10 @@ export default function AdminEditProjectPage({ params }: { params: Promise<{ id:
           `/projects/admin/${resolvedParams.id}`,
         );
         setProject(res.data);
-      } catch (err: any) {
+      } catch {
         toast.error('Failed to load project details');
       } finally {
+
         setIsLoading(false);
       }
     }

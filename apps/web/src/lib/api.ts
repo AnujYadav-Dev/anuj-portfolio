@@ -131,12 +131,13 @@ async function request<T>(path: string, options: RequestOptions = {}): Promise<T
     }
   }
 
-  let data: any;
+  let data: unknown;
   try {
     data = await response.json();
   } catch {
     data = null;
   }
+
 
   if (!response.ok) {
     const errorBody = data as ApiErrorResponse | null;

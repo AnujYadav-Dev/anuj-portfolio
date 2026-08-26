@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { apiClient } from '@/lib/api';
@@ -11,7 +11,7 @@ import { StatusBadge } from '@/components/admin/ui/StatusBadge';
 import { ConfirmDialog } from '@/components/admin/ui/ConfirmDialog';
 import { Button, buttonVariants } from '@/components/ui/button';
 
-import { Plus, Edit2, Trash2, Star, ExternalLink } from 'lucide-react';
+import { Plus, Edit2, Trash2, Star } from 'lucide-react';
 import { toast } from 'sonner';
 
 export default function AdminProjectsListPage() {
@@ -27,7 +27,7 @@ export default function AdminProjectsListPage() {
   const [deleteTarget, setDeleteTarget] = useState<ProjectListItemDto | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
 
-  const fetchProjects = async () => {
+  const fetchProjects = useCallback(async () => {
     setIsLoading(true);
     try {
       const res = await apiClient.get<PaginatedResponse<ProjectListItemDto>>(
@@ -44,11 +44,11 @@ export default function AdminProjectsListPage() {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [page, search]);
 
   useEffect(() => {
     fetchProjects();
-  }, [page, search]);
+  }, [fetchProjects]);
 
   const handleDelete = async () => {
     if (!deleteTarget) return;
@@ -58,8 +58,9 @@ export default function AdminProjectsListPage() {
       toast.success(`Project '${deleteTarget.title}' deleted.`);
       setDeleteTarget(null);
       fetchProjects();
-    } catch (err: any) {
-      toast.error(err.message || 'Failed to delete project');
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : 'Failed to delete project';
+      toast.error(msg);
     } finally {
       setIsDeleting(false);
     }
@@ -72,6 +73,7 @@ export default function AdminProjectsListPage() {
       render: (item) => (
         <div className="flex items-center gap-3">
           {item.coverImageUrl ? (
+            /* eslint-disable-next-line @next/next/no-img-element */
             <img
               src={item.coverImageUrl}
               alt=""
@@ -83,6 +85,7 @@ export default function AdminProjectsListPage() {
             </div>
           )}
           <div className="min-w-0">
+
             <div className="flex items-center gap-1.5">
               <span className="font-bold text-foreground hover:text-accent truncate transition-colors">
                 {item.title}

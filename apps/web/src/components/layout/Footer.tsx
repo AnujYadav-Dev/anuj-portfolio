@@ -7,7 +7,8 @@ import { useSiteSettings } from '@/hooks/useLayout';
 import { useNewsletterMutation } from '@/hooks/useInteractions';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { ArrowRight, Send } from 'lucide-react';
+import { Send } from 'lucide-react';
+
 import { toast } from 'sonner';
 
 export function Footer() {

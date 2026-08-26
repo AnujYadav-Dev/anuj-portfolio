@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { apiClient } from '@/lib/api';
 import type {
   AdminAnalyticsOverviewDto,
@@ -17,7 +17,6 @@ import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Spinner } from '@/components/ui/spinner';
 import {
-  BarChart3,
   Users,
   Eye,
   Clock,
@@ -44,7 +43,7 @@ export default function AdminAnalyticsDashboardPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [isRefreshing, setIsRefreshing] = useState(false);
 
-  const loadAnalytics = async () => {
+  const loadAnalytics = useCallback(async () => {
     setIsRefreshing(true);
     try {
       const [overviewRes, timeseriesRes, topPagesRes, clicksRes, logsRes] =
@@ -79,11 +78,11 @@ export default function AdminAnalyticsDashboardPage() {
       setIsLoading(false);
       setIsRefreshing(false);
     }
-  };
+  }, [period, logPage]);
 
   useEffect(() => {
     loadAnalytics();
-  }, [period, logPage]);
+  }, [loadAnalytics]);
 
   const topPageColumns: Column<AdminTopPageItem>[] = [
     {

@@ -113,8 +113,9 @@ export default function AdminAchievementsPage() {
       }
       setIsModalOpen(false);
       fetchAchievements();
-    } catch (err: any) {
-      toast.error(err.message || 'Failed to save achievement');
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : 'Failed to save achievement';
+      toast.error(msg);
     } finally {
       setIsSaving(false);
     }
@@ -141,12 +142,14 @@ export default function AdminAchievementsPage() {
       toast.success(`Achievement '${deleteTarget.title}' deleted.`);
       setDeleteTarget(null);
       fetchAchievements();
-    } catch (err: any) {
-      toast.error(err.message || 'Failed to delete achievement');
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : 'Failed to delete achievement';
+      toast.error(msg);
     } finally {
       setIsDeleting(false);
     }
   };
+
 
   return (
     <div className="space-y-6">

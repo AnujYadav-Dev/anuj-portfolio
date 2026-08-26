@@ -1,7 +1,7 @@
 import * as React from 'react';
 import Link from 'next/link';
-import { ArrowUpRight, ExternalLink } from 'lucide-react';
-import { GitHubIcon } from '@/components/common/Icons';
+import Image from 'next/image';
+import { ArrowUpRight } from 'lucide-react';
 import {
   Card,
   CardHeader,
@@ -35,13 +35,16 @@ export function ProjectCard({ project, className }: ProjectCardProps) {
         {/* Project Thumbnail Image if exists */}
         {project.coverImageUrl && (
           <div className="relative aspect-video w-full overflow-hidden bg-surface-muted border-b border-border">
-            <img
+            <Image
               src={project.coverImageUrl}
               alt={project.title}
-              className="h-full w-full object-cover transition-transform duration-normal group-hover:scale-105"
+              fill
+              unoptimized
+              className="object-cover transition-transform duration-normal group-hover:scale-105"
             />
           </div>
         )}
+
 
         <CardHeader>
           <div className="flex items-center justify-between gap-2 mb-2">

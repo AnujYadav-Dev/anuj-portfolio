@@ -19,7 +19,7 @@ export function useContactMutation() {
     onSuccess: () => {
       toast.success('Thank you! Your message has been sent.');
     },
-    onError: (err: any) => {
+    onError: (err) => {
       toast.error(err.message || 'Failed to send message. Please try again.');
     },
   });
@@ -44,7 +44,7 @@ export function useGuestbookMutation() {
       queryClient.invalidateQueries({ queryKey: ['guestbook'] });
       toast.success('Entry submitted! It will appear after moderation.');
     },
-    onError: (err: any) => {
+    onError: (err) => {
       toast.error(err.message || 'Failed to submit entry.');
     },
   });
@@ -67,8 +67,9 @@ export function useNewsletterMutation() {
     onSuccess: (res) => {
       toast.success(res.data?.message || 'Subscribed successfully! Check your inbox.');
     },
-    onError: (err: any) => {
+    onError: (err) => {
       toast.error(err.message || 'Failed to subscribe to newsletter.');
     },
   });
 }
+

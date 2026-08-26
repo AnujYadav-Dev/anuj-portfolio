@@ -142,8 +142,9 @@ export function BlogEditorForm({ initialData, isNew = false }: BlogEditorFormPro
       setIsVersionModalOpen(false);
       router.refresh();
       window.location.reload();
-    } catch (err: any) {
-      toast.error(err.message || 'Rollback failed');
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : 'Rollback failed';
+      toast.error(msg);
     }
   };
 
@@ -180,12 +181,14 @@ export function BlogEditorForm({ initialData, isNew = false }: BlogEditorFormPro
 
       router.push('/admin/blogs');
       router.refresh();
-    } catch (err: any) {
-      toast.error(err.message || 'Failed to save blog post');
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : 'Failed to save blog post';
+      toast.error(msg);
     } finally {
       setIsSubmitting(false);
     }
   };
+
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
@@ -400,6 +403,7 @@ export function BlogEditorForm({ initialData, isNew = false }: BlogEditorFormPro
             <CardContent className="space-y-3">
               {coverImageUrl ? (
                 <div className="relative aspect-video w-full rounded-lg border border-border overflow-hidden group bg-surface-muted">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     src={coverImageUrl}
                     alt="Cover preview"
@@ -515,11 +519,14 @@ export function BlogEditorForm({ initialData, isNew = false }: BlogEditorFormPro
           <div className="flex-1 grid grid-cols-1 md:grid-cols-3 gap-4 min-h-0 py-3">
             {/* Version List */}
             <div className="border border-border rounded-lg bg-background overflow-y-auto divide-y divide-border max-h-96">
-              {versions.length === 0 ? (
+              {isLoadingVersions ? (
+                <p className="p-4 text-xs text-muted text-center italic">Loading versions...</p>
+              ) : versions.length === 0 ? (
                 <p className="p-4 text-xs text-muted text-center italic">
                   No prior versions recorded
                 </p>
               ) : (
+
                 versions.map((v) => (
                   <button
                     type="button"

@@ -1,7 +1,7 @@
 'use client';
 
 import React, { createContext, useCallback, useContext, useEffect, useState } from 'react';
-import { useRouter, usePathname } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import type { AuthorDto, AuthResponse } from '@portfolio/shared';
 import { apiClient } from '@/lib/api';
 
@@ -30,7 +30,6 @@ export function AdminAuthProvider({ children }: { children: React.ReactNode }) {
   const [isLoading, setIsLoading] = useState(true);
   const [secondsRemaining, setSecondsRemaining] = useState<number | null>(null);
   const router = useRouter();
-  const pathname = usePathname();
 
   // Initialize from storage on mount
   useEffect(() => {
@@ -59,49 +58,6 @@ export function AdminAuthProvider({ children }: { children: React.ReactNode }) {
           setSecondsRemaining(DEFAULT_TTL_SECONDS);
         }
       }
-    } finally {
-      setIsLoading(false);
-    }
-  }, []);
-
-  // Countdown timer effect
-  useEffect(() => {
-    if (!accessToken || secondsRemaining === null) return;
-
-    const interval = setInterval(() => {
-      setSecondsRemaining((prev) => {
-        if (prev === null || prev <= 0) {
-          // Token expired, attempt silent background refresh
-          renewSession().catch(() => {});
-          return 0;
-        }
-        return prev - 1;
-      });
-    }, 1000);
-
-    return () => clearInterval(interval);
-  }, [accessToken, secondsRemaining]);
-
-  const login = useCallback(async (email: string, password: string) => {
-    setIsLoading(true);
-    try {
-      const res = await apiClient.post<{ data: AuthResponse }>('/auth/login', {
-        email,
-        password,
-      });
-
-      const { accessToken: newAccess, refreshToken: newRefresh, author: newAuthor } = res.data;
-      const expiresAt = Date.now() + DEFAULT_TTL_SECONDS * 1000;
-
-      localStorage.setItem('access_token', newAccess);
-      localStorage.setItem('refresh_token', newRefresh);
-      localStorage.setItem('auth_user', JSON.stringify(newAuthor));
-      localStorage.setItem('token_expires_at', String(expiresAt));
-
-      setAccessToken(newAccess);
-      setRefreshToken(newRefresh);
-      setAuthor(newAuthor);
-      setSecondsRemaining(DEFAULT_TTL_SECONDS);
     } finally {
       setIsLoading(false);
     }
@@ -158,6 +114,50 @@ export function AdminAuthProvider({ children }: { children: React.ReactNode }) {
       await logout();
     }
   }, [logout, refreshToken]);
+
+  // Countdown timer effect
+  useEffect(() => {
+    if (!accessToken || secondsRemaining === null) return;
+
+    const interval = setInterval(() => {
+      setSecondsRemaining((prev) => {
+        if (prev === null || prev <= 0) {
+          // Token expired, attempt silent background refresh
+          renewSession().catch(() => {});
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [accessToken, secondsRemaining, renewSession]);
+
+  const login = useCallback(async (email: string, password: string) => {
+    setIsLoading(true);
+    try {
+      const res = await apiClient.post<{ data: AuthResponse }>('/auth/login', {
+        email,
+        password,
+      });
+
+      const { accessToken: newAccess, refreshToken: newRefresh, author: newAuthor } = res.data;
+      const expiresAt = Date.now() + DEFAULT_TTL_SECONDS * 1000;
+
+      localStorage.setItem('access_token', newAccess);
+      localStorage.setItem('refresh_token', newRefresh);
+      localStorage.setItem('auth_user', JSON.stringify(newAuthor));
+      localStorage.setItem('token_expires_at', String(expiresAt));
+
+      setAccessToken(newAccess);
+      setRefreshToken(newRefresh);
+      setAuthor(newAuthor);
+      setSecondsRemaining(DEFAULT_TTL_SECONDS);
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
+
 
   const updateAuthor = useCallback((updatedAuthor: AuthorDto) => {
     setAuthor(updatedAuthor);

@@ -1,6 +1,7 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
+
 import { apiClient } from '@/lib/api';
 import type {
   SkillCategoryDto,
@@ -50,12 +51,12 @@ export default function AdminSkillsPage() {
   const [deleteTarget, setDeleteTarget] = useState<SkillDto | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
 
-  const fetchData = async () => {
+  const fetchData = useCallback(async () => {
     setIsLoading(true);
     try {
       const [catRes, skillRes] = await Promise.all([
         apiClient.get<{ data: SkillCategoryDto[] }>('/skill-categories'),
-        apiClient.get<{ data: SkillDto[] }>('/skills'),
+        apiClient.get<{ data: SkillDto[] }>('/skills/admin/all'),
       ]);
       setCategories(catRes.data || []);
       setSkills(skillRes.data || []);
@@ -67,11 +68,11 @@ export default function AdminSkillsPage() {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [categoryId]);
 
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [fetchData]);
 
   const openCreateSkill = () => {
     setEditingSkill(null);
@@ -128,8 +129,9 @@ export default function AdminSkillsPage() {
       }
       setIsSkillModalOpen(false);
       fetchData();
-    } catch (err: any) {
-      toast.error(err.message || 'Failed to save skill');
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : 'Failed to save skill';
+      toast.error(msg);
     } finally {
       setIsSavingSkill(false);
     }
@@ -155,8 +157,9 @@ export default function AdminSkillsPage() {
       setCatName('');
       setCatSlug('');
       fetchData();
-    } catch (err: any) {
-      toast.error(err.message || 'Failed to create category');
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : 'Failed to create category';
+      toast.error(msg);
     } finally {
       setIsSavingCat(false);
     }
@@ -170,12 +173,14 @@ export default function AdminSkillsPage() {
       toast.success(`Skill '${deleteTarget.name}' deleted.`);
       setDeleteTarget(null);
       fetchData();
-    } catch (err: any) {
-      toast.error(err.message || 'Failed to delete skill');
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : 'Failed to delete skill';
+      toast.error(msg);
     } finally {
       setIsDeleting(false);
     }
   };
+
 
   const filteredSkills = skills.filter((s) => {
     const matchesSearch = s.name.toLowerCase().includes(search.toLowerCase());

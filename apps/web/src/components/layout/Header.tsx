@@ -5,8 +5,8 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Search, Menu } from 'lucide-react';
 import { ThemeToggle } from '@/components/ui/theme-toggle';
-import { Tooltip } from '@/components/ui/tooltip';
 import { CommandPalette } from './CommandPalette';
+
 import { MobileNav } from './MobileNav';
 import { useNavItems } from '@/hooks/useLayout';
 import { cn } from '@/lib/cn';

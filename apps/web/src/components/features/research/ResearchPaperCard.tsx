@@ -1,12 +1,10 @@
 import * as React from 'react';
 import Link from 'next/link';
-import { Download, ExternalLink, FileText, BookOpen } from 'lucide-react';
 import {
   Card,
   CardHeader,
   CardTitle,
   CardDescription,
-  CardContent,
   CardFooter,
 } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -25,7 +23,6 @@ export function ResearchPaperCard({ paper }: ResearchPaperCardProps) {
       })
     : '';
 
-  const downloadUrl = `/api/v1/research/${paper.slug}/download`;
 
   return (
     <Card className="bg-surface border-border hover:border-muted transition-all duration-fast">

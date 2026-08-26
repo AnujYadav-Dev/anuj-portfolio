@@ -108,8 +108,9 @@ export default function AdminResumePage() {
       }
       setIsModalOpen(false);
       fetchResumes();
-    } catch (err: any) {
-      toast.error(err.message || 'Failed to save resume');
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : 'Failed to save resume';
+      toast.error(msg);
     } finally {
       setIsSaving(false);
     }
@@ -123,12 +124,14 @@ export default function AdminResumePage() {
       toast.success(`Resume '${deleteTarget.title}' deleted.`);
       setDeleteTarget(null);
       fetchResumes();
-    } catch (err: any) {
-      toast.error(err.message || 'Failed to delete resume');
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : 'Failed to delete resume';
+      toast.error(msg);
     } finally {
       setIsDeleting(false);
     }
   };
+
 
   const columns: Column<ResumeDto>[] = [
     {

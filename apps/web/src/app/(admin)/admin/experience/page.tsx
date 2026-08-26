@@ -20,8 +20,10 @@ import {
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import { Plus, Edit2, Trash2, Briefcase, Calendar, MapPin } from 'lucide-react';
+import { Plus, Edit2, Trash2, Briefcase } from 'lucide-react';
 import { toast } from 'sonner';
+
+
 
 export default function AdminExperiencePage() {
   const [experiences, setExperiences] = useState<ExperienceDto[]>([]);
@@ -130,8 +132,9 @@ export default function AdminExperiencePage() {
       }
       setIsModalOpen(false);
       fetchExperiences();
-    } catch (err: any) {
-      toast.error(err.message || 'Failed to save experience');
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : 'Failed to save experience';
+      toast.error(msg);
     } finally {
       setIsSaving(false);
     }
@@ -158,12 +161,14 @@ export default function AdminExperiencePage() {
       toast.success(`Experience at '${deleteTarget.companyName}' deleted.`);
       setDeleteTarget(null);
       fetchExperiences();
-    } catch (err: any) {
-      toast.error(err.message || 'Failed to delete experience');
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : 'Failed to delete experience';
+      toast.error(msg);
     } finally {
       setIsDeleting(false);
     }
   };
+
 
   return (
     <div className="space-y-6">

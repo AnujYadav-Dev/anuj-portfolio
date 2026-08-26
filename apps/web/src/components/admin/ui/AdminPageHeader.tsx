@@ -1,8 +1,8 @@
 'use client';
 
 import React from 'react';
-import { Button } from '@/components/ui/button';
 import { ArrowLeft } from 'lucide-react';
+
 import { useRouter } from 'next/navigation';
 
 interface AdminPageHeaderProps {

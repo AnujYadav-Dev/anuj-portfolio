@@ -22,7 +22,7 @@ export default function AdminNewsletterPage() {
   const [deleteTarget, setDeleteTarget] = useState<NewsletterSubscriberDto | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
 
-  const fetchSubscribers = async () => {
+  const fetchSubscribers = React.useCallback(async () => {
     setIsLoading(true);
     try {
       const params: Record<string, string> = {
@@ -44,11 +44,11 @@ export default function AdminNewsletterPage() {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [page, search, statusFilter]);
 
   useEffect(() => {
     fetchSubscribers();
-  }, [page, search, statusFilter]);
+  }, [fetchSubscribers]);
 
   const handleExportCSV = () => {
     if (subscribers.length === 0) {
@@ -86,12 +86,14 @@ export default function AdminNewsletterPage() {
       toast.success('Subscriber removed.');
       setDeleteTarget(null);
       fetchSubscribers();
-    } catch (err: any) {
-      toast.error(err.message || 'Failed to delete subscriber');
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : 'Failed to delete subscriber';
+      toast.error(msg);
     } finally {
       setIsDeleting(false);
     }
   };
+
 
   const columns: Column<NewsletterSubscriberDto>[] = [
     {

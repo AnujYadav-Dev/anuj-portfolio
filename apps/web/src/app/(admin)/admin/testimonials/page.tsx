@@ -128,8 +128,9 @@ export default function AdminTestimonialsPage() {
       }
       setIsModalOpen(false);
       fetchTestimonials();
-    } catch (err: any) {
-      toast.error(err.message || 'Failed to save testimonial');
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : 'Failed to save testimonial';
+      toast.error(msg);
     } finally {
       setIsSaving(false);
     }
@@ -143,8 +144,9 @@ export default function AdminTestimonialsPage() {
       toast.success(`Testimonial by '${deleteTarget.authorName}' deleted.`);
       setDeleteTarget(null);
       fetchTestimonials();
-    } catch (err: any) {
-      toast.error(err.message || 'Failed to delete testimonial');
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : 'Failed to delete testimonial';
+      toast.error(msg);
     } finally {
       setIsDeleting(false);
     }
@@ -158,11 +160,13 @@ export default function AdminTestimonialsPage() {
         <div className="flex items-center gap-3">
           <div className="w-8 h-8 rounded-full bg-surface-muted border border-border flex items-center justify-center shrink-0 overflow-hidden font-bold text-xs text-accent">
             {item.authorAvatarUrl ? (
+              /* eslint-disable-next-line @next/next/no-img-element */
               <img src={item.authorAvatarUrl} alt="" className="w-full h-full object-cover" />
             ) : (
               item.authorName.charAt(0)
             )}
           </div>
+
           <div className="min-w-0">
             <div className="flex items-center gap-1.5">
               <span className="font-bold text-foreground truncate">{item.authorName}</span>
@@ -340,6 +344,7 @@ export default function AdminTestimonialsPage() {
                 <label className="text-xs font-semibold text-foreground">Author Avatar</label>
                 {authorAvatarUrl ? (
                   <div className="flex items-center gap-3 p-2 border border-border rounded-lg bg-surface-muted">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
                       src={authorAvatarUrl}
                       alt=""
@@ -352,6 +357,7 @@ export default function AdminTestimonialsPage() {
                       className="text-xs"
                       onClick={() => setIsAvatarPickerOpen(true)}
                     >
+
                       Change Photo
                     </Button>
                   </div>

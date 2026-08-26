@@ -15,8 +15,10 @@ import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/com
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import { User, KeyRound, Save, ShieldCheck, CheckCircle2, AlertCircle } from 'lucide-react';
+import { User, KeyRound, Save, ShieldCheck } from 'lucide-react';
 import { toast } from 'sonner';
+
+
 
 export default function AdminProfilePage() {
   const { author, updateAuthor } = useAdminAuth();
@@ -59,8 +61,9 @@ export default function AdminProfilePage() {
       const res = await apiClient.put<{ data: AuthorDto }>('/auth/profile', payload);
       updateAuthor(res.data);
       toast.success('Author profile updated successfully!');
-    } catch (err: any) {
-      toast.error(err.message || 'Failed to update profile');
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : 'Failed to update profile';
+      toast.error(msg);
     } finally {
       setIsSavingProfile(false);
     }
@@ -88,8 +91,9 @@ export default function AdminProfilePage() {
       setCurrentPassword('');
       setNewPassword('');
       setConfirmPassword('');
-    } catch (err: any) {
-      toast.error(err.message || 'Failed to change password');
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : 'Failed to change password';
+      toast.error(msg);
     } finally {
       setIsChangingPassword(false);
     }
@@ -109,11 +113,13 @@ export default function AdminProfilePage() {
             <div className="relative group mb-4">
               <div className="w-24 h-24 rounded-full overflow-hidden border-2 border-accent bg-surface-muted flex items-center justify-center shadow-lg">
                 {avatarUrl ? (
+                  /* eslint-disable-next-line @next/next/no-img-element */
                   <img src={avatarUrl} alt="Avatar" className="w-full h-full object-cover" />
                 ) : (
                   <User className="w-10 h-10 text-accent" />
                 )}
               </div>
+
               <button
                 type="button"
                 onClick={() => setIsMediaPickerOpen(true)}

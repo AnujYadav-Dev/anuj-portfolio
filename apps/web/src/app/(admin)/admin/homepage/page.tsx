@@ -68,11 +68,13 @@ export default function AdminHomepageLayoutPage() {
       toast.success('Section updated');
       setIsModalOpen(false);
       fetchSections();
-    } catch (err: any) {
-      toast.error(err.message || 'Failed to update section');
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : 'Failed to update section';
+      toast.error(msg);
     } finally {
       setIsSaving(false);
     }
+
   };
 
   const handleToggleVisibility = async (sec: HomepageSectionDto) => {

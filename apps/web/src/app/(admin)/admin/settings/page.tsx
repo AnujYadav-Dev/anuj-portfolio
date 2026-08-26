@@ -55,11 +55,13 @@ export default function AdminSettingsPage() {
       await apiClient.put('/site-settings/bulk', { settings: updates });
       toast.success('Site configuration saved successfully!');
       fetchSettings();
-    } catch (err: any) {
-      toast.error(err.message || 'Failed to update settings');
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : 'Failed to update settings';
+      toast.error(msg);
     } finally {
       setIsSaving(false);
     }
+
   };
 
   if (isLoading) {

@@ -3,9 +3,8 @@
 import React, { useState, useRef } from 'react';
 import { MarkdownRenderer } from '@/components/content/MarkdownRenderer';
 import { MediaPickerModal } from './MediaPickerModal';
-import { Button } from '@/components/ui/button';
-import { Textarea } from '@/components/ui/textarea';
 import type { MediaDto } from '@portfolio/shared';
+
 import {
   Bold,
   Italic,

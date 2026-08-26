@@ -123,8 +123,9 @@ export default function AdminOpensourcePage() {
       }
       setIsModalOpen(false);
       fetchRepos();
-    } catch (err: any) {
-      toast.error(err.message || 'Failed to save repository');
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : 'Failed to save repository';
+      toast.error(msg);
     } finally {
       setIsSaving(false);
     }
@@ -138,12 +139,14 @@ export default function AdminOpensourcePage() {
       toast.success(`Repository '${deleteTarget.name}' deleted.`);
       setDeleteTarget(null);
       fetchRepos();
-    } catch (err: any) {
-      toast.error(err.message || 'Failed to delete repository');
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : 'Failed to delete repository';
+      toast.error(msg);
     } finally {
       setIsDeleting(false);
     }
   };
+
 
   const columns: Column<OpensourceContributionDto>[] = [
     {

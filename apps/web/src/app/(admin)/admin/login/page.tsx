@@ -35,13 +35,14 @@ export default function AdminLoginPage() {
       await login(email, password);
       toast.success('Successfully authenticated. Welcome back!');
       router.replace(redirectTarget);
-    } catch (err: any) {
-      const message = err.message || 'Authentication failed. Please check your credentials.';
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : 'Authentication failed. Please check your credentials.';
       setErrorMsg(message);
       toast.error(message);
     } finally {
       setIsSubmitting(false);
     }
+
   };
 
   return (

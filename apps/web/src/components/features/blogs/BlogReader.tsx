@@ -2,16 +2,15 @@
 
 import * as React from 'react';
 import Link from 'next/link';
-import { ArrowLeft, Calendar, Clock, Share2, Copy, User } from 'lucide-react';
+import { ArrowLeft, Calendar, Share2, Copy } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Avatar } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
-import { Separator } from '@/components/ui/separator';
 import { MarkdownRenderer } from '@/components/content/MarkdownRenderer';
 import { TableOfContents, extractHeadings } from '@/components/content/TableOfContents';
-import { RevealOnScroll } from '@/components/motion/RevealOnScroll';
 import type { BlogPostDto } from '@portfolio/shared';
 import { toast } from 'sonner';
+
 
 export interface BlogReaderProps {
   post: BlogPostDto;

@@ -7,12 +7,11 @@ import {
   CardHeader,
   CardTitle,
   CardDescription,
-  CardContent,
   CardFooter,
 } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
 import { RevealOnScroll } from '@/components/motion/RevealOnScroll';
+
 import type { CertificateDto, AchievementDto } from '@portfolio/shared';
 
 export interface CertificatesGalleryProps {

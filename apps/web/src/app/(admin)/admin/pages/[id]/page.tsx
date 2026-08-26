@@ -17,9 +17,10 @@ export default function AdminEditPage({ params }: { params: Promise<{ id: string
       try {
         const res = await apiClient.get<{ data: PageDto }>(`/pages/admin/${resolvedParams.id}`);
         setPage(res.data);
-      } catch (err: any) {
+      } catch {
         toast.error('Failed to load page');
       } finally {
+
         setIsLoading(false);
       }
     }

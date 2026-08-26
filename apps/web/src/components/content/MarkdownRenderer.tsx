@@ -95,7 +95,7 @@ export function MarkdownRenderer({ content, className }: MarkdownRendererProps) 
           blockquote: ({ children }) => {
             // Check for callout format > [!NOTE]
             const rawText = React.Children.toArray(children)
-              .map((c: any) => c?.props?.children || c)
+              .map((c) => (React.isValidElement<{ children?: React.ReactNode }>(c) ? c.props.children : c))
               .flat()
               .join('');
 
@@ -110,7 +110,7 @@ export function MarkdownRenderer({ content, className }: MarkdownRendererProps) 
               </blockquote>
             );
           },
-          code: ({ node, inline, className, children, ...props }: any) => {
+          code: ({ inline, className, children, ...props }: React.HTMLAttributes<HTMLElement> & { inline?: boolean }) => {
             const match = /language-(\w+)/.exec(className || '');
             const codeString = String(children).replace(/\n$/, '');
 
@@ -127,10 +127,14 @@ export function MarkdownRenderer({ content, className }: MarkdownRendererProps) 
               </code>
             );
           },
-          img: ({ src, alt }: any) => {
+          img: (props) => {
+            const src = typeof props.src === 'string' ? props.src : undefined;
             if (!src) return null;
-            return <ZoomableImage src={src} alt={alt || ''} caption={alt} />;
+            return <ZoomableImage src={src} alt={props.alt || ''} caption={props.alt} />;
           },
+
+
+
           table: ({ children }) => (
             <div className="my-6 w-full overflow-y-auto rounded-md border border-border">
               <table className="w-full text-left text-xs border-collapse">{children}</table>

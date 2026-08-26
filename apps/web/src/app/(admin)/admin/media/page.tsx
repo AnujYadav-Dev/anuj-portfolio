@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { apiClient } from '@/lib/api';
 import type { MediaDto, PaginatedResponse, UpdateMediaRequest } from '@portfolio/shared';
 import { AdminPageHeader } from '@/components/admin/ui/AdminPageHeader';
@@ -16,18 +16,14 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Spinner } from '@/components/ui/spinner';
 import {
-  HardDrive,
   UploadCloud,
   Search,
   Copy,
   Trash2,
-  Edit2,
   FileText,
-  Image as ImageIcon,
-  Check,
-  ExternalLink,
-  Filter,
+  HardDrive,
 } from 'lucide-react';
+
 import { toast } from 'sonner';
 import { cn } from '@/lib/cn';
 
@@ -36,8 +32,6 @@ export default function AdminMediaLibraryPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [search, setSearch] = useState('');
   const [mediaType, setMediaType] = useState<string>('all');
-  const [page, setPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
   const [totalItems, setTotalItems] = useState(0);
 
   // Inspector / Editor Modal
@@ -57,27 +51,26 @@ export default function AdminMediaLibraryPage() {
   const [deleteTarget, setDeleteTarget] = useState<MediaDto | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
 
-  const fetchMedia = async () => {
+  const fetchMedia = useCallback(async () => {
     setIsLoading(true);
     try {
-      const params: Record<string, string> = { page: String(page), pageSize: '24' };
-      if (search) params.search = search;
+      const params: Record<string, string> = { pageSize: '50' };
       if (mediaType !== 'all') params.mediaType = mediaType;
+      if (search) params.search = search;
 
       const res = await apiClient.get<PaginatedResponse<MediaDto>>('/media', { params });
       setMediaList(res.data || []);
-      setTotalPages(res.pagination.totalPages || 1);
       setTotalItems(res.pagination.totalItems || 0);
     } catch {
       toast.error('Failed to load media library');
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [mediaType, search]);
 
   useEffect(() => {
     fetchMedia();
-  }, [page, search, mediaType]);
+  }, [fetchMedia]);
 
   const handleOpenInspect = (item: MediaDto) => {
     setInspectingItem(item);
@@ -100,8 +93,9 @@ export default function AdminMediaLibraryPage() {
       toast.success('Media metadata updated');
       setInspectingItem(null);
       fetchMedia();
-    } catch (err: any) {
-      toast.error(err.message || 'Failed to update metadata');
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : 'Failed to update metadata';
+      toast.error(msg);
     } finally {
       setIsUpdating(false);
     }
@@ -128,8 +122,9 @@ export default function AdminMediaLibraryPage() {
       setUploadAlt('');
       setUploadCaption('');
       fetchMedia();
-    } catch (err: any) {
-      toast.error(err.message || 'Upload failed');
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : 'Upload failed';
+      toast.error(msg);
     } finally {
       setIsUploading(false);
     }
@@ -144,8 +139,9 @@ export default function AdminMediaLibraryPage() {
       setDeleteTarget(null);
       setInspectingItem(null);
       fetchMedia();
-    } catch (err: any) {
-      toast.error(err.message || 'Failed to delete asset');
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : 'Failed to delete asset';
+      toast.error(msg);
     } finally {
       setIsDeleting(false);
     }
@@ -244,6 +240,7 @@ export default function AdminMediaLibraryPage() {
               >
                 <div className="aspect-square w-full rounded bg-surface-muted overflow-hidden flex items-center justify-center relative">
                   {isImage ? (
+                    /* eslint-disable-next-line @next/next/no-img-element */
                     <img
                       src={item.url}
                       alt={item.altText || item.filename}
@@ -252,6 +249,7 @@ export default function AdminMediaLibraryPage() {
                   ) : (
                     <FileText className="w-8 h-8 text-accent" />
                   )}
+
 
                   {/* Quick Copy Button */}
                   <button
@@ -391,6 +389,7 @@ export default function AdminMediaLibraryPage() {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 flex-1 overflow-y-auto">
                 <div className="aspect-square w-full rounded-lg bg-surface-muted border border-border overflow-hidden flex items-center justify-center p-2">
                   {inspectingItem.mediaType === 'image' ? (
+                    /* eslint-disable-next-line @next/next/no-img-element */
                     <img
                       src={inspectingItem.url}
                       alt={inspectingItem.altText || ''}
@@ -400,6 +399,7 @@ export default function AdminMediaLibraryPage() {
                     <FileText className="w-16 h-16 text-accent" />
                   )}
                 </div>
+
 
                 <div className="space-y-3 text-xs">
                   <div className="p-2.5 rounded bg-background border border-border space-y-1 font-mono text-[11px]">

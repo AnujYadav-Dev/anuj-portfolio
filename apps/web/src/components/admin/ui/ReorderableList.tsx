@@ -1,14 +1,15 @@
 'use client';
 
 import React from 'react';
-import { ArrowUp, ArrowDown, GripVertical } from 'lucide-react';
+import { ArrowUp, ArrowDown } from 'lucide-react';
 import { cn } from '@/lib/cn';
 
-interface ReorderableItem {
+export interface ReorderableItem {
   id: string;
   sortOrder: number;
-  [key: string]: any;
 }
+
+
 
 interface ReorderableListProps<T extends ReorderableItem> {
   items: T[];

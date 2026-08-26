@@ -434,14 +434,176 @@ async function main() {
     ],
   });
 
-  // Footer Navigation Items
+  // Footer Navigation Items — Multi-Column Structure
+  const footerWorks = await prisma.navItem.create({
+    data: {
+      label: 'Works',
+      url: '/works',
+      location: 'footer',
+      itemType: 'group',
+      sortOrder: 0,
+    },
+  });
+
   await prisma.navItem.createMany({
     data: [
-      { label: 'Works', url: '/works', location: 'footer', itemType: 'link', sortOrder: 0 },
-      { label: 'Blogs', url: '/blogs', location: 'footer', itemType: 'link', sortOrder: 1 },
-      { label: 'Resume', url: '/resume', location: 'footer', itemType: 'link', sortOrder: 2 },
-      { label: 'Guestbook', url: '/guestbook', location: 'footer', itemType: 'link', sortOrder: 3 },
-      { label: 'Changelog', url: '/changelog', location: 'footer', itemType: 'link', sortOrder: 4 },
+      {
+        label: 'Case Studies',
+        url: '/works',
+        location: 'footer',
+        itemType: 'link',
+        parentId: footerWorks.id,
+        sortOrder: 0,
+      },
+      {
+        label: 'Open Source',
+        url: '/opensource',
+        location: 'footer',
+        itemType: 'link',
+        parentId: footerWorks.id,
+        sortOrder: 1,
+      },
+      {
+        label: 'Architecture Highlights',
+        url: '/works?category=backend',
+        location: 'footer',
+        itemType: 'link',
+        parentId: footerWorks.id,
+        sortOrder: 2,
+      },
+    ],
+  });
+
+  const footerWriting = await prisma.navItem.create({
+    data: {
+      label: 'Writing',
+      url: '/blogs',
+      location: 'footer',
+      itemType: 'group',
+      sortOrder: 1,
+    },
+  });
+
+  await prisma.navItem.createMany({
+    data: [
+      {
+        label: 'Technical Blog',
+        url: '/blogs',
+        location: 'footer',
+        itemType: 'link',
+        parentId: footerWriting.id,
+        sortOrder: 0,
+      },
+      {
+        label: 'Research Papers',
+        url: '/research',
+        location: 'footer',
+        itemType: 'link',
+        parentId: footerWriting.id,
+        sortOrder: 1,
+      },
+      {
+        label: 'Newsletter Archive',
+        url: '/newsletter',
+        location: 'footer',
+        itemType: 'link',
+        parentId: footerWriting.id,
+        sortOrder: 2,
+      },
+    ],
+  });
+
+  const footerJourney = await prisma.navItem.create({
+    data: {
+      label: 'Journey',
+      url: '/about',
+      location: 'footer',
+      itemType: 'group',
+      sortOrder: 2,
+    },
+  });
+
+  await prisma.navItem.createMany({
+    data: [
+      {
+        label: 'About & Philosophy',
+        url: '/about',
+        location: 'footer',
+        itemType: 'link',
+        parentId: footerJourney.id,
+        sortOrder: 0,
+      },
+      {
+        label: 'Skills Matrix',
+        url: '/skills',
+        location: 'footer',
+        itemType: 'link',
+        parentId: footerJourney.id,
+        sortOrder: 1,
+      },
+      {
+        label: 'Career Timeline',
+        url: '/my-timeline',
+        location: 'footer',
+        itemType: 'link',
+        parentId: footerJourney.id,
+        sortOrder: 2,
+      },
+      {
+        label: 'Verified Resume',
+        url: '/resume',
+        location: 'footer',
+        itemType: 'link',
+        parentId: footerJourney.id,
+        sortOrder: 3,
+      },
+    ],
+  });
+
+  const footerPlatform = await prisma.navItem.create({
+    data: {
+      label: 'Platform',
+      url: '/now',
+      location: 'footer',
+      itemType: 'group',
+      sortOrder: 3,
+    },
+  });
+
+  await prisma.navItem.createMany({
+    data: [
+      {
+        label: 'Now',
+        url: '/now',
+        location: 'footer',
+        itemType: 'link',
+        parentId: footerPlatform.id,
+        sortOrder: 0,
+      },
+      {
+        label: 'Tech Stack (Uses)',
+        url: '/uses',
+        location: 'footer',
+        itemType: 'link',
+        parentId: footerPlatform.id,
+        sortOrder: 1,
+      },
+      {
+        label: 'Guestbook',
+        url: '/guestbook',
+        location: 'footer',
+        itemType: 'link',
+        parentId: footerPlatform.id,
+        sortOrder: 2,
+      },
+      {
+        label: 'Get in Touch',
+        url: '/contact',
+        location: 'footer',
+        itemType: 'link',
+        parentId: footerPlatform.id,
+        sortOrder: 3,
+      },
     ],
   });
 

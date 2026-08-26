@@ -1,7 +1,7 @@
 'use client';
 
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { apiClient } from '@/lib/api';
+import { apiClient, ApiClientError } from '@/lib/api';
 import type {
   ContactSubmissionDto,
   CreateContactInput,
@@ -65,10 +65,24 @@ export function useNewsletterMutation() {
     mutationFn: (input) =>
       apiClient.post<{ data: { message: string } }>('/newsletter/subscribe', input),
     onSuccess: (res) => {
-      toast.success(res.data?.message || 'Subscribed successfully! Check your inbox.');
+      const msg = res.data?.message || 'Subscribed successfully! Check your inbox.';
+      if (msg.toLowerCase().includes('already')) {
+        toast.info(msg);
+      } else {
+        toast.success(msg);
+      }
     },
-    onError: (err) => {
-      toast.error(err.message || 'Failed to subscribe to newsletter.');
+    onError: (err: unknown) => {
+      const isConflict =
+        (err instanceof ApiClientError && err.statusCode === 409) ||
+        (err instanceof Error && err.message.toLowerCase().includes('already subscribed'));
+
+      if (isConflict) {
+        toast.info('You are already subscribed to the newsletter with this email.');
+      } else {
+        const msg = err instanceof Error ? err.message : 'Failed to subscribe to newsletter.';
+        toast.error(msg);
+      }
     },
   });
 }

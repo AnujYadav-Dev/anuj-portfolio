@@ -20,14 +20,14 @@ export const newsletterService = {
         // Resubscribe
         await newsletterRepository.delete(existing.id);
       } else {
-        throw new ConflictError(`Email '${input.email}' is already subscribed`);
+        return { message: 'You are already subscribed to the newsletter!' };
       }
     }
 
     const token = generateSecureToken();
     await newsletterRepository.create(input.email, input.name ?? null, token);
 
-    return { message: 'Subscribed successfully' };
+    return { message: 'Subscribed successfully! Check your inbox.' };
   },
 
   async confirm(token: string): Promise<{ message: string }> {

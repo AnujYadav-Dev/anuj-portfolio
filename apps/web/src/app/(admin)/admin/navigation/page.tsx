@@ -35,6 +35,8 @@ import {
   MousePointerClick,
   FolderTree,
   LayoutGrid,
+  Columns,
+  Menu,
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { cn } from '@/lib/cn';
@@ -65,19 +67,23 @@ const COMMON_ROUTES = [
   { label: 'Blogs', url: '/blogs' },
   { label: 'Research', url: '/research' },
   { label: 'About', url: '/about' },
-  { label: 'Contact', url: '/contact' },
-  { label: 'Resume', url: '/resume' },
+  { label: 'Skills', url: '/skills' },
   { label: 'Timeline', url: '/my-timeline' },
+  { label: 'Resume', url: '/resume' },
+  { label: 'Contact', url: '/contact' },
+  { label: 'Open Source', url: '/opensource' },
+  { label: 'Guestbook', url: '/guestbook' },
   { label: 'Now', url: '/now' },
   { label: 'Uses', url: '/uses' },
-  { label: 'Stack', url: '/stack' },
-  { label: 'Guestbook', url: '/guestbook' },
+  { label: 'RSS Feed', url: '/feed.xml' },
+  { label: 'Sitemap', url: '/sitemap.xml' },
 ];
 
 export default function AdminNavigationPage() {
   const queryClient = useQueryClient();
   const [items, setItems] = useState<NavItemDto[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [locationFilter, setLocationFilter] = useState<'all' | 'header' | 'footer'>('all');
 
   // Editor Modal State
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -128,7 +134,7 @@ export default function AdminNavigationPage() {
 
   // Collect all eligible parents (items that can hold children)
   const eligibleParents = React.useMemo(() => {
-    const list: Array<{ id: string; label: string; depth: number }> = [];
+    const list: Array<{ id: string; label: string; depth: number; location: NavLocation }> = [];
     const traverse = (itemList: NavItemDto[], depth = 0) => {
       for (const it of itemList) {
         if (
@@ -136,7 +142,7 @@ export default function AdminNavigationPage() {
           it.itemType === NavItemType.Button ||
           it.itemType === NavItemType.Group
         ) {
-          list.push({ id: it.id, label: it.label, depth });
+          list.push({ id: it.id, label: it.label, depth, location: it.location });
         }
         if (it.children && it.children.length > 0) {
           traverse(it.children, depth + 1);
@@ -147,7 +153,28 @@ export default function AdminNavigationPage() {
     return list;
   }, [items]);
 
-  const openCreateModal = (parent?: NavItemDto, initialType: NavItemType = NavItemType.Link) => {
+  const filteredItems = React.useMemo(() => {
+    if (locationFilter === 'header') {
+      return items.filter((i) => i.location === 'header' || i.location === 'both');
+    }
+    if (locationFilter === 'footer') {
+      return items.filter((i) => i.location === 'footer' || i.location === 'both');
+    }
+    return items;
+  }, [items, locationFilter]);
+
+  const headerItemsCount = items.filter(
+    (i) => i.location === 'header' || i.location === 'both',
+  ).length;
+  const footerItemsCount = items.filter(
+    (i) => i.location === 'footer' || i.location === 'both',
+  ).length;
+
+  const openCreateModal = (
+    parent?: NavItemDto,
+    initialType: NavItemType = NavItemType.Link,
+    preferredLocation?: NavLocation,
+  ) => {
     setEditingItem(null);
     setLabel('');
     setUrl(
@@ -162,7 +189,14 @@ export default function AdminNavigationPage() {
     setDescription('');
     setIcon('');
     setBadgeText('');
-    setLocation(NavLocation.Header);
+    setLocation(
+      preferredLocation ||
+        (parent
+          ? parent.location
+          : locationFilter === 'footer'
+          ? NavLocation.Footer
+          : NavLocation.Header),
+    );
     setParentId(parent ? parent.id : '');
     setIsExternal(false);
     setIsEnabled(true);
@@ -442,13 +476,68 @@ export default function AdminNavigationPage() {
     }
   };
 
+  const createFooterCategoryPreset = async () => {
+    try {
+      setIsLoading(true);
+      const col = await apiClient.post<{ data: NavItemDto }>('/nav-items', {
+        label: 'Solutions',
+        url: '',
+        location: 'footer',
+        itemType: 'group',
+        sortOrder: items.length + 1,
+      });
+
+      if (col?.data?.id) {
+        await apiClient.post('/nav-items', {
+          label: 'Full-Stack Engineering',
+          url: '/works',
+          location: 'footer',
+          itemType: 'link',
+          parentId: col.data.id,
+          sortOrder: 0,
+        });
+        await apiClient.post('/nav-items', {
+          label: 'System Architecture',
+          url: '/skills',
+          location: 'footer',
+          itemType: 'link',
+          parentId: col.data.id,
+          sortOrder: 1,
+        });
+        await apiClient.post('/nav-items', {
+          label: 'Open Source Consulting',
+          url: '/contact',
+          location: 'footer',
+          itemType: 'link',
+          badge: 'New',
+          parentId: col.data.id,
+          sortOrder: 2,
+        });
+      }
+
+      toast.success('Footer category column created!');
+      fetchNav();
+    } catch {
+      toast.error('Failed to create footer category');
+      fetchNav();
+    }
+  };
+
   return (
     <div className="space-y-6">
       <AdminPageHeader
-        title="Header & Navigation Menus"
-        description="Build dynamic multi-column dropdowns, split action buttons, rich description cards, hotkeys, and nested menus."
+        title="Header & Footer Navigation"
+        description="Build dynamic mega-menus, multi-column footer sections, categorized link trees, hotkeys, and external links."
         action={
           <div className="flex items-center gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => openCreateModal(undefined, NavItemType.Group, NavLocation.Footer)}
+            >
+              <Columns className="w-3.5 h-3.5 mr-1.5 text-accent" />
+              <span>Add Footer Section</span>
+            </Button>
             <Button variant="primary" size="sm" onClick={() => openCreateModal()}>
               <Plus className="w-3.5 h-3.5 mr-1.5" />
               <span>Add Navigation Item</span>
@@ -457,15 +546,62 @@ export default function AdminNavigationPage() {
         }
       />
 
+      {/* Navigation Filter Tabs */}
+      <div className="flex items-center justify-between border-b border-border pb-3">
+        <div className="flex items-center gap-1.5">
+          <button
+            type="button"
+            onClick={() => setLocationFilter('all')}
+            className={cn(
+              'px-3 py-1.5 text-xs font-semibold rounded-md transition-colors flex items-center gap-1.5 cursor-pointer',
+              locationFilter === 'all'
+                ? 'bg-accent text-accent-foreground shadow-xs'
+                : 'text-muted hover:text-foreground hover:bg-surface-muted',
+            )}
+          >
+            <Layers className="w-3.5 h-3.5" />
+            <span>All Items ({items.length})</span>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => setLocationFilter('header')}
+            className={cn(
+              'px-3 py-1.5 text-xs font-semibold rounded-md transition-colors flex items-center gap-1.5 cursor-pointer',
+              locationFilter === 'header'
+                ? 'bg-accent text-accent-foreground shadow-xs'
+                : 'text-muted hover:text-foreground hover:bg-surface-muted',
+            )}
+          >
+            <Menu className="w-3.5 h-3.5" />
+            <span>Header Navigation ({headerItemsCount})</span>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => setLocationFilter('footer')}
+            className={cn(
+              'px-3 py-1.5 text-xs font-semibold rounded-md transition-colors flex items-center gap-1.5 cursor-pointer',
+              locationFilter === 'footer'
+                ? 'bg-accent text-accent-foreground shadow-xs'
+                : 'text-muted hover:text-foreground hover:bg-surface-muted',
+            )}
+          >
+            <Columns className="w-3.5 h-3.5" />
+            <span>Footer Multi-Column ({footerItemsCount})</span>
+          </button>
+        </div>
+      </div>
+
       {/* 1-Click Structure Presets Toolbar */}
       <div className="p-4 rounded-lg bg-surface border border-border flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
         <div className="space-y-0.5">
           <div className="flex items-center gap-2">
             <Sparkles className="w-4 h-4 text-accent" />
-            <span className="text-xs font-bold text-foreground">1-Click Menu Presets</span>
+            <span className="text-xs font-bold text-foreground">1-Click Menu & Footer Presets</span>
           </div>
           <p className="text-[11px] text-muted">
-            Quickly scaffold multi-column menus, split CTA buttons, or sectioned dropdowns.
+            Quickly scaffold multi-column mega-menus, split CTA buttons, or footer category columns.
           </p>
         </div>
 
@@ -477,7 +613,7 @@ export default function AdminNavigationPage() {
             className="text-xs h-7"
           >
             <LayoutGrid className="w-3 h-3 mr-1.5 text-accent" />
-            <span>Multi-Column Menu</span>
+            <span>Header Mega-Menu</span>
           </Button>
 
           <Button
@@ -493,72 +629,136 @@ export default function AdminNavigationPage() {
           <Button
             variant="outline"
             size="sm"
-            onClick={() => openCreateModal(undefined, NavItemType.Dropdown)}
+            onClick={createFooterCategoryPreset}
             className="text-xs h-7"
           >
-            <Layers className="w-3 h-3 mr-1.5 text-accent" />
-            <span>Empty Dropdown</span>
+            <Columns className="w-3 h-3 mr-1.5 text-accent" />
+            <span>Footer Section Column</span>
           </Button>
         </div>
       </div>
 
       {/* Live Header Preview Bar */}
-      <div className="p-4 rounded-lg bg-surface border border-border space-y-2">
-        <div className="flex items-center justify-between text-xs text-muted font-mono pb-2 border-b border-border/50">
-          <div className="flex items-center gap-2">
-            <span className="w-2 h-2 rounded-full bg-accent animate-pulse" />
-            <span className="font-semibold text-foreground">Live Desktop Header Preview</span>
-          </div>
-          <span className="text-[11px]">Database Driven</span>
-        </div>
-
-        {/* Mock Header Display */}
-        <div className="h-14 bg-background border border-border/80 rounded-md px-4 flex items-center justify-between">
-          <span className="font-mono font-extrabold text-xs text-foreground tracking-tight">
-            ANUJ<span className="text-accent">.V</span>
-          </span>
-
-          <div className="flex items-center gap-3 text-xs font-medium">
-            {items
-              .filter((i) => i.isEnabled && i.location !== 'footer')
-              .map((item) => (
-                <div
-                  key={item.id}
-                  className={cn(
-                    'flex items-center gap-1.5 px-2 py-1 rounded-xs transition-colors',
-                    item.itemType === 'button'
-                      ? 'bg-accent text-accent-foreground font-semibold px-2.5 py-0.5 rounded-sm'
-                      : 'text-muted hover:text-foreground',
-                  )}
-                >
-                  {item.icon && <NavIcon name={item.icon} className="w-3 h-3 text-accent" />}
-                  <span>{item.label}</span>
-                  {item.itemType === 'dropdown' && (
-                    <span className="text-[10px] text-muted">▾</span>
-                  )}
-                  {item.badge && (
-                    <span className="text-[9px] font-mono px-1 py-0.1 bg-surface-muted text-accent border border-border rounded-xs">
-                      {item.badge}
-                    </span>
-                  )}
-                </div>
-              ))}
+      {(locationFilter === 'header' || locationFilter === 'all') && (
+        <div className="p-4 rounded-lg bg-surface border border-border space-y-2">
+          <div className="flex items-center justify-between text-xs text-muted font-mono pb-2 border-b border-border/50">
+            <div className="flex items-center gap-2">
+              <span className="w-2 h-2 rounded-full bg-accent animate-pulse" />
+              <span className="font-semibold text-foreground">Live Desktop Header Preview</span>
+            </div>
+            <span className="text-[11px]">Database Driven</span>
           </div>
 
-          <div className="flex items-center gap-2">
-            <div className="px-2 py-1 bg-surface border border-border rounded text-[10px] text-muted font-mono flex items-center gap-1">
-              <span>⌘ K</span>
+          {/* Mock Header Display */}
+          <div className="h-14 bg-background border border-border/80 rounded-md px-4 flex items-center justify-between">
+            <span className="font-mono font-extrabold text-xs text-foreground tracking-tight">
+              ANUJ<span className="text-accent">.Y</span>
+            </span>
+
+            <div className="flex items-center gap-3 text-xs font-medium">
+              {items
+                .filter((i) => i.isEnabled && i.location !== 'footer')
+                .map((item) => (
+                  <div
+                    key={item.id}
+                    className={cn(
+                      'flex items-center gap-1.5 px-2 py-1 rounded-xs transition-colors',
+                      item.itemType === 'button'
+                        ? 'bg-accent text-accent-foreground font-semibold px-2.5 py-0.5 rounded-sm'
+                        : 'text-muted hover:text-foreground',
+                    )}
+                  >
+                    {item.icon && <NavIcon name={item.icon} className="w-3 h-3 text-accent" />}
+                    <span>{item.label}</span>
+                    {item.itemType === 'dropdown' && (
+                      <span className="text-[10px] text-muted">▾</span>
+                    )}
+                    {item.badge && (
+                      <span className="text-[9px] font-mono px-1 py-0.1 bg-surface-muted text-accent border border-border rounded-xs">
+                        {item.badge}
+                      </span>
+                    )}
+                  </div>
+                ))}
+            </div>
+
+            <div className="flex items-center gap-2">
+              <div className="px-2 py-1 bg-surface border border-border rounded text-[10px] text-muted font-mono flex items-center gap-1">
+                <span>⌘ K</span>
+              </div>
             </div>
           </div>
         </div>
-      </div>
+      )}
+
+      {/* Live Multi-Column Footer Preview Bar */}
+      {(locationFilter === 'footer' || locationFilter === 'all') && (
+        <div className="p-4 rounded-lg bg-surface border border-border space-y-2">
+          <div className="flex items-center justify-between text-xs text-muted font-mono pb-2 border-b border-border/50">
+            <div className="flex items-center gap-2">
+              <span className="w-2 h-2 rounded-full bg-success animate-pulse" />
+              <span className="font-semibold text-foreground">Live Multi-Column Footer Preview</span>
+            </div>
+            <span className="text-[11px]">Database Driven</span>
+          </div>
+
+          {/* Mock Footer Display */}
+          <div className="p-5 bg-background border border-border/80 rounded-md">
+            <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-start">
+              <div className="md:col-span-4 space-y-2">
+                <span className="font-mono font-extrabold text-sm text-foreground">
+                  ANUJ<span className="text-accent">.Y</span>
+                </span>
+                <p className="text-[11px] text-muted font-mono">
+                  © 2026 Anuj Yadav. All rights reserved.
+                </p>
+              </div>
+
+              <div className="md:col-span-8 grid grid-cols-2 sm:grid-cols-4 gap-6">
+                {items
+                  .filter((i) => i.isEnabled && (i.location === 'footer' || i.location === 'both'))
+                  .map((col) => (
+                    <div key={col.id} className="space-y-1.5">
+                      <span className="text-[11px] font-mono font-semibold capitalize text-foreground block">
+                        {col.label}
+                      </span>
+                      <ul className="space-y-1 text-[11px] text-muted list-none p-0 m-0">
+                        {(col.children && col.children.length > 0 ? col.children : [col]).map(
+                          (child) => (
+                            <li key={child.id} className="flex items-center gap-1">
+                              <span>{child.label}</span>
+                              {child.isExternal && (
+                                <span className="text-[9px] text-accent">↗</span>
+                              )}
+                              {child.badge && (
+                                <span className="text-[9px] font-mono px-1 py-0.1 bg-surface-muted text-accent border border-border rounded-xs">
+                                  {child.badge}
+                                </span>
+                              )}
+                            </li>
+                          ),
+                        )}
+                      </ul>
+                    </div>
+                  ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Hierarchical Navigation Tree Builder */}
       <div className="space-y-3">
         <div className="flex items-center justify-between px-1">
           <span className="text-xs font-bold text-foreground flex items-center gap-2">
             <FolderTree className="w-4 h-4 text-accent" />
-            <span>Navigation Structure ({items.length} top-level nodes)</span>
+            <span>
+              {locationFilter === 'header'
+                ? `Header Navigation (${filteredItems.length} top-level nodes)`
+                : locationFilter === 'footer'
+                ? `Footer Sections & Columns (${filteredItems.length} columns)`
+                : `Navigation Hierarchy (${filteredItems.length} top-level nodes)`}
+            </span>
           </span>
         </div>
 
@@ -566,20 +766,20 @@ export default function AdminNavigationPage() {
           <div className="p-8 text-center text-xs text-muted font-mono bg-surface border border-border rounded-lg">
             Loading navigation tree...
           </div>
-        ) : items.length === 0 ? (
+        ) : filteredItems.length === 0 ? (
           <div className="p-8 text-center text-xs text-muted bg-surface border border-border rounded-lg">
-            No navigation items configured. Click &quot;Add Navigation Item&quot; or use a preset to
-            get started.
+            No navigation items found for this location. Click &quot;Add Navigation Item&quot; or use
+            a preset to get started.
           </div>
         ) : (
           <div className="space-y-2">
-            {items.map((item, idx) => (
+            {filteredItems.map((item, idx) => (
               <NavTreeNode
                 key={item.id}
                 item={item}
                 index={idx}
-                siblingList={items}
-                onMove={(direction) => handleMoveSibling(items, idx, direction)}
+                siblingList={filteredItems}
+                onMove={(direction) => handleMoveSibling(filteredItems, idx, direction)}
                 onEditItem={openEditModal}
                 onDeleteItem={setDeleteTarget}
                 onAddChildToItem={openCreateModal}
@@ -601,9 +801,44 @@ export default function AdminNavigationPage() {
               </DialogTitle>
             </DialogHeader>
 
+            {/* Target Menu Location Selector */}
+            <div className="space-y-1.5">
+              <label className="text-xs font-semibold text-foreground">Menu Location Target</label>
+              <div className="grid grid-cols-3 gap-1.5 p-1 bg-background border border-border rounded-md">
+                {(
+                  [
+                    { value: NavLocation.Header, label: 'Header Menu' },
+                    { value: NavLocation.Footer, label: 'Footer Column' },
+                    { value: NavLocation.Both, label: 'Header & Footer' },
+                  ] as const
+                ).map((loc) => (
+                  <button
+                    key={loc.value}
+                    type="button"
+                    onClick={() => setLocation(loc.value)}
+                    className={cn(
+                      'py-1.5 text-xs font-medium rounded-xs transition-colors',
+                      location === loc.value
+                        ? 'bg-accent text-accent-foreground font-semibold shadow-xs'
+                        : 'text-muted hover:text-foreground hover:bg-surface-muted',
+                    )}
+                  >
+                    {loc.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+
             {/* Item Type Selector Tabs */}
             <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-foreground">Element Role / Type</label>
+              <div className="flex items-center justify-between">
+                <label className="text-xs font-semibold text-foreground">Element Role / Type</label>
+                {location === NavLocation.Footer && (
+                  <span className="text-[10px] text-muted font-mono">
+                    (Group = Section Heading Column)
+                  </span>
+                )}
+              </div>
               <div className="grid grid-cols-5 gap-1.5 p-1 bg-background border border-border rounded-md">
                 {(
                   [
@@ -635,10 +870,16 @@ export default function AdminNavigationPage() {
             {itemType !== 'divider' && (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-1">
-                  <label className="text-xs font-semibold text-foreground">Label</label>
+                  <label className="text-xs font-semibold text-foreground">
+                    {itemType === 'group' ? 'Section Heading / Title' : 'Label'}
+                  </label>
                   <Input
                     type="text"
-                    placeholder="e.g. Works, Research, Get in Touch"
+                    placeholder={
+                      itemType === 'group'
+                        ? 'e.g. Works, Writing, Company'
+                        : 'e.g. Case Studies, About'
+                    }
                     value={label}
                     onChange={(e) => setLabel(e.target.value)}
                     required
@@ -674,7 +915,7 @@ export default function AdminNavigationPage() {
                         setUrl(r.url);
                         if (!label) setLabel(r.label);
                       }}
-                      className="px-2 py-0.5 text-[10px] font-mono bg-background border border-border hover:border-accent hover:text-accent rounded-xs text-muted transition-colors"
+                      className="px-2 py-0.5 text-[10px] font-mono bg-background border border-border hover:border-accent hover:text-accent rounded-xs text-muted transition-colors cursor-pointer"
                     >
                       {r.url}
                     </button>
@@ -759,7 +1000,7 @@ export default function AdminNavigationPage() {
                       type="button"
                       onClick={() => setIcon(ic)}
                       className={cn(
-                        'p-1.5 rounded-xs border transition-colors flex items-center gap-1 text-[10px] font-mono',
+                        'p-1.5 rounded-xs border transition-colors flex items-center gap-1 text-[10px] font-mono cursor-pointer',
                         icon === ic
                           ? 'bg-accent/15 border-accent text-accent'
                           : 'bg-background border-border text-muted hover:text-foreground',
@@ -782,12 +1023,12 @@ export default function AdminNavigationPage() {
                 onChange={(e) => setParentId(e.target.value)}
                 className="w-full bg-background border border-border rounded-md px-3 py-2 text-xs text-foreground focus:outline-none focus:ring-1 focus:ring-accent"
               >
-                <option value="">[ Top-Level Menu Item ]</option>
+                <option value="">[ Top-Level Section / Menu Item ]</option>
                 {eligibleParents
                   .filter((p) => !editingItem || p.id !== editingItem.id)
                   .map((p) => (
                     <option key={p.id} value={p.id}>
-                      {'-'.repeat(p.depth * 2)} ↳ {p.label}
+                      {'-'.repeat(p.depth * 2)} ↳ [{p.location}] {p.label}
                     </option>
                   ))}
               </select>
@@ -903,7 +1144,10 @@ export default function AdminNavigationPage() {
                 />
                 <div className="min-w-0">
                   <span className="text-xs font-semibold text-foreground block">
-                    Open in New Tab (External)
+                    Open in New Tab (External ↗)
+                  </span>
+                  <span className="text-[10px] text-muted block">
+                    Renders external indicator symbol
                   </span>
                 </div>
               </label>
@@ -917,7 +1161,7 @@ export default function AdminNavigationPage() {
                 />
                 <div className="min-w-0">
                   <span className="text-xs font-semibold text-foreground block">
-                    Visible in Navigation
+                    Visible on Public Site
                   </span>
                 </div>
               </label>
@@ -1009,6 +1253,12 @@ function NavTreeNode({
     link: 'bg-blue-500/10 text-blue-800 dark:text-blue-300 border-blue-300 dark:border-blue-800/60 dark:bg-blue-950/40',
   };
 
+  const locationBadgeStyles: Record<string, string> = {
+    header: 'bg-blue-500/10 text-blue-600 border-blue-500/30',
+    footer: 'bg-amber-500/10 text-amber-600 border-amber-500/30',
+    both: 'bg-emerald-500/10 text-emerald-600 border-emerald-500/30',
+  };
+
   return (
     <div className={cn('space-y-1', depth > 0 && 'ml-6 border-l-2 border-border/80 pl-3')}>
       <div className="flex items-center justify-between gap-3 p-2.5 rounded-lg bg-surface border border-border hover:border-muted/60 transition-colors">
@@ -1021,7 +1271,7 @@ function NavTreeNode({
               onClick={() => onMove('up')}
               disabled={isFirst}
               className={cn(
-                'p-0.5 rounded text-muted hover:text-accent hover:bg-surface-muted transition-colors',
+                'p-0.5 rounded text-muted hover:text-accent hover:bg-surface-muted transition-colors cursor-pointer',
                 isFirst && 'opacity-20 pointer-events-none',
               )}
               title="Move Up"
@@ -1033,7 +1283,7 @@ function NavTreeNode({
               onClick={() => onMove('down')}
               disabled={isLast}
               className={cn(
-                'p-0.5 rounded text-muted hover:text-accent hover:bg-surface-muted transition-colors',
+                'p-0.5 rounded text-muted hover:text-accent hover:bg-surface-muted transition-colors cursor-pointer',
                 isLast && 'opacity-20 pointer-events-none',
               )}
               title="Move Down"
@@ -1050,7 +1300,20 @@ function NavTreeNode({
                 typeBadgeStyles[item.itemType] || typeBadgeStyles.link,
               )}
             >
-              {depth > 0 && item.itemType === 'dropdown' ? 'Flyout' : item.itemType}
+              {depth > 0 && item.itemType === 'dropdown'
+                ? 'Flyout'
+                : item.itemType === 'group' && item.location === 'footer'
+                ? 'Category'
+                : item.itemType}
+            </span>
+
+            <span
+              className={cn(
+                'text-[9px] font-mono uppercase px-1 py-0.2 rounded border font-semibold',
+                locationBadgeStyles[item.location] || locationBadgeStyles.header,
+              )}
+            >
+              {item.location}
             </span>
 
             {item.icon && (
@@ -1103,7 +1366,7 @@ function NavTreeNode({
 
               {item.isExternal && (
                 <span className="text-[10px] text-muted font-mono bg-surface-muted px-1.5 py-0.2 rounded border border-border flex items-center gap-0.5">
-                  <ExternalLink className="w-2.5 h-2.5" /> External
+                  <ExternalLink className="w-2.5 h-2.5 text-accent" /> External ↗
                 </span>
               )}
 

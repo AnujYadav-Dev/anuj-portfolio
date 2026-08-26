@@ -1,25 +1,26 @@
-'use client';
+import type { Metadata } from 'next';
+import { ResumeClientView } from '@/components/features/resume/ResumeClientView';
+import { constructMetadata, generateBreadcrumbsJsonLd } from '@/lib/seo';
+import { JsonLd } from '@/components/seo/JsonLd';
 
-import * as React from 'react';
-import { PageHeader } from '@/components/common/PageHeader';
-import { ResumeViewer } from '@/components/features/resume/ResumeViewer';
+export const metadata: Metadata = constructMetadata({
+  title: 'Online Resume & Qualifications',
+  description:
+    'Interactive curriculum vitae highlighting professional roles, academic background, and core technical proficiencies.',
+  canonicalPath: '/resume',
+  type: 'profile',
+});
 
 export default function ResumePage() {
-  return (
-    <div className="flex flex-col">
-      <div className="print:hidden">
-        <PageHeader
-          badge="CURRICULUM VITAE"
-          title="Online Resume & Qualifications"
-          description="Interactive curriculum vitae highlighting professional roles, academic background, and core technical proficiencies."
-        />
-      </div>
+  const breadcrumbJsonLd = generateBreadcrumbsJsonLd([
+    { name: 'Home', path: '/' },
+    { name: 'Resume', path: '/resume' },
+  ]);
 
-      <div className="py-12">
-        <div className="max-w-[1000px] mx-auto px-4 md:px-8">
-          <ResumeViewer />
-        </div>
-      </div>
-    </div>
+  return (
+    <>
+      <JsonLd data={breadcrumbJsonLd} />
+      <ResumeClientView />
+    </>
   );
 }

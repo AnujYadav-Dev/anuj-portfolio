@@ -18,8 +18,11 @@ export const pageService = {
     const where: Prisma.PageWhereInput = {
       status: 'published',
       publishedAt: { lte: now },
-      isNavVisible: true,
     };
+
+    if (query.isNavVisible !== undefined) {
+      where.isNavVisible = query.isNavVisible;
+    }
 
     const { skip, take, orderBy } = getPrismaPagination(query, 'sortOrder');
     const [items, totalItems] = await Promise.all([

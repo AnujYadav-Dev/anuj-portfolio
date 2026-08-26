@@ -18,7 +18,9 @@ router.put(
   validateBody(updateSiteSettingSchema),
   siteSettingController.update,
 );
+router.put('/bulk', authenticateAdmin, siteSettingController.updateBulk);
 router.put('/admin/bulk', authenticateAdmin, siteSettingController.updateBulk);
 router.delete('/admin/:key', authenticateAdmin, siteSettingController.delete);
+
 
 export { router as siteSettingRouter };

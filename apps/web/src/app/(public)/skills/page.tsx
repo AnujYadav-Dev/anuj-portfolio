@@ -1,40 +1,26 @@
-'use client';
+import type { Metadata } from 'next';
+import { SkillsClientView } from '@/components/features/about/SkillsClientView';
+import { constructMetadata, generateBreadcrumbsJsonLd } from '@/lib/seo';
+import { JsonLd } from '@/components/seo/JsonLd';
 
-import * as React from 'react';
-import { PageHeader } from '@/components/common/PageHeader';
-import { SkillsMatrix } from '@/components/features/about/SkillsMatrix';
-import { Skeleton } from '@/components/ui/skeleton';
-import { useSkillCategories, useSkills } from '@/hooks/useProfile';
+export const metadata: Metadata = constructMetadata({
+  title: 'Skills, Technologies & Tools',
+  description:
+    'Comprehensive technical disciplines, language proficiencies, frameworks, databases, and DevOps tooling.',
+  canonicalPath: '/skills',
+  type: 'profile',
+});
 
 export default function SkillsPage() {
-  const { data: categoriesData, isLoading: isCatLoading } = useSkillCategories();
-  const { data: skillsData, isLoading: isSkillsLoading } = useSkills();
-
-  const categories = categoriesData?.data || [];
-  const skills = skillsData?.data || [];
-  const isLoading = isCatLoading || isSkillsLoading;
+  const breadcrumbJsonLd = generateBreadcrumbsJsonLd([
+    { name: 'Home', path: '/' },
+    { name: 'Skills', path: '/skills' },
+  ]);
 
   return (
-    <div className="flex flex-col">
-      <PageHeader
-        badge="TECHNICAL ARSENAL & PROFICIENCIES"
-        title="Skills, Technologies & Tools"
-        description="Comprehensive technical disciplines, language proficiencies, frameworks, databases, and DevOps tooling."
-      />
-
-      <div className="py-12">
-        <div className="max-w-[1200px] mx-auto px-4 md:px-8">
-          {isLoading ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {[1, 2, 3, 4].map((n) => (
-                <Skeleton key={n} className="h-64 w-full rounded-md" />
-              ))}
-            </div>
-          ) : (
-            <SkillsMatrix categories={categories} skills={skills} />
-          )}
-        </div>
-      </div>
-    </div>
+    <>
+      <JsonLd data={breadcrumbJsonLd} />
+      <SkillsClientView />
+    </>
   );
 }

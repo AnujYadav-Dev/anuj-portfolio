@@ -47,6 +47,11 @@ async function main() {
       group: 'general',
     },
     {
+      key: 'site_url',
+      value: 'http://localhost:3000',
+      group: 'general',
+    },
+    {
       key: 'availability_status',
       value: 'available',
       group: 'general',
@@ -62,11 +67,37 @@ async function main() {
       group: 'seo',
     },
     {
+      key: 'robots_indexing_enabled',
+      value: 'true',
+      group: 'seo',
+    },
+    {
+      key: 'twitter_handle',
+      value: '@anujyadav',
+      group: 'social',
+    },
+    {
+      key: 'author_name',
+      value: 'Anuj Yadav',
+      group: 'general',
+    },
+    {
+      key: 'author_email',
+      value: 'anuj@example.com',
+      group: 'general',
+    },
+    {
+      key: 'author_job_title',
+      value: 'Full-Stack Engineer & Architect',
+      group: 'general',
+    },
+    {
       key: 'analytics_enabled',
       value: 'true',
       group: 'analytics',
     },
   ];
+
 
   for (const setting of siteSettings) {
     await prisma.siteSetting.upsert({

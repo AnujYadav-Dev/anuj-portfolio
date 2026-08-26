@@ -5,9 +5,46 @@
 
 ---
 
+## 2026-08-26
+
+### Phase 8: SEO, Syndication & Search Optimization
+
+#### Added: Core SEO & Syndication Infrastructure (`apps/web/src/lib/`, `components/seo/`, `packages/shared/`)
+
+- `packages/shared/src/types/site.ts` — Added `SiteSettingsMap` and `SyndicationFeedItem` interfaces.
+- `apps/web/src/lib/server-api.ts` — Server-side data fetching module utilizing caching and revalidation for Server Components, dynamic Sitemap, Robots, and Feed generators.
+- `apps/web/src/lib/seo.ts` — Centralized SEO utility composing standard Next.js `Metadata` and generating Schema.org JSON-LD structured data (`Person`, `WebSite`, `BlogPosting`, `SoftwareApplication`, `ScholarlyArticle`, `BreadcrumbList`).
+- `apps/web/src/components/seo/JsonLd.tsx` — Reusable JSON-LD script component with safe JSON sanitization.
+
+#### Added: Automated Discovery & Indexing (`apps/web/src/app/`)
+
+- `app/sitemap.ts` — Dynamic `/sitemap.xml` generating standard XML sitemap for 16 core static routes and all published projects, blogs, research papers, dynamic pages, and about sections.
+- `app/robots.ts` — Configurable `/robots.txt` honoring `site_settings.robots_indexing_enabled` and referencing the dynamic sitemap URL.
+- `app/feed.xml/route.ts` — Dynamic RSS 2.0 XML syndication feed generator with Atom namespaces, CDATA descriptions, and published date ordering.
+- `app/rss.xml/route.ts` — Standard `/rss.xml` redirect route handler.
+
+#### Added: Edge OpenGraph Social Image Generation (`next/og`)
+
+- `app/api/og/route.tsx` — Dynamic edge image generation endpoint rendering 1200x630 branded social cards with title, category badge, tagline, author avatar, and reading time.
+- `app/opengraph-image.tsx` & `app/twitter-image.tsx` — Root social sharing cards for portfolio homepage.
+- `app/(public)/blogs/[slug]/opengraph-image.tsx` — Dynamic route-level OG card for individual blog posts.
+- `app/(public)/works/[slug]/opengraph-image.tsx` — Dynamic route-level OG card for project case studies.
+- `app/(public)/research/[slug]/opengraph-image.tsx` — Dynamic route-level OG card for research publications.
+- `app/(public)/[slug]/opengraph-image.tsx` — Dynamic route-level OG card for custom pages.
+
+#### Refactored: Server Component Architecture & Public Route Metadata
+
+- `app/layout.tsx` — Root layout metadata with base URL, title template (`%s | Anuj Yadav`), keywords, OpenGraph, Twitter card, and global `WebSite` and `Person` JSON-LD schemas.
+- Converted all public route entrypoints (`page.tsx`) to Server Components exporting `generateMetadata` (or static `Metadata`) and embedding JSON-LD scripts:
+  - Dynamic routes: `/blogs/[slug]`, `/blogs/by/[author]/[slug]`, `/works/[slug]`, `/works/by/[author]/[slug]`, `/research/[slug]`, `/about/[section]`, `/[slug]`.
+  - Static routes: `/`, `/about`, `/works`, `/blogs`, `/research`, `/skills`, `/my-timeline`, `/certificates-achievements`, `/resume`, `/contact`, `/guestbook`, `/newsletter`, `/opensource`, `/stats`, `/testimonials`, `/search`.
+
+---
+
 ## 2026-08-25
 
 ### Phase 7: Admin Panel & Content Management System (CMS) Platform
+
 
 #### Added: Admin Layout & Security Infrastructure (`apps/web/src/app/(admin)/`, `components/admin/`)
 

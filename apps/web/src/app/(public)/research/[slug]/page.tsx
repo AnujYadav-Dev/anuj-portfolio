@@ -1,116 +1,58 @@
-'use client';
+import type { Metadata } from 'next';
+import { notFound } from 'next/navigation';
+import { serverApi } from '@/lib/server-api';
+import { constructMetadata, generateScholarlyArticleJsonLd, generateBreadcrumbsJsonLd } from '@/lib/seo';
+import { JsonLd } from '@/components/seo/JsonLd';
+import { ResearchDetailsClient } from '@/components/features/research/ResearchDetailsClient';
 
-import * as React from 'react';
-import { useParams } from 'next/navigation';
-import Link from 'next/link';
-import { ArrowLeft, Download, ExternalLink, Calendar, BookOpen } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Skeleton } from '@/components/ui/skeleton';
-import { RevealOnScroll } from '@/components/motion/RevealOnScroll';
-import { useResearchPaperBySlug } from '@/hooks/useResearch';
+interface SingleResearchPageProps {
+  params: Promise<{ slug: string }>;
+}
 
-export default function SingleResearchPage() {
-  const params = useParams();
-  const slug = String(params?.slug || '');
+export async function generateMetadata({ params }: SingleResearchPageProps): Promise<Metadata> {
+  const { slug } = await params;
+  const paper = await serverApi.getResearchBySlug(slug);
 
-  const { data: paperData, isLoading, error } = useResearchPaperBySlug(slug);
-  const paper = paperData?.data;
-
-  if (isLoading) {
-    return (
-      <div className="max-w-[1200px] mx-auto px-4 md:px-8 py-16 flex flex-col gap-6">
-        <Skeleton className="h-8 w-48" />
-        <Skeleton className="h-12 w-3/4" />
-        <Skeleton className="h-64 w-full" />
-      </div>
-    );
+  if (!paper) {
+    return constructMetadata({
+      title: 'Paper Not Found',
+      description: 'The requested research paper could not be located.',
+      noIndex: true,
+    });
   }
 
-  if (error || !paper) {
-    return (
-      <div className="max-w-[1200px] mx-auto px-4 md:px-8 py-24 text-center">
-        <h2 className="text-xl font-bold text-foreground">Paper Not Found</h2>
-        <p className="text-xs text-muted mt-2">
-          The requested research paper could not be located.
-        </p>
-      </div>
-    );
+  return constructMetadata({
+    title: paper.seoTitle || paper.title,
+    description: paper.seoDescription || paper.abstract || `Explore ${paper.title} research publication.`,
+    canonicalPath: `/research/${paper.slug}`,
+    keywords: paper.seoKeywords || paper.tags?.join(', '),
+    type: 'article',
+    publishedTime: paper.publishedAt || paper.publicationDate || paper.createdAt,
+    authors: [paper.author?.displayName || 'Anuj Yadav'],
+    tags: paper.tags,
+  });
+}
+
+export default async function SingleResearchPage({ params }: SingleResearchPageProps) {
+  const { slug } = await params;
+  const paper = await serverApi.getResearchBySlug(slug);
+
+  if (!paper) {
+    notFound();
   }
 
-  const publishDate = paper.publishedAt
-    ? new Date(paper.publishedAt).toLocaleDateString('en-US', {
-        month: 'long',
-        year: 'numeric',
-      })
-    : '';
+  const scholarlyJsonLd = generateScholarlyArticleJsonLd(paper);
+  const breadcrumbJsonLd = generateBreadcrumbsJsonLd([
+    { name: 'Home', path: '/' },
+    { name: 'Research', path: '/research' },
+    { name: paper.title, path: `/research/${paper.slug}` },
+  ]);
 
   return (
-    <div className="py-12 md:py-16">
-      <div className="max-w-[1200px] mx-auto px-4 md:px-8">
-        <div className="mb-8">
-          <Link
-            href="/research"
-            className="inline-flex items-center gap-2 text-xs font-mono text-muted hover:text-accent transition-colors select-none"
-          >
-            <ArrowLeft className="h-3.5 w-3.5" />
-            <span>Back to research publications</span>
-          </Link>
-        </div>
-
-        <RevealOnScroll>
-          <div className="flex flex-col gap-6 max-w-3xl pb-8 border-b border-border">
-            <div className="flex flex-wrap items-center gap-2">
-              {paper.publicationName && (
-                <Badge variant="accent" size="sm">
-                  {paper.publicationName}
-                </Badge>
-              )}
-              {publishDate && <span className="text-xs font-mono text-muted">{publishDate}</span>}
-            </div>
-
-            <h1 className="text-2xl sm:text-3xl md:text-4xl font-extrabold tracking-tight text-foreground">
-              {paper.title}
-            </h1>
-
-            {paper.author && (
-              <p className="text-xs font-mono text-muted">Author: {paper.author.displayName}</p>
-            )}
-
-            <div className="flex flex-wrap items-center gap-4 pt-2">
-              {paper.pdfUrl && (
-                <a href={paper.pdfUrl} target="_blank" rel="noopener noreferrer">
-                  <Button variant="primary" size="md" rightIcon={<Download className="h-4 w-4" />}>
-                    Download Complete Paper (PDF)
-                  </Button>
-                </a>
-              )}
-              {paper.doi && (
-                <a href={`https://doi.org/${paper.doi}`} target="_blank" rel="noopener noreferrer">
-                  <Button
-                    variant="outline"
-                    size="md"
-                    leftIcon={<ExternalLink className="h-4 w-4" />}
-                  >
-                    View DOI Record
-                  </Button>
-                </a>
-              )}
-            </div>
-          </div>
-        </RevealOnScroll>
-
-        <div className="py-8 max-w-3xl flex flex-col gap-6">
-          {paper.abstract && (
-            <div>
-              <h3 className="text-sm font-mono font-semibold text-accent uppercase tracking-wider mb-2">
-                Abstract
-              </h3>
-              <p className="text-sm text-foreground/90 leading-relaxed">{paper.abstract}</p>
-            </div>
-          )}
-        </div>
-      </div>
-    </div>
+    <>
+      <JsonLd data={scholarlyJsonLd} />
+      <JsonLd data={breadcrumbJsonLd} />
+      <ResearchDetailsClient paper={paper} />
+    </>
   );
 }

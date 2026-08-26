@@ -135,3 +135,33 @@ export interface UpdateEmailTemplateRequest {
   bodyHtml?: string;
   bodyText?: string | null;
 }
+
+/** Standard site settings key constants and map. */
+export interface SiteSettingsMap {
+  site_title?: string;
+  site_description?: string;
+  site_url?: string;
+  availability_status?: string;
+  default_seo_title?: string;
+  default_seo_description?: string;
+  robots_indexing_enabled?: string;
+  analytics_enabled?: string;
+  twitter_handle?: string;
+  author_name?: string;
+  author_email?: string;
+  author_job_title?: string;
+  [key: string]: string | undefined;
+}
+
+/** Syndication RSS/Atom feed item. */
+export interface SyndicationFeedItem {
+  title: string;
+  link: string;
+  description: string;
+  contentHtml?: string;
+  pubDate: string;
+  author: string;
+  guid: string;
+  category?: string;
+}
+

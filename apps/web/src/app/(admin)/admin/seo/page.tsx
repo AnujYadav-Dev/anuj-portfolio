@@ -15,14 +15,15 @@ import { toast } from 'sonner';
 
 export default function AdminSeoPage() {
   const [settings, setSettings] = useState<SiteSettingDto[]>([]);
-  const [title, setTitle] = useState('Anuj Yadav — Distributed Systems Engineer');
+  const [title, setTitle] = useState('Anuj Yadav — Full-Stack Engineer & Architect');
   const [description, setDescription] = useState(
-    'Personal portfolio, technical research, and production system architecture by Anuj Yadav.',
+    'Explore the portfolio, projects, writing, and research of Anuj Yadav.',
   );
-  const [keywords, setKeywords] = useState('distributed systems, nextjs, backend, postgresql');
+  const [keywords, setKeywords] = useState('distributed systems, nextjs, backend, postgresql, typescript');
   const [ogImageUrl, setOgImageUrl] = useState('');
   const [twitterHandle, setTwitterHandle] = useState('@anujyadav');
-  const [siteUrl, setSiteUrl] = useState('https://anujyadav.dev');
+  const [siteUrl, setSiteUrl] = useState('http://localhost:3000');
+  const [isIndexingEnabled, setIsIndexingEnabled] = useState(true);
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [isMediaPickerOpen, setIsMediaPickerOpen] = useState(false);
@@ -36,12 +37,19 @@ export default function AdminSeoPage() {
       (res.data || []).forEach((s) => {
         map[s.key] = s.value;
       });
-      if (map.site_name) setTitle(map.site_name);
-      if (map.site_description) setDescription(map.site_description);
+      if (map.default_seo_title || map.site_title || map.site_name) {
+        setTitle(map.default_seo_title || map.site_title || map.site_name || '');
+      }
+      if (map.default_seo_description || map.site_description) {
+        setDescription(map.default_seo_description || map.site_description || '');
+      }
       if (map.seo_keywords) setKeywords(map.seo_keywords);
       if (map.seo_og_image) setOgImageUrl(map.seo_og_image);
       if (map.twitter_handle) setTwitterHandle(map.twitter_handle);
       if (map.site_url) setSiteUrl(map.site_url);
+      if (map.robots_indexing_enabled !== undefined) {
+        setIsIndexingEnabled(map.robots_indexing_enabled !== 'false');
+      }
     } catch {
       toast.error('Failed to load SEO settings');
     } finally {
@@ -62,12 +70,15 @@ export default function AdminSeoPage() {
     setIsSaving(true);
     try {
       const updates = [
-        { key: 'site_name', value: title },
-        { key: 'site_description', value: description },
-        { key: 'seo_keywords', value: keywords },
-        { key: 'seo_og_image', value: ogImageUrl },
-        { key: 'twitter_handle', value: twitterHandle },
-        { key: 'site_url', value: siteUrl },
+        { key: 'site_title', value: title, group: 'general' },
+        { key: 'default_seo_title', value: title, group: 'seo' },
+        { key: 'default_seo_description', value: description, group: 'seo' },
+        { key: 'site_description', value: description, group: 'general' },
+        { key: 'seo_keywords', value: keywords, group: 'seo' },
+        { key: 'seo_og_image', value: ogImageUrl, group: 'seo' },
+        { key: 'twitter_handle', value: twitterHandle, group: 'social' },
+        { key: 'site_url', value: siteUrl, group: 'general' },
+        { key: 'robots_indexing_enabled', value: isIndexingEnabled ? 'true' : 'false', group: 'seo' },
       ];
 
       await apiClient.put('/site-settings/bulk', { settings: updates });
@@ -79,6 +90,7 @@ export default function AdminSeoPage() {
       setIsSaving(false);
     }
   };
+
 
   if (isLoading) {
     return (
@@ -179,6 +191,27 @@ export default function AdminSeoPage() {
                   className="bg-background text-xs font-mono"
                 />
               </div>
+
+              <div className="pt-2 pb-1 flex items-center justify-between border-t border-b border-border/60 py-3">
+                <div className="flex flex-col">
+                  <span className="text-xs font-semibold text-foreground">Search Engine Indexing (Robots.txt)</span>
+                  <span className="text-[11px] text-muted">Allow Google, Bing, and web crawlers to index public pages.</span>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setIsIndexingEnabled(!isIndexingEnabled)}
+                  className={`relative inline-flex h-5 w-9 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none ${
+                    isIndexingEnabled ? 'bg-accent' : 'bg-surface-muted border border-border'
+                  }`}
+                >
+                  <span
+                    className={`pointer-events-none inline-block h-4 w-4 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out ${
+                      isIndexingEnabled ? 'translate-x-4' : 'translate-x-0'
+                    }`}
+                  />
+                </button>
+              </div>
+
 
               <div className="space-y-1.5">
                 <label className="text-xs font-semibold text-foreground">

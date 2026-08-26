@@ -73,9 +73,11 @@ export type UpdatePageInput = z.infer<typeof updatePageSchema>;
 /** List pages query parameters. */
 export const listPagesQuerySchema = paginationSchema.extend({
   status: z.nativeEnum(ContentStatus).optional(),
+  isNavVisible: z.coerce.boolean().optional(),
 });
 
 export type ListPagesQuery = z.infer<typeof listPagesQuerySchema>;
+
 
 /** Update email template schema. */
 export const updateEmailTemplateSchema = z.object({

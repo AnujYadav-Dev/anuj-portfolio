@@ -26,10 +26,16 @@ export const siteSettingController = {
   },
 
   async updateBulk(req: Request, res: Response): Promise<void> {
-    const settings = req.body as UpdateSiteSettingInput[];
+    const raw = req.body;
+    const settings: UpdateSiteSettingInput[] = Array.isArray(raw)
+      ? raw
+      : Array.isArray(raw?.settings)
+        ? raw.settings
+        : [];
     const updated = await siteSettingService.updateManySettings(settings);
     res.json({ data: updated });
   },
+
 
   async delete(req: Request, res: Response): Promise<void> {
     const key = String(req.params.key);

@@ -55,7 +55,7 @@ export default function AdminLoginPage() {
           <Shield className="w-6 h-6" />
         </div>
         <h1 className="text-2xl font-extrabold tracking-tight text-foreground">
-          ANUJ<span className="text-accent">.Y</span> CMS
+          ANUJ<span className="text-accent">.V</span> CMS
         </h1>
         <p className="text-xs text-muted font-mono uppercase tracking-wider mt-1">
           Administrative Control Center

@@ -133,7 +133,7 @@ export function AdminSidebar() {
         {!isCollapsed && (
           <Link href="/admin" className="flex items-center gap-2">
             <span className="font-extrabold tracking-tight text-lg text-foreground">
-              ANUJ<span className="text-accent">.Y</span>
+              ANUJ<span className="text-accent">.V</span>
             </span>
             <span className="px-1.5 py-0.5 text-[10px] font-mono uppercase bg-surface-muted text-accent rounded border border-border">
               CMS

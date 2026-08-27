@@ -193,7 +193,7 @@
 - `components/layout/TelemetryTracker.tsx` — Headless analytics component sending page view and click telemetry to `/api/v1/analytics/collect`.
 - `components/layout/CommandPalette.tsx` — Global overlay modal (`Ctrl+K` / `Cmd+K`) supporting instant full-text search, direct route navigation, theme switching, email copy, and resume download.
 - `components/layout/MobileNav.tsx` — Responsive sliding navigation drawer with dynamic navigation items, social links, theme toggle, and resume CTA.
-- `components/layout/Header.tsx` — Sticky glassmorphism header with logo watermark `ANUJ.Y`, dynamic navigation links, command palette search trigger, theme toggle, and mobile drawer hamburger.
+- `components/layout/Header.tsx` — Sticky glassmorphism header with logo watermark `ANUJ.V`, dynamic navigation links, command palette search trigger, theme toggle, and mobile drawer hamburger.
 - `components/layout/Footer.tsx` — Global footer with giant watermark typography `ANUJ YADAV`, live availability indicator, dynamic social links, copyright, and newsletter subscription form.
 - `components/common/SplitSection.tsx` & `PageHeader.tsx` — Split 2-column framing component (left 30% label, right 70% stream) and consistent sub-page headers.
 - `app/(public)/layout.tsx` — Public route group shell wrapping all public portfolio pages.

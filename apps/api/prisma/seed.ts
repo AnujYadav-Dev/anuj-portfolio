@@ -952,7 +952,7 @@ async function main() {
     {
       platform: 'linkedin',
       label: 'LinkedIn',
-      url: 'https://linkedin.com/in/anujyadav',
+      url: 'https://www.linkedin.com/in/anujyadav-dev/',
       icon: 'linkedin',
       sortOrder: 1,
       isEnabled: true,

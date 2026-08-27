@@ -59,7 +59,7 @@ export default async function Image({ params }: { params: Promise<{ slug: string
               color: '#ffffff',
             }}
           >
-            ANUJ.Y // PLATFORM
+            ANUJ.V // PLATFORM
           </span>
         </div>
 

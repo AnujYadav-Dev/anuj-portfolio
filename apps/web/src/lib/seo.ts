@@ -172,7 +172,7 @@ export function generatePersonJsonLd(author?: AuthorDto | null, settings?: SiteS
     sameAs: [
       settings?.twitter_handle ? `https://x.com/${settings.twitter_handle.replace('@', '')}` : '',
       'https://github.com/AnujYadav-Dev',
-      'https://linkedin.com/in/anujyadav',
+      'https://www.linkedin.com/in/anujyadav-dev/',
     ].filter(Boolean),
   };
 }

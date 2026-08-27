@@ -61,7 +61,7 @@ export async function GET(req: NextRequest) {
                 color: '#ffffff',
               }}
             >
-              ANUJ.Y // PORTFOLIO
+              ANUJ.V // PORTFOLIO
             </span>
           </div>
 

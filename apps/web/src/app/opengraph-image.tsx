@@ -53,7 +53,7 @@ export default async function Image() {
               color: '#ffffff',
             }}
           >
-            ANUJ.Y // PORTFOLIO
+            ANUJ.V // PORTFOLIO
           </span>
         </div>
 

@@ -90,7 +90,7 @@ The portfolio platform is an **architectural, minimalist, high-craft developer p
 ### 1. Navigation Header
 
 - **Layout:** Fixed or sticky top bar with subtle background blur (`backdrop-blur-md bg-background/80`).
-- **Left:** Brand logo/text `ZANE.C` / `ANUJ.Y` (bold sans-serif, uppercase, tracking tight).
+- **Left:** Brand logo/text `ZANE.C` / `ANUJ.V` (bold sans-serif, uppercase, tracking tight).
 - **Right:** Nav links (`Works ^`, `Writings ^`, `About`) + Theme toggle icon button.
 - **Interactions:** Subtle hover color transition (`text-foreground` $\to$ `text-accent`).
 

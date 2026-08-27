@@ -652,7 +652,7 @@ export default function AdminNavigationPage() {
           {/* Mock Header Display */}
           <div className="h-14 bg-background border border-border/80 rounded-md px-4 flex items-center justify-between">
             <span className="font-mono font-extrabold text-xs text-foreground tracking-tight">
-              ANUJ<span className="text-accent">.Y</span>
+              ANUJ<span className="text-accent">.V</span>
             </span>
 
             <div className="flex items-center gap-3 text-xs font-medium">
@@ -707,7 +707,7 @@ export default function AdminNavigationPage() {
             <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-start">
               <div className="md:col-span-4 space-y-2">
                 <span className="font-mono font-extrabold text-sm text-foreground">
-                  ANUJ<span className="text-accent">.Y</span>
+                  ANUJ<span className="text-accent">.V</span>
                 </span>
                 <p className="text-[11px] text-muted font-mono">
                   © 2026 Anuj Yadav. All rights reserved.

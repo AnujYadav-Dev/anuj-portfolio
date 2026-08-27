@@ -38,12 +38,7 @@ export function FooterNewsletter({ className }: FooterNewsletterProps) {
   };
 
   return (
-    <div
-      className={cn(
-        'grid grid-cols-1 md:grid-cols-12 gap-8 items-start pb-10 ',
-        className,
-      )}
-    >
+    <div className={cn('grid grid-cols-1 md:grid-cols-12 gap-8 items-start pb-10 ', className)}>
       {/* Left: Availability Status */}
       {/* <div className="md:col-span-6 flex flex-col gap-2">
         <div className="flex items-center gap-2">

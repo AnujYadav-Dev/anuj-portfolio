@@ -63,7 +63,8 @@ export const schedulerService = {
         const summaryLines: string[] = [];
         if (projects.count > 0) summaryLines.push(`• ${projects.count} Project(s)`);
         if (blogPosts.count > 0) summaryLines.push(`• ${blogPosts.count} Blog Post(s)`);
-        if (researchPapers.count > 0) summaryLines.push(`• ${researchPapers.count} Research Paper(s)`);
+        if (researchPapers.count > 0)
+          summaryLines.push(`• ${researchPapers.count} Research Paper(s)`);
         if (pages.count > 0) summaryLines.push(`• ${pages.count} Page(s)`);
         const publishedItemsSummary = summaryLines.join('\n');
 

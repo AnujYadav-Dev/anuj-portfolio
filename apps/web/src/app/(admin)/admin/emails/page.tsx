@@ -97,8 +97,17 @@ const PURPOSE_META: Record<
   },
   contact_admin_notification: {
     label: 'Contact Inquiry Alert (Admin)',
-    description: 'Instant notification dispatched to administrator upon a new contact form inquiry.',
-    defaultVariables: ['name', 'email', 'subject', 'message', 'ipAddress', 'submittedAt', 'siteUrl'],
+    description:
+      'Instant notification dispatched to administrator upon a new contact form inquiry.',
+    defaultVariables: [
+      'name',
+      'email',
+      'subject',
+      'message',
+      'ipAddress',
+      'submittedAt',
+      'siteUrl',
+    ],
   },
   newsletter_confirmation: {
     label: 'Newsletter Double Opt-In Verification',
@@ -117,13 +126,30 @@ const PURPOSE_META: Record<
   },
   newsletter_broadcast: {
     label: 'Newsletter Campaign / Broadcast',
-    description: 'Default template for broadcasting new blog posts and articles to all subscribers.',
-    defaultVariables: ['name', 'email', 'subject', 'previewText', 'contentHtml', 'unsubscribeUrl', 'siteUrl'],
+    description:
+      'Default template for broadcasting new blog posts and articles to all subscribers.',
+    defaultVariables: [
+      'name',
+      'email',
+      'subject',
+      'previewText',
+      'contentHtml',
+      'unsubscribeUrl',
+      'siteUrl',
+    ],
   },
   resume_download_admin: {
     label: 'Recruiter Resume Download Alert (Admin)',
     description: 'Dispatched when a visitor or recruiter downloads your resume PDF.',
-    defaultVariables: ['resumeTitle', 'ipAddress', 'country', 'city', 'referrerSource', 'downloadedAt', 'siteUrl'],
+    defaultVariables: [
+      'resumeTitle',
+      'ipAddress',
+      'country',
+      'city',
+      'referrerSource',
+      'downloadedAt',
+      'siteUrl',
+    ],
   },
   content_published_admin: {
     label: 'Scheduled Content Published (Admin)',
@@ -133,7 +159,14 @@ const PURPOSE_META: Record<
   guestbook_admin_notification: {
     label: 'New Guestbook Entry (Admin)',
     description: 'Dispatched when a new guestbook note is submitted and awaiting review.',
-    defaultVariables: ['authorName', 'authorEmail', 'message', 'adminUrl', 'submittedAt', 'siteUrl'],
+    defaultVariables: [
+      'authorName',
+      'authorEmail',
+      'message',
+      'adminUrl',
+      'submittedAt',
+      'siteUrl',
+    ],
   },
   guestbook_approved: {
     label: 'Guestbook Entry Approved (Visitor)',
@@ -143,17 +176,44 @@ const PURPOSE_META: Record<
   visit_admin_notification: {
     label: 'Visitor Telemetry Alert (Admin)',
     description: 'Real-time alert on unique visitor sessions (subject to cooldown rate-limiting).',
-    defaultVariables: ['ipAddress', 'country', 'city', 'deviceType', 'browser', 'os', 'referrerSource', 'visitedAt', 'siteUrl'],
+    defaultVariables: [
+      'ipAddress',
+      'country',
+      'city',
+      'deviceType',
+      'browser',
+      'os',
+      'referrerSource',
+      'visitedAt',
+      'siteUrl',
+    ],
   },
   admin_login_security: {
     label: 'New Device Login Security Alert (Admin)',
     description: 'Security notification dispatched upon administrator login.',
-    defaultVariables: ['adminName', 'adminEmail', 'ipAddress', 'deviceType', 'browser', 'os', 'location', 'loginTime', 'siteUrl'],
+    defaultVariables: [
+      'adminName',
+      'adminEmail',
+      'ipAddress',
+      'deviceType',
+      'browser',
+      'os',
+      'location',
+      'loginTime',
+      'siteUrl',
+    ],
   },
   security_profile_updated: {
     label: 'Security Profile Audit Notice (Admin)',
     description: 'Audit notice sent when admin credentials or profile information are updated.',
-    defaultVariables: ['adminName', 'adminEmail', 'actionType', 'ipAddress', 'updatedAt', 'siteUrl'],
+    defaultVariables: [
+      'adminName',
+      'adminEmail',
+      'actionType',
+      'ipAddress',
+      'updatedAt',
+      'siteUrl',
+    ],
   },
 };
 
@@ -197,7 +257,8 @@ export default function AdminEmailsPage() {
 
       if (allTemplates.length > 0) {
         // Find template to select
-        const current = allTemplates.find((t) => t.id === selectedTemplateId) ||
+        const current =
+          allTemplates.find((t) => t.id === selectedTemplateId) ||
           allTemplates.find((t) => t.purpose === selectedPurpose && t.isActive) ||
           allTemplates[0]!;
 
@@ -445,8 +506,7 @@ export default function AdminEmailsPage() {
               type="button"
               onClick={() => {
                 setActiveCategory(cat.id);
-                const nextPurposes =
-                  cat.id === 'all' ? Object.keys(PURPOSE_META) : cat.purposes;
+                const nextPurposes = cat.id === 'all' ? Object.keys(PURPOSE_META) : cat.purposes;
                 if (!nextPurposes.includes(selectedPurpose) && nextPurposes.length > 0) {
                   handleSelectPurpose(nextPurposes[0]!);
                 }
@@ -501,9 +561,7 @@ export default function AdminEmailsPage() {
                       >
                         {pMeta?.label || pKey}
                       </div>
-                      <div className="text-[11px] text-muted truncate mt-0.5 font-mono">
-                        {pKey}
-                      </div>
+                      <div className="text-[11px] text-muted truncate mt-0.5 font-mono">{pKey}</div>
                     </div>
                     <span className="px-2 py-0.5 rounded-full bg-surface border border-border text-[10px] font-mono text-muted">
                       {count} var
@@ -729,7 +787,9 @@ export default function AdminEmailsPage() {
                 <CardContent className="pt-4 space-y-4">
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div className="space-y-1.5">
-                      <label className="text-xs font-semibold text-foreground">Variation Name</label>
+                      <label className="text-xs font-semibold text-foreground">
+                        Variation Name
+                      </label>
                       <Input
                         type="text"
                         value={name}
@@ -820,8 +880,14 @@ export default function AdminEmailsPage() {
                                 '• Scalable Microservices Architecture (Blog Post)\n• Dynamic Portfolio & CMS (Project)',
                               )
                               .replace(/\{\{actionType\}\}/g, 'Password Changed')
-                              .replace(/\{\{confirmationUrl\}\}/g, 'http://localhost:3000/newsletter/confirm?token=demo')
-                              .replace(/\{\{unsubscribeUrl\}\}/g, 'http://localhost:3000/newsletter/unsubscribe?token=demo')
+                              .replace(
+                                /\{\{confirmationUrl\}\}/g,
+                                'http://localhost:3000/newsletter/confirm?token=demo',
+                              )
+                              .replace(
+                                /\{\{unsubscribeUrl\}\}/g,
+                                'http://localhost:3000/newsletter/unsubscribe?token=demo',
+                              )
                               .replace(/\{\{guestbookUrl\}\}/g, 'http://localhost:3000/guestbook')
                               .replace(/\{\{adminUrl\}\}/g, 'http://localhost:3000/admin')
                               .replace(/\{\{siteUrl\}\}/g, 'http://localhost:3000'),
@@ -873,7 +939,9 @@ export default function AdminEmailsPage() {
             </form>
           ) : (
             <Card className="bg-surface border-border p-12 text-center">
-              <p className="text-sm text-muted">No template selected. Choose a workflow on the left.</p>
+              <p className="text-sm text-muted">
+                No template selected. Choose a workflow on the left.
+              </p>
             </Card>
           )}
         </div>
@@ -899,8 +967,8 @@ export default function AdminEmailsPage() {
 
             <p className="text-xs text-zinc-400 leading-relaxed">
               Send a test rendering of{' '}
-              <strong className="text-zinc-200">{currentTemplate?.name || meta.label}</strong> to any
-              inbox with sample data populated.
+              <strong className="text-zinc-200">{currentTemplate?.name || meta.label}</strong> to
+              any inbox with sample data populated.
             </p>
 
             <form onSubmit={handleSendTest} className="space-y-4">

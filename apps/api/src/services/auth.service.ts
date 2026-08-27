@@ -84,7 +84,10 @@ export const authService = {
           },
         });
       } catch (err) {
-        logger.error({ err, adminEmail: author.email }, 'Failed to send admin login security alert');
+        logger.error(
+          { err, adminEmail: author.email },
+          'Failed to send admin login security alert',
+        );
       }
     });
 
@@ -144,7 +147,11 @@ export const authService = {
     await sessionRepository.deleteByRefreshTokenHash(refreshTokenHash);
   },
 
-  async updateProfile(authorId: string, input: UpdateProfileInput, context?: { ipAddress?: string | null }) {
+  async updateProfile(
+    authorId: string,
+    input: UpdateProfileInput,
+    context?: { ipAddress?: string | null },
+  ) {
     const existing = await authorRepository.findByIdWithAvatar(authorId);
     if (!existing) {
       throw new NotFoundError('Author not found');
@@ -190,7 +197,11 @@ export const authService = {
     return mapAuthorToDto(updated);
   },
 
-  async changePassword(authorId: string, input: ChangePasswordInput, context?: { ipAddress?: string | null }) {
+  async changePassword(
+    authorId: string,
+    input: ChangePasswordInput,
+    context?: { ipAddress?: string | null },
+  ) {
     const author = await authorRepository.findByIdWithAvatar(authorId);
     if (!author) {
       throw new NotFoundError('Author not found');

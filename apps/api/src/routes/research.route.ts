@@ -2,6 +2,7 @@ import { Router } from 'express';
 import { researchController } from '@/controllers/research.controller';
 import { authenticateAdmin } from '@/middleware/auth.middleware';
 import { validateBody, validateParams, validateQuery } from '@/middleware/validate.middleware';
+import { asyncHandler } from '@/middleware/errorHandler';
 import {
   createResearchPaperSchema,
   listResearchPapersQuerySchema,
@@ -16,56 +17,60 @@ router.get(
   '/admin/all',
   authenticateAdmin,
   validateQuery(listResearchPapersQuerySchema),
-  researchController.listAdmin,
+  asyncHandler(researchController.listAdmin),
 );
 router.get(
   '/admin/:id',
   authenticateAdmin,
   validateParams(uuidParamSchema),
-  researchController.getById,
+  asyncHandler(researchController.getById),
 );
 
 // Specific nested public routes
-router.get('/by/:author/:slug', researchController.getByAuthorAndSlug);
+router.get('/by/:author/:slug', asyncHandler(researchController.getByAuthorAndSlug));
 
 // Public list
-router.get('/', validateQuery(listResearchPapersQuerySchema), researchController.listPublic);
+router.get(
+  '/',
+  validateQuery(listResearchPapersQuerySchema),
+  asyncHandler(researchController.listPublic),
+);
 
 // Generic actions
 router.post(
   '/',
   authenticateAdmin,
   validateBody(createResearchPaperSchema),
-  researchController.create,
+  asyncHandler(researchController.create),
 );
 router.put(
   '/:id',
   authenticateAdmin,
   validateParams(uuidParamSchema),
   validateBody(updateResearchPaperSchema),
-  researchController.update,
+  asyncHandler(researchController.update),
 );
 router.delete(
   '/:id',
   authenticateAdmin,
   validateParams(uuidParamSchema),
-  researchController.delete,
+  asyncHandler(researchController.delete),
 );
 router.patch(
   '/:id/status',
   authenticateAdmin,
   validateParams(uuidParamSchema),
-  researchController.updateStatus,
+  asyncHandler(researchController.updateStatus),
 );
 router.put(
   '/:id/status',
   authenticateAdmin,
   validateParams(uuidParamSchema),
-  researchController.updateStatus,
+  asyncHandler(researchController.updateStatus),
 );
 
 // Generic public slug routes (must be last)
-router.get('/:slug/download', researchController.download);
-router.get('/:slug', researchController.getBySlug);
+router.get('/:slug/download', asyncHandler(researchController.download));
+router.get('/:slug', asyncHandler(researchController.getBySlug));
 
 export { router as researchRouter };

@@ -308,10 +308,42 @@ const DEFAULT_FOOTER_COLUMNS: NavItemDto[] = [
 ];
 
 const DEFAULT_SOCIALS: SocialLinkDto[] = [
-  { id: '1', platform: 'GitHub', label: 'GitHub', url: 'https://github.com/AnujYadav-Dev', icon: 'github', sortOrder: 0, isEnabled: true },
-  { id: '2', platform: 'LinkedIn', label: 'LinkedIn', url: 'https://linkedin.com/in/anujyadav', icon: 'linkedin', sortOrder: 1, isEnabled: true },
-  { id: '3', platform: 'X', label: 'X (Twitter)', url: 'https://x.com/anujyadav', icon: 'twitter', sortOrder: 2, isEnabled: true },
-  { id: '4', platform: 'Email', label: 'Email', url: 'mailto:anujyadav9449@gmail.com', icon: 'mail', sortOrder: 3, isEnabled: true },
+  {
+    id: '1',
+    platform: 'GitHub',
+    label: 'GitHub',
+    url: 'https://github.com/AnujYadav-Dev',
+    icon: 'github',
+    sortOrder: 0,
+    isEnabled: true,
+  },
+  {
+    id: '2',
+    platform: 'LinkedIn',
+    label: 'LinkedIn',
+    url: 'https://linkedin.com/in/anujyadav',
+    icon: 'linkedin',
+    sortOrder: 1,
+    isEnabled: true,
+  },
+  {
+    id: '3',
+    platform: 'X',
+    label: 'X (Twitter)',
+    url: 'https://x.com/anujyadav',
+    icon: 'twitter',
+    sortOrder: 2,
+    isEnabled: true,
+  },
+  {
+    id: '4',
+    platform: 'Email',
+    label: 'Email',
+    url: 'mailto:anujyadav9449@gmail.com',
+    icon: 'mail',
+    sortOrder: 3,
+    isEnabled: true,
+  },
 ];
 
 export function Footer() {
@@ -326,8 +358,10 @@ export function Footer() {
     'Anuj Yadav';
   const authorEmail = settingsData?.data?.['author_email'] || 'anujyadav9449@gmail.com';
 
-  const footerSections = navData?.data && navData.data.length > 0 ? navData.data : DEFAULT_FOOTER_COLUMNS;
-  const socials = socialData?.data && socialData.data.length > 0 ? socialData.data : DEFAULT_SOCIALS;
+  const footerSections =
+    navData?.data && navData.data.length > 0 ? navData.data : DEFAULT_FOOTER_COLUMNS;
+  const socials =
+    socialData?.data && socialData.data.length > 0 ? socialData.data : DEFAULT_SOCIALS;
 
   return (
     <footer

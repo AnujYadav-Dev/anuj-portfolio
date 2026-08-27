@@ -18,14 +18,19 @@ import type {
 import type { Prisma } from '@prisma/client';
 
 export const newsletterService = {
-  async subscribe(input: NewsletterSubscribeInput): Promise<{ message: string; requiresConfirmation: boolean }> {
+  async subscribe(
+    input: NewsletterSubscribeInput,
+  ): Promise<{ message: string; requiresConfirmation: boolean }> {
     const existing = await newsletterRepository.findByEmail(input.email);
     if (existing) {
       if (existing.unsubscribedAt) {
         // Resubscribe cleanly
         await newsletterRepository.delete(existing.id);
       } else if (existing.isConfirmed) {
-        return { message: 'You are already subscribed to the newsletter!', requiresConfirmation: false };
+        return {
+          message: 'You are already subscribed to the newsletter!',
+          requiresConfirmation: false,
+        };
       } else {
         // Already pending - re-issue verification email
         const token = existing.confirmationToken || generateSecureToken();
@@ -44,7 +49,10 @@ export const newsletterService = {
             },
           });
         } catch (err) {
-          logger.error({ err, email: input.email }, 'Failed to re-send newsletter confirmation email');
+          logger.error(
+            { err, email: input.email },
+            'Failed to re-send newsletter confirmation email',
+          );
         }
 
         return {
@@ -118,32 +126,48 @@ export const newsletterService = {
   },
 
   async confirm(token: string): Promise<{ message: string; email: string }> {
-    const subscriber = await newsletterRepository.confirm(token);
-    if (!subscriber) {
+    if (!token || !token.trim() || token === 'undefined' || token === 'null') {
+      throw new ValidationError('Confirmation token is required');
+    }
+
+    const result = await newsletterRepository.confirm(token.trim());
+    if (!result) {
       throw new NotFoundError('Invalid or expired confirmation token');
     }
 
-    const siteUrl = await emailService.resolveSiteUrl();
-    const unsubscribeUrl = `${siteUrl}/newsletter/unsubscribe?token=${subscriber.id}`;
-    const displayName = subscriber.name || 'Reader';
+    const { subscriber, isNewlyConfirmed } = result;
 
-    // Send Welcome Email upon confirmation
-    try {
-      await emailService.sendTemplatedEmail({
-        purpose: EMAIL_TEMPLATE_KEYS.NEWSLETTER_WELCOME,
-        to: subscriber.email,
-        variables: {
-          name: displayName,
-          email: subscriber.email,
-          unsubscribeUrl,
-          siteUrl,
-        },
-      });
-    } catch (err) {
-      logger.error({ err, email: subscriber.email }, 'Failed to send newsletter welcome email after confirmation');
+    if (isNewlyConfirmed) {
+      const siteUrl = await emailService.resolveSiteUrl();
+      const unsubscribeUrl = `${siteUrl}/newsletter/unsubscribe?token=${subscriber.id}`;
+      const displayName = subscriber.name || 'Reader';
+
+      // Send Welcome Email upon first confirmation
+      try {
+        await emailService.sendTemplatedEmail({
+          purpose: EMAIL_TEMPLATE_KEYS.NEWSLETTER_WELCOME,
+          to: subscriber.email,
+          variables: {
+            name: displayName,
+            email: subscriber.email,
+            unsubscribeUrl,
+            siteUrl,
+          },
+        });
+      } catch (err) {
+        logger.error(
+          { err, email: subscriber.email },
+          'Failed to send newsletter welcome email after confirmation',
+        );
+      }
     }
 
-    return { message: 'Newsletter subscription confirmed successfully!', email: subscriber.email };
+    return {
+      message: isNewlyConfirmed
+        ? 'Newsletter subscription confirmed successfully!'
+        : 'Your subscription is already confirmed!',
+      email: subscriber.email,
+    };
   },
 
   async unsubscribe(tokenOrEmail: string): Promise<{ message: string }> {
@@ -154,14 +178,18 @@ export const newsletterService = {
     return { message: 'Unsubscribed successfully' };
   },
 
-  async broadcast(input: NewsletterBroadcastInput): Promise<{ message: string; sent: number; failed: number }> {
+  async broadcast(
+    input: NewsletterBroadcastInput,
+  ): Promise<{ message: string; sent: number; failed: number }> {
     const subscribers = await newsletterRepository.findMany({
       isConfirmed: true,
       unsubscribedAt: null,
     });
 
     if (subscribers.length === 0) {
-      throw new ValidationError('No active confirmed newsletter subscribers found to broadcast to.');
+      throw new ValidationError(
+        'No active confirmed newsletter subscribers found to broadcast to.',
+      );
     }
 
     const siteUrl = await emailService.resolveSiteUrl();

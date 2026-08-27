@@ -263,9 +263,15 @@ export default function AdminContactInboxPage() {
 
                 <div className="flex items-center gap-2">
                   <a
-                    href={`mailto:${selectedMessage.email}?subject=Re: ${encodeURIComponent(
-                      selectedMessage.subject || 'Portfolio Inquiry',
+                    href={`https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(
+                      selectedMessage.email,
+                    )}&su=${encodeURIComponent(
+                      `Re: ${selectedMessage.subject || 'Portfolio Inquiry'}`,
+                    )}&body=${encodeURIComponent(
+                      `Hi ${selectedMessage.name || ''},Thank you for reaching out through my portfolio.`,
                     )}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
                     className={buttonVariants({ variant: 'primary', size: 'sm' })}
                   >
                     <Reply className="w-3.5 h-3.5 mr-1.5" />

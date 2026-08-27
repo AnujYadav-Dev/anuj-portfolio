@@ -24,9 +24,7 @@ vi.mock('@/hooks/useLayout', () => ({
           url: '/blogs',
           location: 'footer',
           itemType: 'group',
-          children: [
-            { id: 'l3', label: 'Engineering Essays', url: '/blogs', isExternal: false },
-          ],
+          children: [{ id: 'l3', label: 'Engineering Essays', url: '/blogs', isExternal: false }],
         },
       ],
     },

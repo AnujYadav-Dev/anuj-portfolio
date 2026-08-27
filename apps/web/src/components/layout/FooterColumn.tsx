@@ -27,7 +27,9 @@ export function FooterColumn({ section, className }: FooterColumnProps) {
       {/* Links List */}
       <ul className="flex flex-col gap-2 list-none p-0 m-0">
         {links.map((link) => {
-          const isExternal = link.isExternal || (link.url && (link.url.startsWith('http://') || link.url.startsWith('https://')));
+          const isExternal =
+            link.isExternal ||
+            (link.url && (link.url.startsWith('http://') || link.url.startsWith('https://')));
 
           return (
             <li key={link.id} className="m-0 p-0">

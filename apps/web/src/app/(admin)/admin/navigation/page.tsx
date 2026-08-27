@@ -194,8 +194,8 @@ export default function AdminNavigationPage() {
         (parent
           ? parent.location
           : locationFilter === 'footer'
-          ? NavLocation.Footer
-          : NavLocation.Header),
+            ? NavLocation.Footer
+            : NavLocation.Header),
     );
     setParentId(parent ? parent.id : '');
     setIsExternal(false);
@@ -697,7 +697,9 @@ export default function AdminNavigationPage() {
           <div className="flex items-center justify-between text-xs text-muted font-mono pb-2 border-b border-border/50">
             <div className="flex items-center gap-2">
               <span className="w-2 h-2 rounded-full bg-success animate-pulse" />
-              <span className="font-semibold text-foreground">Live Multi-Column Footer Preview</span>
+              <span className="font-semibold text-foreground">
+                Live Multi-Column Footer Preview
+              </span>
             </div>
             <span className="text-[11px]">Database Driven</span>
           </div>
@@ -756,8 +758,8 @@ export default function AdminNavigationPage() {
               {locationFilter === 'header'
                 ? `Header Navigation (${filteredItems.length} top-level nodes)`
                 : locationFilter === 'footer'
-                ? `Footer Sections & Columns (${filteredItems.length} columns)`
-                : `Navigation Hierarchy (${filteredItems.length} top-level nodes)`}
+                  ? `Footer Sections & Columns (${filteredItems.length} columns)`
+                  : `Navigation Hierarchy (${filteredItems.length} top-level nodes)`}
             </span>
           </span>
         </div>
@@ -768,8 +770,8 @@ export default function AdminNavigationPage() {
           </div>
         ) : filteredItems.length === 0 ? (
           <div className="p-8 text-center text-xs text-muted bg-surface border border-border rounded-lg">
-            No navigation items found for this location. Click &quot;Add Navigation Item&quot; or use
-            a preset to get started.
+            No navigation items found for this location. Click &quot;Add Navigation Item&quot; or
+            use a preset to get started.
           </div>
         ) : (
           <div className="space-y-2">
@@ -1303,8 +1305,8 @@ function NavTreeNode({
               {depth > 0 && item.itemType === 'dropdown'
                 ? 'Flyout'
                 : item.itemType === 'group' && item.location === 'footer'
-                ? 'Category'
-                : item.itemType}
+                  ? 'Category'
+                  : item.itemType}
             </span>
 
             <span

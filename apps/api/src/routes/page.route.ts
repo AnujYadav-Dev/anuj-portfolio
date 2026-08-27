@@ -2,6 +2,7 @@ import { Router } from 'express';
 import { pageController } from '@/controllers/page.controller';
 import { authenticateAdmin } from '@/middleware/auth.middleware';
 import { validateBody, validateParams, validateQuery } from '@/middleware/validate.middleware';
+import { asyncHandler } from '@/middleware/errorHandler';
 import {
   createPageSchema,
   listPagesQuerySchema,
@@ -16,30 +17,40 @@ router.get(
   '/admin/all',
   authenticateAdmin,
   validateQuery(listPagesQuerySchema),
-  pageController.listAdmin,
+  asyncHandler(pageController.listAdmin),
 );
 router.get(
   '/admin/:id',
   authenticateAdmin,
   validateParams(uuidParamSchema),
-  pageController.getById,
+  asyncHandler(pageController.getById),
 );
 
 // Public list
-router.get('/', validateQuery(listPagesQuerySchema), pageController.listPublic);
+router.get('/', validateQuery(listPagesQuerySchema), asyncHandler(pageController.listPublic));
 
 // Generic actions
-router.post('/', authenticateAdmin, validateBody(createPageSchema), pageController.create);
+router.post(
+  '/',
+  authenticateAdmin,
+  validateBody(createPageSchema),
+  asyncHandler(pageController.create),
+);
 router.put(
   '/:id',
   authenticateAdmin,
   validateParams(uuidParamSchema),
   validateBody(updatePageSchema),
-  pageController.update,
+  asyncHandler(pageController.update),
 );
-router.delete('/:id', authenticateAdmin, validateParams(uuidParamSchema), pageController.delete);
+router.delete(
+  '/:id',
+  authenticateAdmin,
+  validateParams(uuidParamSchema),
+  asyncHandler(pageController.delete),
+);
 
 // Generic public slug route (must be last)
-router.get('/:slug', pageController.getBySlug);
+router.get('/:slug', asyncHandler(pageController.getBySlug));
 
 export { router as pageRouter };

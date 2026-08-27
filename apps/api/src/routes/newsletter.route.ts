@@ -3,6 +3,7 @@ import { newsletterController } from '@/controllers/newsletter.controller';
 import { authenticateAdmin } from '@/middleware/auth.middleware';
 import { strictRateLimiter } from '@/middleware/rateLimit.middleware';
 import { validateBody, validateParams, validateQuery } from '@/middleware/validate.middleware';
+import { asyncHandler } from '@/middleware/errorHandler';
 import {
   listNewsletterSubscribersQuerySchema,
   newsletterBroadcastSchema,
@@ -17,30 +18,34 @@ router.post(
   '/subscribe',
   strictRateLimiter,
   validateBody(newsletterSubscribeSchema),
-  newsletterController.subscribe,
+  asyncHandler(newsletterController.subscribe),
 );
-router.get('/confirm', newsletterController.confirm);
-router.post('/unsubscribe', newsletterController.unsubscribe);
+router.get('/confirm', asyncHandler(newsletterController.confirm));
+router.post('/unsubscribe', asyncHandler(newsletterController.unsubscribe));
 
 // Admin
 router.get(
   '/admin/subscribers',
   authenticateAdmin,
   validateQuery(listNewsletterSubscribersQuerySchema),
-  newsletterController.listSubscribers,
+  asyncHandler(newsletterController.listSubscribers),
 );
-router.get('/admin/export', authenticateAdmin, newsletterController.exportSubscribers);
+router.get(
+  '/admin/export',
+  authenticateAdmin,
+  asyncHandler(newsletterController.exportSubscribers),
+);
 router.post(
   '/admin/broadcast',
   authenticateAdmin,
   validateBody(newsletterBroadcastSchema),
-  newsletterController.broadcast,
+  asyncHandler(newsletterController.broadcast),
 );
 router.delete(
   '/admin/subscribers/:id',
   authenticateAdmin,
   validateParams(uuidParamSchema),
-  newsletterController.delete,
+  asyncHandler(newsletterController.delete),
 );
 
 export { router as newsletterRouter };

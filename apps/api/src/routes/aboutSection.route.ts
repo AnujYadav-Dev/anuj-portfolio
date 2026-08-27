@@ -2,6 +2,7 @@ import { Router } from 'express';
 import { aboutSectionController } from '@/controllers/aboutSection.controller';
 import { authenticateAdmin } from '@/middleware/auth.middleware';
 import { validateBody, validateParams } from '@/middleware/validate.middleware';
+import { asyncHandler } from '@/middleware/errorHandler';
 import { reorderSchema, upsertAboutSectionSchema, uuidParamSchema } from '@portfolio/shared';
 
 const router = Router();
@@ -11,59 +12,59 @@ router.patch(
   '/admin/reorder',
   authenticateAdmin,
   validateBody(reorderSchema),
-  aboutSectionController.reorder,
+  asyncHandler(aboutSectionController.reorder),
 );
 router.put(
   '/admin/reorder',
   authenticateAdmin,
   validateBody(reorderSchema),
-  aboutSectionController.reorder,
+  asyncHandler(aboutSectionController.reorder),
 );
 router.patch(
   '/reorder',
   authenticateAdmin,
   validateBody(reorderSchema),
-  aboutSectionController.reorder,
+  asyncHandler(aboutSectionController.reorder),
 );
 router.put(
   '/reorder',
   authenticateAdmin,
   validateBody(reorderSchema),
-  aboutSectionController.reorder,
+  asyncHandler(aboutSectionController.reorder),
 );
 
 // Admin collection routes (must precede /:slug and /:id)
-router.get('/admin/all', authenticateAdmin, aboutSectionController.listAdmin);
+router.get('/admin/all', authenticateAdmin, asyncHandler(aboutSectionController.listAdmin));
 router.get(
   '/admin/:id',
   authenticateAdmin,
   validateParams(uuidParamSchema),
-  aboutSectionController.getById,
+  asyncHandler(aboutSectionController.getById),
 );
 
 // Public list
-router.get('/', aboutSectionController.listPublic);
+router.get('/', asyncHandler(aboutSectionController.listPublic));
 
 // Generic slug / ID routes
-router.get('/:slug', aboutSectionController.getBySlug);
+router.get('/:slug', asyncHandler(aboutSectionController.getBySlug));
 router.post(
   '/',
   authenticateAdmin,
   validateBody(upsertAboutSectionSchema),
-  aboutSectionController.create,
+  asyncHandler(aboutSectionController.create),
 );
 router.put(
   '/:id',
   authenticateAdmin,
   validateParams(uuidParamSchema),
   validateBody(upsertAboutSectionSchema.partial()),
-  aboutSectionController.update,
+  asyncHandler(aboutSectionController.update),
 );
 router.delete(
   '/:id',
   authenticateAdmin,
   validateParams(uuidParamSchema),
-  aboutSectionController.delete,
+  asyncHandler(aboutSectionController.delete),
 );
 
 export { router as aboutSectionRouter };

@@ -3,6 +3,7 @@ import { guestbookController } from '@/controllers/guestbook.controller';
 import { authenticateAdmin } from '@/middleware/auth.middleware';
 import { strictRateLimiter } from '@/middleware/rateLimit.middleware';
 import { validateBody, validateParams, validateQuery } from '@/middleware/validate.middleware';
+import { asyncHandler } from '@/middleware/errorHandler';
 import {
   createGuestbookEntrySchema,
   listGuestbookAdminQuerySchema,
@@ -14,12 +15,12 @@ import {
 const router = Router();
 
 // Public
-router.get('/', validateQuery(paginationSchema), guestbookController.listPublic);
+router.get('/', validateQuery(paginationSchema), asyncHandler(guestbookController.listPublic));
 router.post(
   '/',
   strictRateLimiter,
   validateBody(createGuestbookEntrySchema),
-  guestbookController.create,
+  asyncHandler(guestbookController.create),
 );
 
 // Admin Moderation
@@ -27,27 +28,27 @@ router.get(
   '/admin/all',
   authenticateAdmin,
   validateQuery(listGuestbookAdminQuerySchema),
-  guestbookController.listAdmin,
+  asyncHandler(guestbookController.listAdmin),
 );
 router.patch(
   '/admin/:id/moderate',
   authenticateAdmin,
   validateParams(uuidParamSchema),
   validateBody(moderateGuestbookSchema),
-  guestbookController.moderate,
+  asyncHandler(guestbookController.moderate),
 );
 router.put(
   '/admin/:id/moderate',
   authenticateAdmin,
   validateParams(uuidParamSchema),
   validateBody(moderateGuestbookSchema),
-  guestbookController.moderate,
+  asyncHandler(guestbookController.moderate),
 );
 router.delete(
   '/admin/:id',
   authenticateAdmin,
   validateParams(uuidParamSchema),
-  guestbookController.delete,
+  asyncHandler(guestbookController.delete),
 );
 
 export { router as guestbookRouter };

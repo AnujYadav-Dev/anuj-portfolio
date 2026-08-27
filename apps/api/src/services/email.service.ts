@@ -113,8 +113,7 @@ const DEFAULT_FALLBACK_TEMPLATES: Record<
     subject: 'Scheduled Content Published ({{itemCount}} item(s))',
     bodyHtml:
       '<p>The automated scheduler published {{itemCount}} item(s):</p><p>{{publishedItemsSummary}}</p>',
-    bodyText:
-      'Scheduled content published ({{itemCount}} items):\n{{publishedItemsSummary}}',
+    bodyText: 'Scheduled content published ({{itemCount}} items):\n{{publishedItemsSummary}}',
   },
   guestbook_admin_notification: {
     subject: 'New Guestbook Signature from {{authorName}}',
@@ -198,10 +197,7 @@ export const emailService = {
     const mailer = getTransporter();
 
     if (!mailer) {
-      logger.warn(
-        { purpose, to: input.to },
-        'SMTP not configured — skipping email send',
-      );
+      logger.warn({ purpose, to: input.to }, 'SMTP not configured — skipping email send');
       return;
     }
 
@@ -217,7 +213,10 @@ export const emailService = {
         textTemplate = dbTemplate.bodyText || undefined;
       }
     } catch (err) {
-      logger.warn({ err, purpose }, 'Failed to fetch active template from database, using fallback');
+      logger.warn(
+        { err, purpose },
+        'Failed to fetch active template from database, using fallback',
+      );
     }
 
     // Default fallback if still missing
@@ -298,7 +297,9 @@ export const emailService = {
   async sendTestEmail(input: SendTestEmailInput): Promise<{ success: boolean; message: string }> {
     const mailer = getTransporter();
     if (!mailer) {
-      throw new Error('SMTP is not configured on the server. Please set SMTP_HOST, SMTP_PORT, and SMTP_FROM in environment.');
+      throw new Error(
+        'SMTP is not configured on the server. Please set SMTP_HOST, SMTP_PORT, and SMTP_FROM in environment.',
+      );
     }
 
     let subjectTemplate: string | undefined;
@@ -347,7 +348,8 @@ export const emailService = {
       visitedAt: new Date().toLocaleString(),
       downloadedAt: new Date().toLocaleString(),
       itemCount: '2',
-      publishedItemsSummary: '• Building Scalable Systems (Blog Post)\n• Dynamic Portfolio Platform (Project)',
+      publishedItemsSummary:
+        '• Building Scalable Systems (Blog Post)\n• Dynamic Portfolio Platform (Project)',
       publishedAt: new Date().toLocaleString(),
       adminName: 'Anuj Yadav',
       adminEmail: input.to,
@@ -355,7 +357,8 @@ export const emailService = {
       loginTime: new Date().toLocaleString(),
       actionType: 'Password Changed',
       updatedAt: new Date().toLocaleString(),
-      contentHtml: '<p>This is a broadcast test message from the Anuj Yadav Engineering Dispatch.</p>',
+      contentHtml:
+        '<p>This is a broadcast test message from the Anuj Yadav Engineering Dispatch.</p>',
       ...(input.variables || {}),
     };
 

@@ -2,6 +2,7 @@ import { Router } from 'express';
 import { blogController } from '@/controllers/blog.controller';
 import { authenticateAdmin } from '@/middleware/auth.middleware';
 import { validateBody, validateParams, validateQuery } from '@/middleware/validate.middleware';
+import { asyncHandler } from '@/middleware/errorHandler';
 import {
   createBlogPostSchema,
   listBlogPostsQuerySchema,
@@ -17,57 +18,67 @@ router.get(
   '/admin/all',
   authenticateAdmin,
   validateQuery(listBlogPostsQuerySchema),
-  blogController.listAdmin,
+  asyncHandler(blogController.listAdmin),
 );
 router.get(
   '/admin/:id',
   authenticateAdmin,
   validateParams(uuidParamSchema),
-  blogController.getById,
+  asyncHandler(blogController.getById),
 );
 
 // Specific nested public routes
-router.get('/by/:author/:slug', blogController.getByAuthorAndSlug);
+router.get('/by/:author/:slug', asyncHandler(blogController.getByAuthorAndSlug));
 
 // Public list
-router.get('/', validateQuery(listBlogPostsQuerySchema), blogController.listPublic);
+router.get('/', validateQuery(listBlogPostsQuerySchema), asyncHandler(blogController.listPublic));
 
 // Generic actions
-router.post('/', authenticateAdmin, validateBody(createBlogPostSchema), blogController.create);
+router.post(
+  '/',
+  authenticateAdmin,
+  validateBody(createBlogPostSchema),
+  asyncHandler(blogController.create),
+);
 router.put(
   '/:id',
   authenticateAdmin,
   validateParams(uuidParamSchema),
   validateBody(updateBlogPostSchema),
-  blogController.update,
+  asyncHandler(blogController.update),
 );
-router.delete('/:id', authenticateAdmin, validateParams(uuidParamSchema), blogController.delete);
+router.delete(
+  '/:id',
+  authenticateAdmin,
+  validateParams(uuidParamSchema),
+  asyncHandler(blogController.delete),
+);
 router.patch(
   '/:id/status',
   authenticateAdmin,
   validateParams(uuidParamSchema),
-  blogController.updateStatus,
+  asyncHandler(blogController.updateStatus),
 );
 router.put(
   '/:id/status',
   authenticateAdmin,
   validateParams(uuidParamSchema),
-  blogController.updateStatus,
+  asyncHandler(blogController.updateStatus),
 );
 router.get(
   '/:id/versions',
   authenticateAdmin,
   validateParams(uuidParamSchema),
-  blogController.getVersions,
+  asyncHandler(blogController.getVersions),
 );
 router.post(
   '/:id/versions/:version/restore',
   authenticateAdmin,
   validateParams(restoreVersionParamsSchema),
-  blogController.restoreVersion,
+  asyncHandler(blogController.restoreVersion),
 );
 
 // Generic public slug route (must be last)
-router.get('/:slug', blogController.getBySlug);
+router.get('/:slug', asyncHandler(blogController.getBySlug));
 
 export { router as blogRouter };

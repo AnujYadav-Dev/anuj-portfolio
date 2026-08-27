@@ -44,18 +44,25 @@ export const newsletterRepository = {
   },
 
   async confirm(token: string) {
+    if (!token || !token.trim()) return null;
+
     const subscriber = await prisma.newsletterSubscriber.findFirst({
-      where: { confirmationToken: token },
+      where: { confirmationToken: token.trim() },
     });
     if (!subscriber) return null;
 
-    return prisma.newsletterSubscriber.update({
+    if (subscriber.isConfirmed) {
+      return { subscriber, isNewlyConfirmed: false };
+    }
+
+    const updated = await prisma.newsletterSubscriber.update({
       where: { id: subscriber.id },
       data: {
         isConfirmed: true,
-        confirmationToken: null,
       },
     });
+
+    return { subscriber: updated, isNewlyConfirmed: true };
   },
 
   async unsubscribe(tokenOrEmail: string) {

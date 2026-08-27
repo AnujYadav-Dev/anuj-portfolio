@@ -134,9 +134,7 @@ export default function AdminSettingsPage() {
             {notificationSettings.map((s) => (
               <div key={s.key} className="space-y-1.5">
                 <div className="flex items-center justify-between">
-                  <label className="text-xs font-semibold text-foreground font-mono">
-                    {s.key}
-                  </label>
+                  <label className="text-xs font-semibold text-foreground font-mono">{s.key}</label>
                   <span className="text-[10px] font-mono text-muted">
                     group: {s.group || 'notifications'}
                   </span>
@@ -178,9 +176,7 @@ export default function AdminSettingsPage() {
             {newsletterSettings.map((s) => (
               <div key={s.key} className="space-y-1.5">
                 <div className="flex items-center justify-between">
-                  <label className="text-xs font-semibold text-foreground font-mono">
-                    {s.key}
-                  </label>
+                  <label className="text-xs font-semibold text-foreground font-mono">{s.key}</label>
                   <span className="text-[10px] font-mono text-muted">
                     group: {s.group || 'newsletter'}
                   </span>
@@ -191,7 +187,9 @@ export default function AdminSettingsPage() {
                     onChange={(e) => handleChange(s.key, e.target.value)}
                     className="w-full bg-background border border-border rounded-md px-3 py-2 text-foreground font-mono text-xs focus:outline-none focus:border-accent"
                   >
-                    <option value="true">true (Double Opt-In Enabled - Requires Email Confirmation)</option>
+                    <option value="true">
+                      true (Double Opt-In Enabled - Requires Email Confirmation)
+                    </option>
                     <option value="false">false (Single Opt-In - Instant Subscription)</option>
                   </select>
                 ) : (
@@ -219,9 +217,7 @@ export default function AdminSettingsPage() {
             {generalSettings.map((s) => (
               <div key={s.key} className="space-y-1.5">
                 <div className="flex items-center justify-between">
-                  <label className="text-xs font-semibold text-foreground font-mono">
-                    {s.key}
-                  </label>
+                  <label className="text-xs font-semibold text-foreground font-mono">{s.key}</label>
                   <span className="text-[10px] font-mono text-muted">
                     group: {s.group || 'general'}
                   </span>
@@ -267,12 +263,8 @@ export default function AdminSettingsPage() {
             {analyticsSettings.map((s) => (
               <div key={s.key} className="space-y-1.5">
                 <div className="flex items-center justify-between">
-                  <label className="text-xs font-semibold text-foreground font-mono">
-                    {s.key}
-                  </label>
-                  <span className="text-[10px] font-mono text-muted">
-                    {s.group || 'analytics'}
-                  </span>
+                  <label className="text-xs font-semibold text-foreground font-mono">{s.key}</label>
+                  <span className="text-[10px] font-mono text-muted">{s.group || 'analytics'}</span>
                 </div>
                 {isBooleanSetting(s.key, formValues[s.key] ?? s.value) ? (
                   <select

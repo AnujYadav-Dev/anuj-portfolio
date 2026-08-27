@@ -2,6 +2,7 @@ import { Router } from 'express';
 import { homepageSectionController } from '@/controllers/homepageSection.controller';
 import { authenticateAdmin } from '@/middleware/auth.middleware';
 import { validateBody, validateParams } from '@/middleware/validate.middleware';
+import { asyncHandler } from '@/middleware/errorHandler';
 import { reorderSchema, upsertHomepageSectionSchema, uuidParamSchema } from '@portfolio/shared';
 
 const router = Router();
@@ -11,59 +12,63 @@ router.patch(
   '/admin/reorder',
   authenticateAdmin,
   validateBody(reorderSchema),
-  homepageSectionController.reorder,
+  asyncHandler(homepageSectionController.reorder),
 );
 router.put(
   '/admin/reorder',
   authenticateAdmin,
   validateBody(reorderSchema),
-  homepageSectionController.reorder,
+  asyncHandler(homepageSectionController.reorder),
 );
 router.patch(
   '/reorder',
   authenticateAdmin,
   validateBody(reorderSchema),
-  homepageSectionController.reorder,
+  asyncHandler(homepageSectionController.reorder),
 );
 router.put(
   '/reorder',
   authenticateAdmin,
   validateBody(reorderSchema),
-  homepageSectionController.reorder,
+  asyncHandler(homepageSectionController.reorder),
 );
 
 // Admin collection routes (must precede /:id)
-router.get('/admin/all', authenticateAdmin, homepageSectionController.listAdmin);
+router.get('/admin/all', authenticateAdmin, asyncHandler(homepageSectionController.listAdmin));
 router.get(
   '/admin/:id',
   authenticateAdmin,
   validateParams(uuidParamSchema),
-  homepageSectionController.getById,
+  asyncHandler(homepageSectionController.getById),
 );
 
 // Public list
-router.get('/', homepageSectionController.listPublic);
+router.get('/', asyncHandler(homepageSectionController.listPublic));
 
 // Generic ID routes
-router.get('/:id', validateParams(uuidParamSchema), homepageSectionController.getById);
+router.get(
+  '/:id',
+  validateParams(uuidParamSchema),
+  asyncHandler(homepageSectionController.getById),
+);
 router.post(
   '/',
   authenticateAdmin,
   validateBody(upsertHomepageSectionSchema),
-  homepageSectionController.create,
+  asyncHandler(homepageSectionController.create),
 );
 router.put(
   '/:id',
   authenticateAdmin,
   validateParams(uuidParamSchema),
   validateBody(upsertHomepageSectionSchema.partial()),
-  homepageSectionController.update,
+  asyncHandler(homepageSectionController.update),
 );
 router.delete(
   '/:id',
   authenticateAdmin,
   validateParams(uuidParamSchema),
-  homepageSectionController.delete,
+  asyncHandler(homepageSectionController.delete),
 );
 
 export { router as homepageSectionRouter };

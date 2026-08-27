@@ -297,9 +297,7 @@ export default function AdminNewsletterPage() {
                 </div>
                 <div>
                   <h3 className="text-base font-bold text-zinc-100">Broadcast Newsletter</h3>
-                  <p className="text-xs text-zinc-400">
-                    Dispatch an email blast to your audience.
-                  </p>
+                  <p className="text-xs text-zinc-400">Dispatch an email blast to your audience.</p>
                 </div>
               </div>
               <button
@@ -394,7 +392,9 @@ export default function AdminNewsletterPage() {
                     </h1>
                     <div
                       dangerouslySetInnerHTML={{
-                        __html: broadcastContent || '<p class="text-zinc-500 italic">No content entered yet...</p>',
+                        __html:
+                          broadcastContent ||
+                          '<p class="text-zinc-500 italic">No content entered yet...</p>',
                       }}
                     />
                   </div>

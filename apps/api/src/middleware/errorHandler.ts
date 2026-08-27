@@ -8,6 +8,10 @@ import { logger } from '@/config/logger';
  * Must be registered after all routes.
  */
 export function errorHandler(err: Error, req: Request, res: Response, _next: NextFunction): void {
+  if (res.headersSent) {
+    return _next(err);
+  }
+
   if (err instanceof AppError) {
     res.status(err.statusCode).json({
       error: {
@@ -64,9 +68,9 @@ export function errorHandler(err: Error, req: Request, res: Response, _next: Nex
 
 /** Wrap async route handlers to forward rejected promises to error middleware. */
 export function asyncHandler(
-  fn: (req: Request, res: Response, next: NextFunction) => Promise<void>,
+  fn: (req: Request, res: Response, next: NextFunction) => Promise<unknown> | unknown,
 ) {
   return (req: Request, res: Response, next: NextFunction): void => {
-    fn(req, res, next).catch(next);
+    Promise.resolve(fn(req, res, next)).catch(next);
   };
 }

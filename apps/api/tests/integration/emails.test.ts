@@ -44,9 +44,9 @@ describe('Email Templates & Engine API (Integration)', () => {
 
     expect(res.status).toBe(200);
     expect(Array.isArray(res.body.data)).toBe(true);
-    expect(res.body.data.every((t: { purpose: string }) => t.purpose === 'contact_auto_reply')).toBe(
-      true,
-    );
+    expect(
+      res.body.data.every((t: { purpose: string }) => t.purpose === 'contact_auto_reply'),
+    ).toBe(true);
   });
 
   it('POST /api/v1/email-templates should create a new variation for a purpose', async () => {

@@ -34,7 +34,11 @@ function resolveSocialIcon(platform: string) {
   return null;
 }
 
-export function FooterBrand({ portfolioName = 'Anuj Yadav', socials = [], className }: FooterBrandProps) {
+export function FooterBrand({
+  portfolioName = 'Anuj Yadav',
+  socials = [],
+  className,
+}: FooterBrandProps) {
   const currentYear = 2026;
 
   return (
@@ -46,7 +50,9 @@ export function FooterBrand({ portfolioName = 'Anuj Yadav', socials = [], classN
           className="inline-flex items-center font-mono font-extrabold text-lg tracking-tight text-foreground hover:text-accent transition-colors select-none group"
         >
           <span>ANUJ</span>
-          <span className="text-accent group-hover:rotate-12 transition-transform inline-block">.V</span>
+          <span className="text-accent group-hover:rotate-12 transition-transform inline-block">
+            .V
+          </span>
         </Link>
         <p className="text-xs text-muted leading-relaxed max-w-xs">
           A collection of things I was curious enough to build.

@@ -129,7 +129,10 @@ export const guestbookService = {
             },
           });
         } catch (err) {
-          logger.error({ err, email: entry.authorEmail }, 'Error sending guestbook approved notification email');
+          logger.error(
+            { err, email: entry.authorEmail },
+            'Error sending guestbook approved notification email',
+          );
         }
       });
     }

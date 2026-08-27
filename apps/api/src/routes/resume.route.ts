@@ -2,29 +2,40 @@ import { Router } from 'express';
 import { resumeController } from '@/controllers/resume.controller';
 import { authenticateAdmin } from '@/middleware/auth.middleware';
 import { validateBody, validateParams } from '@/middleware/validate.middleware';
+import { asyncHandler } from '@/middleware/errorHandler';
 import { createResumeSchema, uuidParamSchema } from '@portfolio/shared';
 
 const router = Router();
 
 // Public
-router.get('/active', resumeController.getActive);
-router.get('/active/download', resumeController.downloadActive);
+router.get('/active', asyncHandler(resumeController.getActive));
+router.get('/active/download', asyncHandler(resumeController.downloadActive));
 
 // Admin
-router.get('/admin/all', authenticateAdmin, resumeController.listAll);
+router.get('/admin/all', authenticateAdmin, asyncHandler(resumeController.listAll));
 router.get(
   '/admin/:id',
   authenticateAdmin,
   validateParams(uuidParamSchema),
-  resumeController.getById,
+  asyncHandler(resumeController.getById),
 );
-router.post('/', authenticateAdmin, validateBody(createResumeSchema), resumeController.create);
+router.post(
+  '/',
+  authenticateAdmin,
+  validateBody(createResumeSchema),
+  asyncHandler(resumeController.create),
+);
 router.patch(
   '/:id/activate',
   authenticateAdmin,
   validateParams(uuidParamSchema),
-  resumeController.setActive,
+  asyncHandler(resumeController.setActive),
 );
-router.delete('/:id', authenticateAdmin, validateParams(uuidParamSchema), resumeController.delete);
+router.delete(
+  '/:id',
+  authenticateAdmin,
+  validateParams(uuidParamSchema),
+  asyncHandler(resumeController.delete),
+);
 
 export { router as resumeRouter };

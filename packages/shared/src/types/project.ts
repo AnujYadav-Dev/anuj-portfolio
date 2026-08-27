@@ -82,6 +82,7 @@ export interface CreateProjectRequest {
   seoKeywords?: string;
   ogImageId?: string;
   tagIds?: string[];
+  notifySubscribers?: boolean;
 }
 
 /** Update project request payload — all fields optional. */

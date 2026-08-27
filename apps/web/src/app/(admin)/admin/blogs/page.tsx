@@ -10,7 +10,7 @@ import { AdminDataTable, type Column } from '@/components/admin/ui/AdminDataTabl
 import { StatusBadge } from '@/components/admin/ui/StatusBadge';
 import { ConfirmDialog } from '@/components/admin/ui/ConfirmDialog';
 import { Button, buttonVariants } from '@/components/ui/button';
-import { Plus, Edit2, Trash2, Clock, Eye } from 'lucide-react';
+import { Plus, Edit2, Trash2, Clock, Eye, Radio } from 'lucide-react';
 import { toast } from 'sonner';
 
 export default function AdminBlogsListPage() {
@@ -29,13 +29,17 @@ export default function AdminBlogsListPage() {
     setIsLoading(true);
     try {
       const res = await apiClient.get<PaginatedResponse<BlogPostListItemDto>>('/blogs/admin/all', {
-        params: { page: String(page), pageSize: '15', search },
+        params: {
+          page: String(page),
+          pageSize: '10',
+          ...(search ? { search } : {}),
+        },
       });
       setBlogs(res.data || []);
       setTotalPages(res.pagination.totalPages || 1);
       setTotalItems(res.pagination.totalItems || 0);
     } catch {
-      toast.error('Failed to load blog posts');
+      toast.error('Failed to load articles');
     } finally {
       setIsLoading(false);
     }
@@ -50,11 +54,11 @@ export default function AdminBlogsListPage() {
     setIsDeleting(true);
     try {
       await apiClient.delete(`/blogs/${deleteTarget.id}`);
-      toast.success(`Post '${deleteTarget.title}' deleted.`);
+      toast.success('Article deleted successfully');
       setDeleteTarget(null);
       fetchBlogs();
     } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : 'Failed to delete blog post';
+      const msg = err instanceof Error ? err.message : 'Failed to delete article';
       toast.error(msg);
     } finally {
       setIsDeleting(false);
@@ -64,18 +68,12 @@ export default function AdminBlogsListPage() {
   const columns: Column<BlogPostListItemDto>[] = [
     {
       key: 'title',
-      header: 'Title / Slug',
+      header: 'Article Title',
       render: (item) => (
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded bg-surface-muted border border-border flex items-center justify-center shrink-0 overflow-hidden">
-            {item.coverImageUrl ? (
-              /* eslint-disable-next-line @next/next/no-img-element */
-              <img src={item.coverImageUrl} alt="" className="w-full h-full object-cover" />
-            ) : (
-              <Eye className="w-4 h-4 text-placeholder" />
-            )}
+          <div className="w-8 h-8 rounded-lg bg-surface-muted border border-border flex items-center justify-center text-muted shrink-0">
+            <Eye className="w-4 h-4" />
           </div>
-
           <div className="min-w-0">
             <div className="flex items-center gap-2">
               <span className="font-bold text-foreground truncate">{item.title}</span>
@@ -126,6 +124,16 @@ export default function AdminBlogsListPage() {
       className: 'text-right',
       render: (item) => (
         <div className="flex items-center justify-end gap-1.5" onClick={(e) => e.stopPropagation()}>
+          <Button
+            variant="ghost"
+            size="sm"
+            className="h-7 w-7 p-0 text-accent hover:bg-accent/10"
+            onClick={() => router.push(`/admin/newsletter?action=broadcast&contentType=blog&contentId=${item.id}`)}
+            title="Broadcast to Newsletter"
+          >
+            <Radio className="w-3.5 h-3.5" />
+          </Button>
+
           <Button
             variant="ghost"
             size="sm"

@@ -1,4 +1,7 @@
 import { researchRepository } from '@/repositories/research.repository';
+import { siteSettingRepository } from '@/repositories/siteSetting.repository';
+import { contentBroadcastService } from '@/services/contentBroadcast.service';
+import { logger } from '@/config/logger';
 import { mapResearchPaperToDto, mapResearchPaperToListItemDto } from '@/utils/mappers';
 import { buildPagination, getPrismaPagination } from '@/utils/pagination';
 import { slugify } from '@/utils/slug';
@@ -124,11 +127,37 @@ export const researchService = {
     );
 
     const tagNames = await researchRepository.getResearchTags(created.id);
-    return mapResearchPaperToDto(created, tagNames);
+    const dto = mapResearchPaperToDto(created, tagNames);
+
+    if (created.status === 'published') {
+      setImmediate(async () => {
+        try {
+          if (input.notifySubscribers === false) return;
+
+          if (input.notifySubscribers !== true) {
+            const setting = await siteSettingRepository.findByKey('email_notifications_auto_broadcast_research');
+            if (setting?.value === 'false') return;
+          }
+
+          await contentBroadcastService.broadcastPublishedContent({
+            contentType: 'research',
+            title: created.title,
+            slug: created.slug,
+            excerpt: created.abstract,
+            categoryName: created.publicationName || null,
+            coverImageUrl: created.ogImage?.url || null,
+          });
+        } catch (err) {
+          logger.error({ err, researchId: created.id }, 'Failed to broadcast published research paper');
+        }
+      });
+    }
+
+    return dto;
   },
 
   async update(id: string, input: UpdateResearchPaperInput): Promise<ResearchPaperDto> {
-    await researchService.getById(id);
+    const existing = await researchService.getById(id);
 
     const updateData: Prisma.ResearchPaperUncheckedUpdateInput = {};
     if (input.title !== undefined) updateData.title = input.title;
@@ -143,7 +172,12 @@ export const researchService = {
     if (input.publicationDate !== undefined) {
       updateData.publicationDate = input.publicationDate ? new Date(input.publicationDate) : null;
     }
-    if (input.status !== undefined) updateData.status = input.status as any;
+    if (input.status !== undefined) {
+      updateData.status = input.status as any;
+      if (input.status === 'published' && !existing.publishedAt) {
+        updateData.publishedAt = new Date();
+      }
+    }
     if (input.isFeatured !== undefined) updateData.isFeatured = input.isFeatured;
     if (input.pdfId !== undefined) updateData.pdfId = input.pdfId || null;
     if (input.seoTitle !== undefined) updateData.seoTitle = input.seoTitle || null;
@@ -154,7 +188,33 @@ export const researchService = {
 
     const updated = await researchRepository.update(id, updateData, input.tagIds);
     const tagNames = await researchRepository.getResearchTags(updated.id);
-    return mapResearchPaperToDto(updated, tagNames);
+    const dto = mapResearchPaperToDto(updated, tagNames);
+
+    if (existing.status !== 'published' && updated.status === 'published') {
+      setImmediate(async () => {
+        try {
+          if (input.notifySubscribers === false) return;
+
+          if (input.notifySubscribers !== true) {
+            const setting = await siteSettingRepository.findByKey('email_notifications_auto_broadcast_research');
+            if (setting?.value === 'false') return;
+          }
+
+          await contentBroadcastService.broadcastPublishedContent({
+            contentType: 'research',
+            title: updated.title,
+            slug: updated.slug,
+            excerpt: updated.abstract,
+            categoryName: updated.publicationName || null,
+            coverImageUrl: updated.ogImage?.url || null,
+          });
+        } catch (err) {
+          logger.error({ err, researchId: updated.id }, 'Failed to broadcast newly published research paper');
+        }
+      });
+    }
+
+    return dto;
   },
 
   async delete(id: string): Promise<void> {

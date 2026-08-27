@@ -63,9 +63,95 @@ export const SITE_SETTING_KEYS = {
   EMAIL_NOTIFICATIONS_GUESTBOOK_ENABLED: 'email_notifications_guestbook_enabled',
   EMAIL_NOTIFICATIONS_SCHEDULED_PUBLISH_ENABLED: 'email_notifications_scheduled_publish_enabled',
   EMAIL_NOTIFICATIONS_SECURITY_LOGIN_ENABLED: 'email_notifications_security_login_enabled',
+  EMAIL_NOTIFICATIONS_AUTO_BROADCAST_BLOG: 'email_notifications_auto_broadcast_blog',
+  EMAIL_NOTIFICATIONS_AUTO_BROADCAST_PROJECT: 'email_notifications_auto_broadcast_project',
+  EMAIL_NOTIFICATIONS_AUTO_BROADCAST_RESEARCH: 'email_notifications_auto_broadcast_research',
   NEWSLETTER_DOUBLE_OPT_IN: 'newsletter_double_opt_in',
   ADMIN_NOTIFICATION_EMAIL: 'admin_notification_email',
 } as const;
+
+/** Canonical default system site settings dictionary. */
+export const DEFAULT_SYSTEM_SITE_SETTINGS: Array<{
+  key: string;
+  value: string;
+  group: string;
+}> = [
+  { key: SITE_SETTING_KEYS.SITE_TITLE, value: 'Anuj Yadav | Portfolio', group: 'general' },
+  {
+    key: SITE_SETTING_KEYS.SITE_DESCRIPTION,
+    value: 'Personal portfolio, engineering archive, and technical writings.',
+    group: 'general',
+  },
+  { key: SITE_SETTING_KEYS.AVAILABILITY_STATUS, value: 'available', group: 'general' },
+  {
+    key: SITE_SETTING_KEYS.DEFAULT_SEO_TITLE,
+    value: 'Anuj Yadav - Full-Stack & Systems Engineer',
+    group: 'general',
+  },
+  {
+    key: SITE_SETTING_KEYS.DEFAULT_SEO_DESCRIPTION,
+    value: 'Portfolio and technical writings of Anuj Yadav.',
+    group: 'general',
+  },
+  { key: SITE_SETTING_KEYS.ANALYTICS_ENABLED, value: 'true', group: 'analytics' },
+  { key: SITE_SETTING_KEYS.EMAIL_NOTIFICATIONS_VISIT_ENABLED, value: 'false', group: 'notifications' },
+  {
+    key: SITE_SETTING_KEYS.EMAIL_NOTIFICATIONS_VISIT_COOLDOWN_MINUTES,
+    value: '60',
+    group: 'notifications',
+  },
+  {
+    key: SITE_SETTING_KEYS.EMAIL_NOTIFICATIONS_RESUME_DOWNLOAD_ENABLED,
+    value: 'true',
+    group: 'notifications',
+  },
+  {
+    key: SITE_SETTING_KEYS.EMAIL_NOTIFICATIONS_CONTACT_ENABLED,
+    value: 'true',
+    group: 'notifications',
+  },
+  {
+    key: SITE_SETTING_KEYS.EMAIL_NOTIFICATIONS_NEWSLETTER_ENABLED,
+    value: 'true',
+    group: 'notifications',
+  },
+  {
+    key: SITE_SETTING_KEYS.EMAIL_NOTIFICATIONS_GUESTBOOK_ENABLED,
+    value: 'true',
+    group: 'notifications',
+  },
+  {
+    key: SITE_SETTING_KEYS.EMAIL_NOTIFICATIONS_SCHEDULED_PUBLISH_ENABLED,
+    value: 'true',
+    group: 'notifications',
+  },
+  {
+    key: SITE_SETTING_KEYS.EMAIL_NOTIFICATIONS_SECURITY_LOGIN_ENABLED,
+    value: 'true',
+    group: 'notifications',
+  },
+  {
+    key: SITE_SETTING_KEYS.EMAIL_NOTIFICATIONS_AUTO_BROADCAST_BLOG,
+    value: 'true',
+    group: 'notifications',
+  },
+  {
+    key: SITE_SETTING_KEYS.EMAIL_NOTIFICATIONS_AUTO_BROADCAST_PROJECT,
+    value: 'false',
+    group: 'notifications',
+  },
+  {
+    key: SITE_SETTING_KEYS.EMAIL_NOTIFICATIONS_AUTO_BROADCAST_RESEARCH,
+    value: 'false',
+    group: 'notifications',
+  },
+  { key: SITE_SETTING_KEYS.NEWSLETTER_DOUBLE_OPT_IN, value: 'true', group: 'newsletter' },
+  {
+    key: SITE_SETTING_KEYS.ADMIN_NOTIFICATION_EMAIL,
+    value: 'anujyadav9449@gmail.com',
+    group: 'notifications',
+  },
+];
 
 /** Availability status values. */
 export const AVAILABILITY_STATUSES = {

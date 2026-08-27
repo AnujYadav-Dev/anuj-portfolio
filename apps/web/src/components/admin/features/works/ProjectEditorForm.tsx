@@ -40,6 +40,7 @@ export function ProjectEditorForm({ initialData, isNew = false }: ProjectEditorF
   const [content, setContent] = useState(initialData?.content || '');
   const [categoryId, setCategoryId] = useState(initialData?.category?.id || '');
   const [status, setStatus] = useState<ContentStatus>(initialData?.status || ContentStatus.Draft);
+  const [notifySubscribers, setNotifySubscribers] = useState<boolean>(true);
   const [projectStatus, setProjectStatus] = useState<ProjectStatus>(
     (initialData?.projectStatus as ProjectStatus) || ProjectStatus.Completed,
   );
@@ -121,6 +122,7 @@ export function ProjectEditorForm({ initialData, isNew = false }: ProjectEditorF
         content: content || undefined,
         categoryId: categoryId || undefined,
         status,
+        notifySubscribers,
         projectStatus,
         projectType,
         isFeatured,
@@ -330,6 +332,25 @@ export function ProjectEditorForm({ initialData, isNew = false }: ProjectEditorF
                   <option value={ContentStatus.Archived}>Archived</option>
                 </select>
               </div>
+
+              {status === ContentStatus.Published && (
+                <div className="p-3 bg-accent/10 border border-accent/20 rounded-lg space-y-1.5">
+                  <label className="flex items-start gap-2 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={notifySubscribers}
+                      onChange={(e) => setNotifySubscribers(e.target.checked)}
+                      className="mt-0.5 rounded border-border text-accent focus:ring-accent accent-[#ff8c42]"
+                    />
+                    <div>
+                      <span className="font-bold text-foreground block text-xs">Notify Newsletter Subscribers</span>
+                      <p className="text-[11px] text-muted leading-tight">
+                        Send an automated email broadcast to verified subscribers when published.
+                      </p>
+                    </div>
+                  </label>
+                </div>
+              )}
 
               <div className="space-y-1.5">
                 <label className="font-semibold text-foreground">Project Stage</label>

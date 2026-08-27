@@ -59,6 +59,7 @@ async function refreshAccessToken(): Promise<string | null> {
       localStorage.removeItem('access_token');
       localStorage.removeItem('refresh_token');
       localStorage.removeItem('auth_user');
+      localStorage.removeItem('token_expires_at');
       return null;
     }
 
@@ -72,6 +73,9 @@ async function refreshAccessToken(): Promise<string | null> {
     }
     if (json.data.author) {
       localStorage.setItem('auth_user', JSON.stringify(json.data.author));
+    }
+    if (typeof json.data.expiresIn === 'number' && json.data.expiresIn > 0) {
+      localStorage.setItem('token_expires_at', String(Date.now() + json.data.expiresIn * 1000));
     }
 
     return newAccessToken;

@@ -137,6 +137,21 @@ async function main() {
       group: 'notifications',
     },
     {
+      key: 'email_notifications_auto_broadcast_blog',
+      value: 'true',
+      group: 'notifications',
+    },
+    {
+      key: 'email_notifications_auto_broadcast_project',
+      value: 'false',
+      group: 'notifications',
+    },
+    {
+      key: 'email_notifications_auto_broadcast_research',
+      value: 'false',
+      group: 'notifications',
+    },
+    {
       key: 'newsletter_double_opt_in',
       value: 'true',
       group: 'newsletter',

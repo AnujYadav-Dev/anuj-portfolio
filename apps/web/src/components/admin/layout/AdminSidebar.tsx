@@ -142,7 +142,7 @@ export function AdminSidebar() {
         )}
         {isCollapsed && (
           <Link href="/admin" className="mx-auto font-extrabold text-base text-accent">
-            AY
+            AV
           </Link>
         )}
 

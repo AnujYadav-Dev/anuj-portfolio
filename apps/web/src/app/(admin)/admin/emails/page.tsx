@@ -23,12 +23,10 @@ import {
   Plus,
   Trash2,
   CheckCircle2,
-  Sparkles,
   Layers,
   FileText,
   Mail,
   ShieldCheck,
-  Globe,
   MessageSquare,
   Radio,
 } from 'lucide-react';
@@ -248,7 +246,7 @@ export default function AdminEmailsPage() {
   const [newVariationDesc, setNewVariationDesc] = useState('');
   const [isCreatingVariation, setIsCreatingVariation] = useState(false);
 
-  const fetchTemplates = useCallback(async () => {
+  const fetchTemplates = useCallback(async (targetId?: string, targetPurpose?: string) => {
     setIsLoading(true);
     try {
       const res = await apiClient.get<{ data: EmailTemplateDto[] }>('/email-templates');
@@ -258,8 +256,9 @@ export default function AdminEmailsPage() {
       if (allTemplates.length > 0) {
         // Find template to select
         const current =
-          allTemplates.find((t) => t.id === selectedTemplateId) ||
-          allTemplates.find((t) => t.purpose === selectedPurpose && t.isActive) ||
+          (targetId ? allTemplates.find((t) => t.id === targetId) : undefined) ||
+          (targetPurpose ? allTemplates.find((t) => t.purpose === targetPurpose && t.isActive) : undefined) ||
+          allTemplates.find((t) => t.isActive) ||
           allTemplates[0]!;
 
         setSelectedPurpose(current.purpose);
@@ -276,11 +275,11 @@ export default function AdminEmailsPage() {
     } finally {
       setIsLoading(false);
     }
-  }, [selectedTemplateId, selectedPurpose]);
+  }, []);
 
   useEffect(() => {
     fetchTemplates();
-  }, []); // Run once on mount
+  }, [fetchTemplates]);
 
   const filteredPurposes = useMemo(() => {
     const allPurposes = Object.keys(PURPOSE_META);
@@ -339,7 +338,7 @@ export default function AdminEmailsPage() {
 
       await apiClient.put(`/email-templates/${currentTemplate.id}`, payload);
       toast.success('Email template variation updated successfully!');
-      await fetchTemplates();
+      await fetchTemplates(currentTemplate.id, selectedPurpose);
     } catch (err: unknown) {
       const msg = err instanceof ApiClientError ? err.message : 'Failed to save template';
       toast.error(msg);
@@ -354,7 +353,7 @@ export default function AdminEmailsPage() {
     try {
       await apiClient.post(`/email-templates/${currentTemplate.id}/activate`);
       toast.success(`"${currentTemplate.name}" is now the active template for this workflow!`);
-      await fetchTemplates();
+      await fetchTemplates(currentTemplate.id, selectedPurpose);
     } catch (err: unknown) {
       const msg = err instanceof ApiClientError ? err.message : 'Failed to activate template';
       toast.error(msg);
@@ -378,7 +377,7 @@ export default function AdminEmailsPage() {
       await apiClient.delete(`/email-templates/${currentTemplate.id}`);
       toast.success('Template variation deleted.');
       setSelectedTemplateId('');
-      await fetchTemplates();
+      await fetchTemplates(undefined, selectedPurpose);
     } catch (err: unknown) {
       const msg = err instanceof ApiClientError ? err.message : 'Failed to delete template';
       toast.error(msg);
@@ -409,7 +408,7 @@ export default function AdminEmailsPage() {
       setNewVariationName('');
       setNewVariationDesc('');
       setSelectedTemplateId(res.data.id);
-      await fetchTemplates();
+      await fetchTemplates(res.data.id, selectedPurpose);
     } catch (err: unknown) {
       const msg = err instanceof ApiClientError ? err.message : 'Failed to create variation';
       toast.error(msg);

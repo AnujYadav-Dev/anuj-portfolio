@@ -22,29 +22,12 @@ export function HeroSection() {
     settingsData?.data?.['author_job_title'] ||
     settingsData?.data?.['author.tagline'] ||
     'A collection of things I was curious enough to build.';
-  const isAvailable =
-    settingsData?.data?.['availability_status'] !== 'unavailable' &&
-    settingsData?.data?.['author.available'] !== 'false';
 
   return (
     <section className="relative overflow-hidden border-b border-border bg-background pt-16 pb-8 md:pt-24 md:pb-12">
       <div className="max-w-[1200px] mx-auto px-4 md:px-8">
         <RevealOnScroll>
           <div className="flex flex-col gap-6 max-w-2xl">
-            {/* Availability Indicator Badge */}
-            {/* <div className="flex items-center gap-2">
-              <span className="relative flex h-2 w-2">
-                {isAvailable && (
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-success opacity-75" />
-                )}
-                <span
-                  className={`relative inline-flex rounded-full h-2 w-2 ${isAvailable ? 'bg-success' : 'bg-muted'}`}
-                />
-              </span>
-              <span className="text-xs font-mono font-medium tracking-wide text-foreground">
-                {isAvailable ? 'AVAILABLE FOR HIGH-IMPACT ROLES' : 'CURRENTLY OCCUPIED'}
-              </span>
-            </div> */}
 
             {/* Tagline Statement */}
             <h1 className="text-xl sm:text-2xl md:text-3xl font-bold tracking-tight text-foreground leading-snug max-w-xl">

@@ -11,7 +11,7 @@ import { StatusBadge } from '@/components/admin/ui/StatusBadge';
 import { ConfirmDialog } from '@/components/admin/ui/ConfirmDialog';
 import { Button, buttonVariants } from '@/components/ui/button';
 
-import { Plus, Edit2, Trash2 } from 'lucide-react';
+import { Plus, Edit2, Trash2, Radio } from 'lucide-react';
 import { toast } from 'sonner';
 
 export default function AdminResearchListPage() {
@@ -104,11 +104,20 @@ export default function AdminResearchListPage() {
     },
     {
       key: 'actions',
-
       header: 'Actions',
       className: 'text-right',
       render: (item) => (
         <div className="flex items-center justify-end gap-1.5" onClick={(e) => e.stopPropagation()}>
+          <Button
+            variant="ghost"
+            size="sm"
+            className="h-7 w-7 p-0 text-accent hover:bg-accent/10"
+            onClick={() => router.push(`/admin/newsletter?action=broadcast&contentType=research&contentId=${item.id}`)}
+            title="Broadcast to Newsletter"
+          >
+            <Radio className="w-3.5 h-3.5" />
+          </Button>
+
           <Button
             variant="ghost"
             size="sm"

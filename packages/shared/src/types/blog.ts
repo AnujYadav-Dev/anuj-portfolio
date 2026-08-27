@@ -68,6 +68,7 @@ export interface CreateBlogPostRequest {
   seoKeywords?: string;
   ogImageId?: string;
   tagIds?: string[];
+  notifySubscribers?: boolean;
 }
 
 /** Update blog post request payload — all fields optional. */

@@ -11,7 +11,7 @@ import { StatusBadge } from '@/components/admin/ui/StatusBadge';
 import { ConfirmDialog } from '@/components/admin/ui/ConfirmDialog';
 import { Button, buttonVariants } from '@/components/ui/button';
 
-import { Plus, Edit2, Trash2, Star } from 'lucide-react';
+import { Plus, Edit2, Trash2, Star, Radio } from 'lucide-react';
 import { toast } from 'sonner';
 
 export default function AdminProjectsListPage() {
@@ -33,14 +33,18 @@ export default function AdminProjectsListPage() {
       const res = await apiClient.get<PaginatedResponse<ProjectListItemDto>>(
         '/projects/admin/all',
         {
-          params: { page, pageSize: 20, search },
+          params: {
+            page: String(page),
+            pageSize: '20',
+            ...(search ? { search } : {}),
+          },
         },
       );
       setProjects(res.data || []);
       setTotalPages(res.pagination.totalPages || 1);
       setTotalItems(res.pagination.totalItems || 0);
     } catch {
-      toast.error('Failed to load projects list');
+      toast.error('Failed to load projects');
     } finally {
       setIsLoading(false);
     }
@@ -69,31 +73,31 @@ export default function AdminProjectsListPage() {
   const columns: Column<ProjectListItemDto>[] = [
     {
       key: 'title',
-      header: 'Project / Title',
+      header: 'Title / Slug',
       render: (item) => (
         <div className="flex items-center gap-3">
-          {item.coverImageUrl ? (
-            /* eslint-disable-next-line @next/next/no-img-element */
-            <img
-              src={item.coverImageUrl}
-              alt=""
-              className="w-10 h-10 rounded object-cover border border-border shrink-0 bg-surface-muted"
-            />
-          ) : (
-            <div className="w-10 h-10 rounded border border-border bg-surface-muted shrink-0 flex items-center justify-center text-[10px] font-mono text-muted">
-              IMG
-            </div>
-          )}
           <div className="min-w-0">
-            <div className="flex items-center gap-1.5">
-              <span className="font-bold text-foreground hover:text-accent truncate transition-colors">
-                {item.title}
-              </span>
-              {item.isFeatured && <Star className="w-3 h-3 fill-accent text-accent shrink-0" />}
+            <div className="flex items-center gap-2">
+              <span className="font-bold text-foreground truncate">{item.title}</span>
+              {item.isFeatured && (
+                <span className="text-[10px] text-accent font-mono bg-surface-muted px-1.5 py-0.5 rounded border border-border flex items-center gap-1">
+                  <Star className="w-2.5 h-2.5 fill-accent" />
+                  FEATURED
+                </span>
+              )}
             </div>
             <p className="text-[11px] text-muted font-mono truncate">/{item.slug}</p>
           </div>
         </div>
+      ),
+    },
+    {
+      key: 'projectType',
+      header: 'Type',
+      render: (item) => (
+        <span className="text-xs text-muted font-mono capitalize">
+          {item.projectType.replace('_', ' ')}
+        </span>
       ),
     },
     {
@@ -123,6 +127,16 @@ export default function AdminProjectsListPage() {
       className: 'text-right',
       render: (item) => (
         <div className="flex items-center justify-end gap-1.5" onClick={(e) => e.stopPropagation()}>
+          <Button
+            variant="ghost"
+            size="sm"
+            className="h-7 w-7 p-0 text-accent hover:bg-accent/10"
+            onClick={() => router.push(`/admin/newsletter?action=broadcast&contentType=project&contentId=${item.id}`)}
+            title="Broadcast to Newsletter"
+          >
+            <Radio className="w-3.5 h-3.5" />
+          </Button>
+
           <Button
             variant="ghost"
             size="sm"

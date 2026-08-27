@@ -16,6 +16,7 @@ export const createBlogPostSchema = z
     categoryId: optionalUuidSchema,
     coverImageId: optionalUuidSchema,
     tagIds: z.array(z.string().uuid()).optional(),
+    notifySubscribers: z.boolean().optional(),
   })
   .merge(seoFieldsSchema);
 

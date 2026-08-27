@@ -2,7 +2,6 @@
 
 import * as React from 'react';
 import { useNewsletterMutation } from '@/hooks/useInteractions';
-import { useSiteSettings } from '@/hooks/useLayout';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Send, Sparkles } from 'lucide-react';
@@ -14,14 +13,7 @@ export interface FooterNewsletterProps {
 
 export function FooterNewsletter({ className }: FooterNewsletterProps) {
   const [email, setEmail] = React.useState('');
-  // const { data: settingsData } = useSiteSettings();
   const newsletterMutation = useNewsletterMutation();
-
-  // const isAvailable = settingsData?.data?.['availability_status'] !== 'unavailable';
-  // const availabilityText =
-  //   settingsData?.data?.['availability_text'] ||
-  //   settingsData?.data?.['availability.text'] ||
-  //   'Open for high-impact engineering roles, architecture consulting, and technical advisory.';
 
   const handleSubscribe = (e: React.FormEvent) => {
     e.preventDefault();
@@ -39,25 +31,6 @@ export function FooterNewsletter({ className }: FooterNewsletterProps) {
 
   return (
     <div className={cn('grid grid-cols-1 md:grid-cols-12 gap-8 items-start pb-10 ', className)}>
-      {/* Left: Availability Status */}
-      {/* <div className="md:col-span-6 flex flex-col gap-2">
-        <div className="flex items-center gap-2">
-          <span className="relative flex h-2 w-2">
-            {isAvailable && (
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-success opacity-75" />
-            )}
-            <span
-              className={`relative inline-flex rounded-full h-2 w-2 ${
-                isAvailable ? 'bg-success' : 'bg-muted'
-              }`}
-            />
-          </span>
-          <span className="text-xs font-mono font-semibold capitalize text-foreground">
-            {isAvailable ? 'Currently Available' : 'Currently Busy'}
-          </span>
-        </div>
-        <p className="text-xs text-muted leading-relaxed max-w-md">{availabilityText}</p>
-      </div> */}
 
       {/* Right: Stay in the Loop (Newsletter Box) */}
       <div className="md:col-span-6 flex flex-col gap-2">

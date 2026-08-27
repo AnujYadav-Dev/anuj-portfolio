@@ -1,4 +1,7 @@
 import { blogRepository } from '@/repositories/blog.repository';
+import { siteSettingRepository } from '@/repositories/siteSetting.repository';
+import { contentBroadcastService } from '@/services/contentBroadcast.service';
+import { logger } from '@/config/logger';
 import {
   mapBlogPostToDto,
   mapBlogPostToListItemDto,
@@ -129,7 +132,34 @@ export const blogService = {
     );
 
     const tagNames = await blogRepository.getBlogPostTags(created.id);
-    return mapBlogPostToDto(created, tagNames);
+    const dto = mapBlogPostToDto(created, tagNames);
+
+    if (created.status === 'published') {
+      setImmediate(async () => {
+        try {
+          if (input.notifySubscribers === false) return;
+
+          if (input.notifySubscribers !== true) {
+            const setting = await siteSettingRepository.findByKey('email_notifications_auto_broadcast_blog');
+            if (setting?.value === 'false') return;
+          }
+
+          await contentBroadcastService.broadcastPublishedContent({
+            contentType: 'blog',
+            title: created.title,
+            slug: created.slug,
+            excerpt: created.excerpt,
+            readingTimeMinutes: created.readingTimeMinutes,
+            categoryName: created.category?.name || null,
+            coverImageUrl: created.coverImage?.url || null,
+          });
+        } catch (err) {
+          logger.error({ err, blogId: created.id }, 'Failed to broadcast published blog post');
+        }
+      });
+    }
+
+    return dto;
   },
 
   async update(
@@ -179,7 +209,35 @@ export const blogService = {
 
     const updated = await blogRepository.update(id, updateData, input.tagIds);
     const tagNames = await blogRepository.getBlogPostTags(updated.id);
-    return mapBlogPostToDto(updated, tagNames);
+    const dto = mapBlogPostToDto(updated, tagNames);
+
+    // If transitioned from non-published to published
+    if (existing.status !== 'published' && updated.status === 'published') {
+      setImmediate(async () => {
+        try {
+          if (input.notifySubscribers === false) return;
+
+          if (input.notifySubscribers !== true) {
+            const setting = await siteSettingRepository.findByKey('email_notifications_auto_broadcast_blog');
+            if (setting?.value === 'false') return;
+          }
+
+          await contentBroadcastService.broadcastPublishedContent({
+            contentType: 'blog',
+            title: updated.title,
+            slug: updated.slug,
+            excerpt: updated.excerpt,
+            readingTimeMinutes: updated.readingTimeMinutes,
+            categoryName: updated.category?.name || null,
+            coverImageUrl: updated.coverImage?.url || null,
+          });
+        } catch (err) {
+          logger.error({ err, blogId: updated.id }, 'Failed to broadcast newly published blog post');
+        }
+      });
+    }
+
+    return dto;
   },
 
   async delete(id: string): Promise<void> {

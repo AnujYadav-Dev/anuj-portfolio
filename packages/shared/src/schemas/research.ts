@@ -25,6 +25,7 @@ export const createResearchPaperSchema = z
     isFeatured: z.boolean().default(false),
     pdfId: optionalUuidSchema,
     tagIds: z.array(z.string().uuid()).optional(),
+    notifySubscribers: z.boolean().optional(),
   })
   .merge(seoFieldsSchema);
 

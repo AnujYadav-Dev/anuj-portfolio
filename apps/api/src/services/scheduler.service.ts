@@ -1,6 +1,7 @@
 import { prisma } from '@/config/prisma';
 import { logger } from '@/config/logger';
 import { emailService } from '@/services/email.service';
+import { contentBroadcastService } from '@/services/contentBroadcast.service';
 import { siteSettingRepository } from '@/repositories/siteSetting.repository';
 import { EMAIL_TEMPLATE_KEYS } from '@portfolio/shared';
 
@@ -15,102 +16,162 @@ export const schedulerService = {
     const now = new Date();
 
     try {
-      const [projects, blogPosts, researchPapers, pages] = await Promise.all([
-        prisma.project.updateMany({
-          where: {
-            status: 'scheduled',
-            scheduledAt: { lte: now },
-          },
-          data: {
-            status: 'published',
-            publishedAt: now,
-          },
+      // Find all scheduled items ready to go live
+      const [scheduledProjects, scheduledBlogs, scheduledPapers, scheduledPages] = await Promise.all([
+        prisma.project.findMany({
+          where: { status: 'scheduled', scheduledAt: { lte: now } },
+          include: { category: true, coverImage: true },
         }),
-        prisma.blogPost.updateMany({
-          where: {
-            status: 'scheduled',
-            scheduledAt: { lte: now },
-          },
-          data: {
-            status: 'published',
-            publishedAt: now,
-          },
+        prisma.blogPost.findMany({
+          where: { status: 'scheduled', scheduledAt: { lte: now } },
+          include: { category: true, coverImage: true },
         }),
-        prisma.researchPaper.updateMany({
-          where: {
-            status: 'scheduled',
-            scheduledAt: { lte: now },
-          },
-          data: {
-            status: 'published',
-            publishedAt: now,
-          },
+        prisma.researchPaper.findMany({
+          where: { status: 'scheduled', scheduledAt: { lte: now } },
+          include: { ogImage: true },
         }),
-        prisma.page.updateMany({
-          where: {
-            status: 'scheduled',
-            scheduledAt: { lte: now },
-          },
-          data: {
-            status: 'published',
-            publishedAt: now,
-          },
+        prisma.page.findMany({
+          where: { status: 'scheduled', scheduledAt: { lte: now } },
         }),
       ]);
 
-      const totalPublished = projects.count + blogPosts.count + researchPapers.count + pages.count;
-      if (totalPublished > 0) {
-        const summaryLines: string[] = [];
-        if (projects.count > 0) summaryLines.push(`• ${projects.count} Project(s)`);
-        if (blogPosts.count > 0) summaryLines.push(`• ${blogPosts.count} Blog Post(s)`);
-        if (researchPapers.count > 0)
-          summaryLines.push(`• ${researchPapers.count} Research Paper(s)`);
-        if (pages.count > 0) summaryLines.push(`• ${pages.count} Page(s)`);
-        const publishedItemsSummary = summaryLines.join('\n');
+      const totalPublished =
+        scheduledProjects.length +
+        scheduledBlogs.length +
+        scheduledPapers.length +
+        scheduledPages.length;
 
-        logger.info(
-          {
-            projects: projects.count,
-            blogPosts: blogPosts.count,
-            researchPapers: researchPapers.count,
-            pages: pages.count,
-          },
-          'Published scheduled content items',
-        );
-
-        // Notify Admin of published content
-        setImmediate(async () => {
-          try {
-            const setting = await siteSettingRepository.findByKey(
-              'email_notifications_scheduled_publish_enabled',
-            );
-            if (setting && setting.value === 'false') return;
-
-            const siteUrl = await emailService.resolveSiteUrl();
-            const adminRecipients = await emailService.resolveAdminRecipients();
-            for (const adminEmail of adminRecipients) {
-              await emailService.sendTemplatedEmail({
-                purpose: EMAIL_TEMPLATE_KEYS.CONTENT_PUBLISHED_ADMIN,
-                to: adminEmail,
-                variables: {
-                  itemCount: String(totalPublished),
-                  publishedItemsSummary,
-                  publishedAt: now.toLocaleString(),
-                  siteUrl,
-                },
-              });
-            }
-          } catch (err) {
-            logger.error({ err }, 'Failed to send scheduled content published notification');
-          }
-        });
+      if (totalPublished === 0) {
+        return { projects: 0, blogPosts: 0, researchPapers: 0, pages: 0 };
       }
 
+      // Update statuses to published
+      await Promise.all([
+        scheduledProjects.length > 0 &&
+          prisma.project.updateMany({
+            where: { id: { in: scheduledProjects.map((p) => p.id) } },
+            data: { status: 'published', publishedAt: now },
+          }),
+        scheduledBlogs.length > 0 &&
+          prisma.blogPost.updateMany({
+            where: { id: { in: scheduledBlogs.map((b) => b.id) } },
+            data: { status: 'published', publishedAt: now },
+          }),
+        scheduledPapers.length > 0 &&
+          prisma.researchPaper.updateMany({
+            where: { id: { in: scheduledPapers.map((r) => r.id) } },
+            data: { status: 'published', publishedAt: now },
+          }),
+        scheduledPages.length > 0 &&
+          prisma.page.updateMany({
+            where: { id: { in: scheduledPages.map((p) => p.id) } },
+            data: { status: 'published', publishedAt: now },
+          }),
+      ]);
+
+      const summaryLines: string[] = [];
+      if (scheduledProjects.length > 0) summaryLines.push(`• ${scheduledProjects.length} Project(s)`);
+      if (scheduledBlogs.length > 0) summaryLines.push(`• ${scheduledBlogs.length} Blog Post(s)`);
+      if (scheduledPapers.length > 0)
+        summaryLines.push(`• ${scheduledPapers.length} Research Paper(s)`);
+      if (scheduledPages.length > 0) summaryLines.push(`• ${scheduledPages.length} Page(s)`);
+      const publishedItemsSummary = summaryLines.join('\n');
+
+      logger.info(
+        {
+          projects: scheduledProjects.length,
+          blogPosts: scheduledBlogs.length,
+          researchPapers: scheduledPapers.length,
+          pages: scheduledPages.length,
+        },
+        'Published scheduled content items',
+      );
+
+      // Trigger Subscriber Newsletter Broadcasts in background
+      setImmediate(async () => {
+        try {
+          const [blogSetting, projectSetting, researchSetting] = await Promise.all([
+            siteSettingRepository.findByKey('email_notifications_auto_broadcast_blog'),
+            siteSettingRepository.findByKey('email_notifications_auto_broadcast_project'),
+            siteSettingRepository.findByKey('email_notifications_auto_broadcast_research'),
+          ]);
+
+          if (blogSetting?.value !== 'false') {
+            for (const blog of scheduledBlogs) {
+              await contentBroadcastService.broadcastPublishedContent({
+                contentType: 'blog',
+                title: blog.title,
+                slug: blog.slug,
+                excerpt: blog.excerpt,
+                readingTimeMinutes: blog.readingTimeMinutes,
+                categoryName: blog.category?.name || null,
+                coverImageUrl: blog.coverImage?.url || null,
+              });
+            }
+          }
+
+          if (projectSetting?.value === 'true') {
+            for (const proj of scheduledProjects) {
+              await contentBroadcastService.broadcastPublishedContent({
+                contentType: 'project',
+                title: proj.title,
+                slug: proj.slug,
+                excerpt: proj.shortDescription,
+                categoryName: proj.category?.name || null,
+                coverImageUrl: proj.coverImage?.url || null,
+              });
+            }
+          }
+
+          if (researchSetting?.value === 'true') {
+            for (const paper of scheduledPapers) {
+              await contentBroadcastService.broadcastPublishedContent({
+                contentType: 'research',
+                title: paper.title,
+                slug: paper.slug,
+                excerpt: paper.abstract,
+                categoryName: paper.publicationName || null,
+                coverImageUrl: paper.ogImage?.url || null,
+              });
+            }
+          }
+        } catch (err) {
+          logger.error({ err }, 'Error broadcasting scheduled content to subscribers');
+        }
+      });
+
+      // Notify Admin of published content report
+      setImmediate(async () => {
+        try {
+          const setting = await siteSettingRepository.findByKey(
+            'email_notifications_scheduled_publish_enabled',
+          );
+          if (setting && setting.value === 'false') return;
+
+          const siteUrl = await emailService.resolveSiteUrl();
+          const adminRecipients = await emailService.resolveAdminRecipients();
+          for (const adminEmail of adminRecipients) {
+            await emailService.sendTemplatedEmail({
+              purpose: EMAIL_TEMPLATE_KEYS.CONTENT_PUBLISHED_ADMIN,
+              to: adminEmail,
+              variables: {
+                itemCount: String(totalPublished),
+                publishedItemsSummary,
+                publishedAt: now.toLocaleString(),
+                siteUrl,
+              },
+            });
+          }
+        } catch (err) {
+          logger.error({ err }, 'Failed to send scheduled content published notification to admin');
+        }
+      });
+
       return {
-        projects: projects.count,
-        blogPosts: blogPosts.count,
-        researchPapers: researchPapers.count,
-        pages: pages.count,
+        projects: scheduledProjects.length,
+        blogPosts: scheduledBlogs.length,
+        researchPapers: scheduledPapers.length,
+        pages: scheduledPages.length,
       };
     } catch (error) {
       logger.error({ error }, 'Failed to run scheduled content publisher');

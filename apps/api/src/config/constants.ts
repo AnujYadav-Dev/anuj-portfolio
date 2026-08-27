@@ -1,8 +1,10 @@
-/** JWT access token lifespan (15 minutes). */
-export const ACCESS_TOKEN_TTL_SECONDS = 15 * 60;
+import { config } from '@/config/env';
 
-/** JWT refresh token lifespan (7 days). */
-export const REFRESH_TOKEN_TTL_SECONDS = 7 * 24 * 60 * 60;
+/** JWT access token lifespan in seconds (derived from JWT_ACCESS_TOKEN_TTL_MINUTES). */
+export const ACCESS_TOKEN_TTL_SECONDS = config.JWT_ACCESS_TOKEN_TTL_MINUTES * 60;
+
+/** JWT refresh token lifespan in seconds (derived from JWT_REFRESH_TOKEN_TTL_DAYS). */
+export const REFRESH_TOKEN_TTL_SECONDS = config.JWT_REFRESH_TOKEN_TTL_DAYS * 24 * 60 * 60;
 
 /** Bcrypt salt rounds for password hashing. */
 export const BCRYPT_ROUNDS = 10;

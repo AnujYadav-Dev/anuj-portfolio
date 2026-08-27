@@ -1,4 +1,7 @@
 import { projectRepository } from '@/repositories/project.repository';
+import { siteSettingRepository } from '@/repositories/siteSetting.repository';
+import { contentBroadcastService } from '@/services/contentBroadcast.service';
+import { logger } from '@/config/logger';
 import { mapProjectToDto, mapProjectToListItemDto } from '@/utils/mappers';
 import { buildPagination, getPrismaPagination } from '@/utils/pagination';
 import { saveContentVersion } from '@/utils/versioning';
@@ -129,7 +132,33 @@ export const projectService = {
     );
 
     const tagNames = await projectRepository.getProjectTags(created.id);
-    return mapProjectToDto(created, tagNames);
+    const dto = mapProjectToDto(created, tagNames);
+
+    if (created.status === 'published') {
+      setImmediate(async () => {
+        try {
+          if (input.notifySubscribers === false) return;
+
+          if (input.notifySubscribers !== true) {
+            const setting = await siteSettingRepository.findByKey('email_notifications_auto_broadcast_project');
+            if (setting?.value === 'false') return;
+          }
+
+          await contentBroadcastService.broadcastPublishedContent({
+            contentType: 'project',
+            title: created.title,
+            slug: created.slug,
+            excerpt: created.shortDescription,
+            categoryName: created.category?.name || null,
+            coverImageUrl: created.coverImage?.url || null,
+          });
+        } catch (err) {
+          logger.error({ err, projectId: created.id }, 'Failed to broadcast published project');
+        }
+      });
+    }
+
+    return dto;
   },
 
   async update(id: string, input: UpdateProjectInput, adminAuthorId?: string): Promise<ProjectDto> {
@@ -178,7 +207,33 @@ export const projectService = {
 
     const updated = await projectRepository.update(id, updateData, input.tagIds);
     const tagNames = await projectRepository.getProjectTags(updated.id);
-    return mapProjectToDto(updated, tagNames);
+    const dto = mapProjectToDto(updated, tagNames);
+
+    if (existing.status !== 'published' && updated.status === 'published') {
+      setImmediate(async () => {
+        try {
+          if (input.notifySubscribers === false) return;
+
+          if (input.notifySubscribers !== true) {
+            const setting = await siteSettingRepository.findByKey('email_notifications_auto_broadcast_project');
+            if (setting?.value === 'false') return;
+          }
+
+          await contentBroadcastService.broadcastPublishedContent({
+            contentType: 'project',
+            title: updated.title,
+            slug: updated.slug,
+            excerpt: updated.shortDescription,
+            categoryName: updated.category?.name || null,
+            coverImageUrl: updated.coverImage?.url || null,
+          });
+        } catch (err) {
+          logger.error({ err, projectId: updated.id }, 'Failed to broadcast newly published project');
+        }
+      });
+    }
+
+    return dto;
   },
 
   async delete(id: string): Promise<void> {

@@ -63,6 +63,7 @@ export interface CreateResearchPaperRequest {
   seoKeywords?: string;
   ogImageId?: string;
   tagIds?: string[];
+  notifySubscribers?: boolean;
 }
 
 /** Update research paper request payload — all fields optional. */

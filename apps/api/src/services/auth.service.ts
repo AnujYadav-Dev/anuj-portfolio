@@ -16,7 +16,7 @@ import { parseUserAgent } from '@/utils/uaParser';
 import { UnauthorizedError, NotFoundError, ValidationError } from '@/utils/errors';
 import { hashToken, generateSecureToken } from '@/utils/hash';
 import { logger } from '@/config/logger';
-import { DUMMY_PASSWORD_HASH, REFRESH_TOKEN_TTL_SECONDS } from '@/config/constants';
+import { DUMMY_PASSWORD_HASH, ACCESS_TOKEN_TTL_SECONDS, REFRESH_TOKEN_TTL_SECONDS } from '@/config/constants';
 import { EMAIL_TEMPLATE_KEYS } from '@portfolio/shared';
 
 export const authService = {
@@ -94,6 +94,7 @@ export const authService = {
     return {
       accessToken,
       refreshToken,
+      expiresIn: ACCESS_TOKEN_TTL_SECONDS,
       author: mapAuthorToDto(author),
     };
   },
@@ -138,6 +139,7 @@ export const authService = {
     return {
       accessToken,
       refreshToken: newRefreshToken,
+      expiresIn: ACCESS_TOKEN_TTL_SECONDS,
       author: mapAuthorToDto(author),
     };
   },

@@ -1,6 +1,7 @@
 'use client';
 
-import React, { useEffect, useState, useMemo } from 'react';
+import React, { useEffect, useState, useMemo, Suspense } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { apiClient, ApiClientError } from '@/lib/api';
 import type {
   NewsletterBroadcastRequest,
@@ -24,11 +25,88 @@ import {
   Eye,
   Code,
   Users,
+  Sparkles,
+  Layers,
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { cn } from '@/lib/cn';
 
-export default function AdminNewsletterPage() {
+interface ContentOption {
+  id: string;
+  title: string;
+  slug: string;
+  excerpt?: string | null;
+  readingTimeMinutes?: number | null;
+  categoryName?: string | null;
+  coverImageUrl?: string | null;
+}
+
+function generateContentEmailHtml({
+  type,
+  title,
+  slug,
+  excerpt,
+  meta,
+  coverUrl,
+  siteUrl,
+}: {
+  type: 'blog' | 'project' | 'research';
+  title: string;
+  slug: string;
+  excerpt?: string;
+  meta?: string;
+  coverUrl?: string;
+  siteUrl: string;
+}) {
+  const itemUrl =
+    type === 'blog'
+      ? `${siteUrl}/blogs/${slug}`
+      : type === 'project'
+        ? `${siteUrl}/works/${slug}`
+        : `${siteUrl}/research/${slug}`;
+
+  const badgeText =
+    type === 'blog' ? 'NEW ESSAY / ARTICLE' : type === 'project' ? 'NEW CASE STUDY' : 'NEW RESEARCH PAPER';
+
+  const ctaText =
+    type === 'blog' ? 'Read Full Article &rarr;' : type === 'project' ? 'Explore Project &rarr;' : 'Read Paper &rarr;';
+
+  const coverHtml = coverUrl
+    ? `<div style="margin-bottom: 24px; text-align: center;">
+        <img src="${coverUrl}" alt="${title}" style="max-width: 100%; border-radius: 8px; border: 1px solid #262626; display: block;" />
+      </div>`
+    : '';
+
+  const metaHtml = meta
+    ? `<p style="margin: 0 0 12px 0; font-size: 11px; font-family: monospace; color: #ff8c42; text-transform: uppercase; letter-spacing: 1px; font-weight: bold;">
+        ${meta}
+      </p>`
+    : '';
+
+  return `
+    ${coverHtml}
+    <div style="margin-bottom: 8px;">
+      <span style="display: inline-block; background-color: rgba(255, 140, 66, 0.1); border: 1px solid rgba(255, 140, 66, 0.25); color: #ff8c42; font-size: 10px; font-family: monospace; padding: 3px 8px; border-radius: 4px; text-transform: uppercase; font-weight: bold; margin-bottom: 12px;">
+        ${badgeText}
+      </span>
+    </div>
+    <h1 style="margin: 0 0 12px 0; font-size: 22px; font-weight: 700; color: #ffffff; line-height: 1.3;">
+      ${title}
+    </h1>
+    ${metaHtml}
+    <p style="margin: 0 0 24px 0; font-size: 14px; line-height: 1.6; color: #b4b4b4;">
+      ${excerpt || 'A new release has just been published on the portfolio engineering dispatch.'}
+    </p>
+    <div style="margin: 28px 0 12px 0;">
+      <a href="${itemUrl}" style="display: inline-block; background-color: #ff8c42; color: #000000; font-size: 13px; font-weight: 700; text-decoration: none; padding: 12px 24px; border-radius: 6px; text-align: center;">
+        ${ctaText}
+      </a>
+    </div>
+  `;
+}
+
+function AdminNewsletterContent() {
+  const searchParams = useSearchParams();
   const [subscribers, setSubscribers] = useState<NewsletterSubscriberDto[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [statusFilter, setStatusFilter] = useState<string>('all');
@@ -42,6 +120,12 @@ export default function AdminNewsletterPage() {
 
   // Broadcast Modal State
   const [showBroadcastModal, setShowBroadcastModal] = useState(false);
+  const [broadcastMode, setBroadcastMode] = useState<'custom' | 'content'>('custom');
+  const [contentType, setContentType] = useState<'blog' | 'project' | 'research'>('blog');
+  const [availableContent, setAvailableContent] = useState<ContentOption[]>([]);
+  const [selectedContentId, setSelectedContentId] = useState<string>('');
+  const [isLoadingContent, setIsLoadingContent] = useState(false);
+
   const [broadcastSubject, setBroadcastSubject] = useState('');
   const [broadcastPreview, setBroadcastPreview] = useState('');
   const [broadcastContent, setBroadcastContent] = useState('');
@@ -75,6 +159,125 @@ export default function AdminNewsletterPage() {
   useEffect(() => {
     fetchSubscribers();
   }, [fetchSubscribers]);
+
+  // Fetch content options when mode is 'content' or when contentType changes
+  useEffect(() => {
+    if (broadcastMode !== 'content') return;
+
+    async function loadContent() {
+      setIsLoadingContent(true);
+      try {
+        if (contentType === 'blog') {
+          const res = await apiClient.get<PaginatedResponse<{ id: string; title: string; slug: string; excerpt?: string | null; readingTimeMinutes?: number; category?: { name: string } | null; coverImage?: { url: string } | null }>>('/blogs/admin/all', { params: { pageSize: '100' } });
+          setAvailableContent(
+            (res.data || []).map((b) => ({
+              id: b.id,
+              title: b.title,
+              slug: b.slug,
+              excerpt: b.excerpt,
+              readingTimeMinutes: b.readingTimeMinutes,
+              categoryName: b.category?.name || null,
+              coverImageUrl: b.coverImage?.url || null,
+            }))
+          );
+        } else if (contentType === 'project') {
+          const res = await apiClient.get<PaginatedResponse<{ id: string; title: string; slug: string; shortDescription: string; category?: { name: string } | null; coverImage?: { url: string } | null }>>('/projects/admin/all', { params: { pageSize: '100' } });
+          setAvailableContent(
+            (res.data || []).map((p) => ({
+              id: p.id,
+              title: p.title,
+              slug: p.slug,
+              excerpt: p.shortDescription,
+              categoryName: p.category?.name || null,
+              coverImageUrl: p.coverImage?.url || null,
+            }))
+          );
+        } else if (contentType === 'research') {
+          const res = await apiClient.get<PaginatedResponse<{ id: string; title: string; slug: string; abstract?: string | null; publicationName?: string | null; ogImage?: { url: string } | null }>>('/research/admin/all', { params: { pageSize: '100' } });
+          setAvailableContent(
+            (res.data || []).map((r) => ({
+              id: r.id,
+              title: r.title,
+              slug: r.slug,
+              excerpt: r.abstract,
+              categoryName: r.publicationName || null,
+              coverImageUrl: r.ogImage?.url || null,
+            }))
+          );
+        }
+      } catch {
+        toast.error('Failed to load published content items');
+      } finally {
+        setIsLoadingContent(false);
+      }
+    }
+
+    loadContent();
+  }, [broadcastMode, contentType]);
+
+  // Deep linking support from query params
+  useEffect(() => {
+    const action = searchParams.get('action');
+    const paramType = searchParams.get('contentType') as 'blog' | 'project' | 'research' | null;
+    const paramId = searchParams.get('contentId');
+
+    if (action === 'broadcast') {
+      setShowBroadcastModal(true);
+      if (paramType && (paramType === 'blog' || paramType === 'project' || paramType === 'research')) {
+        setBroadcastMode('content');
+        setContentType(paramType);
+        if (paramId) {
+          setSelectedContentId(paramId);
+        }
+      }
+    }
+  }, [searchParams]);
+
+  // Auto-populate when availableContent arrives and selectedContentId is set
+  useEffect(() => {
+    if (!selectedContentId || availableContent.length === 0) return;
+    const item = availableContent.find((c) => c.id === selectedContentId);
+    if (!item) return;
+
+    const typePrefix =
+      contentType === 'blog'
+        ? 'New Article'
+        : contentType === 'project'
+          ? 'New Case Study'
+          : 'New Research Paper';
+
+    setBroadcastSubject(`${typePrefix}: ${item.title}`);
+    setBroadcastPreview(item.excerpt || `Read our latest ${contentType} release.`);
+
+    const siteUrl = typeof window !== 'undefined' ? window.location.origin : 'http://localhost:3000';
+    const meta = [
+      item.readingTimeMinutes ? `${item.readingTimeMinutes} min read` : '',
+      item.categoryName || '',
+    ]
+      .filter(Boolean)
+      .join(' • ');
+
+    const html = generateContentEmailHtml({
+      type: contentType,
+      title: item.title,
+      slug: item.slug,
+      excerpt: item.excerpt || '',
+      meta,
+      coverUrl: item.coverImageUrl || undefined,
+      siteUrl,
+    });
+
+    setBroadcastContent(html.trim());
+  }, [availableContent, selectedContentId, contentType]);
+
+  // When selected content item changes via manual dropdown
+  const handleSelectContentItem = (itemId: string) => {
+    setSelectedContentId(itemId);
+    const item = availableContent.find((c) => c.id === itemId);
+    if (!item) return;
+
+    toast.success(`Pre-populated fields from '${item.title}'!`);
+  };
 
   const confirmedCount = useMemo(() => {
     return subscribers.filter((s) => s.isConfirmed).length;
@@ -131,7 +334,7 @@ export default function AdminNewsletterPage() {
       return;
     }
 
-    if (!confirm(`Are you sure you want to broadcast this message to all confirmed subscribers?`)) {
+    if (!confirm(`Are you sure you want to broadcast this message to all ${confirmedCount} confirmed subscribers?`)) {
       return;
     }
 
@@ -153,6 +356,7 @@ export default function AdminNewsletterPage() {
       setBroadcastSubject('');
       setBroadcastPreview('');
       setBroadcastContent('');
+      setSelectedContentId('');
     } catch (err: unknown) {
       const msg = err instanceof ApiClientError ? err.message : 'Failed to send broadcast';
       toast.error(msg);
@@ -182,7 +386,7 @@ export default function AdminNewsletterPage() {
         <span
           className={`inline-flex items-center gap-1 text-[10px] font-mono px-2 py-0.5 rounded border uppercase font-bold ${
             item.isConfirmed
-              ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30'
+              ? 'bg-accent/10 text-accent border-accent/30'
               : 'bg-amber-500/10 text-amber-400 border-amber-500/30'
           }`}
         >
@@ -235,12 +439,12 @@ export default function AdminNewsletterPage() {
         action={
           <div className="flex items-center gap-2">
             <Button
-              variant="outline"
+              variant="primary"
               size="sm"
               onClick={() => setShowBroadcastModal(true)}
-              className="border-emerald-500/30 text-emerald-400 hover:bg-emerald-500/10 gap-1.5"
+              className="gap-1.5"
             >
-              <Radio className="w-3.5 h-3.5 text-emerald-400" />
+              <Radio className="w-3.5 h-3.5" />
               <span>Broadcast Campaign</span>
             </Button>
             <Button variant="outline" size="sm" onClick={handleExportCSV}>
@@ -288,52 +492,129 @@ export default function AdminNewsletterPage() {
 
       {/* Broadcast Campaign Modal */}
       {showBroadcastModal && (
-        <div className="fixed inset-0 z-50 bg-black/75 backdrop-blur-md flex items-center justify-center p-4">
-          <div className="w-full max-w-2xl bg-zinc-900 border border-zinc-800 rounded-2xl p-6 shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto">
-            <div className="flex items-center justify-between border-b border-zinc-800 pb-3">
+        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4">
+          <div className="w-full max-w-2xl bg-surface border border-border rounded-2xl p-6 shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto">
+            <div className="flex items-center justify-between border-b border-border pb-3">
               <div className="flex items-center gap-2">
-                <div className="w-8 h-8 rounded-lg bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400">
+                <div className="w-8 h-8 rounded-lg bg-accent/10 border border-accent/20 flex items-center justify-center text-accent">
                   <Radio className="w-4 h-4" />
                 </div>
                 <div>
-                  <h3 className="text-base font-bold text-zinc-100">Broadcast Newsletter</h3>
-                  <p className="text-xs text-zinc-400">Dispatch an email blast to your audience.</p>
+                  <h3 className="text-base font-bold text-foreground">Broadcast Newsletter</h3>
+                  <p className="text-xs text-muted">Dispatch a formatted email blast to your audience.</p>
                 </div>
               </div>
               <button
                 type="button"
                 onClick={() => setShowBroadcastModal(false)}
-                className="text-zinc-500 hover:text-zinc-300 text-sm p-1"
+                className="text-muted hover:text-foreground text-sm p-1"
               >
                 ✕
               </button>
             </div>
 
-            <div className="p-3 bg-emerald-500/10 border border-emerald-500/20 rounded-xl flex items-center justify-between text-xs text-emerald-400">
+            {/* Confirmed Audience Banner */}
+            <div className="p-3 bg-accent/10 border border-accent/20 rounded-xl flex items-center justify-between text-xs text-accent">
               <span className="flex items-center gap-2 font-medium">
                 <Users className="w-4 h-4" />
                 Active Confirmed Audience:
               </span>
-              <span className="font-mono font-bold text-sm bg-emerald-500/20 px-2.5 py-0.5 rounded-full">
+              <span className="font-mono font-bold text-sm bg-accent/20 px-2.5 py-0.5 rounded-full text-foreground">
                 {confirmedCount} recipients
               </span>
             </div>
 
+            {/* Campaign Mode Switcher */}
+            <div className="p-3 bg-surface-muted border border-border rounded-xl space-y-3">
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-semibold text-foreground flex items-center gap-1.5">
+                  <Sparkles className="w-3.5 h-3.5 text-accent" />
+                  <span>Campaign Source</span>
+                </span>
+                <div className="flex items-center gap-1 bg-surface p-1 rounded-lg border border-border">
+                  <button
+                    type="button"
+                    onClick={() => setBroadcastMode('custom')}
+                    className={cn(
+                      'px-2.5 py-1 text-xs rounded transition-colors',
+                      broadcastMode === 'custom'
+                        ? 'bg-accent text-accent-foreground font-semibold'
+                        : 'text-muted hover:text-foreground'
+                    )}
+                  >
+                    Custom Campaign
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setBroadcastMode('content')}
+                    className={cn(
+                      'px-2.5 py-1 text-xs rounded transition-colors flex items-center gap-1',
+                      broadcastMode === 'content'
+                        ? 'bg-accent text-accent-foreground font-semibold'
+                        : 'text-muted hover:text-foreground'
+                    )}
+                  >
+                    <Layers className="w-3.5 h-3.5" /> Import Content
+                  </button>
+                </div>
+              </div>
+
+              {/* Content Picker Dropdowns */}
+              {broadcastMode === 'content' && (
+                <div className="pt-2 border-t border-border/60 grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div className="space-y-1">
+                    <label className="text-[11px] font-mono text-muted uppercase">Content Type</label>
+                    <select
+                      value={contentType}
+                      onChange={(e) => {
+                        setContentType(e.target.value as 'blog' | 'project' | 'research');
+                        setSelectedContentId('');
+                      }}
+                      className="w-full bg-surface border border-border rounded-md px-3 py-1.5 text-xs text-foreground font-mono focus:outline-none focus:border-accent"
+                    >
+                      <option value="blog">Blog Post / Article</option>
+                      <option value="project">Project / Case Study</option>
+                      <option value="research">Research Paper</option>
+                    </select>
+                  </div>
+
+                  <div className="space-y-1">
+                    <label className="text-[11px] font-mono text-muted uppercase">Select Item</label>
+                    <select
+                      value={selectedContentId}
+                      onChange={(e) => handleSelectContentItem(e.target.value)}
+                      disabled={isLoadingContent || availableContent.length === 0}
+                      className="w-full bg-surface border border-border rounded-md px-3 py-1.5 text-xs text-foreground font-mono focus:outline-none focus:border-accent disabled:opacity-50"
+                    >
+                      <option value="">
+                        {isLoadingContent ? 'Loading items...' : availableContent.length === 0 ? 'No items found' : 'Choose an item to pre-fill...'}
+                      </option>
+                      {availableContent.map((item) => (
+                        <option key={item.id} value={item.id}>
+                          {item.title}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+              )}
+            </div>
+
             <form onSubmit={handleSendBroadcast} className="space-y-4">
               <div className="space-y-1.5">
-                <label className="text-xs font-semibold text-zinc-300">Campaign Subject Line</label>
+                <label className="text-xs font-semibold text-foreground">Campaign Subject Line</label>
                 <Input
                   type="text"
                   required
                   placeholder="e.g. Scaling Distributed Systems in 2026: Architecture Retrospective"
                   value={broadcastSubject}
                   onChange={(e) => setBroadcastSubject(e.target.value)}
-                  className="bg-zinc-950 text-xs"
+                  className="bg-surface text-xs"
                 />
               </div>
 
               <div className="space-y-1.5">
-                <label className="text-xs font-semibold text-zinc-300">
+                <label className="text-xs font-semibold text-foreground">
                   Preview Text / Teaser (Optional)
                 </label>
                 <Input
@@ -341,22 +622,22 @@ export default function AdminNewsletterPage() {
                   placeholder="Brief summary snippet displayed in inbox previews..."
                   value={broadcastPreview}
                   onChange={(e) => setBroadcastPreview(e.target.value)}
-                  className="bg-zinc-950 text-xs"
+                  className="bg-surface text-xs"
                 />
               </div>
 
               <div className="space-y-1.5">
                 <div className="flex items-center justify-between">
-                  <label className="text-xs font-semibold text-zinc-300">Broadcast Content</label>
-                  <div className="flex items-center gap-1 bg-zinc-950 p-1 rounded-lg border border-zinc-800">
+                  <label className="text-xs font-semibold text-foreground">Broadcast Content</label>
+                  <div className="flex items-center gap-1 bg-surface p-1 rounded-lg border border-border">
                     <button
                       type="button"
                       onClick={() => setBroadcastTab('edit')}
                       className={cn(
                         'px-2.5 py-1 text-xs rounded transition-colors flex items-center gap-1',
                         broadcastTab === 'edit'
-                          ? 'bg-zinc-800 text-zinc-100 font-semibold'
-                          : 'text-zinc-400 hover:text-zinc-200',
+                          ? 'bg-surface-muted text-foreground font-semibold border border-border'
+                          : 'text-muted hover:text-foreground',
                       )}
                     >
                       <Code className="w-3.5 h-3.5" /> HTML Code
@@ -367,8 +648,8 @@ export default function AdminNewsletterPage() {
                       className={cn(
                         'px-2.5 py-1 text-xs rounded transition-colors flex items-center gap-1',
                         broadcastTab === 'preview'
-                          ? 'bg-zinc-800 text-zinc-100 font-semibold'
-                          : 'text-zinc-400 hover:text-zinc-200',
+                          ? 'bg-surface-muted text-foreground font-semibold border border-border'
+                          : 'text-muted hover:text-foreground',
                       )}
                     >
                       <Eye className="w-3.5 h-3.5" /> Preview
@@ -383,25 +664,25 @@ export default function AdminNewsletterPage() {
                     placeholder="<h2>New Article Published</h2><p>Here is what we engineered this month...</p>"
                     value={broadcastContent}
                     onChange={(e) => setBroadcastContent(e.target.value)}
-                    className="bg-zinc-950 text-xs font-mono leading-relaxed"
+                    className="bg-surface text-xs font-mono leading-relaxed"
                   />
                 ) : (
-                  <div className="p-6 bg-zinc-950 border border-zinc-800 rounded-xl min-h-[220px] text-zinc-200 text-sm">
-                    <h1 className="text-lg font-bold text-zinc-100 mb-4">
+                  <div className="p-6 bg-surface border border-border rounded-xl min-h-[220px] text-foreground text-sm">
+                    <h1 className="text-lg font-bold text-foreground mb-4">
                       {broadcastSubject || 'Untitled Broadcast'}
                     </h1>
                     <div
                       dangerouslySetInnerHTML={{
                         __html:
                           broadcastContent ||
-                          '<p class="text-zinc-500 italic">No content entered yet...</p>',
+                          '<p class="text-muted italic">No content entered yet...</p>',
                       }}
                     />
                   </div>
                 )}
               </div>
 
-              <div className="flex items-center justify-end gap-2 pt-3 border-t border-zinc-800">
+              <div className="flex items-center justify-end gap-2 pt-3 border-t border-border">
                 <Button
                   type="button"
                   variant="ghost"
@@ -416,7 +697,6 @@ export default function AdminNewsletterPage() {
                   size="sm"
                   isLoading={isBroadcasting}
                   disabled={isBroadcasting || confirmedCount === 0}
-                  className="bg-emerald-500 hover:bg-emerald-400 text-zinc-950 font-semibold"
                 >
                   <Send className="w-3.5 h-3.5 mr-1.5" />
                   Broadcast to {confirmedCount} Subscribers
@@ -438,5 +718,21 @@ export default function AdminNewsletterPage() {
         onClose={() => setDeleteTarget(null)}
       />
     </div>
+  );
+}
+
+export default function AdminNewsletterPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="py-24 flex flex-col items-center justify-center gap-3">
+          <span className="text-xs font-mono text-muted uppercase tracking-wider">
+            Loading Newsletter Hub...
+          </span>
+        </div>
+      }
+    >
+      <AdminNewsletterContent />
+    </Suspense>
   );
 }

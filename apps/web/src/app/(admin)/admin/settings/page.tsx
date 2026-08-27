@@ -3,14 +3,70 @@
 import React, { useEffect, useState } from 'react';
 import { apiClient } from '@/lib/api';
 import type { SiteSettingDto } from '@portfolio/shared';
+import { DEFAULT_SYSTEM_SITE_SETTINGS } from '@portfolio/shared';
 import { AdminPageHeader } from '@/components/admin/ui/AdminPageHeader';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Spinner } from '@/components/ui/spinner';
-import { Save, Globe, Terminal, Bell, Mail, ShieldAlert, Sliders } from 'lucide-react';
+import { Save, Globe, Terminal, Bell, Mail } from 'lucide-react';
 import { toast } from 'sonner';
+
+const SETTING_METADATA: Record<string, { label: string; description: string }> = {
+  email_notifications_visit_enabled: {
+    label: 'Visitor Session Alerts',
+    description: 'Send an email alert to the admin when a new unique visitor session arrives.',
+  },
+  email_notifications_visit_cooldown_minutes: {
+    label: 'Visitor Alert Cooldown (Minutes)',
+    description: 'Minimum minutes to wait before sending another visitor alert from the same IP.',
+  },
+  email_notifications_resume_download_enabled: {
+    label: 'Resume Download Recruiter Alerts',
+    description: 'Notify the admin when a visitor or recruiter downloads the CV/Resume PDF.',
+  },
+  email_notifications_contact_enabled: {
+    label: 'Contact Inquiries Alerts',
+    description: 'Notify the admin when someone submits a message on the contact form.',
+  },
+  email_notifications_newsletter_enabled: {
+    label: 'New Subscriber Alerts',
+    description: 'Notify the admin when a new user subscribes to the newsletter.',
+  },
+  email_notifications_guestbook_enabled: {
+    label: 'Guestbook Moderation Alerts',
+    description: 'Notify the admin when a new guestbook note is submitted for approval.',
+  },
+  email_notifications_scheduled_publish_enabled: {
+    label: 'Scheduled Content Report',
+    description: 'Send a summary email to the admin when scheduled content goes live.',
+  },
+  email_notifications_security_login_enabled: {
+    label: 'Security Login Alerts',
+    description: 'Notify the admin on successful logins from new devices or IP addresses.',
+  },
+  email_notifications_auto_broadcast_blog: {
+    label: 'Auto-Broadcast on Blog Publication',
+    description: 'Automatically send a newsletter broadcast to confirmed subscribers when an article is published.',
+  },
+  email_notifications_auto_broadcast_project: {
+    label: 'Auto-Broadcast on Project Publication',
+    description: 'Automatically send a newsletter broadcast to confirmed subscribers when a case study goes live.',
+  },
+  email_notifications_auto_broadcast_research: {
+    label: 'Auto-Broadcast on Research Publication',
+    description: 'Automatically send a newsletter broadcast to confirmed subscribers when a research paper is published.',
+  },
+  newsletter_double_opt_in: {
+    label: 'Newsletter Double Opt-In Verification',
+    description: 'Require subscribers to click an email verification link before receiving newsletters.',
+  },
+  admin_notification_email: {
+    label: 'Administrative Recipient Email',
+    description: 'The primary inbox where all administrative notifications and security alerts are routed.',
+  },
+};
 
 export default function AdminSettingsPage() {
   const [settings, setSettings] = useState<SiteSettingDto[]>([]);
@@ -22,9 +78,27 @@ export default function AdminSettingsPage() {
     setIsLoading(true);
     try {
       const res = await apiClient.get<{ data: SiteSettingDto[] }>('/site-settings/admin/all');
-      setSettings(res.data || []);
-      const initial: Record<string, string> = {};
+      
+      const settingsMap = new Map<string, SiteSettingDto>();
+      // 1. Initialize with system defaults
+      DEFAULT_SYSTEM_SITE_SETTINGS.forEach((def) => {
+        settingsMap.set(def.key, {
+          id: def.key,
+          key: def.key,
+          value: def.value,
+          group: def.group,
+        });
+      });
+      // 2. Overlay actual database rows
       (res.data || []).forEach((s) => {
+        settingsMap.set(s.key, s);
+      });
+
+      const mergedList = Array.from(settingsMap.values());
+      setSettings(mergedList);
+
+      const initial: Record<string, string> = {};
+      mergedList.forEach((s) => {
         initial[s.key] = s.value;
       });
       setFormValues(initial);
@@ -123,41 +197,49 @@ export default function AdminSettingsPage() {
         <Card className="bg-surface border-border">
           <CardHeader className="pb-3 border-b border-border">
             <CardTitle className="text-sm font-bold text-foreground flex items-center gap-2">
-              <Bell className="w-4 h-4 text-emerald-400" />
+              <Bell className="w-4 h-4 text-accent" />
               <span>Email & Notification Controls</span>
             </CardTitle>
             <CardDescription className="text-xs text-muted">
-              Configure real-time alerts dispatched to your administrative inbox.
+              Configure real-time alerts and automated subscriber broadcasts.
             </CardDescription>
           </CardHeader>
           <CardContent className="pt-4 space-y-4">
-            {notificationSettings.map((s) => (
-              <div key={s.key} className="space-y-1.5">
-                <div className="flex items-center justify-between">
-                  <label className="text-xs font-semibold text-foreground font-mono">{s.key}</label>
-                  <span className="text-[10px] font-mono text-muted">
-                    group: {s.group || 'notifications'}
-                  </span>
+            {notificationSettings.map((s) => {
+              const meta = SETTING_METADATA[s.key];
+              return (
+                <div key={s.key} className="space-y-1.5 p-3 rounded-lg bg-surface-muted/50 border border-border/50">
+                  <div className="flex items-center justify-between">
+                    <label className="text-xs font-bold text-foreground">
+                      {meta?.label || s.key}
+                    </label>
+                    <span className="text-[10px] font-mono text-muted">
+                      key: {s.key}
+                    </span>
+                  </div>
+                  {meta?.description && (
+                    <p className="text-[11px] text-muted leading-relaxed">{meta.description}</p>
+                  )}
+                  {isBooleanSetting(s.key, formValues[s.key] ?? s.value) ? (
+                    <select
+                      value={formValues[s.key] ?? s.value}
+                      onChange={(e) => handleChange(s.key, e.target.value)}
+                      className="w-full bg-background border border-border rounded-md px-3 py-2 text-foreground font-mono text-xs focus:outline-none focus:border-accent"
+                    >
+                      <option value="true">true (Enabled)</option>
+                      <option value="false">false (Disabled)</option>
+                    </select>
+                  ) : (
+                    <Input
+                      type="text"
+                      value={formValues[s.key] ?? s.value}
+                      onChange={(e) => handleChange(s.key, e.target.value)}
+                      className="bg-background text-xs font-mono"
+                    />
+                  )}
                 </div>
-                {isBooleanSetting(s.key, formValues[s.key] ?? s.value) ? (
-                  <select
-                    value={formValues[s.key] ?? s.value}
-                    onChange={(e) => handleChange(s.key, e.target.value)}
-                    className="w-full bg-background border border-border rounded-md px-3 py-2 text-foreground font-mono text-xs focus:outline-none focus:border-accent"
-                  >
-                    <option value="true">true (Enabled)</option>
-                    <option value="false">false (Disabled)</option>
-                  </select>
-                ) : (
-                  <Input
-                    type="text"
-                    value={formValues[s.key] ?? s.value}
-                    onChange={(e) => handleChange(s.key, e.target.value)}
-                    className="bg-background text-xs font-mono"
-                  />
-                )}
-              </div>
-            ))}
+              );
+            })}
           </CardContent>
         </Card>
 

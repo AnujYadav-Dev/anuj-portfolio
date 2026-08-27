@@ -20,8 +20,13 @@ interface AdminAuthContextType {
 
 const AdminAuthContext = createContext<AdminAuthContextType | undefined>(undefined);
 
-// 15-minute access token TTL
-const DEFAULT_TTL_SECONDS = 15 * 60;
+// Default access token TTL fallback (minutes from NEXT_PUBLIC_JWT_ACCESS_TTL_MINUTES, default 15)
+const DEFAULT_TTL_MINUTES = parseInt(
+  process.env.NEXT_PUBLIC_JWT_ACCESS_TTL_MINUTES || '15',
+  10,
+);
+const DEFAULT_TTL_SECONDS =
+  (Number.isNaN(DEFAULT_TTL_MINUTES) || DEFAULT_TTL_MINUTES <= 0 ? 15 : DEFAULT_TTL_MINUTES) * 60;
 
 export function AdminAuthProvider({ children }: { children: React.ReactNode }) {
   const [author, setAuthor] = useState<AuthorDto | null>(null);
@@ -98,8 +103,9 @@ export function AdminAuthProvider({ children }: { children: React.ReactNode }) {
         refreshToken: currentRefresh,
       });
 
-      const { accessToken: newAccess, refreshToken: newRefresh, author: newAuthor } = res.data;
-      const expiresAt = Date.now() + DEFAULT_TTL_SECONDS * 1000;
+      const { accessToken: newAccess, refreshToken: newRefresh, author: newAuthor, expiresIn } = res.data;
+      const ttlSeconds = typeof expiresIn === 'number' && expiresIn > 0 ? expiresIn : DEFAULT_TTL_SECONDS;
+      const expiresAt = Date.now() + ttlSeconds * 1000;
 
       localStorage.setItem('access_token', newAccess);
       if (newRefresh) localStorage.setItem('refresh_token', newRefresh);
@@ -109,7 +115,7 @@ export function AdminAuthProvider({ children }: { children: React.ReactNode }) {
       setAccessToken(newAccess);
       if (newRefresh) setRefreshToken(newRefresh);
       if (newAuthor) setAuthor(newAuthor);
-      setSecondsRemaining(DEFAULT_TTL_SECONDS);
+      setSecondsRemaining(ttlSeconds);
     } catch {
       await logout();
     }
@@ -141,8 +147,9 @@ export function AdminAuthProvider({ children }: { children: React.ReactNode }) {
         password,
       });
 
-      const { accessToken: newAccess, refreshToken: newRefresh, author: newAuthor } = res.data;
-      const expiresAt = Date.now() + DEFAULT_TTL_SECONDS * 1000;
+      const { accessToken: newAccess, refreshToken: newRefresh, author: newAuthor, expiresIn } = res.data;
+      const ttlSeconds = typeof expiresIn === 'number' && expiresIn > 0 ? expiresIn : DEFAULT_TTL_SECONDS;
+      const expiresAt = Date.now() + ttlSeconds * 1000;
 
       localStorage.setItem('access_token', newAccess);
       localStorage.setItem('refresh_token', newRefresh);
@@ -152,7 +159,7 @@ export function AdminAuthProvider({ children }: { children: React.ReactNode }) {
       setAccessToken(newAccess);
       setRefreshToken(newRefresh);
       setAuthor(newAuthor);
-      setSecondsRemaining(DEFAULT_TTL_SECONDS);
+      setSecondsRemaining(ttlSeconds);
     } finally {
       setIsLoading(false);
     }

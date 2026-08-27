@@ -800,12 +800,17 @@ export function mimeTypeToMediaType(mimeType: string): MediaType {
 export function mapEmailTemplateToDto(t: EmailTemplate): EmailTemplateDto {
   return {
     id: t.id,
-    templateKey: t.templateKey,
+    purpose: t.purpose,
+    templateKey: t.purpose,
+    name: t.name,
+    description: t.description,
     subject: t.subject,
     bodyHtml: t.bodyHtml,
     bodyText: t.bodyText,
     variables: t.variables,
-    createdAt: t.updatedAt.toISOString(),
+    isActive: t.isActive,
+    isEnabled: t.isEnabled,
+    createdAt: t.createdAt.toISOString(),
     updatedAt: t.updatedAt.toISOString(),
   };
 }

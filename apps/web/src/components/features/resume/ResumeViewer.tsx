@@ -15,10 +15,20 @@ export function ResumeViewer() {
   const { data: skillsData } = useSkills();
   const { data: settingsData } = useSiteSettings();
 
-  const authorName = settingsData?.data?.['author.name'] || 'Anuj Yadav';
-  const authorTitle = settingsData?.data?.['author.title'] || 'Software Engineer';
-  const authorEmail = settingsData?.data?.['author.email'] || 'anujyadav9449@gmail.com';
-  const authorLocation = settingsData?.data?.['author.location'] || 'Bengaluru, India';
+  const authorName =
+    settingsData?.data?.['author_name'] || settingsData?.data?.['author.name'] || 'Anuj Yadav';
+  const authorTitle =
+    settingsData?.data?.['author_job_title'] ||
+    settingsData?.data?.['author.title'] ||
+    'Software Engineer';
+  const authorEmail =
+    settingsData?.data?.['author_email'] ||
+    settingsData?.data?.['author.email'] ||
+    'anujyadav9449@gmail.com';
+  const authorLocation =
+    settingsData?.data?.['author_location'] ||
+    settingsData?.data?.['author.location'] ||
+    'Bengaluru, India';
 
   const experiences = expData?.data || [];
   const education = eduData?.data || [];

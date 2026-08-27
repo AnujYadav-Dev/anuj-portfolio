@@ -96,6 +96,56 @@ async function main() {
       value: 'true',
       group: 'analytics',
     },
+    {
+      key: 'email_notifications_visit_enabled',
+      value: 'false',
+      group: 'notifications',
+    },
+    {
+      key: 'email_notifications_visit_cooldown_minutes',
+      value: '60',
+      group: 'notifications',
+    },
+    {
+      key: 'email_notifications_resume_download_enabled',
+      value: 'true',
+      group: 'notifications',
+    },
+    {
+      key: 'email_notifications_contact_enabled',
+      value: 'true',
+      group: 'notifications',
+    },
+    {
+      key: 'email_notifications_newsletter_enabled',
+      value: 'true',
+      group: 'notifications',
+    },
+    {
+      key: 'email_notifications_guestbook_enabled',
+      value: 'true',
+      group: 'notifications',
+    },
+    {
+      key: 'email_notifications_scheduled_publish_enabled',
+      value: 'true',
+      group: 'notifications',
+    },
+    {
+      key: 'email_notifications_security_login_enabled',
+      value: 'true',
+      group: 'notifications',
+    },
+    {
+      key: 'newsletter_double_opt_in',
+      value: 'true',
+      group: 'newsletter',
+    },
+    {
+      key: 'admin_notification_email',
+      value: 'anujyadav9449@gmail.com',
+      group: 'notifications',
+    },
   ];
 
   for (const setting of siteSettings) {
@@ -678,35 +728,190 @@ async function main() {
   console.log('✉️ Seeding email templates...');
   const emailTemplates = [
     {
-      templateKey: 'contact_auto_reply',
-      name: 'Contact Auto-Reply (Visitor)',
+      purpose: 'contact_auto_reply',
+      name: 'Default Auto-Reply (Visitor)',
+      description: 'Automated receipt acknowledgment sent to visitors who submit the contact form.',
       subject: 'Thank you for reaching out, {{name}}!',
       bodyHtml:
-        '<p>Hi <strong>{{name}}</strong>,</p><p>Thank you for reaching out via my portfolio. I have received your message regarding "<em>{{subject}}</em>" and will get back to you as soon as possible.</p><br/><p>Best regards,<br/><strong>Anuj Yadav</strong></p>',
+        '<div style="font-family: -apple-system, BlinkMacSystemFont, \'Segoe UI\', Roboto, Helvetica, Arial, sans-serif; max-width: 600px; margin: 0 auto; background-color: #0d0f14; border: 1px solid #1f242e; border-radius: 12px; overflow: hidden; color: #e1e7ec; padding: 32px;"><h2 style="margin-top: 0; color: #64ffda; font-size: 20px; font-weight: 700;">Message Received</h2><p style="font-size: 14px; line-height: 1.6; color: #a0aec0;">Hi <strong style="color: #ffffff;">{{name}}</strong>,</p><p style="font-size: 14px; line-height: 1.6; color: #a0aec0;">Thank you for getting in touch through my portfolio. I have safely received your inquiry regarding <em style="color: #64ffda;">"{{subject}}"</em> and will review your message promptly.</p><div style="background-color: #151921; border-left: 3px solid #64ffda; padding: 14px 18px; border-radius: 6px; margin: 20px 0; font-size: 13px; color: #cbd5e1; font-style: italic;">{{message}}</div><p style="font-size: 14px; line-height: 1.6; color: #a0aec0;">I typically reply within 24 to 48 business hours.</p><hr style="border: none; border-top: 1px solid #1f242e; margin: 28px 0;"/><p style="margin-bottom: 0; font-size: 13px; color: #718096;">Best regards,<br/><strong style="color: #ffffff;">Anuj Yadav</strong><br/><span style="font-size: 12px; color: #4a5568;">Full-Stack Engineer & Architect</span></p></div>',
       bodyText:
-        'Hi {{name}},\n\nThank you for reaching out via my portfolio. I have received your message regarding "{{subject}}" and will get back to you as soon as possible.\n\nBest regards,\nAnuj Yadav',
-      variables: ['name', 'subject', 'message'],
+        'Hi {{name}},\n\nThank you for reaching out via my portfolio. I have received your message regarding "{{subject}}" and will get back to you as soon as possible.\n\nYour message:\n{{message}}\n\nBest regards,\nAnuj Yadav\nFull-Stack Engineer & Architect',
+      variables: ['name', 'email', 'subject', 'message', 'siteUrl'],
+      isActive: true,
       isEnabled: true,
     },
     {
-      templateKey: 'contact_admin_notification',
-      name: 'Contact Inquiry Alert (Admin)',
+      purpose: 'contact_admin_notification',
+      name: 'Default Contact Inquiry (Admin)',
+      description: 'Instant alert sent to admin when a new inquiry is submitted.',
       subject: 'New Contact Inquiry from {{name}}: {{subject}}',
       bodyHtml:
-        '<p>You have received a new contact inquiry through your portfolio website:</p><ul><li><strong>Sender:</strong> {{name}} (&lt;{{email}}&gt;)</li><li><strong>Subject:</strong> {{subject}}</li><li><strong>IP Address:</strong> {{ipAddress}}</li></ul><hr/><p><strong>Message:</strong></p><p>{{message}}</p>',
+        '<div style="font-family: -apple-system, BlinkMacSystemFont, \'Segoe UI\', Roboto, Helvetica, Arial, sans-serif; max-width: 600px; margin: 0 auto; background-color: #0d0f14; border: 1px solid #1f242e; border-radius: 12px; overflow: hidden; color: #e1e7ec; padding: 32px;"><div style="display: inline-block; padding: 4px 10px; background-color: rgba(100, 255, 218, 0.1); border: 1px solid rgba(100, 255, 218, 0.3); border-radius: 6px; font-size: 11px; font-family: monospace; color: #64ffda; text-transform: uppercase; margin-bottom: 16px;">Contact Inquiry Alert</div><h2 style="margin-top: 0; color: #ffffff; font-size: 20px; font-weight: 700;">New Message from {{name}}</h2><table style="width: 100%; border-collapse: collapse; margin: 20px 0; font-size: 13px;"><tr style="border-bottom: 1px solid #1f242e;"><td style="padding: 8px 0; color: #718096; width: 100px;">From:</td><td style="padding: 8px 0; color: #ffffff; font-weight: 600;">{{name}} (&lt;{{email}}&gt;)</td></tr><tr style="border-bottom: 1px solid #1f242e;"><td style="padding: 8px 0; color: #718096;">Subject:</td><td style="padding: 8px 0; color: #64ffda; font-weight: 600;">{{subject}}</td></tr><tr style="border-bottom: 1px solid #1f242e;"><td style="padding: 8px 0; color: #718096;">IP Address:</td><td style="padding: 8px 0; color: #a0aec0; font-family: monospace;">{{ipAddress}}</td></tr><tr><td style="padding: 8px 0; color: #718096;">Date:</td><td style="padding: 8px 0; color: #a0aec0;">{{submittedAt}}</td></tr></table><div style="background-color: #151921; border-radius: 8px; border: 1px solid #1f242e; padding: 18px; margin: 20px 0; font-size: 14px; line-height: 1.6; color: #cbd5e1; white-space: pre-wrap;">{{message}}</div><div style="margin-top: 24px;"><a href="mailto:{{email}}?subject=Re: {{subject}}" style="display: inline-block; padding: 10px 20px; background-color: #64ffda; color: #0d0f14; font-weight: 700; text-decoration: none; border-radius: 6px; font-size: 13px;">Reply to {{name}}</a></div></div>',
       bodyText:
-        'You have received a new contact inquiry:\n\nSender: {{name}} ({{email}})\nSubject: {{subject}}\nIP: {{ipAddress}}\n\nMessage:\n{{message}}',
-      variables: ['name', 'email', 'subject', 'message', 'ipAddress'],
+        'You have received a new contact inquiry:\n\nSender: {{name}} ({{email}})\nSubject: {{subject}}\nIP: {{ipAddress}}\nDate: {{submittedAt}}\n\nMessage:\n{{message}}',
+      variables: ['name', 'email', 'subject', 'message', 'ipAddress', 'submittedAt', 'siteUrl'],
+      isActive: true,
+      isEnabled: true,
+    },
+    {
+      purpose: 'newsletter_confirmation',
+      name: 'Double Opt-In Verification',
+      description: 'Verification link sent to new newsletter subscribers.',
+      subject: 'Confirm your subscription to Anuj Yadav Engineering Dispatch',
+      bodyHtml:
+        '<div style="font-family: -apple-system, BlinkMacSystemFont, \'Segoe UI\', Roboto, Helvetica, Arial, sans-serif; max-width: 600px; margin: 0 auto; background-color: #0d0f14; border: 1px solid #1f242e; border-radius: 12px; overflow: hidden; color: #e1e7ec; padding: 32px;"><h2 style="margin-top: 0; color: #64ffda; font-size: 20px; font-weight: 700;">Confirm Your Subscription</h2><p style="font-size: 14px; line-height: 1.6; color: #a0aec0;">Hi {{name}},</p><p style="font-size: 14px; line-height: 1.6; color: #a0aec0;">Thanks for subscribing to the <strong style="color: #ffffff;">Engineering Dispatch</strong>. Please confirm your email address by clicking the button below:</p><div style="margin: 28px 0; text-align: center;"><a href="{{confirmationUrl}}" style="display: inline-block; padding: 12px 28px; background-color: #64ffda; color: #0d0f14; font-weight: 700; text-decoration: none; border-radius: 8px; font-size: 14px;">Confirm Subscription</a></div><p style="font-size: 12px; color: #718096; line-height: 1.5;">Or copy and paste this link in your browser:<br/><a href="{{confirmationUrl}}" style="color: #64ffda; word-break: break-all;">{{confirmationUrl}}</a></p><hr style="border: none; border-top: 1px solid #1f242e; margin: 28px 0;"/><p style="font-size: 12px; color: #4a5568;">If you did not request this subscription, you can safely ignore this email.</p></div>',
+      bodyText:
+        'Hi {{name}},\n\nThanks for subscribing to the Engineering Dispatch.\n\nPlease confirm your email address by opening the following link:\n{{confirmationUrl}}\n\nIf you did not request this, please ignore this email.\n\nBest,\nAnuj Yadav',
+      variables: ['name', 'email', 'confirmationUrl', 'siteUrl'],
+      isActive: true,
+      isEnabled: true,
+    },
+    {
+      purpose: 'newsletter_welcome',
+      name: 'Welcome to Engineering Dispatch',
+      description: 'Welcome email sent immediately after subscriber confirms subscription.',
+      subject: 'Welcome to the Engineering Dispatch! 🚀',
+      bodyHtml:
+        '<div style="font-family: -apple-system, BlinkMacSystemFont, \'Segoe UI\', Roboto, Helvetica, Arial, sans-serif; max-width: 600px; margin: 0 auto; background-color: #0d0f14; border: 1px solid #1f242e; border-radius: 12px; overflow: hidden; color: #e1e7ec; padding: 32px;"><h2 style="margin-top: 0; color: #64ffda; font-size: 20px; font-weight: 700;">Welcome Aboard! 🎉</h2><p style="font-size: 14px; line-height: 1.6; color: #a0aec0;">Hi {{name}},</p><p style="font-size: 14px; line-height: 1.6; color: #a0aec0;">You are now officially subscribed to the <strong style="color: #ffffff;">Engineering Dispatch</strong>. You will receive periodic deep dives on software architecture, distributed systems, modern web engineering, and technical breakdowns.</p><div style="background-color: #151921; border-radius: 8px; border: 1px solid #1f242e; padding: 18px; margin: 20px 0;"><h4 style="margin: 0 0 8px 0; color: #64ffda; font-size: 13px;">What to expect:</h4><ul style="margin: 0; padding-left: 18px; font-size: 13px; color: #cbd5e1; line-height: 1.6;"><li>Zero spam, strictly engineering substance</li><li>Early access to technical case studies</li><li>Open source architecture retrospectives</li></ul></div><p style="font-size: 14px; line-height: 1.6; color: #a0aec0;">Feel free to reply to any issue with your thoughts or questions.</p><hr style="border: none; border-top: 1px solid #1f242e; margin: 28px 0;"/><p style="font-size: 12px; color: #4a5568;">You can <a href="{{unsubscribeUrl}}" style="color: #718096; text-decoration: underline;">unsubscribe at any time</a>.</p></div>',
+      bodyText:
+        'Hi {{name}},\n\nWelcome to the Engineering Dispatch! You are now subscribed to receive periodic deep dives on software architecture, web engineering, and systems design.\n\nBest regards,\nAnuj Yadav\n\nUnsubscribe: {{unsubscribeUrl}}',
+      variables: ['name', 'email', 'unsubscribeUrl', 'siteUrl'],
+      isActive: true,
+      isEnabled: true,
+    },
+    {
+      purpose: 'newsletter_admin_notification',
+      name: 'New Subscriber Notification (Admin)',
+      description: 'Notification sent to admin when a new subscriber joins the mailing list.',
+      subject: 'New Newsletter Subscriber: {{email}}',
+      bodyHtml:
+        '<div style="font-family: -apple-system, BlinkMacSystemFont, \'Segoe UI\', Roboto, Helvetica, Arial, sans-serif; max-width: 600px; margin: 0 auto; background-color: #0d0f14; border: 1px solid #1f242e; border-radius: 12px; overflow: hidden; color: #e1e7ec; padding: 32px;"><h2 style="margin-top: 0; color: #64ffda; font-size: 20px; font-weight: 700;">New Subscriber Joined</h2><p style="font-size: 14px; line-height: 1.6; color: #a0aec0;">A new reader has joined your newsletter audience:</p><table style="width: 100%; border-collapse: collapse; margin: 20px 0; font-size: 13px;"><tr style="border-bottom: 1px solid #1f242e;"><td style="padding: 8px 0; color: #718096; width: 120px;">Email:</td><td style="padding: 8px 0; color: #ffffff; font-weight: 600;">{{email}}</td></tr><tr style="border-bottom: 1px solid #1f242e;"><td style="padding: 8px 0; color: #718096;">Name:</td><td style="padding: 8px 0; color: #cbd5e1;">{{name}}</td></tr><tr style="border-bottom: 1px solid #1f242e;"><td style="padding: 8px 0; color: #718096;">Status:</td><td style="padding: 8px 0; color: #64ffda;">{{isConfirmed}}</td></tr><tr><td style="padding: 8px 0; color: #718096;">Subscribed At:</td><td style="padding: 8px 0; color: #a0aec0;">{{subscribedAt}}</td></tr></table></div>',
+      bodyText:
+        'New Newsletter Subscriber:\n\nEmail: {{email}}\nName: {{name}}\nStatus: {{isConfirmed}}\nDate: {{subscribedAt}}',
+      variables: ['email', 'name', 'isConfirmed', 'subscribedAt', 'siteUrl'],
+      isActive: true,
+      isEnabled: true,
+    },
+    {
+      purpose: 'newsletter_broadcast',
+      name: 'Standard Article / Dispatch Broadcast',
+      description: 'Default template for broadcasting new blog posts or engineering newsletters.',
+      subject: '{{subject}}',
+      bodyHtml:
+        '<div style="font-family: -apple-system, BlinkMacSystemFont, \'Segoe UI\', Roboto, Helvetica, Arial, sans-serif; max-width: 600px; margin: 0 auto; background-color: #0d0f14; border: 1px solid #1f242e; border-radius: 12px; overflow: hidden; color: #e1e7ec; padding: 32px;"><p style="font-size: 13px; color: #64ffda; text-transform: uppercase; font-family: monospace; letter-spacing: 0.05em; margin-top: 0;">Anuj Yadav Engineering Dispatch</p><h1 style="color: #ffffff; font-size: 24px; font-weight: 800; line-height: 1.3; margin: 12px 0 24px 0;">{{subject}}</h1><div style="font-size: 15px; line-height: 1.7; color: #cbd5e1;">{{{contentHtml}}}</div><hr style="border: none; border-top: 1px solid #1f242e; margin: 32px 0;"/><p style="font-size: 12px; color: #718096; line-height: 1.5;">You received this email because you subscribed to Anuj Yadav\'s Engineering Dispatch.<br/><a href="{{unsubscribeUrl}}" style="color: #a0aec0; text-decoration: underline;">Unsubscribe</a> • <a href="{{siteUrl}}" style="color: #a0aec0; text-decoration: underline;">Visit Portfolio</a></p></div>',
+      bodyText:
+        '{{subject}}\n\n{{contentHtml}}\n\nUnsubscribe: {{unsubscribeUrl}}\nPortfolio: {{siteUrl}}',
+      variables: ['name', 'email', 'subject', 'previewText', 'contentHtml', 'unsubscribeUrl', 'siteUrl'],
+      isActive: true,
+      isEnabled: true,
+    },
+    {
+      purpose: 'resume_download_admin',
+      name: 'Recruiter Resume Download Alert (Admin)',
+      description: 'Alert sent to admin when a recruiter or visitor downloads the resume PDF.',
+      subject: '📄 Resume Downloaded by visitor from {{country}}, {{city}}',
+      bodyHtml:
+        '<div style="font-family: -apple-system, BlinkMacSystemFont, \'Segoe UI\', Roboto, Helvetica, Arial, sans-serif; max-width: 600px; margin: 0 auto; background-color: #0d0f14; border: 1px solid #1f242e; border-radius: 12px; overflow: hidden; color: #e1e7ec; padding: 32px;"><div style="display: inline-block; padding: 4px 10px; background-color: rgba(100, 255, 218, 0.1); border: 1px solid rgba(100, 255, 218, 0.3); border-radius: 6px; font-size: 11px; font-family: monospace; color: #64ffda; text-transform: uppercase; margin-bottom: 16px;">Recruiter Telemetry</div><h2 style="margin-top: 0; color: #ffffff; font-size: 20px; font-weight: 700;">Resume PDF Downloaded</h2><table style="width: 100%; border-collapse: collapse; margin: 20px 0; font-size: 13px;"><tr style="border-bottom: 1px solid #1f242e;"><td style="padding: 8px 0; color: #718096; width: 120px;">Resume Version:</td><td style="padding: 8px 0; color: #64ffda; font-weight: 600;">{{resumeTitle}}</td></tr><tr style="border-bottom: 1px solid #1f242e;"><td style="padding: 8px 0; color: #718096;">Location:</td><td style="padding: 8px 0; color: #ffffff; font-weight: 600;">{{city}}, {{country}}</td></tr><tr style="border-bottom: 1px solid #1f242e;"><td style="padding: 8px 0; color: #718096;">Referrer:</td><td style="padding: 8px 0; color: #a0aec0;">{{referrerSource}}</td></tr><tr style="border-bottom: 1px solid #1f242e;"><td style="padding: 8px 0; color: #718096;">IP Address:</td><td style="padding: 8px 0; color: #a0aec0; font-family: monospace;">{{ipAddress}}</td></tr><tr><td style="padding: 8px 0; color: #718096;">Timestamp:</td><td style="padding: 8px 0; color: #a0aec0;">{{downloadedAt}}</td></tr></table></div>',
+      bodyText:
+        'Resume Download Alert:\n\nResume: {{resumeTitle}}\nLocation: {{city}}, {{country}}\nReferrer: {{referrerSource}}\nIP: {{ipAddress}}\nTime: {{downloadedAt}}',
+      variables: ['resumeTitle', 'ipAddress', 'country', 'city', 'referrerSource', 'downloadedAt', 'siteUrl'],
+      isActive: true,
+      isEnabled: true,
+    },
+    {
+      purpose: 'content_published_admin',
+      name: 'Scheduled Content Published (Admin)',
+      description: 'Report sent to admin when scheduled blog posts or projects go live.',
+      subject: 'Scheduled Content Published ({{itemCount}} item(s))',
+      bodyHtml:
+        '<div style="font-family: -apple-system, BlinkMacSystemFont, \'Segoe UI\', Roboto, Helvetica, Arial, sans-serif; max-width: 600px; margin: 0 auto; background-color: #0d0f14; border: 1px solid #1f242e; border-radius: 12px; overflow: hidden; color: #e1e7ec; padding: 32px;"><h2 style="margin-top: 0; color: #64ffda; font-size: 20px; font-weight: 700;">Scheduled Content Published</h2><p style="font-size: 14px; line-height: 1.6; color: #a0aec0;">The automated content scheduler has published <strong style="color: #ffffff;">{{itemCount}}</strong> scheduled item(s) on your portfolio:</p><div style="background-color: #151921; border-radius: 8px; border: 1px solid #1f242e; padding: 18px; margin: 20px 0; font-size: 14px; line-height: 1.6; color: #cbd5e1;">{{publishedItemsSummary}}</div><p style="font-size: 12px; color: #718096;">Published at: {{publishedAt}}</p></div>',
+      bodyText:
+        'Scheduled Content Published:\n\nTotal items: {{itemCount}}\nSummary:\n{{publishedItemsSummary}}\n\nPublished at: {{publishedAt}}',
+      variables: ['itemCount', 'publishedItemsSummary', 'publishedAt', 'siteUrl'],
+      isActive: true,
+      isEnabled: true,
+    },
+    {
+      purpose: 'guestbook_admin_notification',
+      name: 'New Guestbook Entry (Admin)',
+      description: 'Alert sent to admin when a new guestbook message is pending moderation.',
+      subject: 'New Guestbook Signature from {{authorName}} awaiting review',
+      bodyHtml:
+        '<div style="font-family: -apple-system, BlinkMacSystemFont, \'Segoe UI\', Roboto, Helvetica, Arial, sans-serif; max-width: 600px; margin: 0 auto; background-color: #0d0f14; border: 1px solid #1f242e; border-radius: 12px; overflow: hidden; color: #e1e7ec; padding: 32px;"><div style="display: inline-block; padding: 4px 10px; background-color: rgba(100, 255, 218, 0.1); border: 1px solid rgba(100, 255, 218, 0.3); border-radius: 6px; font-size: 11px; font-family: monospace; color: #64ffda; text-transform: uppercase; margin-bottom: 16px;">Guestbook Moderation</div><h2 style="margin-top: 0; color: #ffffff; font-size: 20px; font-weight: 700;">New Signature from {{authorName}}</h2><table style="width: 100%; border-collapse: collapse; margin: 20px 0; font-size: 13px;"><tr style="border-bottom: 1px solid #1f242e;"><td style="padding: 8px 0; color: #718096; width: 120px;">Author:</td><td style="padding: 8px 0; color: #ffffff; font-weight: 600;">{{authorName}}</td></tr><tr style="border-bottom: 1px solid #1f242e;"><td style="padding: 8px 0; color: #718096;">Email:</td><td style="padding: 8px 0; color: #a0aec0;">{{authorEmail}}</td></tr><tr><td style="padding: 8px 0; color: #718096;">Date:</td><td style="padding: 8px 0; color: #a0aec0;">{{submittedAt}}</td></tr></table><div style="background-color: #151921; border-radius: 8px; border: 1px solid #1f242e; padding: 18px; margin: 20px 0; font-size: 14px; line-height: 1.6; color: #cbd5e1; font-style: italic;">"{{message}}"</div><div style="margin-top: 24px;"><a href="{{adminUrl}}" style="display: inline-block; padding: 10px 20px; background-color: #64ffda; color: #0d0f14; font-weight: 700; text-decoration: none; border-radius: 6px; font-size: 13px;">Review in Guestbook Moderation</a></div></div>',
+      bodyText:
+        'New Guestbook Entry:\n\nAuthor: {{authorName}}\nEmail: {{authorEmail}}\nDate: {{submittedAt}}\n\nMessage:\n{{message}}\n\nModerate at: {{adminUrl}}',
+      variables: ['authorName', 'authorEmail', 'message', 'adminUrl', 'submittedAt', 'siteUrl'],
+      isActive: true,
+      isEnabled: true,
+    },
+    {
+      purpose: 'guestbook_approved',
+      name: 'Guestbook Entry Approved (Visitor)',
+      description: 'Confirmation sent to guest author when their entry is approved.',
+      subject: 'Your guestbook message is now live on Anuj Yadav Portfolio!',
+      bodyHtml:
+        '<div style="font-family: -apple-system, BlinkMacSystemFont, \'Segoe UI\', Roboto, Helvetica, Arial, sans-serif; max-width: 600px; margin: 0 auto; background-color: #0d0f14; border: 1px solid #1f242e; border-radius: 12px; overflow: hidden; color: #e1e7ec; padding: 32px;"><h2 style="margin-top: 0; color: #64ffda; font-size: 20px; font-weight: 700;">Your Message is Live! ✨</h2><p style="font-size: 14px; line-height: 1.6; color: #a0aec0;">Hi <strong style="color: #ffffff;">{{authorName}}</strong>,</p><p style="font-size: 14px; line-height: 1.6; color: #a0aec0;">Thank you for signing my guestbook. Your message has been approved and is now visible on the website:</p><div style="background-color: #151921; border-left: 3px solid #64ffda; padding: 14px 18px; border-radius: 6px; margin: 20px 0; font-size: 13px; color: #cbd5e1; font-style: italic;">"{{message}}"</div><div style="margin: 24px 0;"><a href="{{guestbookUrl}}" style="display: inline-block; padding: 10px 20px; background-color: #64ffda; color: #0d0f14; font-weight: 700; text-decoration: none; border-radius: 6px; font-size: 13px;">View Live Guestbook</a></div><p style="font-size: 13px; color: #718096; margin-bottom: 0;">Thanks for visiting and sharing your note!</p></div>',
+      bodyText:
+        'Hi {{authorName}},\n\nThank you for signing my guestbook. Your message has been approved and is now live:\n\n"{{message}}"\n\nView it at: {{guestbookUrl}}\n\nBest regards,\nAnuj Yadav',
+      variables: ['authorName', 'message', 'guestbookUrl', 'siteUrl'],
+      isActive: true,
+      isEnabled: true,
+    },
+    {
+      purpose: 'visit_admin_notification',
+      name: 'Visitor Telemetry Alert (Admin)',
+      description: 'Real-time alert sent to admin on new unique visitor sessions.',
+      subject: '🌐 New Portfolio Visitor from {{country}}, {{city}}',
+      bodyHtml:
+        '<div style="font-family: -apple-system, BlinkMacSystemFont, \'Segoe UI\', Roboto, Helvetica, Arial, sans-serif; max-width: 600px; margin: 0 auto; background-color: #0d0f14; border: 1px solid #1f242e; border-radius: 12px; overflow: hidden; color: #e1e7ec; padding: 32px;"><div style="display: inline-block; padding: 4px 10px; background-color: rgba(100, 255, 218, 0.1); border: 1px solid rgba(100, 255, 218, 0.3); border-radius: 6px; font-size: 11px; font-family: monospace; color: #64ffda; text-transform: uppercase; margin-bottom: 16px;">Visitor Telemetry</div><h2 style="margin-top: 0; color: #ffffff; font-size: 20px; font-weight: 700;">New Unique Visitor Session</h2><table style="width: 100%; border-collapse: collapse; margin: 20px 0; font-size: 13px;"><tr style="border-bottom: 1px solid #1f242e;"><td style="padding: 8px 0; color: #718096; width: 120px;">Location:</td><td style="padding: 8px 0; color: #64ffda; font-weight: 600;">{{city}}, {{country}}</td></tr><tr style="border-bottom: 1px solid #1f242e;"><td style="padding: 8px 0; color: #718096;">Device & OS:</td><td style="padding: 8px 0; color: #ffffff;">{{deviceType}} • {{os}} ({{browser}})</td></tr><tr style="border-bottom: 1px solid #1f242e;"><td style="padding: 8px 0; color: #718096;">Referrer:</td><td style="padding: 8px 0; color: #a0aec0;">{{referrerSource}}</td></tr><tr style="border-bottom: 1px solid #1f242e;"><td style="padding: 8px 0; color: #718096;">IP Address:</td><td style="padding: 8px 0; color: #a0aec0; font-family: monospace;">{{ipAddress}}</td></tr><tr><td style="padding: 8px 0; color: #718096;">Time:</td><td style="padding: 8px 0; color: #a0aec0;">{{visitedAt}}</td></tr></table></div>',
+      bodyText:
+        'New Visitor Session:\n\nLocation: {{city}}, {{country}}\nDevice: {{deviceType}} ({{os}}, {{browser}})\nReferrer: {{referrerSource}}\nIP: {{ipAddress}}\nTime: {{visitedAt}}',
+      variables: ['ipAddress', 'country', 'city', 'deviceType', 'browser', 'os', 'referrerSource', 'visitedAt', 'siteUrl'],
+      isActive: true,
+      isEnabled: true,
+    },
+    {
+      purpose: 'admin_login_security',
+      name: 'New Device Login Security Alert (Admin)',
+      description: 'Security alert sent on admin dashboard login from an unrecognized device or IP.',
+      subject: '🛡️ Security Alert: New Admin Login from {{ipAddress}}',
+      bodyHtml:
+        '<div style="font-family: -apple-system, BlinkMacSystemFont, \'Segoe UI\', Roboto, Helvetica, Arial, sans-serif; max-width: 600px; margin: 0 auto; background-color: #0d0f14; border: 1px solid #1f242e; border-radius: 12px; overflow: hidden; color: #e1e7ec; padding: 32px;"><h2 style="margin-top: 0; color: #f56565; font-size: 20px; font-weight: 700;">Security Alert: New Admin Login</h2><p style="font-size: 14px; line-height: 1.6; color: #a0aec0;">An administrative session was just initialized on your portfolio platform:</p><table style="width: 100%; border-collapse: collapse; margin: 20px 0; font-size: 13px;"><tr style="border-bottom: 1px solid #1f242e;"><td style="padding: 8px 0; color: #718096; width: 120px;">Admin Account:</td><td style="padding: 8px 0; color: #ffffff; font-weight: 600;">{{adminName}} ({{adminEmail}})</td></tr><tr style="border-bottom: 1px solid #1f242e;"><td style="padding: 8px 0; color: #718096;">IP Address:</td><td style="padding: 8px 0; color: #f56565; font-family: monospace; font-weight: 600;">{{ipAddress}}</td></tr><tr style="border-bottom: 1px solid #1f242e;"><td style="padding: 8px 0; color: #718096;">Location:</td><td style="padding: 8px 0; color: #cbd5e1;">{{location}}</td></tr><tr style="border-bottom: 1px solid #1f242e;"><td style="padding: 8px 0; color: #718096;">Device:</td><td style="padding: 8px 0; color: #a0aec0;">{{deviceType}} • {{os}} ({{browser}})</td></tr><tr><td style="padding: 8px 0; color: #718096;">Login Time:</td><td style="padding: 8px 0; color: #a0aec0;">{{loginTime}}</td></tr></table><p style="font-size: 13px; color: #a0aec0;">If this was you, you can safely disregard this alert. If you did not log in, please reset your admin password immediately.</p></div>',
+      bodyText:
+        'Security Alert: New Admin Login\n\nAdmin: {{adminName}} ({{adminEmail}})\nIP: {{ipAddress}}\nLocation: {{location}}\nDevice: {{deviceType}} ({{os}}, {{browser}})\nTime: {{loginTime}}\n\nIf this was not you, reset your password immediately.',
+      variables: ['adminName', 'adminEmail', 'ipAddress', 'deviceType', 'browser', 'os', 'location', 'loginTime', 'siteUrl'],
+      isActive: true,
+      isEnabled: true,
+    },
+    {
+      purpose: 'security_profile_updated',
+      name: 'Security Audit Notification (Admin)',
+      description: 'Security audit confirmation sent when admin password or profile is updated.',
+      subject: 'Security Notice: {{actionType}} on your account',
+      bodyHtml:
+        '<div style="font-family: -apple-system, BlinkMacSystemFont, \'Segoe UI\', Roboto, Helvetica, Arial, sans-serif; max-width: 600px; margin: 0 auto; background-color: #0d0f14; border: 1px solid #1f242e; border-radius: 12px; overflow: hidden; color: #e1e7ec; padding: 32px;"><h2 style="margin-top: 0; color: #64ffda; font-size: 20px; font-weight: 700;">Account Security Notice</h2><p style="font-size: 14px; line-height: 1.6; color: #a0aec0;">Hi {{adminName}},</p><p style="font-size: 14px; line-height: 1.6; color: #a0aec0;">This is a confirmation that <strong style="color: #ffffff;">{{actionType}}</strong> was successfully executed on your portfolio admin profile.</p><table style="width: 100%; border-collapse: collapse; margin: 20px 0; font-size: 13px;"><tr style="border-bottom: 1px solid #1f242e;"><td style="padding: 8px 0; color: #718096; width: 120px;">Action:</td><td style="padding: 8px 0; color: #64ffda; font-weight: 600;">{{actionType}}</td></tr><tr style="border-bottom: 1px solid #1f242e;"><td style="padding: 8px 0; color: #718096;">IP Address:</td><td style="padding: 8px 0; color: #a0aec0; font-family: monospace;">{{ipAddress}}</td></tr><tr><td style="padding: 8px 0; color: #718096;">Timestamp:</td><td style="padding: 8px 0; color: #a0aec0;">{{updatedAt}}</td></tr></table></div>',
+      bodyText:
+        'Account Security Notice:\n\nAction: {{actionType}}\nAdmin: {{adminName}} ({{adminEmail}})\nIP: {{ipAddress}}\nTime: {{updatedAt}}',
+      variables: ['adminName', 'adminEmail', 'actionType', 'ipAddress', 'updatedAt', 'siteUrl'],
+      isActive: true,
       isEnabled: true,
     },
   ];
 
   for (const template of emailTemplates) {
-    await prisma.emailTemplate.upsert({
-      where: { templateKey: template.templateKey },
-      update: template,
-      create: template,
+    const existing = await prisma.emailTemplate.findFirst({
+      where: { purpose: template.purpose, name: template.name },
     });
+    if (existing) {
+      await prisma.emailTemplate.update({
+        where: { id: existing.id },
+        data: template,
+      });
+    } else {
+      await prisma.emailTemplate.create({
+        data: template,
+      });
+    }
   }
 
   // ─── 7. Skill Categories & Skills ───────────────────────────

@@ -32,6 +32,12 @@ export const newsletterController = {
     res.json({ data: subscribers });
   },
 
+  async broadcast(req: Request, res: Response): Promise<void> {
+    const input = req.validatedBody as any;
+    const result = await newsletterService.broadcast(input);
+    res.status(200).json(result);
+  },
+
   async delete(req: Request, res: Response): Promise<void> {
     const id = String(req.params.id);
     await newsletterService.deleteSubscriber(id);

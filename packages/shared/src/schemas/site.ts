@@ -83,11 +83,40 @@ export const listPagesQuerySchema = paginationSchema.extend({
 
 export type ListPagesQuery = z.infer<typeof listPagesQuerySchema>;
 
+/** Create email template schema. */
+export const createEmailTemplateSchema = z.object({
+  purpose: z.string().min(1).max(100),
+  name: z.string().min(1).max(200),
+  description: z.string().max(500).nullish(),
+  subject: z.string().min(1).max(300),
+  bodyHtml: z.string().min(1),
+  bodyText: z.string().nullable().optional(),
+  variables: z.array(z.string()).optional(),
+  isActive: z.boolean().optional(),
+  isEnabled: z.boolean().optional(),
+});
+
+export type CreateEmailTemplateInput = z.infer<typeof createEmailTemplateSchema>;
+
 /** Update email template schema. */
 export const updateEmailTemplateSchema = z.object({
+  name: z.string().min(1).max(200).optional(),
+  description: z.string().max(500).nullish(),
   subject: z.string().min(1).max(300).optional(),
   bodyHtml: z.string().min(1).optional(),
   bodyText: z.string().nullable().optional(),
+  variables: z.array(z.string()).optional(),
+  isEnabled: z.boolean().optional(),
 });
 
 export type UpdateEmailTemplateInput = z.infer<typeof updateEmailTemplateSchema>;
+
+/** Send test email schema. */
+export const sendTestEmailSchema = z.object({
+  to: z.string().email(),
+  purpose: z.string().optional(),
+  templateId: optionalUuidSchema,
+  variables: z.record(z.string()).optional(),
+});
+
+export type SendTestEmailInput = z.infer<typeof sendTestEmailSchema>;

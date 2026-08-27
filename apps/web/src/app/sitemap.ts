@@ -111,8 +111,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   try {
     // 2. Fetch all dynamic published entities in parallel
     const [blogs, projects, research, pages, aboutSections] = await Promise.all([
-      serverApi.getAllPublishedBlogs(200),
-      serverApi.getAllPublishedProjects(200),
+      serverApi.getAllPublishedBlogs(100),
+      serverApi.getAllPublishedProjects(100),
       serverApi.getAllPublishedResearch(100),
       serverApi.getAllPublishedPages(100),
       serverApi.getEnabledAboutSections(),

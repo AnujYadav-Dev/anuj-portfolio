@@ -7,12 +7,17 @@ import type {
 } from '@portfolio/shared';
 import { authorRepository } from '@/repositories/author.repository';
 import { sessionRepository } from '@/repositories/session.repository';
+import { siteSettingRepository } from '@/repositories/siteSetting.repository';
 import { tokenService } from '@/services/token.service';
+import { emailService } from '@/services/email.service';
 import { verifyPassword, hashPassword } from '@/utils/password';
 import { mapAuthorToDto } from '@/utils/mappers';
+import { parseUserAgent } from '@/utils/uaParser';
 import { UnauthorizedError, NotFoundError, ValidationError } from '@/utils/errors';
 import { hashToken, generateSecureToken } from '@/utils/hash';
+import { logger } from '@/config/logger';
 import { DUMMY_PASSWORD_HASH, REFRESH_TOKEN_TTL_SECONDS } from '@/config/constants';
+import { EMAIL_TEMPLATE_KEYS } from '@portfolio/shared';
 
 export const authService = {
   async login(
@@ -52,6 +57,36 @@ export const authService = {
 
     const refreshTokenHash = hashToken(refreshToken);
     await sessionRepository.updateRefreshTokenHash(session.id, refreshTokenHash, expiresAt);
+
+    // Send Security Login Alert
+    setImmediate(async () => {
+      try {
+        const setting = await siteSettingRepository.findByKey(
+          'email_notifications_security_login_enabled',
+        );
+        if (setting && setting.value === 'false') return;
+
+        const ua = parseUserAgent(context.userAgent || undefined);
+        const siteUrl = await emailService.resolveSiteUrl();
+        await emailService.sendTemplatedEmail({
+          purpose: EMAIL_TEMPLATE_KEYS.ADMIN_LOGIN_SECURITY,
+          to: author.email,
+          variables: {
+            adminName: author.displayName || author.username,
+            adminEmail: author.email,
+            ipAddress: context.ipAddress || '127.0.0.1',
+            deviceType: ua.deviceType || 'Desktop',
+            browser: ua.browser || 'Unknown Browser',
+            os: ua.os || 'Unknown OS',
+            location: 'Authenticated Network',
+            loginTime: new Date().toLocaleString(),
+            siteUrl,
+          },
+        });
+      } catch (err) {
+        logger.error({ err, adminEmail: author.email }, 'Failed to send admin login security alert');
+      }
+    });
 
     return {
       accessToken,
@@ -109,7 +144,7 @@ export const authService = {
     await sessionRepository.deleteByRefreshTokenHash(refreshTokenHash);
   },
 
-  async updateProfile(authorId: string, input: UpdateProfileInput) {
+  async updateProfile(authorId: string, input: UpdateProfileInput, context?: { ipAddress?: string | null }) {
     const existing = await authorRepository.findByIdWithAvatar(authorId);
     if (!existing) {
       throw new NotFoundError('Author not found');
@@ -131,10 +166,31 @@ export const authService = {
       bio: input.bio,
     });
 
+    // Send Profile Update Security Alert
+    setImmediate(async () => {
+      try {
+        const siteUrl = await emailService.resolveSiteUrl();
+        await emailService.sendTemplatedEmail({
+          purpose: EMAIL_TEMPLATE_KEYS.SECURITY_PROFILE_UPDATED,
+          to: updated.email,
+          variables: {
+            adminName: updated.displayName || updated.username,
+            adminEmail: updated.email,
+            actionType: 'Admin Profile Updated',
+            ipAddress: context?.ipAddress || 'Authenticated Admin',
+            updatedAt: new Date().toLocaleString(),
+            siteUrl,
+          },
+        });
+      } catch (err) {
+        logger.error({ err }, 'Failed to send security profile update email');
+      }
+    });
+
     return mapAuthorToDto(updated);
   },
 
-  async changePassword(authorId: string, input: ChangePasswordInput) {
+  async changePassword(authorId: string, input: ChangePasswordInput, context?: { ipAddress?: string | null }) {
     const author = await authorRepository.findByIdWithAvatar(authorId);
     if (!author) {
       throw new NotFoundError('Author not found');
@@ -149,5 +205,26 @@ export const authService = {
 
     const newHash = await hashPassword(input.newPassword);
     await authorRepository.updatePassword(authorId, newHash);
+
+    // Send Password Changed Security Notice
+    setImmediate(async () => {
+      try {
+        const siteUrl = await emailService.resolveSiteUrl();
+        await emailService.sendTemplatedEmail({
+          purpose: EMAIL_TEMPLATE_KEYS.SECURITY_PROFILE_UPDATED,
+          to: author.email,
+          variables: {
+            adminName: author.displayName || author.username,
+            adminEmail: author.email,
+            actionType: 'Master Admin Password Changed',
+            ipAddress: context?.ipAddress || 'Authenticated Admin',
+            updatedAt: new Date().toLocaleString(),
+            siteUrl,
+          },
+        });
+      } catch (err) {
+        logger.error({ err }, 'Failed to send security password change notice');
+      }
+    });
   },
 };

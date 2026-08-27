@@ -4,12 +4,12 @@ import React, { useEffect, useState } from 'react';
 import { apiClient } from '@/lib/api';
 import type { SiteSettingDto } from '@portfolio/shared';
 import { AdminPageHeader } from '@/components/admin/ui/AdminPageHeader';
-import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
+import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Spinner } from '@/components/ui/spinner';
-import { Save, Globe, Terminal } from 'lucide-react';
+import { Save, Globe, Terminal, Bell, Mail, ShieldAlert, Sliders } from 'lucide-react';
 import { toast } from 'sonner';
 
 export default function AdminSettingsPage() {
@@ -77,11 +77,33 @@ export default function AdminSettingsPage() {
   const isBooleanSetting = (key: string, val: string) =>
     val === 'true' || val === 'false' || key.includes('enable') || key.includes('active');
 
+  const notificationSettings = settings.filter(
+    (s) => s.group === 'notifications' || s.key.startsWith('email_notifications_'),
+  );
+
+  const newsletterSettings = settings.filter(
+    (s) => s.group === 'newsletter' || s.key.startsWith('newsletter_'),
+  );
+
+  const analyticsSettings = settings.filter(
+    (s) => s.group === 'analytics' || s.key.startsWith('analytics_'),
+  );
+
+  const generalSettings = settings.filter(
+    (s) =>
+      s.group !== 'notifications' &&
+      s.group !== 'newsletter' &&
+      s.group !== 'analytics' &&
+      !s.key.startsWith('email_notifications_') &&
+      !s.key.startsWith('newsletter_') &&
+      !s.key.startsWith('analytics_'),
+  );
+
   return (
     <form onSubmit={handleSave} className="space-y-6 max-w-4xl">
       <AdminPageHeader
         title="Global Platform Settings"
-        description="Core configuration flags, telemetry toggles, feature switches, and environment values."
+        description="Core configuration flags, automated email notifications, visitor telemetry toggles, and feature switches."
         action={
           <Button
             type="submit"
@@ -97,7 +119,95 @@ export default function AdminSettingsPage() {
       />
 
       <div className="space-y-6">
-        {/* Group 1: General & Identity */}
+        {/* Group 1: Automated Email Notifications */}
+        <Card className="bg-surface border-border">
+          <CardHeader className="pb-3 border-b border-border">
+            <CardTitle className="text-sm font-bold text-foreground flex items-center gap-2">
+              <Bell className="w-4 h-4 text-emerald-400" />
+              <span>Email & Notification Controls</span>
+            </CardTitle>
+            <CardDescription className="text-xs text-muted">
+              Configure real-time alerts dispatched to your administrative inbox.
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="pt-4 space-y-4">
+            {notificationSettings.map((s) => (
+              <div key={s.key} className="space-y-1.5">
+                <div className="flex items-center justify-between">
+                  <label className="text-xs font-semibold text-foreground font-mono">
+                    {s.key}
+                  </label>
+                  <span className="text-[10px] font-mono text-muted">
+                    group: {s.group || 'notifications'}
+                  </span>
+                </div>
+                {isBooleanSetting(s.key, formValues[s.key] ?? s.value) ? (
+                  <select
+                    value={formValues[s.key] ?? s.value}
+                    onChange={(e) => handleChange(s.key, e.target.value)}
+                    className="w-full bg-background border border-border rounded-md px-3 py-2 text-foreground font-mono text-xs focus:outline-none focus:border-accent"
+                  >
+                    <option value="true">true (Enabled)</option>
+                    <option value="false">false (Disabled)</option>
+                  </select>
+                ) : (
+                  <Input
+                    type="text"
+                    value={formValues[s.key] ?? s.value}
+                    onChange={(e) => handleChange(s.key, e.target.value)}
+                    className="bg-background text-xs font-mono"
+                  />
+                )}
+              </div>
+            ))}
+          </CardContent>
+        </Card>
+
+        {/* Group 2: Newsletter System Settings */}
+        <Card className="bg-surface border-border">
+          <CardHeader className="pb-3 border-b border-border">
+            <CardTitle className="text-sm font-bold text-foreground flex items-center gap-2">
+              <Mail className="w-4 h-4 text-accent" />
+              <span>Newsletter Subscription Rules</span>
+            </CardTitle>
+            <CardDescription className="text-xs text-muted">
+              Verification rules, double opt-in controls, and subscription preferences.
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="pt-4 space-y-4">
+            {newsletterSettings.map((s) => (
+              <div key={s.key} className="space-y-1.5">
+                <div className="flex items-center justify-between">
+                  <label className="text-xs font-semibold text-foreground font-mono">
+                    {s.key}
+                  </label>
+                  <span className="text-[10px] font-mono text-muted">
+                    group: {s.group || 'newsletter'}
+                  </span>
+                </div>
+                {isBooleanSetting(s.key, formValues[s.key] ?? s.value) ? (
+                  <select
+                    value={formValues[s.key] ?? s.value}
+                    onChange={(e) => handleChange(s.key, e.target.value)}
+                    className="w-full bg-background border border-border rounded-md px-3 py-2 text-foreground font-mono text-xs focus:outline-none focus:border-accent"
+                  >
+                    <option value="true">true (Double Opt-In Enabled - Requires Email Confirmation)</option>
+                    <option value="false">false (Single Opt-In - Instant Subscription)</option>
+                  </select>
+                ) : (
+                  <Input
+                    type="text"
+                    value={formValues[s.key] ?? s.value}
+                    onChange={(e) => handleChange(s.key, e.target.value)}
+                    className="bg-background text-xs font-mono"
+                  />
+                )}
+              </div>
+            ))}
+          </CardContent>
+        </Card>
+
+        {/* Group 3: General & Identity */}
         <Card className="bg-surface border-border">
           <CardHeader className="pb-3 border-b border-border">
             <CardTitle className="text-sm font-bold text-foreground flex items-center gap-2">
@@ -106,50 +216,46 @@ export default function AdminSettingsPage() {
             </CardTitle>
           </CardHeader>
           <CardContent className="pt-4 space-y-4">
-            {settings
-              .filter(
-                (s) =>
-                  s.group === 'general' ||
-                  (!s.key.startsWith('analytics_') && !s.key.startsWith('seo_')),
-              )
-              .map((s) => (
-                <div key={s.key} className="space-y-1.5">
-                  <div className="flex items-center justify-between">
-                    <label className="text-xs font-semibold text-foreground">{s.key}</label>
-                    <span className="text-[10px] font-mono text-muted">
-                      group: {s.group || 'general'}
-                    </span>
-                  </div>
-                  {isBooleanSetting(s.key, formValues[s.key] ?? s.value) ? (
-                    <select
-                      value={formValues[s.key] ?? s.value}
-                      onChange={(e) => handleChange(s.key, e.target.value)}
-                      className="w-full bg-background border border-border rounded-md px-3 py-2 text-foreground font-mono text-xs focus:outline-none focus:border-accent"
-                    >
-                      <option value="true">true (Enabled)</option>
-                      <option value="false">false (Disabled)</option>
-                    </select>
-                  ) : (formValues[s.key] ?? s.value).length > 60 ? (
-                    <Textarea
-                      value={formValues[s.key] ?? s.value}
-                      onChange={(e) => handleChange(s.key, e.target.value)}
-                      rows={3}
-                      className="bg-background text-xs font-mono"
-                    />
-                  ) : (
-                    <Input
-                      type="text"
-                      value={formValues[s.key] ?? s.value}
-                      onChange={(e) => handleChange(s.key, e.target.value)}
-                      className="bg-background text-xs font-mono"
-                    />
-                  )}
+            {generalSettings.map((s) => (
+              <div key={s.key} className="space-y-1.5">
+                <div className="flex items-center justify-between">
+                  <label className="text-xs font-semibold text-foreground font-mono">
+                    {s.key}
+                  </label>
+                  <span className="text-[10px] font-mono text-muted">
+                    group: {s.group || 'general'}
+                  </span>
                 </div>
-              ))}
+                {isBooleanSetting(s.key, formValues[s.key] ?? s.value) ? (
+                  <select
+                    value={formValues[s.key] ?? s.value}
+                    onChange={(e) => handleChange(s.key, e.target.value)}
+                    className="w-full bg-background border border-border rounded-md px-3 py-2 text-foreground font-mono text-xs focus:outline-none focus:border-accent"
+                  >
+                    <option value="true">true (Enabled)</option>
+                    <option value="false">false (Disabled)</option>
+                  </select>
+                ) : (formValues[s.key] ?? s.value).length > 60 ? (
+                  <Textarea
+                    value={formValues[s.key] ?? s.value}
+                    onChange={(e) => handleChange(s.key, e.target.value)}
+                    rows={3}
+                    className="bg-background text-xs font-mono"
+                  />
+                ) : (
+                  <Input
+                    type="text"
+                    value={formValues[s.key] ?? s.value}
+                    onChange={(e) => handleChange(s.key, e.target.value)}
+                    className="bg-background text-xs font-mono"
+                  />
+                )}
+              </div>
+            ))}
           </CardContent>
         </Card>
 
-        {/* Group 2: Analytics & Telemetry */}
+        {/* Group 4: Analytics & Telemetry */}
         <Card className="bg-surface border-border">
           <CardHeader className="pb-3 border-b border-border">
             <CardTitle className="text-sm font-bold text-foreground flex items-center gap-2">
@@ -158,35 +264,35 @@ export default function AdminSettingsPage() {
             </CardTitle>
           </CardHeader>
           <CardContent className="pt-4 space-y-4">
-            {settings
-              .filter((s) => s.group === 'analytics' || s.key.startsWith('analytics_'))
-              .map((s) => (
-                <div key={s.key} className="space-y-1.5">
-                  <div className="flex items-center justify-between">
-                    <label className="text-xs font-semibold text-foreground">{s.key}</label>
-                    <span className="text-[10px] font-mono text-muted">
-                      {s.group || 'analytics'}
-                    </span>
-                  </div>
-                  {isBooleanSetting(s.key, formValues[s.key] ?? s.value) ? (
-                    <select
-                      value={formValues[s.key] ?? s.value}
-                      onChange={(e) => handleChange(s.key, e.target.value)}
-                      className="w-full bg-background border border-border rounded-md px-3 py-2 text-foreground font-mono text-xs focus:outline-none focus:border-accent"
-                    >
-                      <option value="true">true (Active)</option>
-                      <option value="false">false (Inactive)</option>
-                    </select>
-                  ) : (
-                    <Input
-                      type="text"
-                      value={formValues[s.key] ?? s.value}
-                      onChange={(e) => handleChange(s.key, e.target.value)}
-                      className="bg-background text-xs font-mono"
-                    />
-                  )}
+            {analyticsSettings.map((s) => (
+              <div key={s.key} className="space-y-1.5">
+                <div className="flex items-center justify-between">
+                  <label className="text-xs font-semibold text-foreground font-mono">
+                    {s.key}
+                  </label>
+                  <span className="text-[10px] font-mono text-muted">
+                    {s.group || 'analytics'}
+                  </span>
                 </div>
-              ))}
+                {isBooleanSetting(s.key, formValues[s.key] ?? s.value) ? (
+                  <select
+                    value={formValues[s.key] ?? s.value}
+                    onChange={(e) => handleChange(s.key, e.target.value)}
+                    className="w-full bg-background border border-border rounded-md px-3 py-2 text-foreground font-mono text-xs focus:outline-none focus:border-accent"
+                  >
+                    <option value="true">true (Active)</option>
+                    <option value="false">false (Inactive)</option>
+                  </select>
+                ) : (
+                  <Input
+                    type="text"
+                    value={formValues[s.key] ?? s.value}
+                    onChange={(e) => handleChange(s.key, e.target.value)}
+                    className="bg-background text-xs font-mono"
+                  />
+                )}
+              </div>
+            ))}
           </CardContent>
         </Card>
       </div>

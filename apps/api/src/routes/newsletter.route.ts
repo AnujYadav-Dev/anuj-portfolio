@@ -5,6 +5,7 @@ import { strictRateLimiter } from '@/middleware/rateLimit.middleware';
 import { validateBody, validateParams, validateQuery } from '@/middleware/validate.middleware';
 import {
   listNewsletterSubscribersQuerySchema,
+  newsletterBroadcastSchema,
   newsletterSubscribeSchema,
   uuidParamSchema,
 } from '@portfolio/shared';
@@ -29,6 +30,12 @@ router.get(
   newsletterController.listSubscribers,
 );
 router.get('/admin/export', authenticateAdmin, newsletterController.exportSubscribers);
+router.post(
+  '/admin/broadcast',
+  authenticateAdmin,
+  validateBody(newsletterBroadcastSchema),
+  newsletterController.broadcast,
+);
 router.delete(
   '/admin/subscribers/:id',
   authenticateAdmin,

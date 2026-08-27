@@ -69,6 +69,16 @@ export const listNewsletterSubscribersQuerySchema = paginationSchema.extend({
 
 export type ListNewsletterSubscribersQuery = z.infer<typeof listNewsletterSubscribersQuerySchema>;
 
+/** Newsletter broadcast request schema. */
+export const newsletterBroadcastSchema = z.object({
+  subject: z.string().min(1).max(300),
+  previewText: z.string().max(300).optional(),
+  contentHtml: z.string().min(1),
+  templateId: z.string().uuid().optional(),
+});
+
+export type NewsletterBroadcastInput = z.infer<typeof newsletterBroadcastSchema>;
+
 /** Create/update testimonial schema. */
 export const upsertTestimonialSchema = z.object({
   authorName: z.string().min(1).max(200),

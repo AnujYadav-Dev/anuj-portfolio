@@ -60,7 +60,10 @@ export function CommandPalette({ isOpen, onClose, initialQuery = '' }: CommandPa
   const { data: resumeData } = useActiveResume();
   const { data: settingsData } = useSiteSettings();
 
-  const primaryEmail = settingsData?.data?.['author.email'] || 'anujyadav9449@gmail.com';
+  const primaryEmail =
+    settingsData?.data?.['author_email'] ||
+    settingsData?.data?.['author.email'] ||
+    'anujyadav9449@gmail.com';
 
   const defaultActions: Array<{
     id: string;

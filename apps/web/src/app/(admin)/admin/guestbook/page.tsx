@@ -66,7 +66,11 @@ export default function AdminGuestbookPage() {
       await apiClient.put(`/guestbook/admin/${id}/moderate`, {
         status,
       });
-      toast.success(`Entry marked as ${status}`);
+      if (status === ModerationStatus.Approved) {
+        toast.success('Entry approved! Confirmation email dispatched to author.');
+      } else {
+        toast.success(`Entry marked as ${status}`);
+      }
       if (selectedEntry && selectedEntry.id === id) {
         setSelectedEntry({ ...selectedEntry, moderationStatus: status });
       }

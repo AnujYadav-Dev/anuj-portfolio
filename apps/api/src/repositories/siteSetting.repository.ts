@@ -22,11 +22,11 @@ export const siteSettingRepository = {
     return value === 'true';
   },
 
-  async upsert(key: string, value: string, group = 'general') {
+  async upsert(key: string, value: string, group?: string) {
     return prisma.siteSetting.upsert({
       where: { key },
-      create: { key, value, group },
-      update: { value, group },
+      create: { key, value, group: group ?? 'general' },
+      update: group !== undefined ? { value, group } : { value },
     });
   },
 
@@ -36,7 +36,7 @@ export const siteSettingRepository = {
         prisma.siteSetting.upsert({
           where: { key: s.key },
           create: { key: s.key, value: s.value, group: s.group ?? 'general' },
-          update: { value: s.value, group: s.group ?? 'general' },
+          update: s.group !== undefined ? { value: s.value, group: s.group } : { value: s.value },
         }),
       ),
     );

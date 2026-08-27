@@ -1,10 +1,15 @@
 import { newsletterRepository } from '@/repositories/newsletter.repository';
+import { siteSettingRepository } from '@/repositories/siteSetting.repository';
+import { emailService } from '@/services/email.service';
 import { mapNewsletterSubscriberToDto } from '@/utils/mappers';
 import { buildPagination, getPrismaPagination } from '@/utils/pagination';
-import { NotFoundError, ConflictError } from '@/utils/errors';
+import { NotFoundError, ValidationError } from '@/utils/errors';
 import { generateSecureToken } from '@/utils/hash';
+import { logger } from '@/config/logger';
+import { EMAIL_TEMPLATE_KEYS } from '@portfolio/shared';
 import type {
   ListNewsletterSubscribersQuery,
+  NewsletterBroadcastInput,
   NewsletterSubscribeInput,
   NewsletterSubscriberDto,
   PaginatedResponse,
@@ -13,29 +18,132 @@ import type {
 import type { Prisma } from '@prisma/client';
 
 export const newsletterService = {
-  async subscribe(input: NewsletterSubscribeInput): Promise<{ message: string }> {
+  async subscribe(input: NewsletterSubscribeInput): Promise<{ message: string; requiresConfirmation: boolean }> {
     const existing = await newsletterRepository.findByEmail(input.email);
     if (existing) {
       if (existing.unsubscribedAt) {
-        // Resubscribe
+        // Resubscribe cleanly
         await newsletterRepository.delete(existing.id);
+      } else if (existing.isConfirmed) {
+        return { message: 'You are already subscribed to the newsletter!', requiresConfirmation: false };
       } else {
-        return { message: 'You are already subscribed to the newsletter!' };
+        // Already pending - re-issue verification email
+        const token = existing.confirmationToken || generateSecureToken();
+        const siteUrl = await emailService.resolveSiteUrl();
+        const confirmationUrl = `${siteUrl}/newsletter/confirm?token=${token}`;
+
+        try {
+          await emailService.sendTemplatedEmail({
+            purpose: EMAIL_TEMPLATE_KEYS.NEWSLETTER_CONFIRMATION,
+            to: input.email,
+            variables: {
+              name: existing.name || input.name || 'Friend',
+              email: input.email,
+              confirmationUrl,
+              siteUrl,
+            },
+          });
+        } catch (err) {
+          logger.error({ err, email: input.email }, 'Failed to re-send newsletter confirmation email');
+        }
+
+        return {
+          message: 'A confirmation link has been resent to your email address.',
+          requiresConfirmation: true,
+        };
       }
     }
 
-    const token = generateSecureToken();
-    await newsletterRepository.create(input.email, input.name ?? null, token);
+    const doubleOptInSetting = await siteSettingRepository.findByKey('newsletter_double_opt_in');
+    const isDoubleOptIn = !doubleOptInSetting || doubleOptInSetting.value !== 'false';
 
-    return { message: 'Subscribed successfully! Check your inbox.' };
+    const token = isDoubleOptIn ? generateSecureToken() : null;
+    const subscriber = await newsletterRepository.create(input.email, input.name ?? null, token);
+
+    const displayName = input.name || 'Reader';
+    const siteUrl = await emailService.resolveSiteUrl();
+
+    if (isDoubleOptIn && token) {
+      const confirmationUrl = `${siteUrl}/newsletter/confirm?token=${token}`;
+
+      // 1. Send confirmation link to subscriber
+      try {
+        await emailService.sendTemplatedEmail({
+          purpose: EMAIL_TEMPLATE_KEYS.NEWSLETTER_CONFIRMATION,
+          to: input.email,
+          variables: {
+            name: displayName,
+            email: input.email,
+            confirmationUrl,
+            siteUrl,
+          },
+        });
+      } catch (err) {
+        logger.error({ err, email: input.email }, 'Failed to send newsletter confirmation email');
+      }
+
+      // 2. Send admin alert
+      this.sendAdminNotification(input.email, displayName, 'Pending Confirmation (Double Opt-In)');
+
+      return {
+        message: 'Almost there! Please check your inbox and confirm your subscription.',
+        requiresConfirmation: true,
+      };
+    } else {
+      // Single Opt-In: Send welcome email immediately
+      const unsubscribeUrl = `${siteUrl}/newsletter/unsubscribe?token=${subscriber.id}`;
+      try {
+        await emailService.sendTemplatedEmail({
+          purpose: EMAIL_TEMPLATE_KEYS.NEWSLETTER_WELCOME,
+          to: input.email,
+          variables: {
+            name: displayName,
+            email: input.email,
+            unsubscribeUrl,
+            siteUrl,
+          },
+        });
+      } catch (err) {
+        logger.error({ err, email: input.email }, 'Failed to send newsletter welcome email');
+      }
+
+      // Send admin alert
+      this.sendAdminNotification(input.email, displayName, 'Active / Confirmed (Single Opt-In)');
+
+      return {
+        message: 'Welcome aboard! You have been subscribed successfully.',
+        requiresConfirmation: false,
+      };
+    }
   },
 
-  async confirm(token: string): Promise<{ message: string }> {
+  async confirm(token: string): Promise<{ message: string; email: string }> {
     const subscriber = await newsletterRepository.confirm(token);
     if (!subscriber) {
       throw new NotFoundError('Invalid or expired confirmation token');
     }
-    return { message: 'Newsletter subscription confirmed' };
+
+    const siteUrl = await emailService.resolveSiteUrl();
+    const unsubscribeUrl = `${siteUrl}/newsletter/unsubscribe?token=${subscriber.id}`;
+    const displayName = subscriber.name || 'Reader';
+
+    // Send Welcome Email upon confirmation
+    try {
+      await emailService.sendTemplatedEmail({
+        purpose: EMAIL_TEMPLATE_KEYS.NEWSLETTER_WELCOME,
+        to: subscriber.email,
+        variables: {
+          name: displayName,
+          email: subscriber.email,
+          unsubscribeUrl,
+          siteUrl,
+        },
+      });
+    } catch (err) {
+      logger.error({ err, email: subscriber.email }, 'Failed to send newsletter welcome email after confirmation');
+    }
+
+    return { message: 'Newsletter subscription confirmed successfully!', email: subscriber.email };
   },
 
   async unsubscribe(tokenOrEmail: string): Promise<{ message: string }> {
@@ -44,6 +152,44 @@ export const newsletterService = {
       throw new NotFoundError('Subscriber not found');
     }
     return { message: 'Unsubscribed successfully' };
+  },
+
+  async broadcast(input: NewsletterBroadcastInput): Promise<{ message: string; sent: number; failed: number }> {
+    const subscribers = await newsletterRepository.findMany({
+      isConfirmed: true,
+      unsubscribedAt: null,
+    });
+
+    if (subscribers.length === 0) {
+      throw new ValidationError('No active confirmed newsletter subscribers found to broadcast to.');
+    }
+
+    const siteUrl = await emailService.resolveSiteUrl();
+    const recipients = subscribers.map((sub) => ({
+      to: sub.email,
+      variables: {
+        name: sub.name || 'Reader',
+        email: sub.email,
+        unsubscribeUrl: `${siteUrl}/newsletter/unsubscribe?token=${sub.id}`,
+      },
+    }));
+
+    const result = await emailService.sendBatchEmail({
+      purpose: EMAIL_TEMPLATE_KEYS.NEWSLETTER_BROADCAST,
+      recipients,
+      commonVariables: {
+        subject: input.subject,
+        previewText: input.previewText || input.subject,
+        contentHtml: input.contentHtml,
+        siteUrl,
+      },
+    });
+
+    return {
+      message: `Broadcast sent to ${result.sent} subscriber(s) (${result.failed} failed).`,
+      sent: result.sent,
+      failed: result.failed,
+    };
   },
 
   async listSubscribers(
@@ -94,5 +240,34 @@ export const newsletterService = {
       throw new NotFoundError(`Subscriber '${id}' not found`);
     }
     await newsletterRepository.delete(id);
+  },
+
+  sendAdminNotification(email: string, name: string, status: string): void {
+    setImmediate(async () => {
+      try {
+        const setting = await siteSettingRepository.findByKey(
+          'email_notifications_newsletter_enabled',
+        );
+        if (setting && setting.value === 'false') return;
+
+        const adminRecipients = await emailService.resolveAdminRecipients();
+        const siteUrl = await emailService.resolveSiteUrl();
+        for (const adminEmail of adminRecipients) {
+          await emailService.sendTemplatedEmail({
+            purpose: EMAIL_TEMPLATE_KEYS.NEWSLETTER_ADMIN_NOTIFICATION,
+            to: adminEmail,
+            variables: {
+              email,
+              name,
+              isConfirmed: status,
+              subscribedAt: new Date().toLocaleString(),
+              siteUrl,
+            },
+          });
+        }
+      } catch (err) {
+        logger.error({ err }, 'Error sending newsletter admin notification email');
+      }
+    });
   },
 };

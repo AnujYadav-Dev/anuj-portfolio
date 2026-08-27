@@ -8,7 +8,7 @@ import { EMAIL_TEMPLATE_KEYS } from '@portfolio/shared';
 import { ContactStatus, type Prisma } from '@prisma/client';
 import { contactRepository } from '@/repositories/contact.repository';
 import { visitorRepository } from '@/repositories/visitor.repository';
-import { authorRepository } from '@/repositories/author.repository';
+import { siteSettingRepository } from '@/repositories/siteSetting.repository';
 import { emailService } from '@/services/email.service';
 import { mapContactSubmissionToDto } from '@/utils/mappers';
 import { buildPagination, getPrismaPagination } from '@/utils/pagination';
@@ -38,17 +38,22 @@ export const contactService = {
       visitorId,
     });
 
+    const siteUrl = await emailService.resolveSiteUrl();
+
     const templateVariables = {
       name: input.name,
       email: input.email,
       subject: input.subject ?? 'No subject',
       message: input.message,
       ipAddress: context.ip ?? 'unknown',
+      submittedAt: new Date().toLocaleString(),
+      siteUrl,
     };
 
+    // Auto-reply to user
     try {
       await emailService.sendTemplatedEmail({
-        templateKey: EMAIL_TEMPLATE_KEYS.CONTACT_AUTO_REPLY,
+        purpose: EMAIL_TEMPLATE_KEYS.CONTACT_AUTO_REPLY,
         to: input.email,
         variables: templateVariables,
       });
@@ -59,14 +64,20 @@ export const contactService = {
       );
     }
 
+    // Admin notification
     try {
-      const adminEmails = await authorRepository.findAdminEmails();
-      for (const adminEmail of adminEmails) {
-        await emailService.sendTemplatedEmail({
-          templateKey: EMAIL_TEMPLATE_KEYS.CONTACT_ADMIN_NOTIFICATION,
-          to: adminEmail,
-          variables: templateVariables,
-        });
+      const contactNotificationEnabled = await siteSettingRepository.findByKey(
+        'email_notifications_contact_enabled',
+      );
+      if (!contactNotificationEnabled || contactNotificationEnabled.value !== 'false') {
+        const adminEmails = await emailService.resolveAdminRecipients();
+        for (const adminEmail of adminEmails) {
+          await emailService.sendTemplatedEmail({
+            purpose: EMAIL_TEMPLATE_KEYS.CONTACT_ADMIN_NOTIFICATION,
+            to: adminEmail,
+            variables: templateVariables,
+          });
+        }
       }
     } catch (error) {
       logger.error(

@@ -1,7 +1,11 @@
 import { guestbookRepository } from '@/repositories/guestbook.repository';
+import { siteSettingRepository } from '@/repositories/siteSetting.repository';
+import { emailService } from '@/services/email.service';
 import { mapGuestbookEntryToDto } from '@/utils/mappers';
 import { buildPagination, getPrismaPagination } from '@/utils/pagination';
 import { NotFoundError } from '@/utils/errors';
+import { logger } from '@/config/logger';
+import { EMAIL_TEMPLATE_KEYS } from '@portfolio/shared';
 import type {
   CreateGuestbookEntryInput,
   GuestbookEntryDto,
@@ -69,6 +73,36 @@ export const guestbookService = {
       moderationStatus: ModerationStatus.pending,
       ipAddress: ipAddress ?? null,
     });
+
+    // Notify Admin of new entry pending moderation
+    setImmediate(async () => {
+      try {
+        const setting = await siteSettingRepository.findByKey(
+          'email_notifications_guestbook_enabled',
+        );
+        if (setting && setting.value === 'false') return;
+
+        const adminRecipients = await emailService.resolveAdminRecipients();
+        const siteUrl = await emailService.resolveSiteUrl();
+        for (const adminEmail of adminRecipients) {
+          await emailService.sendTemplatedEmail({
+            purpose: EMAIL_TEMPLATE_KEYS.GUESTBOOK_ADMIN_NOTIFICATION,
+            to: adminEmail,
+            variables: {
+              authorName: input.authorName,
+              authorEmail: input.authorEmail || 'None provided',
+              message: input.message,
+              adminUrl: `${siteUrl}/admin/guestbook`,
+              submittedAt: new Date().toLocaleString(),
+              siteUrl,
+            },
+          });
+        }
+      } catch (err) {
+        logger.error({ err }, 'Error sending guestbook admin notification email');
+      }
+    });
+
     return mapGuestbookEntryToDto(created);
   },
 
@@ -78,6 +112,28 @@ export const guestbookService = {
       throw new NotFoundError(`Guestbook entry '${id}' not found`);
     }
     const updated = await guestbookRepository.updateModeration(id, status as ModerationStatus);
+
+    // If entry was approved and author provided an email, send them a confirmation notification
+    if (status === ModerationStatus.approved && entry.authorEmail) {
+      setImmediate(async () => {
+        try {
+          const siteUrl = await emailService.resolveSiteUrl();
+          await emailService.sendTemplatedEmail({
+            purpose: EMAIL_TEMPLATE_KEYS.GUESTBOOK_APPROVED,
+            to: entry.authorEmail!,
+            variables: {
+              authorName: entry.authorName,
+              message: entry.message,
+              guestbookUrl: `${siteUrl}/guestbook`,
+              siteUrl,
+            },
+          });
+        } catch (err) {
+          logger.error({ err, email: entry.authorEmail }, 'Error sending guestbook approved notification email');
+        }
+      });
+    }
+
     return mapGuestbookEntryToDto(updated);
   },
 

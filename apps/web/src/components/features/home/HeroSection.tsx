@@ -12,11 +12,19 @@ export function HeroSection() {
   const { data: settingsData } = useSiteSettings();
   const { data: resumeData } = useActiveResume();
 
-  const authorName = settingsData?.data?.['author.name'] || 'ANUJ YADAV';
+  const authorName =
+    settingsData?.data?.['author_name'] ||
+    settingsData?.data?.['author.name'] ||
+    settingsData?.data?.['site_title'] ||
+    'ANUJ YADAV';
   const authorTagline =
+    settingsData?.data?.['site_description'] ||
+    settingsData?.data?.['author_job_title'] ||
     settingsData?.data?.['author.tagline'] ||
     'A collection of things I was curious enough to build.';
-  const isAvailable = settingsData?.data?.['author.available'] !== 'false';
+  const isAvailable =
+    settingsData?.data?.['availability_status'] !== 'unavailable' &&
+    settingsData?.data?.['author.available'] !== 'false';
 
   return (
     <section className="relative overflow-hidden border-b border-border bg-background pt-16 pb-8 md:pt-24 md:pb-12">

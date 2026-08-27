@@ -142,20 +142,58 @@ export interface UpdatePageRequest extends Partial<CreatePageRequest> {}
 /** Email template DTO. */
 export interface EmailTemplateDto {
   id: string;
-  templateKey: string;
+  purpose: string;
+  templateKey?: string; // Legacy alias mapping to purpose
+  name: string;
+  description: string | null;
   subject: string;
   bodyHtml: string;
   bodyText: string | null;
   variables: string[];
+  isActive: boolean;
+  isEnabled: boolean;
   createdAt: string;
   updatedAt: string;
 }
 
+/** Create email template request. */
+export interface CreateEmailTemplateRequest {
+  purpose: string;
+  name: string;
+  description?: string | null;
+  subject: string;
+  bodyHtml: string;
+  bodyText?: string | null;
+  variables?: string[];
+  isActive?: boolean;
+  isEnabled?: boolean;
+}
+
 /** Update email template request. */
 export interface UpdateEmailTemplateRequest {
+  name?: string;
+  description?: string | null;
   subject?: string;
   bodyHtml?: string;
   bodyText?: string | null;
+  variables?: string[];
+  isEnabled?: boolean;
+}
+
+/** Send test email request. */
+export interface SendTestEmailRequest {
+  to: string;
+  purpose?: string;
+  templateId?: string | null;
+  variables?: Record<string, string>;
+}
+
+/** Newsletter broadcast campaign request. */
+export interface NewsletterBroadcastRequest {
+  subject: string;
+  previewText?: string;
+  contentHtml: string;
+  templateId?: string;
 }
 
 /** Standard site settings key constants and map. */

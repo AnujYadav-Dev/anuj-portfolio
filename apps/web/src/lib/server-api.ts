@@ -32,13 +32,24 @@ async function serverFetch<T>(path: string, options: RequestInit = {}): Promise<
 
     if (!response.ok) {
       if (response.status === 404) return null;
-      console.warn(`[serverFetch] ${response.status} ${response.statusText} for ${url}`);
+      if (process.env.NODE_ENV === 'development') {
+        console.warn(`[serverFetch] ${response.status} ${response.statusText} for ${url}`);
+      }
       return null;
     }
 
     return (await response.json()) as T;
-  } catch (error) {
-    console.warn(`[serverFetch] Network/fetch error for ${url}:`, error);
+  } catch (error: unknown) {
+    // When API server is offline during Next.js SSG build, return fallback null cleanly without console spam
+    const err = error as { code?: string; cause?: { code?: string }; message?: string };
+    const isConnRefused =
+      err?.code === 'ECONNREFUSED' ||
+      err?.cause?.code === 'ECONNREFUSED' ||
+      String(err?.message).includes('fetch failed');
+
+    if (!isConnRefused && process.env.NODE_ENV === 'development') {
+      console.warn(`[serverFetch] Network/fetch error for ${url}:`, error);
+    }
     return null;
   }
 }

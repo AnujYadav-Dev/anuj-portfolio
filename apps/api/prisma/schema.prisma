@@ -839,15 +839,20 @@ model ContactSubmission {
 
 model EmailTemplate {
   id          String   @id @default(uuid())
-  templateKey String   @unique @map("template_key") @db.VarChar(100)
+  purpose     String   @default("") @db.VarChar(100)
+  templateKey String?  @map("template_key") @db.VarChar(100)
   name        String   @db.VarChar(200)
+  description String?  @db.VarChar(500)
   subject     String   @db.VarChar(300)
   bodyHtml    String   @map("body_html")
   bodyText    String?  @map("body_text")
   variables   String[] @default([])
+  isActive    Boolean  @default(false) @map("is_active")
   isEnabled   Boolean  @default(true) @map("is_enabled")
+  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz()
   updatedAt   DateTime @updatedAt @map("updated_at") @db.Timestamptz()
 
+  @@index([purpose, isActive], map: "idx_email_templates_purpose_active")
   @@map("email_templates")
 }
 

@@ -11,6 +11,7 @@ import type {
   AdminClickItem,
   BreakdownItem,
 } from '@portfolio/shared';
+import { EMAIL_TEMPLATE_KEYS } from '@portfolio/shared';
 import { visitorRepository } from '@/repositories/visitor.repository';
 import { siteSettingRepository } from '@/repositories/siteSetting.repository';
 import { geoService } from '@/services/geo.service';
@@ -52,6 +53,13 @@ function calculateBreakdowns(
     return { name, count, percentage };
   });
 }
+
+import { emailService } from '@/services/email.service';
+import { logger } from '@/config/logger';
+
+// In-memory cooldown tracking (IP -> last timestamp ms) to prevent excessive notification spam
+const visitNotificationCooldown = new Map<string, number>();
+const resumeDownloadCooldown = new Map<string, number>();
 
 export const trackerService = {
   async isEnabled(): Promise<boolean> {
@@ -99,6 +107,56 @@ export const trackerService = {
       utmCampaign: input.utmCampaign ?? null,
     });
 
+    // Trigger Visit Notification (Asynchronous, Non-blocking, Rate-limited)
+    setImmediate(async () => {
+      try {
+        const visitEnabledSetting = await siteSettingRepository.findByKey(
+          'email_notifications_visit_enabled',
+        );
+        if (visitEnabledSetting?.value !== 'true') return;
+
+        // Skip bot crawlers
+        if (parsedUa.deviceType === 'bot' || parsedUa.browser?.toLowerCase().includes('bot')) {
+          return;
+        }
+
+        const cooldownMinutesSetting = await siteSettingRepository.findByKey(
+          'email_notifications_visit_cooldown_minutes',
+        );
+        const cooldownMs = (parseInt(cooldownMinutesSetting?.value || '60', 10) || 60) * 60 * 1000;
+        const now = Date.now();
+        const lastSent = visitNotificationCooldown.get(context.ip) || 0;
+
+        if (now - lastSent < cooldownMs) {
+          return;
+        }
+
+        visitNotificationCooldown.set(context.ip, now);
+        const siteUrl = await emailService.resolveSiteUrl();
+        const adminRecipients = await emailService.resolveAdminRecipients();
+
+        for (const adminEmail of adminRecipients) {
+          await emailService.sendTemplatedEmail({
+            purpose: EMAIL_TEMPLATE_KEYS.VISIT_ADMIN_NOTIFICATION,
+            to: adminEmail,
+            variables: {
+              ipAddress: context.ip,
+              country: geo.country || 'Unknown',
+              city: geo.city || 'Unknown',
+              deviceType: parsedUa.deviceType || 'Desktop',
+              browser: parsedUa.browser || 'Unknown',
+              os: parsedUa.os || 'Unknown',
+              referrerSource: parseReferrerSource(referrer ?? undefined) || 'Direct',
+              visitedAt: new Date().toLocaleString(),
+              siteUrl,
+            },
+          });
+        }
+      } catch (err) {
+        logger.error({ err }, 'Error sending visit notification email');
+      }
+    });
+
     return mapVisitorToDto(visitor);
   },
 
@@ -124,9 +182,10 @@ export const trackerService = {
 
   async recordClick(input: RecordClickInput) {
     let visitorId: string | null = null;
+    let visitor = null;
 
     if (input.sessionId) {
-      const visitor = await visitorRepository.findBySessionId(input.sessionId);
+      visitor = await visitorRepository.findBySessionId(input.sessionId);
       visitorId = visitor?.id ?? null;
     }
 
@@ -136,6 +195,45 @@ export const trackerService = {
       targetUrl: input.targetUrl,
       sourcePath: input.sourcePath ?? null,
     });
+
+    // Trigger Resume Download Recruiter Alert
+    if (input.targetType === 'resume_download') {
+      setImmediate(async () => {
+        try {
+          const setting = await siteSettingRepository.findByKey(
+            'email_notifications_resume_download_enabled',
+          );
+          if (setting && setting.value === 'false') return;
+
+          const ip = visitor?.ipAddress || 'unknown';
+          const now = Date.now();
+          const lastSent = resumeDownloadCooldown.get(ip) || 0;
+          if (now - lastSent < 15 * 60 * 1000) return; // 15 min cooldown per IP
+
+          resumeDownloadCooldown.set(ip, now);
+          const siteUrl = await emailService.resolveSiteUrl();
+          const adminRecipients = await emailService.resolveAdminRecipients();
+
+          for (const adminEmail of adminRecipients) {
+            await emailService.sendTemplatedEmail({
+              purpose: EMAIL_TEMPLATE_KEYS.RESUME_DOWNLOAD_ADMIN,
+              to: adminEmail,
+              variables: {
+                resumeTitle: 'Latest Active Resume',
+                ipAddress: ip,
+                country: visitor?.country || 'Unknown',
+                city: visitor?.city || 'Unknown',
+                referrerSource: visitor?.referrerSource || 'Direct / Portfolio',
+                downloadedAt: new Date().toLocaleString(),
+                siteUrl,
+              },
+            });
+          }
+        } catch (err) {
+          logger.error({ err }, 'Error sending resume download alert email');
+        }
+      });
+    }
 
     return mapLinkClickToDto(linkClick);
   },

@@ -12,8 +12,14 @@ export function ContactClientView() {
   const { data: socialData } = useSocialLinks();
   const { data: settingsData } = useSiteSettings();
 
-  const authorEmail = settingsData?.data?.['author.email'] || 'anujyadav9449@gmail.com';
-  const authorLocation = settingsData?.data?.['author.location'] || 'Bengaluru, India';
+  const authorEmail =
+    settingsData?.data?.['author_email'] ||
+    settingsData?.data?.['author.email'] ||
+    'anujyadav9449@gmail.com';
+  const authorLocation =
+    settingsData?.data?.['author_location'] ||
+    settingsData?.data?.['author.location'] ||
+    'Bengaluru, India';
   const socials = socialData?.data || [];
 
   return (

@@ -1,5 +1,8 @@
 import { prisma } from '@/config/prisma';
 import { logger } from '@/config/logger';
+import { emailService } from '@/services/email.service';
+import { siteSettingRepository } from '@/repositories/siteSetting.repository';
+import { EMAIL_TEMPLATE_KEYS } from '@portfolio/shared';
 
 export const schedulerService = {
   /** Publish scheduled items whose scheduledAt date has arrived. */
@@ -57,6 +60,13 @@ export const schedulerService = {
 
       const totalPublished = projects.count + blogPosts.count + researchPapers.count + pages.count;
       if (totalPublished > 0) {
+        const summaryLines: string[] = [];
+        if (projects.count > 0) summaryLines.push(`• ${projects.count} Project(s)`);
+        if (blogPosts.count > 0) summaryLines.push(`• ${blogPosts.count} Blog Post(s)`);
+        if (researchPapers.count > 0) summaryLines.push(`• ${researchPapers.count} Research Paper(s)`);
+        if (pages.count > 0) summaryLines.push(`• ${pages.count} Page(s)`);
+        const publishedItemsSummary = summaryLines.join('\n');
+
         logger.info(
           {
             projects: projects.count,
@@ -66,6 +76,33 @@ export const schedulerService = {
           },
           'Published scheduled content items',
         );
+
+        // Notify Admin of published content
+        setImmediate(async () => {
+          try {
+            const setting = await siteSettingRepository.findByKey(
+              'email_notifications_scheduled_publish_enabled',
+            );
+            if (setting && setting.value === 'false') return;
+
+            const siteUrl = await emailService.resolveSiteUrl();
+            const adminRecipients = await emailService.resolveAdminRecipients();
+            for (const adminEmail of adminRecipients) {
+              await emailService.sendTemplatedEmail({
+                purpose: EMAIL_TEMPLATE_KEYS.CONTENT_PUBLISHED_ADMIN,
+                to: adminEmail,
+                variables: {
+                  itemCount: String(totalPublished),
+                  publishedItemsSummary,
+                  publishedAt: now.toLocaleString(),
+                  siteUrl,
+                },
+              });
+            }
+          } catch (err) {
+            logger.error({ err }, 'Failed to send scheduled content published notification');
+          }
+        });
       }
 
       return {

@@ -23,6 +23,20 @@ export function AboutClientView() {
       >
         <div className="flex flex-wrap gap-4 pt-2 text-xs font-mono">
           <Link
+            href="/experience"
+            className="text-accent hover:underline underline-offset-4 flex items-center gap-1"
+          >
+            <span>Career Experience</span>
+            <ArrowUpRight className="h-3 w-3" />
+          </Link>
+          <Link
+            href="/education"
+            className="text-accent hover:underline underline-offset-4 flex items-center gap-1"
+          >
+            <span>Education</span>
+            <ArrowUpRight className="h-3 w-3" />
+          </Link>
+          <Link
             href="/skills"
             className="text-accent hover:underline underline-offset-4 flex items-center gap-1"
           >

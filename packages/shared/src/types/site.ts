@@ -11,6 +11,45 @@ export interface SiteSettingDto {
   group: string;
 }
 
+export interface HeroCtaButtonConfig {
+  label: string;
+  url: string;
+  target?: '_self' | '_blank';
+}
+
+/** Configuration metadata for homepage sections. */
+export interface HomepageSectionConfig {
+  subtitle?: string;
+  labelNumber?: string;
+  labelTag?: string;
+  tagSeparator?: string;
+  content?: string;
+  limit?: number;
+  // Hero Section 3 Structured CTAs
+  heroCta1?: HeroCtaButtonConfig;
+  heroCta2?: HeroCtaButtonConfig;
+  heroCta3?: HeroCtaButtonConfig;
+  // Structured CTA Configuration
+  ctaLabel?: string;
+  ctaUrl?: string;
+  ctaTarget?: '_self' | '_blank';
+  ctaStyle?: 'link' | 'button' | 'button_outline';
+  // Feature-specific presentation toggles
+  includeResearch?: boolean;
+  featuredOnly?: boolean;
+  showSystemStatus?: boolean;
+  calloutHeadline?: string;
+  calloutDescription?: string;
+  enableQuickForm?: boolean;
+  enableCopyEmail?: boolean;
+  layout?: string;
+  displayMode?: string;
+  showBio?: boolean;
+  ctaPrimary?: string;
+  ctaSecondary?: string;
+  [key: string]: unknown;
+}
+
 /** Homepage section DTO. */
 export interface HomepageSectionDto {
   id: string;
@@ -18,14 +57,25 @@ export interface HomepageSectionDto {
   title: string | null;
   sortOrder: number;
   isEnabled: boolean;
-  config: Record<string, unknown>;
+  config: HomepageSectionConfig;
+}
+
+/** Create homepage section request. */
+export interface CreateHomepageSectionRequest {
+  sectionKey: string;
+  title?: string | null;
+  sortOrder?: number;
+  isEnabled?: boolean;
+  config?: HomepageSectionConfig;
 }
 
 /** Update homepage section request. */
 export interface UpdateHomepageSectionRequest {
+  sectionKey?: string;
   title?: string | null;
+  sortOrder?: number;
   isEnabled?: boolean;
-  config?: Record<string, unknown>;
+  config?: HomepageSectionConfig;
 }
 
 /** Content block DTO. */

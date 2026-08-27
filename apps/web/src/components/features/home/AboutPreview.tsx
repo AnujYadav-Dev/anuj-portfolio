@@ -5,41 +5,56 @@ import Link from 'next/link';
 import { ArrowUpRight } from 'lucide-react';
 import { SplitSection } from '@/components/common/SplitSection';
 import { RevealOnScroll } from '@/components/motion/RevealOnScroll';
+import { MarkdownRenderer } from '@/components/content/MarkdownRenderer';
 import { useAboutSections } from '@/hooks/useProfile';
+import type { DynamicSectionProps } from './types';
 
-export function AboutPreview() {
+export function AboutPreview({ section, index }: DynamicSectionProps) {
   const { data: aboutData } = useAboutSections();
 
   const firstSection = aboutData?.data?.[0];
-  const sectionTitle = firstSection?.title || 'Who am I?';
+  const sectionTitle = section?.title || firstSection?.title || 'Who am I?';
+  const sectionSubtitle =
+    (section?.config?.subtitle as string) || 'Background & Philosophy';
+
+  // Dynamic sequential numbering with customizable tag & separator
+  const sectionNumber = String(index ?? 1).padStart(2, '0');
+  const tag = (section?.config?.labelTag as string) || 'INTRO';
+  const separator = (section?.config?.tagSeparator as string) ?? '//';
+  const labelNumber = (section?.config?.labelNumber as string) || `${sectionNumber} ${separator} ${tag}`;
+
+  const ctaLabel =
+    (section?.config?.ctaLabel as string) || 'Read Full Journey & Philosophy';
+  const ctaUrl = (section?.config?.ctaUrl as string) || '/about';
+  const ctaTarget = (section?.config?.ctaTarget as string) || '_self';
+
   const sectionContent =
+    (section?.config?.content as string) ||
     firstSection?.content ||
     'I am a full-stack engineer and distributed systems enthusiast dedicated to engineering high-performance web applications, accessible design systems, and robust backend microservices. I bridge the gap between architectural rigor and refined frontend craft.';
 
   return (
     <SplitSection
-      labelNumber="01 // INTRO"
+      labelNumber={labelNumber}
       labelTitle={sectionTitle}
-      labelSubtitle="Background & Philosophy"
+      labelSubtitle={sectionSubtitle}
+      id="about"
     >
       <RevealOnScroll>
         <div className="flex flex-col gap-6 text-sm text-muted leading-relaxed max-w-2xl">
-          <p className="text-foreground font-medium text-md leading-snug">
-            Passionate about transforming complex domain challenges into{' '}
-            <span className="text-accent underline decoration-accent/40 underline-offset-4">
-              clean architectural abstractions
-            </span>{' '}
-            and pixel-perfect user interfaces.
-          </p>
-
-          <p>{sectionContent}</p>
+          {/* Pure Dynamic Markdown Narrative */}
+          <div className="text-sm leading-relaxed text-foreground/90">
+            <MarkdownRenderer content={sectionContent} />
+          </div>
 
           <div className="pt-2">
             <Link
-              href="/about"
+              href={ctaUrl}
+              target={ctaTarget === '_blank' ? '_blank' : undefined}
+              rel={ctaTarget === '_blank' ? 'noopener noreferrer' : undefined}
               className="group inline-flex items-center gap-1.5 text-xs font-semibold text-accent hover:text-accent-hover underline decoration-accent/40 hover:decoration-accent underline-offset-4 transition-colors"
             >
-              <span>Read Full Journey & Philosophy</span>
+              <span>{ctaLabel}</span>
               <ArrowUpRight className="h-3.5 w-3.5 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
             </Link>
           </div>

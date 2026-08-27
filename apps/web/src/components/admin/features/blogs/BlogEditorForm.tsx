@@ -54,6 +54,7 @@ export function BlogEditorForm({ initialData, isNew = false }: BlogEditorFormPro
   const [content, setContent] = useState(initialData?.content || '');
   const [categoryId, setCategoryId] = useState(initialData?.category?.id || '');
   const [status, setStatus] = useState<ContentStatus>(initialData?.status || ContentStatus.Draft);
+  const [isFeatured, setIsFeatured] = useState<boolean>(initialData?.isFeatured || false);
   const [notifySubscribers, setNotifySubscribers] = useState<boolean>(true);
   const [publishedAt, setPublishedAt] = useState<string>(
     initialData?.publishedAt ? new Date(initialData.publishedAt).toISOString().split('T')[0]! : '',
@@ -165,6 +166,7 @@ export function BlogEditorForm({ initialData, isNew = false }: BlogEditorFormPro
         content,
         categoryId: categoryId || undefined,
         status,
+        isFeatured,
         notifySubscribers,
         coverImageId: coverImageId || undefined,
         tagIds: selectedTagIds,
@@ -382,6 +384,24 @@ export function BlogEditorForm({ initialData, isNew = false }: BlogEditorFormPro
                   <option value={ContentStatus.Scheduled}>Scheduled</option>
                   <option value={ContentStatus.Archived}>Archived</option>
                 </select>
+              </div>
+
+              {/* Feature Post Toggle */}
+              <div className="p-3 bg-surface-muted border border-border rounded-lg space-y-1">
+                <label className="flex items-start gap-2 cursor-pointer select-none">
+                  <input
+                    type="checkbox"
+                    checked={isFeatured}
+                    onChange={(e) => setIsFeatured(e.target.checked)}
+                    className="mt-0.5 rounded border-border bg-background text-accent focus:ring-accent accent-accent w-4 h-4 cursor-pointer"
+                  />
+                  <div>
+                    <span className="font-bold text-foreground block text-xs">Featured Article</span>
+                    <p className="text-[11px] text-muted leading-tight">
+                      Highlight this article across featured carousels and stream lists.
+                    </p>
+                  </div>
+                </label>
               </div>
 
               {status === ContentStatus.Published && (

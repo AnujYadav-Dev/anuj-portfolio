@@ -14,6 +14,7 @@ interface ReorderableListProps<T extends ReorderableItem> {
   onReorder: (newItems: T[]) => void | Promise<void>;
   renderItem: (item: T, index: number) => React.ReactNode;
   isLoading?: boolean;
+  isItemPinned?: (item: T, index: number) => boolean;
 }
 
 export function ReorderableList<T extends ReorderableItem>({
@@ -21,6 +22,7 @@ export function ReorderableList<T extends ReorderableItem>({
   onReorder,
   renderItem,
   isLoading = false,
+  isItemPinned,
 }: ReorderableListProps<T>) {
   const sortedItems = [...items].sort((a, b) => a.sortOrder - b.sortOrder);
 
@@ -28,15 +30,22 @@ export function ReorderableList<T extends ReorderableItem>({
     const targetIndex = direction === 'up' ? index - 1 : index + 1;
     if (targetIndex < 0 || targetIndex >= sortedItems.length) return;
 
+    const currentItem = sortedItems[index]!;
+    const targetItem = sortedItems[targetIndex]!;
+
+    // Do not allow moving pinned items or swapping into a pinned position
+    if (isItemPinned?.(currentItem, index) || isItemPinned?.(targetItem, targetIndex)) {
+      return;
+    }
+
     const newItems = [...sortedItems];
-    const temp = newItems[index]!;
-    newItems[index] = newItems[targetIndex]!;
-    newItems[targetIndex] = temp;
+    newItems[index] = targetItem;
+    newItems[targetIndex] = currentItem;
 
     // Recalculate sequential sort orders
     const updated = newItems.map((item, idx) => ({
       ...item,
-      sortOrder: idx + 1,
+      sortOrder: idx,
     }));
 
     onReorder(updated);
@@ -48,6 +57,15 @@ export function ReorderableList<T extends ReorderableItem>({
         const isFirst = index === 0;
         const isLast = index === sortedItems.length - 1;
 
+        const isPinned = Boolean(isItemPinned?.(item, index));
+        const prevIsPinned = index > 0 && Boolean(isItemPinned?.(sortedItems[index - 1]!, index - 1));
+        const nextIsPinned =
+          index < sortedItems.length - 1 &&
+          Boolean(isItemPinned?.(sortedItems[index + 1]!, index + 1));
+
+        const canMoveUp = !isFirst && !isLoading && !isPinned && !prevIsPinned;
+        const canMoveDown = !isLast && !isLoading && !isPinned && !nextIsPinned;
+
         return (
           <div
             key={item.id}
@@ -58,12 +76,12 @@ export function ReorderableList<T extends ReorderableItem>({
               <button
                 type="button"
                 onClick={() => moveItem(index, 'up')}
-                disabled={isFirst || isLoading}
+                disabled={!canMoveUp}
                 className={cn(
                   'p-1 rounded text-muted hover:text-accent hover:bg-surface-muted transition-colors',
-                  (isFirst || isLoading) && 'opacity-30 pointer-events-none',
+                  !canMoveUp && 'opacity-30 pointer-events-none cursor-not-allowed',
                 )}
-                title="Move Up"
+                title={isPinned ? 'Position is locked' : 'Move Up'}
                 aria-label="Move Up"
               >
                 <ArrowUp className="w-3.5 h-3.5" />
@@ -71,12 +89,12 @@ export function ReorderableList<T extends ReorderableItem>({
               <button
                 type="button"
                 onClick={() => moveItem(index, 'down')}
-                disabled={isLast || isLoading}
+                disabled={!canMoveDown}
                 className={cn(
                   'p-1 rounded text-muted hover:text-accent hover:bg-surface-muted transition-colors',
-                  (isLast || isLoading) && 'opacity-30 pointer-events-none',
+                  !canMoveDown && 'opacity-30 pointer-events-none cursor-not-allowed',
                 )}
-                title="Move Down"
+                title={isPinned ? 'Position is locked' : 'Move Down'}
                 aria-label="Move Down"
               >
                 <ArrowDown className="w-3.5 h-3.5" />

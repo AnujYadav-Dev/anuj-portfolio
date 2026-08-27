@@ -9,13 +9,36 @@ import { Button } from '@/components/ui/button';
 import { RevealOnScroll } from '@/components/motion/RevealOnScroll';
 import { useSiteSettings } from '@/hooks/useLayout';
 import { toast } from 'sonner';
+import type { DynamicSectionProps } from './types';
 
-export function ContactCTA() {
+export function ContactCTA({ section, index }: DynamicSectionProps) {
   const { data: settingsData } = useSiteSettings();
   const email =
     settingsData?.data?.['author_email'] ||
     settingsData?.data?.['author.email'] ||
     'anujyadav9449@gmail.com';
+
+  const sectionTitle = section?.title || 'Get In Touch';
+  const sectionSubtitle =
+    (section?.config?.subtitle as string) || 'Collaboration & Inquiries';
+
+  // Dynamic sequential numbering with customizable tag & separator
+  const sectionNumber = String(index ?? 1).padStart(2, '0');
+  const tag = (section?.config?.labelTag as string) || 'CONNECT';
+  const separator = (section?.config?.tagSeparator as string) ?? '//';
+  const labelNumber = (section?.config?.labelNumber as string) || `${sectionNumber} ${separator} ${tag}`;
+
+  const calloutHeadline =
+    (section?.config?.calloutHeadline as string) ||
+    'Have an ambitious project or engineering challenge?';
+  const calloutDescription =
+    (section?.config?.calloutDescription as string) ||
+    'Whether you need senior technical leadership, architectural guidance, or full-stack execution, my inbox is always open.';
+
+  const ctaLabel = (section?.config?.ctaLabel as string) || 'Send Message';
+  const ctaUrl = (section?.config?.ctaUrl as string) || '/contact';
+  const ctaTarget = (section?.config?.ctaTarget as string) || '_self';
+  const enableCopyEmail = section?.config?.enableCopyEmail !== false;
 
   const handleCopyEmail = async () => {
     try {
@@ -28,9 +51,9 @@ export function ContactCTA() {
 
   return (
     <SplitSection
-      labelNumber="06 // CONNECT"
-      labelTitle="Get In Touch"
-      labelSubtitle="Collaboration & Inquiries"
+      labelNumber={labelNumber}
+      labelTitle={sectionTitle}
+      labelSubtitle={sectionSubtitle}
       id="contact"
     >
       <RevealOnScroll>
@@ -40,29 +63,34 @@ export function ContactCTA() {
               <Sparkles className="h-3.5 w-3.5" /> Start a Conversation
             </span>
             <h3 className="text-xl font-bold tracking-tight text-foreground">
-              Have an ambitious project or engineering challenge?
+              {calloutHeadline}
             </h3>
             <p className="text-xs text-muted leading-relaxed">
-              Whether you need senior technical leadership, architectural guidance, or full-stack
-              execution, my inbox is always open.
+              {calloutDescription}
             </p>
           </div>
 
           <div className="flex flex-wrap items-center gap-3 pt-2">
-            <Link href="/contact">
+            <Link
+              href={ctaUrl}
+              target={ctaTarget === '_blank' ? '_blank' : undefined}
+              rel={ctaTarget === '_blank' ? 'noopener noreferrer' : undefined}
+            >
               <Button variant="primary" size="md" rightIcon={<ArrowRight className="h-4 w-4" />}>
-                Send Message
+                {ctaLabel}
               </Button>
             </Link>
 
-            <Button
-              variant="outline"
-              size="md"
-              onClick={handleCopyEmail}
-              leftIcon={<Copy className="h-3.5 w-3.5" />}
-            >
-              <span>{email}</span>
-            </Button>
+            {enableCopyEmail && (
+              <Button
+                variant="outline"
+                size="md"
+                onClick={handleCopyEmail}
+                leftIcon={<Copy className="h-3.5 w-3.5" />}
+              >
+                <span>{email}</span>
+              </Button>
+            )}
           </div>
         </div>
       </RevealOnScroll>

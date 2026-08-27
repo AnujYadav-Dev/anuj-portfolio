@@ -48,10 +48,26 @@ export function useExperiences() {
   });
 }
 
+export function useExperience(id?: string) {
+  return useQuery<{ data: ExperienceDto }>({
+    queryKey: ['experiences', id],
+    queryFn: () => apiClient.get<{ data: ExperienceDto }>(`/experiences/${id}`),
+    enabled: Boolean(id),
+  });
+}
+
 export function useEducation() {
   return useQuery<{ data: EducationDto[] }>({
     queryKey: ['education'],
     queryFn: () => apiClient.get<{ data: EducationDto[] }>('/education'),
+  });
+}
+
+export function useSingleEducation(id?: string) {
+  return useQuery<{ data: EducationDto }>({
+    queryKey: ['education', id],
+    queryFn: () => apiClient.get<{ data: EducationDto }>(`/education/${id}`),
+    enabled: Boolean(id),
   });
 }
 

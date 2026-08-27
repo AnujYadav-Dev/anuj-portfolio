@@ -165,7 +165,7 @@ export default function AdminAboutPage() {
               <div className="flex items-center gap-2">
                 <span className="font-bold text-foreground text-xs">{item.title}</span>
                 <span className="text-[10px] text-muted font-mono bg-surface-muted px-1.5 py-0.5 rounded border border-border">
-                  /{item.slug}
+                  /about/{item.slug}
                 </span>
                 {!item.isEnabled && (
                   <span className="text-[10px] text-destructive font-mono flex items-center gap-0.5">

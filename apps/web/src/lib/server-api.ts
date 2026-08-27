@@ -8,6 +8,9 @@ import type {
   PageDto,
   AboutSectionDto,
   AuthorDto,
+  HomepageSectionDto,
+  ExperienceDto,
+  EducationDto,
   PaginatedResponse,
   SiteSettingsMap,
 } from '@portfolio/shared';
@@ -134,6 +137,36 @@ export const serverApi = {
     const res = await serverFetch<{ data: AboutSectionDto }>(
       `/about-sections/${encodeURIComponent(slug)}`,
     );
+    return res?.data || null;
+  },
+
+  /** Fetch all enabled homepage sections for SSR / initial render. */
+  async getHomepageSections(): Promise<HomepageSectionDto[]> {
+    const res = await serverFetch<{ data: HomepageSectionDto[] }>('/homepage-sections');
+    return res?.data || [];
+  },
+
+  /** Fetch all enabled experiences for public display. */
+  async getExperiences(): Promise<ExperienceDto[]> {
+    const res = await serverFetch<{ data: ExperienceDto[] }>('/experiences');
+    return res?.data || [];
+  },
+
+  /** Fetch single experience by ID. */
+  async getExperienceById(id: string): Promise<ExperienceDto | null> {
+    const res = await serverFetch<{ data: ExperienceDto }>(`/experiences/${encodeURIComponent(id)}`);
+    return res?.data || null;
+  },
+
+  /** Fetch all enabled education records for public display. */
+  async getEducation(): Promise<EducationDto[]> {
+    const res = await serverFetch<{ data: EducationDto[] }>('/education');
+    return res?.data || [];
+  },
+
+  /** Fetch single education by ID. */
+  async getEducationById(id: string): Promise<EducationDto | null> {
+    const res = await serverFetch<{ data: EducationDto }>(`/education/${encodeURIComponent(id)}`);
     return res?.data || null;
   },
 };

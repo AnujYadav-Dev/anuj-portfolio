@@ -19,7 +19,7 @@ import {
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
+import { MarkdownEditor } from '@/components/admin/ui/MarkdownEditor';
 import { Plus, Edit2, Trash2, Briefcase } from 'lucide-react';
 import { toast } from 'sonner';
 
@@ -238,9 +238,9 @@ export default function AdminExperiencePage() {
 
       {/* Editor Modal */}
       <Dialog isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
-        <DialogContent className="max-w-xl bg-surface border-border p-6 max-h-[90vh] overflow-y-auto">
-          <form onSubmit={handleSave} className="space-y-4">
-            <DialogHeader className="border-b border-border pb-3">
+        <DialogContent className="max-w-2xl bg-surface border-border max-h-[90vh] flex flex-col p-6 overflow-hidden">
+          <form onSubmit={handleSave} className="flex flex-col flex-1 min-h-0">
+            <DialogHeader className="border-b border-border pb-3 shrink-0">
               <DialogTitle className="text-base font-bold text-foreground flex items-center gap-2">
                 <Briefcase className="w-4 h-4 text-accent" />
                 <span>
@@ -251,8 +251,8 @@ export default function AdminExperiencePage() {
               </DialogTitle>
             </DialogHeader>
 
-            <div className="space-y-3">
-              <div className="grid grid-cols-2 gap-3">
+            <div className="flex-1 overflow-y-auto space-y-4 py-3 pr-1">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div className="space-y-1">
                   <label className="text-xs font-semibold text-foreground">
                     Role / Position Title
@@ -280,7 +280,7 @@ export default function AdminExperiencePage() {
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div className="space-y-1">
                   <label className="text-xs font-semibold text-foreground">Location</label>
                   <Input
@@ -304,7 +304,7 @@ export default function AdminExperiencePage() {
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div className="space-y-1">
                   <label className="text-xs font-semibold text-foreground">Start Date</label>
                   <Input
@@ -357,14 +357,13 @@ export default function AdminExperiencePage() {
 
               <div className="space-y-1">
                 <label className="text-xs font-semibold text-foreground">
-                  Description & Accomplishments
+                  Description & Accomplishments (Markdown)
                 </label>
-                <Textarea
-                  placeholder="Describe your responsibilities, team scale, and major achievements..."
+                <MarkdownEditor
                   value={description}
-                  onChange={(e) => setDescription(e.target.value)}
-                  rows={4}
-                  className="bg-background text-xs"
+                  onChange={setDescription}
+                  placeholder="Describe your responsibilities, team scale, architectural milestones, and accomplishments in markdown..."
+                  minHeight="200px"
                 />
               </div>
 
@@ -383,7 +382,7 @@ export default function AdminExperiencePage() {
               </div>
             </div>
 
-            <DialogFooter className="pt-3 border-t border-border flex justify-end gap-2">
+            <DialogFooter className="pt-3 border-t border-border flex justify-end gap-2 shrink-0">
               <Button
                 type="button"
                 variant="outline"

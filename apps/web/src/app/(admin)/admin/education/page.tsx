@@ -19,7 +19,7 @@ import {
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
+import { MarkdownEditor } from '@/components/admin/ui/MarkdownEditor';
 import { Plus, Edit2, Trash2, BookOpen } from 'lucide-react';
 import { toast } from 'sonner';
 
@@ -207,9 +207,9 @@ export default function AdminEducationPage() {
 
       {/* Editor Modal */}
       <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
-        <DialogContent className="max-w-md bg-surface border-border max-h-[85vh] flex flex-col p-6">
-          <form onSubmit={handleSave} className="space-y-4">
-            <DialogHeader className="border-b border-border pb-3">
+        <DialogContent className="max-w-2xl bg-surface border-border max-h-[90vh] flex flex-col p-6 overflow-hidden">
+          <form onSubmit={handleSave} className="flex flex-col flex-1 min-h-0">
+            <DialogHeader className="border-b border-border pb-3 shrink-0">
               <DialogTitle className="text-base font-bold text-foreground flex items-center gap-2">
                 <BookOpen className="w-4 h-4 text-accent" />
                 <span>
@@ -218,7 +218,7 @@ export default function AdminEducationPage() {
               </DialogTitle>
             </DialogHeader>
 
-            <div className="space-y-3">
+            <div className="flex-1 overflow-y-auto space-y-4 py-3 pr-1">
               <div className="space-y-1">
                 <label className="text-xs font-semibold text-foreground">
                   Institution / University
@@ -233,7 +233,7 @@ export default function AdminEducationPage() {
                 />
               </div>
 
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div className="space-y-1">
                   <label className="text-xs font-semibold text-foreground">Degree</label>
                   <Input
@@ -258,7 +258,7 @@ export default function AdminEducationPage() {
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div className="space-y-1">
                   <label className="text-xs font-semibold text-foreground">Start Date</label>
                   <Input
@@ -296,19 +296,18 @@ export default function AdminEducationPage() {
 
               <div className="space-y-1">
                 <label className="text-xs font-semibold text-foreground">
-                  Academic Highlights & Activities
+                  Academic Highlights & Activities (Markdown)
                 </label>
-                <Textarea
-                  placeholder="Key coursework, honors, labs..."
+                <MarkdownEditor
                   value={description}
-                  onChange={(e) => setDescription(e.target.value)}
-                  rows={3}
-                  className="bg-background text-xs"
+                  onChange={setDescription}
+                  placeholder="Key coursework, honors, labs, research projects, leadership activities in markdown..."
+                  minHeight="200px"
                 />
               </div>
             </div>
 
-            <DialogFooter className="pt-3 border-t border-border flex justify-end gap-2">
+            <DialogFooter className="pt-3 border-t border-border flex justify-end gap-2 shrink-0">
               <Button
                 type="button"
                 variant="outline"

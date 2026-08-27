@@ -25,7 +25,7 @@ async function main() {
     create: {
       username: 'anuj',
       displayName: 'Anuj Yadav',
-      email: 'anuj@example.com',
+      email: 'anujyadav9449@gmail.com',
       passwordHash,
       bio: 'Full-Stack Developer & Systems Architect passionate about crafting high-performance, elegant web applications and robust distributed systems.',
       isAdmin: true,
@@ -83,7 +83,7 @@ async function main() {
     },
     {
       key: 'author_email',
-      value: 'anuj@example.com',
+      value: 'anujyadav9449@gmail.com',
       group: 'general',
     },
     {
@@ -968,7 +968,7 @@ async function main() {
     {
       platform: 'email',
       label: 'Email',
-      url: 'mailto:anuj@example.com',
+      url: 'mailto:anujyadav9449@gmail.com',
       icon: 'mail',
       sortOrder: 3,
       isEnabled: true,

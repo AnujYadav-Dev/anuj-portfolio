@@ -28,7 +28,7 @@ export async function GET() {
     const siteDescription =
       settings.site_description ||
       'Technical writings, system architecture case studies, and engineering research by Anuj Yadav.';
-    const authorEmail = settings.author_email || 'anuj@example.com';
+    const authorEmail = settings.author_email || 'anujyadav9449@gmail.com';
     const authorName = settings.author_name || 'Anuj Yadav';
 
     // Combine blogs & research into a single chronological stream

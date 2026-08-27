@@ -17,7 +17,7 @@ export function ResumeViewer() {
 
   const authorName = settingsData?.data?.['author.name'] || 'Anuj Yadav';
   const authorTitle = settingsData?.data?.['author.title'] || 'Software Engineer';
-  const authorEmail = settingsData?.data?.['author.email'] || 'anuj@example.com';
+  const authorEmail = settingsData?.data?.['author.email'] || 'anujyadav9449@gmail.com';
   const authorLocation = settingsData?.data?.['author.location'] || 'Bengaluru, India';
 
   const experiences = expData?.data || [];

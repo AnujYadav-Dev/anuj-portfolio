@@ -13,7 +13,7 @@ export interface FooterDeveloperHubProps {
 }
 
 export function FooterDeveloperHub({
-  authorEmail = 'anuj@example.com',
+  authorEmail = 'anujyadav9449@gmail.com',
   className,
 }: FooterDeveloperHubProps) {
   const [copied, setCopied] = React.useState(false);

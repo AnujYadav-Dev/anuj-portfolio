@@ -12,7 +12,7 @@ import { toast } from 'sonner';
 
 export function ContactCTA() {
   const { data: settingsData } = useSiteSettings();
-  const email = settingsData?.data?.['author.email'] || 'anuj@example.com';
+  const email = settingsData?.data?.['author.email'] || 'anujyadav9449@gmail.com';
 
   const handleCopyEmail = async () => {
     try {

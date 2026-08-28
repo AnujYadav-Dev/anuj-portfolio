@@ -58,4 +58,35 @@ describe('Dialog (Component & Accessibility)', () => {
     await user.click(closeBtn);
     expect(handleClose).toHaveBeenCalledTimes(1);
   });
+
+  it('renders with custom size classes and supports expand toggle', async () => {
+    const user = userEvent.setup();
+
+    render(
+      <Dialog isOpen={true} onClose={vi.fn()}>
+        <DialogContent size="3xl" expandable={true}>
+          <DialogTitle>Large Editor Dialog</DialogTitle>
+        </DialogContent>
+      </Dialog>,
+    );
+
+    const expandBtn = screen.getByLabelText('Maximize dialog width');
+    expect(expandBtn).toBeInTheDocument();
+
+    await user.click(expandBtn);
+    expect(screen.getByLabelText('Restore dialog width')).toBeInTheDocument();
+  });
+
+  it('renders resize grips when resizable is enabled', () => {
+    render(
+      <Dialog isOpen={true} onClose={vi.fn()}>
+        <DialogContent resizable={true}>
+          <DialogTitle>Resizable Dialog</DialogTitle>
+        </DialogContent>
+      </Dialog>,
+    );
+
+    const grips = screen.getAllByRole('separator');
+    expect(grips.length).toBeGreaterThanOrEqual(2);
+  });
 });

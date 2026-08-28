@@ -698,7 +698,7 @@ export default function AdminHomepageLayoutPage() {
 
       {/* Add Section Modal */}
       <Dialog isOpen={isAddModalOpen} onClose={() => setIsAddModalOpen(false)}>
-        <DialogContent className="max-w-2xl bg-surface border-border p-6 max-h-[90vh] overflow-y-auto">
+        <DialogContent size="3xl" className="bg-surface border-border p-6 max-h-[90vh] overflow-y-auto">
           <form onSubmit={handleCreateSection} className="space-y-4">
             <DialogHeader className="border-b border-border pb-3">
               <DialogTitle className="text-base font-bold text-foreground flex items-center gap-2">
@@ -1116,7 +1116,7 @@ export default function AdminHomepageLayoutPage() {
 
       {/* Edit Section Modal */}
       <Dialog isOpen={isEditModalOpen} onClose={() => setIsEditModalOpen(false)}>
-        <DialogContent className="max-w-2xl bg-surface border-border p-6 max-h-[90vh] overflow-y-auto">
+        <DialogContent size="3xl" className="bg-surface border-border p-6 max-h-[90vh] overflow-y-auto">
           <form onSubmit={handleSaveEdit} className="space-y-4">
             <DialogHeader className="border-b border-border pb-3">
               <DialogTitle className="text-base font-bold text-foreground flex items-center gap-2">

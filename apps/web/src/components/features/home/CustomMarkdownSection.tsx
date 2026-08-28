@@ -6,21 +6,21 @@ import { ArrowUpRight } from 'lucide-react';
 import { SplitSection } from '@/components/common/SplitSection';
 import { RevealOnScroll } from '@/components/motion/RevealOnScroll';
 import { MarkdownRenderer } from '@/components/content/MarkdownRenderer';
-import type { DynamicSectionProps } from './types';
+import { formatSectionTag, type DynamicSectionProps } from './types';
 
 export function CustomMarkdownSection({ section, index }: DynamicSectionProps) {
   const sectionTitle = section?.title || 'Section Note';
   const sectionSubtitle =
     (section?.config?.subtitle as string) || 'Custom Content & Documentation';
 
-  // Dynamic sequential numbering with customizable tag & separator
-  const sectionNumber = String(index ?? 1).padStart(2, '0');
-  const tag =
-    (section?.config?.labelTag as string) ||
-    section?.sectionKey?.replace(/_/g, ' ').toUpperCase() ||
-    'NOTE';
-  const separator = (section?.config?.tagSeparator as string) ?? '//';
-  const labelNumber = (section?.config?.labelNumber as string) || `${sectionNumber} ${separator} ${tag}`;
+  const defaultTag = section?.sectionKey?.replace(/_/g, ' ').toUpperCase() || 'NOTE';
+  const labelNumber = formatSectionTag({
+    index,
+    showSectionNumber: section?.config?.showSectionNumber !== false,
+    labelTag: (section?.config?.labelTag as string) || defaultTag,
+    tagSeparator: (section?.config?.tagSeparator as string) ?? '//',
+    customLabelNumber: section?.config?.labelNumber as string,
+  });
 
   const markdownContent =
     (section?.config?.content as string) ||

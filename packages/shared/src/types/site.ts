@@ -23,6 +23,7 @@ export interface HomepageSectionConfig {
   labelNumber?: string;
   labelTag?: string;
   tagSeparator?: string;
+  showSectionNumber?: boolean;
   content?: string;
   limit?: number;
   // Hero Section 3 Structured CTAs

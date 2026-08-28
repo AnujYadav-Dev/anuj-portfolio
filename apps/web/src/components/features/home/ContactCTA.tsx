@@ -9,7 +9,7 @@ import { Button } from '@/components/ui/button';
 import { RevealOnScroll } from '@/components/motion/RevealOnScroll';
 import { useSiteSettings } from '@/hooks/useLayout';
 import { toast } from 'sonner';
-import type { DynamicSectionProps } from './types';
+import { formatSectionTag, type DynamicSectionProps } from './types';
 
 export function ContactCTA({ section, index }: DynamicSectionProps) {
   const { data: settingsData } = useSiteSettings();
@@ -22,11 +22,13 @@ export function ContactCTA({ section, index }: DynamicSectionProps) {
   const sectionSubtitle =
     (section?.config?.subtitle as string) || 'Collaboration & Inquiries';
 
-  // Dynamic sequential numbering with customizable tag & separator
-  const sectionNumber = String(index ?? 1).padStart(2, '0');
-  const tag = (section?.config?.labelTag as string) || 'CONNECT';
-  const separator = (section?.config?.tagSeparator as string) ?? '//';
-  const labelNumber = (section?.config?.labelNumber as string) || `${sectionNumber} ${separator} ${tag}`;
+  const labelNumber = formatSectionTag({
+    index,
+    showSectionNumber: section?.config?.showSectionNumber !== false,
+    labelTag: (section?.config?.labelTag as string) || 'CONNECT',
+    tagSeparator: (section?.config?.tagSeparator as string) ?? '//',
+    customLabelNumber: section?.config?.labelNumber as string,
+  });
 
   const calloutHeadline =
     (section?.config?.calloutHeadline as string) ||

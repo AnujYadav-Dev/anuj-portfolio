@@ -9,7 +9,7 @@ import { Badge } from '@/components/ui/badge';
 import { RevealOnScroll } from '@/components/motion/RevealOnScroll';
 import { MarkdownRenderer } from '@/components/content/MarkdownRenderer';
 import { useExperiences } from '@/hooks/useProfile';
-import type { DynamicSectionProps } from './types';
+import { formatSectionTag, type DynamicSectionProps } from './types';
 
 export function ExperienceHighlights({ section, index }: DynamicSectionProps) {
   const limit = (section?.config?.limit as number) || 3;
@@ -20,11 +20,13 @@ export function ExperienceHighlights({ section, index }: DynamicSectionProps) {
   const sectionSubtitle =
     (section?.config?.subtitle as string) || 'Roles & Professional Experience';
 
-  // Dynamic sequential numbering with customizable tag & separator
-  const sectionNumber = String(index ?? 1).padStart(2, '0');
-  const tag = (section?.config?.labelTag as string) || 'JOURNEY';
-  const separator = (section?.config?.tagSeparator as string) ?? '//';
-  const labelNumber = (section?.config?.labelNumber as string) || `${sectionNumber} ${separator} ${tag}`;
+  const labelNumber = formatSectionTag({
+    index,
+    showSectionNumber: section?.config?.showSectionNumber !== false,
+    labelTag: (section?.config?.labelTag as string) || 'JOURNEY',
+    tagSeparator: (section?.config?.tagSeparator as string) ?? '//',
+    customLabelNumber: section?.config?.labelNumber as string,
+  });
 
   const ctaLabel =
     (section?.config?.ctaLabel as string) || 'Explore Full Career History & Timeline';
@@ -56,7 +58,7 @@ export function ExperienceHighlights({ section, index }: DynamicSectionProps) {
 
             return (
               <RevealOnScroll key={exp.id} delayIndex={((idx % 4) + 1) as 1 | 2 | 3 | 4}>
-                <div className="flex flex-col gap-2 pb-6 border-b border-border/60 last:border-0">
+                <div className="flex flex-col pb-4 border-b border-border">
                   <div className="flex flex-wrap items-center justify-between gap-2">
                     <div className="flex items-center gap-2">
                       <Link
@@ -85,7 +87,7 @@ export function ExperienceHighlights({ section, index }: DynamicSectionProps) {
                   )}
 
                   {exp.technologies && exp.technologies.length > 0 && (
-                    <div className="flex flex-wrap gap-1.5 pt-1">
+                    <div className="flex flex-wrap gap-1.5">
                       {exp.technologies.map((t) => (
                         <Badge key={t} variant="outline" size="sm">
                           {t}

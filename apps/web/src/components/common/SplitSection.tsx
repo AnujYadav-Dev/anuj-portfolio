@@ -30,7 +30,7 @@ export function SplitSection({
                   {labelNumber}
                 </span>
               )}
-              <h2 className="text-xl font-bold tracking-tight text-foreground">{labelTitle}</h2>
+              <h2 className="text-lg font-bold tracking-tight text-foreground leading-snug">{labelTitle}</h2>
               {labelSubtitle && (
                 <p className="text-xs text-muted leading-relaxed">{labelSubtitle}</p>
               )}

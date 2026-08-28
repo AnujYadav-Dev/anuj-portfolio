@@ -137,4 +137,50 @@ describe('Homepage Custom Markdown & Hero Dynamic Sections', () => {
     expect(screen.getByText('Visible Custom Section')).toBeInTheDocument();
     expect(screen.getByText('This custom section is active and visible.')).toBeInTheDocument();
   });
+
+  it('renders section tag without number prefix when showSectionNumber is false', () => {
+    const mockSection: HomepageSectionDto = {
+      id: 'about-test',
+      sectionKey: 'about',
+      title: 'About Test',
+      sortOrder: 1,
+      isEnabled: true,
+      config: {
+        labelTag: 'INTRO',
+        tagSeparator: '//',
+        showSectionNumber: false,
+      },
+    };
+
+    render(<AboutPreview section={mockSection} index={1} />, {
+      wrapper: createWrapper(),
+    });
+
+    // Tag should render as "// INTRO" without "01"
+    expect(screen.getByText('// INTRO')).toBeInTheDocument();
+    expect(screen.queryByText('01 // INTRO')).not.toBeInTheDocument();
+  });
+
+  it('renders section tag with custom separator and no number prefix', () => {
+    const mockSection: HomepageSectionDto = {
+      id: 'about-custom-sep',
+      sectionKey: 'about',
+      title: 'About Test 2',
+      sortOrder: 1,
+      isEnabled: true,
+      config: {
+        labelTag: 'PHILOSOPHY',
+        tagSeparator: '→',
+        showSectionNumber: false,
+      },
+    };
+
+    render(<AboutPreview section={mockSection} index={1} />, {
+      wrapper: createWrapper(),
+    });
+
+    // Tag should render as "→ PHILOSOPHY"
+    expect(screen.getByText('→ PHILOSOPHY')).toBeInTheDocument();
+    expect(screen.queryByText('01 → PHILOSOPHY')).not.toBeInTheDocument();
+  });
 });

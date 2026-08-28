@@ -8,7 +8,7 @@ import { Badge } from '@/components/ui/badge';
 import { RevealOnScroll } from '@/components/motion/RevealOnScroll';
 import { useProjects } from '@/hooks/useProjects';
 import { cn } from '@/lib/cn';
-import type { DynamicSectionProps } from './types';
+import { formatSectionTag, type DynamicSectionProps } from './types';
 
 export function WorksBento({ section, index }: DynamicSectionProps) {
   const limit = (section?.config?.limit as number) || 4;
@@ -21,11 +21,13 @@ export function WorksBento({ section, index }: DynamicSectionProps) {
   const sectionSubtitle =
     (section?.config?.subtitle as string) || 'Featured Projects & Architecture Deep-Dives';
 
-  // Dynamic sequential numbering with customizable tag & separator
-  const sectionNumber = String(index ?? 1).padStart(2, '0');
-  const tag = (section?.config?.labelTag as string) || 'WORKS';
-  const separator = (section?.config?.tagSeparator as string) ?? '//';
-  const labelNumber = (section?.config?.labelNumber as string) || `${sectionNumber} ${separator} ${tag}`;
+  const labelNumber = formatSectionTag({
+    index,
+    showSectionNumber: section?.config?.showSectionNumber !== false,
+    labelTag: (section?.config?.labelTag as string) || 'WORKS',
+    tagSeparator: (section?.config?.tagSeparator as string) ?? '//',
+    customLabelNumber: section?.config?.labelNumber as string,
+  });
 
   const ctaLabel =
     (section?.config?.ctaLabel as string) ||

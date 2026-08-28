@@ -22,7 +22,8 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Spinner } from '@/components/ui/spinner';
-import { Plus, Edit2, Trash2, Image as ImageIcon, UploadCloud } from 'lucide-react';
+import Link from 'next/link';
+import { Plus, Edit2, Trash2, Image as ImageIcon, UploadCloud, ExternalLink } from 'lucide-react';
 import { toast } from 'sonner';
 
 export default function AdminGalleryPage() {
@@ -146,10 +147,18 @@ export default function AdminGalleryPage() {
         title="Visual Showcase & Media Gallery"
         description="Curated visual showcase of architecture diagrams, workspace setups, product screenshots, and photos."
         action={
-          <Button variant="primary" size="sm" onClick={openCreateModal}>
-            <Plus className="w-3.5 h-3.5 mr-1.5" />
-            <span>Add Gallery Item</span>
-          </Button>
+          <div className="flex items-center gap-2">
+            <Link href="/gallery" target="_blank">
+              <Button variant="outline" size="sm">
+                <ExternalLink className="w-3.5 h-3.5 mr-1.5" />
+                <span>View Public Gallery</span>
+              </Button>
+            </Link>
+            <Button variant="primary" size="sm" onClick={openCreateModal}>
+              <Plus className="w-3.5 h-3.5 mr-1.5" />
+              <span>Add Gallery Item</span>
+            </Button>
+          </div>
         }
       />
 

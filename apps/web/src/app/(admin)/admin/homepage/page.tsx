@@ -211,6 +211,7 @@ export default function AdminHomepageLayoutPage() {
   const [addSubtitle, setAddSubtitle] = useState('');
   const [addLabelTag, setAddLabelTag] = useState('');
   const [addTagSeparator, setAddTagSeparator] = useState('//');
+  const [addShowSectionNumber, setAddShowSectionNumber] = useState(true);
   const [addContent, setAddContent] = useState('');
   const [addLimit, setAddLimit] = useState(4);
   const [addIncludeResearch, setAddIncludeResearch] = useState(true);
@@ -245,6 +246,7 @@ export default function AdminHomepageLayoutPage() {
   const [editSubtitle, setEditSubtitle] = useState('');
   const [editLabelTag, setEditLabelTag] = useState('');
   const [editTagSeparator, setEditTagSeparator] = useState('//');
+  const [editShowSectionNumber, setEditShowSectionNumber] = useState(true);
   const [editContent, setEditContent] = useState('');
   const [editLimit, setEditLimit] = useState<number>(4);
   const [editIncludeResearch, setEditIncludeResearch] = useState(true);
@@ -315,6 +317,7 @@ export default function AdminHomepageLayoutPage() {
     setAddSubtitle(preset.subtitle);
     setAddLabelTag(preset.defaultTag);
     setAddTagSeparator('//');
+    setAddShowSectionNumber(true);
     setAddContent(preset.defaultContent || '');
     setAddLimit(4);
     setAddIncludeResearch(true);
@@ -346,6 +349,7 @@ export default function AdminHomepageLayoutPage() {
     setAddSubtitle(preset.subtitle);
     setAddLabelTag(preset.defaultTag);
     setAddTagSeparator('//');
+    setAddShowSectionNumber(true);
     setAddContent(preset.defaultContent || '');
     setAddLimit(preset.defaultLimit || 4);
     setAddCtaLabel(preset.defaultCtaLabel || '');
@@ -363,8 +367,9 @@ export default function AdminHomepageLayoutPage() {
     try {
       const config: HomepageSectionConfig = {
         subtitle: addSubtitle || undefined,
-        labelTag: addLabelTag || undefined,
-        tagSeparator: addTagSeparator || undefined,
+        labelTag: addLabelTag !== undefined ? addLabelTag : undefined,
+        tagSeparator: addTagSeparator !== undefined ? addTagSeparator : undefined,
+        showSectionNumber: addShowSectionNumber,
         content: addContent || undefined,
         limit: Number(addLimit) || undefined,
         includeResearch: addIncludeResearch,
@@ -407,8 +412,13 @@ export default function AdminHomepageLayoutPage() {
 
     setEditTitle(sec.title || preset.title);
     setEditSubtitle((sec.config?.subtitle as string) || preset.subtitle);
-    setEditLabelTag((sec.config?.labelTag as string) || preset.defaultTag);
-    setEditTagSeparator((sec.config?.tagSeparator as string) || '//');
+    setEditLabelTag(
+      sec.config?.labelTag !== undefined ? (sec.config.labelTag as string) : preset.defaultTag,
+    );
+    setEditTagSeparator(
+      sec.config?.tagSeparator !== undefined ? (sec.config.tagSeparator as string) : '//',
+    );
+    setEditShowSectionNumber(sec.config?.showSectionNumber !== false);
     setEditContent((sec.config?.content as string) || preset.defaultContent || '');
     setEditLimit((sec.config?.limit as number) || preset.defaultLimit || 4);
     setEditIncludeResearch(sec.config?.includeResearch !== false);
@@ -461,8 +471,9 @@ export default function AdminHomepageLayoutPage() {
       const config: HomepageSectionConfig = {
         ...editingSec.config,
         subtitle: editSubtitle || undefined,
-        labelTag: editLabelTag || undefined,
-        tagSeparator: editTagSeparator || undefined,
+        labelTag: editLabelTag !== undefined ? editLabelTag : undefined,
+        tagSeparator: editTagSeparator !== undefined ? editTagSeparator : undefined,
+        showSectionNumber: editShowSectionNumber,
         content: editContent || undefined,
         limit: Number(editLimit) || undefined,
         includeResearch: editIncludeResearch,
@@ -573,8 +584,15 @@ export default function AdminHomepageLayoutPage() {
         renderItem={(item, index) => {
           const isHero = item.sectionKey === 'hero';
           const preset = getSectionPreset(item.sectionKey);
-          const tag = (item.config?.labelTag as string) || preset.defaultTag;
-          const sectionNum = isHero ? '00' : String(index).padStart(2, '0');
+          const showNum = item.config?.showSectionNumber !== false;
+          const tag =
+            item.config?.labelTag !== undefined
+              ? (item.config.labelTag as string)
+              : preset.defaultTag;
+          const sep =
+            item.config?.tagSeparator !== undefined ? (item.config.tagSeparator as string) : '//';
+          const numPart = showNum ? (isHero ? '00' : String(index).padStart(2, '0')) : '';
+          const displayTag = [numPart, sep.trim(), tag.trim()].filter(Boolean).join(' ');
 
           return (
             <div className="flex items-center justify-between gap-4 w-full">
@@ -584,9 +602,11 @@ export default function AdminHomepageLayoutPage() {
                 </div>
                 <div className="flex flex-col gap-0.5 min-w-0">
                   <div className="flex items-center gap-2">
-                    <span className="text-[10px] text-accent font-mono font-bold">
-                      {`${sectionNum} ${item.config?.tagSeparator || '//'} ${tag}`}
-                    </span>
+                    {displayTag && (
+                      <span className="text-[10px] text-accent font-mono font-bold">
+                        {displayTag}
+                      </span>
+                    )}
                     <span className="font-bold text-foreground text-xs truncate">
                       {item.title || preset.title}
                     </span>
@@ -805,12 +825,32 @@ export default function AdminHomepageLayoutPage() {
                 </div>
               </div>
 
-              {/* Tag Live Preview Chip */}
-              <div className="flex items-center gap-2 pt-0.5 pb-1">
-                <span className="text-[11px] font-mono text-muted">Tag Live Preview:</span>
-                <span className="text-[11px] font-mono font-bold text-accent bg-surface-muted px-2 py-0.5 rounded border border-border">
-                  {`01 ${addTagSeparator || '//'} ${addLabelTag || currentAddPreset.defaultTag}`}
-                </span>
+              {/* Number Toggle & Live Preview */}
+              <div className="flex flex-wrap items-center justify-between gap-2 pt-0.5 pb-1">
+                <label className="flex items-center gap-2 cursor-pointer select-none">
+                  <input
+                    type="checkbox"
+                    checked={addShowSectionNumber}
+                    onChange={(e) => setAddShowSectionNumber(e.target.checked)}
+                    className="rounded border-border bg-background text-accent focus:ring-accent accent-accent w-4 h-4 cursor-pointer"
+                  />
+                  <span className="text-xs font-semibold text-foreground">
+                    Show Number Prefix (01, 02...)
+                  </span>
+                </label>
+
+                <div className="flex items-center gap-2">
+                  <span className="text-[11px] font-mono text-muted">Preview:</span>
+                  <span className="text-[11px] font-mono font-bold text-accent bg-surface-muted px-2 py-0.5 rounded border border-border">
+                    {(() => {
+                      const num = addShowSectionNumber ? '01' : '';
+                      const sep = addTagSeparator !== undefined ? addTagSeparator.trim() : '';
+                      const tag = addLabelTag !== undefined ? addLabelTag.trim() : currentAddPreset.defaultTag;
+                      const joined = [num, sep, tag].filter(Boolean).join(' ');
+                      return joined || '<No Tag>';
+                    })()}
+                  </span>
+                </div>
               </div>
 
               {/* Display Limit for Dynamic Entity Sections */}
@@ -1169,12 +1209,35 @@ export default function AdminHomepageLayoutPage() {
                   </div>
                 </div>
 
-                {/* Tag Live Preview Chip */}
-                <div className="flex items-center gap-2 pt-0.5 pb-1">
-                  <span className="text-[11px] font-mono text-muted">Tag Live Preview:</span>
-                  <span className="text-[11px] font-mono font-bold text-accent bg-surface-muted px-2 py-0.5 rounded border border-border">
-                    {`01 ${editTagSeparator || '//'} ${editLabelTag || currentEditPreset.defaultTag}`}
-                  </span>
+                {/* Number Toggle & Live Preview */}
+                <div className="flex flex-wrap items-center justify-between gap-2 pt-0.5 pb-1">
+                  <label className="flex items-center gap-2 cursor-pointer select-none">
+                    <input
+                      type="checkbox"
+                      checked={editShowSectionNumber}
+                      onChange={(e) => setEditShowSectionNumber(e.target.checked)}
+                      className="rounded border-border bg-background text-accent focus:ring-accent accent-accent w-4 h-4 cursor-pointer"
+                    />
+                    <span className="text-xs font-semibold text-foreground">
+                      Show Number Prefix (01, 02...)
+                    </span>
+                  </label>
+
+                  <div className="flex items-center gap-2">
+                    <span className="text-[11px] font-mono text-muted">Preview:</span>
+                    <span className="text-[11px] font-mono font-bold text-accent bg-surface-muted px-2 py-0.5 rounded border border-border">
+                      {(() => {
+                        const num = editShowSectionNumber ? '01' : '';
+                        const sep = editTagSeparator !== undefined ? editTagSeparator.trim() : '';
+                        const tag =
+                          editLabelTag !== undefined
+                            ? editLabelTag.trim()
+                            : currentEditPreset?.defaultTag || '';
+                        const joined = [num, sep, tag].filter(Boolean).join(' ');
+                        return joined || '<No Tag>';
+                      })()}
+                    </span>
+                  </div>
                 </div>
 
                 {/* Display Limit for Dynamic Entity Sections */}

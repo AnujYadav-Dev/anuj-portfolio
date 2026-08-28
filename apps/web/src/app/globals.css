@@ -350,14 +350,26 @@
   scrollbar-color: var(--color-border) var(--color-background);
 }
 
+/* ─── Hide Scrollbar Utility ───────────────────────────── */
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
 /* ─── Scroll Reveal Motion ─────────────────────────────── */
 
 .reveal-on-scroll {
   opacity: 0;
-  transform: translateY(16px);
+  transform: translateY(20px);
   transition:
-    opacity 600ms cubic-bezier(0.16, 1, 0.3, 1),
-    transform 600ms cubic-bezier(0.16, 1, 0.3, 1);
+    opacity 750ms cubic-bezier(0.22, 1, 0.36, 1),
+    transform 750ms cubic-bezier(0.22, 1, 0.36, 1);
+  transition-delay: var(--reveal-delay, 80ms);
   will-change: opacity, transform;
 }
 
@@ -367,19 +379,36 @@
 }
 
 .reveal-delay-1 {
-  transition-delay: 60ms;
-}
-.reveal-delay-2 {
+  --reveal-delay: 120ms;
   transition-delay: 120ms;
 }
-.reveal-delay-3 {
-  transition-delay: 180ms;
-}
-.reveal-delay-4 {
+.reveal-delay-2 {
+  --reveal-delay: 240ms;
   transition-delay: 240ms;
 }
+.reveal-delay-3 {
+  --reveal-delay: 360ms;
+  transition-delay: 360ms;
+}
+.reveal-delay-4 {
+  --reveal-delay: 480ms;
+  transition-delay: 480ms;
+}
 .reveal-delay-5 {
-  transition-delay: 300ms;
+  --reveal-delay: 600ms;
+  transition-delay: 600ms;
+}
+.reveal-delay-6 {
+  --reveal-delay: 720ms;
+  transition-delay: 720ms;
+}
+.reveal-delay-7 {
+  --reveal-delay: 840ms;
+  transition-delay: 840ms;
+}
+.reveal-delay-8 {
+  --reveal-delay: 960ms;
+  transition-delay: 960ms;
 }
 
 /* ─── Reduced Motion ───────────────────────────────────── */

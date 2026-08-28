@@ -83,6 +83,8 @@ enum ClickTargetType {
   social_link
   contact
   external
+  code_copy
+  cta_button
 }
 
 enum EntityType {
@@ -797,6 +799,10 @@ model Visitor {
   utmSource      String?  @map("utm_source") @db.VarChar(200)
   utmMedium      String?  @map("utm_medium") @db.VarChar(200)
   utmCampaign    String?  @map("utm_campaign") @db.VarChar(200)
+  utmTerm        String?  @map("utm_term") @db.VarChar(200)
+  utmContent     String?  @map("utm_content") @db.VarChar(200)
+  intentScore    Int      @default(0) @map("intent_score")
+  intentCategory String?  @map("intent_category") @db.VarChar(50)
   firstVisitedAt DateTime @default(now()) @map("first_visited_at") @db.Timestamptz()
   lastVisitedAt  DateTime @default(now()) @map("last_visited_at") @db.Timestamptz()
   visitCount     Int      @default(1) @map("visit_count")
@@ -807,7 +813,9 @@ model Visitor {
   contactSubmissions ContactSubmission[]
 
   @@index([firstVisitedAt(sort: Desc)], map: "idx_visitors_first_visited")
+  @@index([lastVisitedAt(sort: Desc)], map: "idx_visitors_last_visited")
   @@index([country], map: "idx_visitors_country")
+  @@index([intentCategory], map: "idx_visitors_intent_category")
   @@map("visitors")
 }
 
@@ -945,14 +953,16 @@ model PageView {
   title           String?  @db.VarChar(300)
   referrer        String?
   durationSeconds Int?     @map("duration_seconds")
+  scrollDepth     Int?     @map("scroll_depth") @db.SmallInt
+  loadTimeMs      Int?     @map("load_time_ms")
   viewedAt        DateTime @default(now()) @map("viewed_at") @db.Timestamptz()
 
   // FK: visitor_id → visitors.id
   visitorId String  @map("visitor_id")
   visitor   Visitor @relation(fields: [visitorId], references: [id], onDelete: Cascade)
 
-  @@index([visitorId], map: "idx_page_views_visitor_id")
-  @@index([path], map: "idx_page_views_path")
+  @@index([visitorId, viewedAt(sort: Desc)], map: "idx_page_views_visitor_viewed")
+  @@index([path, viewedAt(sort: Desc)], map: "idx_page_views_path_viewed")
   @@index([viewedAt(sort: Desc)], map: "idx_page_views_viewed_at")
   @@map("page_views")
 }
@@ -962,14 +972,15 @@ model LinkClick {
   targetType ClickTargetType @map("target_type")
   targetUrl  String          @map("target_url")
   sourcePath String?         @map("source_path") @db.VarChar(500)
+  label      String?         @db.VarChar(200)
   clickedAt  DateTime        @default(now()) @map("clicked_at") @db.Timestamptz()
 
   // FK: visitor_id → visitors.id
   visitorId String?  @map("visitor_id")
   visitor   Visitor? @relation(fields: [visitorId], references: [id], onDelete: Cascade)
 
-  @@index([visitorId], map: "idx_link_clicks_visitor_id")
-  @@index([targetType], map: "idx_link_clicks_target_type")
+  @@index([visitorId, clickedAt(sort: Desc)], map: "idx_link_clicks_visitor_clicked")
+  @@index([targetType, clickedAt(sort: Desc)], map: "idx_link_clicks_target_type")
   @@index([clickedAt(sort: Desc)], map: "idx_link_clicks_clicked_at")
   @@map("link_clicks")
 }

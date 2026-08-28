@@ -197,7 +197,7 @@ export function TimeSeriesChart({ data, height = 240, className }: TimeSeriesCha
               fontFamily="monospace"
               textAnchor="middle"
             >
-              {d.date.substring(5)}
+              {d.date.includes(':') ? d.date : d.date.substring(5)}
             </text>
           );
         })}

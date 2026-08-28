@@ -2,16 +2,36 @@ import type { Request } from 'express';
 
 /** Extract client IP address from request, accounting for reverse proxies. */
 export function getClientIp(req: Request): string {
+  // 1. Cloudflare header
+  const cfIp = req.headers['cf-connecting-ip'];
+  if (typeof cfIp === 'string' && cfIp.trim().length > 0) {
+    return normalizeIpForDb(cfIp.trim());
+  }
+
+  // 2. Standard X-Real-IP
+  const realIp = req.headers['x-real-ip'];
+  if (typeof realIp === 'string' && realIp.trim().length > 0) {
+    return normalizeIpForDb(realIp.trim());
+  }
+
+  // 3. Fastly / Akamai True-Client-IP
+  const trueClientIp = req.headers['true-client-ip'] || req.headers['fastly-client-ip'];
+  if (typeof trueClientIp === 'string' && trueClientIp.trim().length > 0) {
+    return normalizeIpForDb(trueClientIp.trim());
+  }
+
+  // 4. Standard X-Forwarded-For (first IP is the client)
   const forwarded = req.headers['x-forwarded-for'];
   if (typeof forwarded === 'string' && forwarded.length > 0) {
     const first = forwarded.split(',')[0]?.trim();
     if (first) {
-      return first;
+      return normalizeIpForDb(first);
     }
   }
 
+  // 5. Direct socket IP
   if (req.ip) {
-    return req.ip.replace(/^::ffff:/, '');
+    return normalizeIpForDb(req.ip);
   }
 
   return '127.0.0.1';

@@ -55,7 +55,7 @@ export default function AdminDashboardPage() {
         ]);
 
         if (overviewRes.status === 'fulfilled') setOverview(overviewRes.value.data);
-        if (timeseriesRes.status === 'fulfilled') setTimeseries(timeseriesRes.value.data);
+        if (timeseriesRes.status === 'fulfilled') setTimeseries(timeseriesRes.value.data || []);
         if (contactRes.status === 'fulfilled') setRecentInquiries(contactRes.value.data || []);
         if (statsRes.status === 'fulfilled') setStats(statsRes.value.data);
       } finally {

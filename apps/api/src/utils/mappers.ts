@@ -146,6 +146,10 @@ export function mapVisitorToDto(visitor: Visitor): VisitorDto {
     utmSource: visitor.utmSource,
     utmMedium: visitor.utmMedium,
     utmCampaign: visitor.utmCampaign,
+    utmTerm: visitor.utmTerm,
+    utmContent: visitor.utmContent,
+    intentScore: visitor.intentScore,
+    intentCategory: visitor.intentCategory,
     firstVisitedAt: visitor.firstVisitedAt.toISOString(),
     lastVisitedAt: visitor.lastVisitedAt.toISOString(),
     visitCount: visitor.visitCount,
@@ -161,6 +165,8 @@ export function mapPageViewToDto(pageView: PageView): PageViewDto {
     title: pageView.title,
     referrer: pageView.referrer,
     durationSeconds: pageView.durationSeconds,
+    scrollDepth: pageView.scrollDepth,
+    loadTimeMs: pageView.loadTimeMs,
     viewedAt: pageView.viewedAt.toISOString(),
   };
 }
@@ -173,6 +179,7 @@ export function mapLinkClickToDto(linkClick: LinkClick): LinkClickDto {
     targetType: linkClick.targetType as ClickTargetType,
     targetUrl: linkClick.targetUrl,
     sourcePath: linkClick.sourcePath,
+    label: linkClick.label,
     clickedAt: linkClick.clickedAt.toISOString(),
   };
 }

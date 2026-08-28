@@ -36,7 +36,24 @@ function isPrivateIp(ip: string): boolean {
 }
 
 export const geoService = {
-  async lookup(ip: string): Promise<GeoLocation> {
+  async lookup(ip: string, headers?: Record<string, string | string[] | undefined>): Promise<GeoLocation> {
+    // 1. Check for CDN geo headers (Cloudflare, etc.)
+    if (headers) {
+      const cfCountry = headers['cf-ipcountry'];
+      const cfCity = headers['cf-ipcity'];
+      const cfRegion = headers['cf-region'] || headers['cf-region-code'];
+
+      if (typeof cfCountry === 'string' && cfCountry.trim().length > 0 && cfCountry !== 'XX' && cfCountry !== 'T1') {
+        return {
+          country: cfCountry.trim().toUpperCase(),
+          region: typeof cfRegion === 'string' ? cfRegion.trim() : null,
+          city: typeof cfCity === 'string' ? decodeURIComponent(cfCity.trim()) : null,
+          latitude: null,
+          longitude: null,
+        };
+      }
+    }
+
     if (isPrivateIp(ip)) {
       return EMPTY_GEO;
     }

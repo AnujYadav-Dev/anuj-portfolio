@@ -15,7 +15,13 @@ import { toast } from 'sonner';
 
 export function useContactMutation() {
   return useMutation<{ data: ContactSubmissionDto }, Error, CreateContactInput>({
-    mutationFn: (input) => apiClient.post<{ data: ContactSubmissionDto }>('/contact', input),
+    mutationFn: (input) => {
+      const sessionId = typeof window !== 'undefined' ? localStorage.getItem('portfolio_session_id') || undefined : undefined;
+      return apiClient.post<{ data: ContactSubmissionDto }>('/contact', {
+        ...input,
+        sessionId: input.sessionId || sessionId,
+      });
+    },
     onSuccess: () => {
       toast.success('Thank you! Your message has been sent.');
     },

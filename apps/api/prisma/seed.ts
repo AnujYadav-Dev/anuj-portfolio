@@ -97,6 +97,41 @@ async function main() {
       group: 'analytics',
     },
     {
+      key: 'analytics_intent_scoring_enabled',
+      value: 'true',
+      group: 'analytics',
+    },
+    {
+      key: 'analytics_live_pulse_window_minutes',
+      value: '5',
+      group: 'analytics',
+    },
+    {
+      key: 'analytics_ignore_admin_traffic',
+      value: 'true',
+      group: 'analytics',
+    },
+    {
+      key: 'analytics_track_web_vitals',
+      value: 'true',
+      group: 'analytics',
+    },
+    {
+      key: 'analytics_track_scroll_depth',
+      value: 'true',
+      group: 'analytics',
+    },
+    {
+      key: 'analytics_track_code_copies',
+      value: 'true',
+      group: 'analytics',
+    },
+    {
+      key: 'analytics_intent_weights_json',
+      value: '{"resumeDownload":40,"contactSubmission":50,"worksView":15,"experienceView":15,"githubClick":20,"liveDemoClick":20,"blogResearch":20,"multiPage":15}',
+      group: 'analytics',
+    },
+    {
       key: 'email_notifications_visit_enabled',
       value: 'false',
       group: 'notifications',

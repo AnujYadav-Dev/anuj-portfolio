@@ -49,6 +49,8 @@ export function CodeBlock({
         <button
           type="button"
           onClick={handleCopy}
+          data-action="copy-code"
+          data-track-label={`Code: ${filename || language}`}
           className="flex items-center gap-1 text-muted hover:text-accent transition-colors p-1 rounded-xs cursor-pointer select-none"
           aria-label="Copy code to clipboard"
         >

@@ -3,6 +3,7 @@ import type {
   RegisterSessionInput,
   RecordViewInput,
   RecordClickInput,
+  RecordBeaconInput,
   AnalyticsPeriod,
   PaginationQuery,
 } from '@portfolio/shared';
@@ -21,6 +22,7 @@ export const analyticsController = {
     const result = await trackerService.registerSession(input, {
       ip: getClientIp(req),
       userAgent: req.headers['user-agent'],
+      headers: req.headers,
     });
 
     res.status(201).json({ data: result });
@@ -34,8 +36,24 @@ export const analyticsController = {
     }
 
     const input = req.validatedBody as RecordViewInput;
-    const result = await trackerService.recordView(input);
+    const result = await trackerService.recordView(input, {
+      ip: getClientIp(req),
+      userAgent: req.headers['user-agent'],
+      headers: req.headers,
+    });
     res.status(201).json({ data: result });
+  },
+
+  async recordBeacon(req: Request, res: Response): Promise<void> {
+    const enabled = await trackerService.isEnabled();
+    if (!enabled) {
+      res.status(204).send();
+      return;
+    }
+
+    const input = (req.validatedBody || req.body) as RecordBeaconInput;
+    const result = await trackerService.recordBeacon(input);
+    res.status(200).json({ data: result });
   },
 
   async recordClick(req: Request, res: Response): Promise<void> {
@@ -53,6 +71,11 @@ export const analyticsController = {
   // ──────────────────────────────────────────────
   // Admin Telemetry Endpoints
   // ──────────────────────────────────────────────
+
+  async getLivePulse(_req: Request, res: Response): Promise<void> {
+    const pulse = await trackerService.getLivePulse();
+    res.status(200).json({ data: pulse });
+  },
 
   async getAdminOverview(req: Request, res: Response): Promise<void> {
     const period = (req.query.period as AnalyticsPeriod) || '30d';
@@ -81,10 +104,43 @@ export const analyticsController = {
     res.status(200).json(result);
   },
 
+  async getVisitorJourney(req: Request, res: Response): Promise<void> {
+    const id = req.params.id as string;
+    const journey = await trackerService.getVisitorJourney(id);
+    if (!journey) {
+      res.status(404).json({ error: { code: 'NOT_FOUND', message: 'Visitor not found' } });
+      return;
+    }
+    res.status(200).json({ data: journey });
+  },
+
   async getAdminClickStats(req: Request, res: Response): Promise<void> {
     const period = (req.query.period as AnalyticsPeriod) || '30d';
     const limit = req.query.limit ? Number(req.query.limit) : 20;
     const clickStats = await trackerService.getAdminClickStats(period, limit);
     res.status(200).json({ data: clickStats });
+  },
+
+  async getGeoMap(req: Request, res: Response): Promise<void> {
+    const period = (req.query.period as AnalyticsPeriod) || '30d';
+    const mapData = await trackerService.getGeoMapDistribution(period);
+    res.status(200).json({ data: mapData });
+  },
+
+  async exportTelemetry(req: Request, res: Response): Promise<void> {
+    const period = (req.query.period as AnalyticsPeriod) || '30d';
+    const type = (req.query.type as 'visitors' | 'pages' | 'clicks' | 'all') || 'all';
+    const format = (req.query.format as 'csv' | 'json') || 'csv';
+
+    const output = await trackerService.exportTelemetry(type, period, format);
+
+    if (format === 'csv') {
+      res.setHeader('Content-Type', 'text/csv');
+      res.setHeader('Content-Disposition', `attachment; filename="portfolio-telemetry-${type}-${period}.csv"`);
+      res.status(200).send(output);
+      return;
+    }
+
+    res.status(200).json({ data: output });
   },
 };

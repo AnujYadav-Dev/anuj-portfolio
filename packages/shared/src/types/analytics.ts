@@ -24,6 +24,10 @@ export interface VisitorDto {
   utmSource: string | null;
   utmMedium: string | null;
   utmCampaign: string | null;
+  utmTerm: string | null;
+  utmContent: string | null;
+  intentScore: number;
+  intentCategory: string | null;
   firstVisitedAt: string;
   lastVisitedAt: string;
   visitCount: number;
@@ -37,6 +41,8 @@ export interface PageViewDto {
   title: string | null;
   referrer: string | null;
   durationSeconds: number | null;
+  scrollDepth: number | null;
+  loadTimeMs: number | null;
   viewedAt: string;
 }
 
@@ -47,6 +53,7 @@ export interface LinkClickDto {
   targetType: ClickTargetType;
   targetUrl: string;
   sourcePath: string | null;
+  label: string | null;
   clickedAt: string;
 }
 
@@ -62,6 +69,8 @@ export interface RegisterSessionRequest {
   utmSource?: string;
   utmMedium?: string;
   utmCampaign?: string;
+  utmTerm?: string;
+  utmContent?: string;
 }
 
 /** Record page view request. */
@@ -71,6 +80,17 @@ export interface RecordViewRequest {
   title?: string;
   referrer?: string;
   durationSeconds?: number;
+  scrollDepth?: number;
+  loadTimeMs?: number;
+}
+
+/** Record beacon heartbeat / dwell time request. */
+export interface RecordBeaconRequest {
+  sessionId: string;
+  path: string;
+  durationSeconds?: number;
+  scrollDepth?: number;
+  loadTimeMs?: number;
 }
 
 /** Record link click request. */
@@ -79,6 +99,7 @@ export interface RecordClickRequest {
   targetType: ClickTargetType;
   targetUrl: string;
   sourcePath?: string;
+  label?: string;
 }
 
 // ──────────────────────────────────────────────
@@ -105,6 +126,7 @@ export interface AdminAnalyticsOverviewDto {
   deviceBreakdown: BreakdownItem[];
   browserBreakdown: BreakdownItem[];
   osBreakdown: BreakdownItem[];
+  intentBreakdown: BreakdownItem[];
 }
 
 export interface AnalyticsTimeSeriesPoint {
@@ -119,6 +141,7 @@ export interface AdminTopPageItem {
   views: number;
   uniqueVisitors: number;
   avgDurationSeconds: number | null;
+  avgScrollDepthPercent: number | null;
 }
 
 export interface AdminVisitorLogItem {
@@ -126,22 +149,66 @@ export interface AdminVisitorLogItem {
   sessionId: string;
   ipAddress: string;
   country: string | null;
+  region: string | null;
   city: string | null;
   deviceType: string | null;
   browser: string | null;
   os: string | null;
+  screenWidth: number | null;
+  screenHeight: number | null;
+  language: string | null;
+  timezone: string | null;
+  referrer: string | null;
   referrerSource: string | null;
+  utmSource: string | null;
+  utmMedium: string | null;
+  utmCampaign: string | null;
+  utmTerm: string | null;
+  utmContent: string | null;
+  intentScore: number;
+  intentCategory: string | null;
   firstVisitedAt: string;
   lastVisitedAt: string;
   visitCount: number;
   pageViewsCount: number;
-  recentPages: Array<{ path: string; viewedAt: string; title: string | null }>;
+  linkClicksCount: number;
+  recentPages: Array<{ path: string; viewedAt: string; title: string | null; durationSeconds: number | null; scrollDepth: number | null }>;
 }
 
 export interface AdminClickItem {
   targetType: ClickTargetType;
   targetUrl: string;
   sourcePath: string | null;
+  label: string | null;
   count: number;
   lastClickedAt: string;
+}
+
+export interface AdminLivePulseDto {
+  activeVisitors: number;
+  windowMinutes: number;
+  timestamp: string;
+}
+
+export interface AdminGeoMapItem {
+  countryCode: string;
+  countryName: string;
+  visitorCount: number;
+  percentage: number;
+}
+
+export interface JourneyStep {
+  type: 'page_view' | 'link_click' | 'contact_submission';
+  title: string;
+  pathOrUrl: string;
+  timestamp: string;
+  durationSeconds?: number | null;
+  scrollDepth?: number | null;
+  meta?: Record<string, unknown>;
+}
+
+export interface AdminVisitorJourneyDto {
+  visitor: VisitorDto;
+  steps: JourneyStep[];
+  totalDwellTimeSeconds: number;
 }

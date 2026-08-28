@@ -79,6 +79,8 @@ export enum ClickTargetType {
   SocialLink = 'social_link',
   Contact = 'contact',
   External = 'external',
+  CodeCopy = 'code_copy',
+  CtaButton = 'cta_button',
 }
 
 /** Entity types for polymorphic relations (tags, versions). */

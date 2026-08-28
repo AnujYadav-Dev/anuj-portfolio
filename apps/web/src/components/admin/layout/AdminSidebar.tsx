@@ -34,6 +34,7 @@ import {
   Inbox,
   MessageSquare,
   Send,
+  Compass,
   ChevronLeft,
   ChevronRight,
   ExternalLink,
@@ -94,6 +95,7 @@ const NAV_GROUPS: NavGroup[] = [
     items: [
       { label: 'Homepage Builder', href: '/admin/homepage', icon: SlidersHorizontal },
       { label: 'Navigation Menus', href: '/admin/navigation', icon: MenuIcon },
+      { label: 'Routes Directory', href: '/admin/routes', icon: Compass },
       { label: 'Site Settings', href: '/admin/settings', icon: Settings },
       { label: 'SEO Defaults', href: '/admin/seo', icon: Globe },
       { label: 'Email Templates', href: '/admin/emails', icon: Mail },

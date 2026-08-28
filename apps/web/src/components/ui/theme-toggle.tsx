@@ -3,10 +3,12 @@
 import * as React from 'react';
 import { useTheme } from 'next-themes';
 import { Moon, Sun } from 'lucide-react';
+import { useEasterEggTrigger } from '@/hooks/useEasterEggTrigger';
 import { cn } from '@/lib/cn';
 
 export function ThemeToggle({ className }: { className?: string }) {
   const { setTheme, resolvedTheme } = useTheme();
+  const { registerClick } = useEasterEggTrigger();
   const [mounted, setMounted] = React.useState(false);
 
   React.useEffect(() => {
@@ -31,7 +33,7 @@ export function ThemeToggle({ className }: { className?: string }) {
   return (
     <button
       type="button"
-      onClick={() => setTheme(isDark ? 'light' : 'dark')}
+      onClick={() => registerClick(() => setTheme(isDark ? 'light' : 'dark'))}
       className={cn(
         'h-9 w-9 rounded-sm border border-border bg-surface hover:bg-surface-muted hover:border-accent flex items-center justify-center text-foreground hover:text-accent transition-all duration-fast cursor-pointer focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-accent select-none',
         className,

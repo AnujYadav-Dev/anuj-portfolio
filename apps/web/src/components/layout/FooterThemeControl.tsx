@@ -3,6 +3,7 @@
 import * as React from 'react';
 import { useTheme } from 'next-themes';
 import { Monitor, Sun, Moon } from 'lucide-react';
+import { useEasterEggTrigger } from '@/hooks/useEasterEggTrigger';
 import { cn } from '@/lib/cn';
 
 export interface FooterThemeControlProps {
@@ -11,6 +12,7 @@ export interface FooterThemeControlProps {
 
 export function FooterThemeControl({ className }: FooterThemeControlProps) {
   const { theme, setTheme } = useTheme();
+  const { registerClick } = useEasterEggTrigger();
   const [mounted, setMounted] = React.useState(false);
 
   React.useEffect(() => {
@@ -55,7 +57,7 @@ export function FooterThemeControl({ className }: FooterThemeControlProps) {
           <button
             key={opt.value}
             type="button"
-            onClick={() => setTheme(opt.value)}
+            onClick={() => registerClick(() => setTheme(opt.value))}
             aria-pressed={isActive}
             aria-label={opt.label}
             title={opt.label}

@@ -20,7 +20,7 @@ export function SplitSection({
 }: SplitSectionProps) {
   return (
     <section id={id} className={cn('py-16 md:py-24 border-b border-border', className)}>
-      <div className="max-w-[1200px] mx-auto px-4 md:px-8">
+      <div className="max-w-[1400px] mx-auto px-4 md:px-8">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
           {/* Left Column: Label */}
           <div className="lg:col-span-3">

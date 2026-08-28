@@ -31,7 +31,7 @@ export function ContactClientView() {
       />
 
       <div className="py-12">
-        <div className="max-w-[1200px] mx-auto px-4 md:px-8">
+        <div className="max-w-[1400px] mx-auto px-4 md:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
             {/* Left: Contact Form */}
             <div className="lg:col-span-7">

@@ -62,7 +62,7 @@ export function AboutClientView() {
 
       {/* Dynamic About Sections */}
       {isLoading ? (
-        <div className="max-w-[1200px] mx-auto px-4 md:px-8 py-16 flex flex-col gap-8">
+        <div className="max-w-[1400px] mx-auto px-4 md:px-8 py-16 flex flex-col gap-8">
           <Skeleton className="h-48 w-full" />
           <Skeleton className="h-48 w-full" />
         </div>

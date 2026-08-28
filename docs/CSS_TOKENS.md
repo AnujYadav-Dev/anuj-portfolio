@@ -104,7 +104,7 @@ All design tokens are defined as CSS custom properties on `:root` (dark theme de
   --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
 
   /* Container */
-  --container-max: 1200px;
+  --container-max: 1400px;
   --container-content: 720px;
   --container-padding-mobile: 16px;
   --container-padding-desktop: 64px;

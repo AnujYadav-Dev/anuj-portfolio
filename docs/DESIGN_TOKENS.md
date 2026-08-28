@@ -217,7 +217,7 @@
 
 | Token                         | Value  |
 | ----------------------------- | ------ |
-| `--container-max`             | 1200px |
+| `--container-max`             | 1400px |
 | `--container-content`         | 720px  |
 | `--container-padding-mobile`  | 16px   |
 | `--container-padding-desktop` | 64px   |

@@ -14,7 +14,7 @@ export interface PageHeaderProps {
 export function PageHeader({ badge, title, description, children, className }: PageHeaderProps) {
   return (
     <div className={cn('py-12 md:py-16 border-b border-border bg-background', className)}>
-      <div className="max-w-[1200px] mx-auto px-4 md:px-8">
+      <div className="max-w-[1400px] mx-auto px-4 md:px-8">
         <RevealOnScroll>
           <div className="flex flex-col gap-3 max-w-3xl">
             {badge && (

@@ -122,7 +122,7 @@ The portfolio is a **premium, minimal, developer-focused** platform. Every visua
 
 ### Container
 
-- Maximum content width: **1200px**, centered.
+- Maximum content width: **1400px**, centered.
 - Side padding: `--space-3` (16px) on mobile, `--space-7` (64px) on desktop.
 
 ### Grid

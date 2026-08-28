@@ -99,7 +99,7 @@
   --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
 
   /* Container */
-  --container-max: 1200px;
+  --container-max: 1400px;
   --container-content: 720px;
   --container-padding-mobile: 16px;
   --container-padding-desktop: 64px;
@@ -211,6 +211,7 @@
    ═══════════════════════════════════════════════════════ */
 
 @layer base {
+
   *,
   *::before,
   *::after {
@@ -382,30 +383,37 @@
   --reveal-delay: 120ms;
   transition-delay: 120ms;
 }
+
 .reveal-delay-2 {
   --reveal-delay: 240ms;
   transition-delay: 240ms;
 }
+
 .reveal-delay-3 {
   --reveal-delay: 360ms;
   transition-delay: 360ms;
 }
+
 .reveal-delay-4 {
   --reveal-delay: 480ms;
   transition-delay: 480ms;
 }
+
 .reveal-delay-5 {
   --reveal-delay: 600ms;
   transition-delay: 600ms;
 }
+
 .reveal-delay-6 {
   --reveal-delay: 720ms;
   transition-delay: 720ms;
 }
+
 .reveal-delay-7 {
   --reveal-delay: 840ms;
   transition-delay: 840ms;
 }
+
 .reveal-delay-8 {
   --reveal-delay: 960ms;
   transition-delay: 960ms;
@@ -414,6 +422,7 @@
 /* ─── Reduced Motion ───────────────────────────────────── */
 
 @media (prefers-reduced-motion: reduce) {
+
   *,
   *::before,
   *::after {

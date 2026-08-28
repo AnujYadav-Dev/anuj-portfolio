@@ -21,7 +21,7 @@ export function SingleEducationClientView({ id, initialData }: SingleEducationCl
 
   if (isLoading && !edu) {
     return (
-      <div className="max-w-[1200px] mx-auto px-4 md:px-8 py-16 text-center text-sm text-muted font-mono">
+      <div className="max-w-[1400px] mx-auto px-4 md:px-8 py-16 text-center text-sm text-muted font-mono">
         Loading education details...
       </div>
     );
@@ -29,7 +29,7 @@ export function SingleEducationClientView({ id, initialData }: SingleEducationCl
 
   if (!edu) {
     return (
-      <div className="max-w-[1200px] mx-auto px-4 md:px-8 py-16 text-center">
+      <div className="max-w-[1400px] mx-auto px-4 md:px-8 py-16 text-center">
         <h2 className="text-xl font-bold text-foreground">Education Profile Not Found</h2>
         <p className="text-xs text-muted mt-2">The requested academic qualification does not exist.</p>
         <Link
@@ -45,17 +45,17 @@ export function SingleEducationClientView({ id, initialData }: SingleEducationCl
 
   const startDate = edu.startDate
     ? new Date(edu.startDate).toLocaleDateString('en-US', {
-        month: 'long',
-        year: 'numeric',
-      })
+      month: 'long',
+      year: 'numeric',
+    })
     : '';
   const endDate = edu.isCurrent
     ? 'Present'
     : edu.endDate
       ? new Date(edu.endDate).toLocaleDateString('en-US', {
-          month: 'long',
-          year: 'numeric',
-        })
+        month: 'long',
+        year: 'numeric',
+      })
       : '';
 
   return (
@@ -76,7 +76,7 @@ export function SingleEducationClientView({ id, initialData }: SingleEducationCl
         </div>
       </PageHeader>
 
-      <div className="max-w-[1200px] w-full mx-auto px-4 md:px-8 py-12 flex flex-col gap-12">
+      <div className="max-w-[1400px] w-full mx-auto px-4 md:px-8 py-12 flex flex-col gap-12">
         <SplitSection
           labelNumber="01 // CREDENTIAL"
           labelTitle="Academic Qualification"

@@ -20,7 +20,7 @@ export function DynamicPageRenderer({ page }: DynamicPageRendererProps) {
       />
 
       <div className="py-12 md:py-16">
-        <div className="max-w-[1200px] mx-auto px-4 md:px-8">
+        <div className="max-w-[1400px] mx-auto px-4 md:px-8">
           <RevealOnScroll>
             <div className="max-w-3xl text-sm leading-relaxed text-foreground/90">
               <MarkdownRenderer content={page.content || ''} />

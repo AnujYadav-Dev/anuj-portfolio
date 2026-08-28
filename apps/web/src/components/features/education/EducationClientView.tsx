@@ -58,7 +58,7 @@ export function EducationClientView({ initialData }: EducationClientViewProps) {
       </PageHeader>
 
       {/* Main Education Content */}
-      <div className="max-w-[1200px] w-full mx-auto px-4 md:px-8 py-12 flex flex-col gap-12">
+      <div className="max-w-[1400px] w-full mx-auto px-4 md:px-8 py-12 flex flex-col gap-12">
         {isLoading && sortedEducation.length === 0 ? (
           <div className="flex flex-col gap-8">
             <Skeleton className="h-48 w-full" />
@@ -68,17 +68,17 @@ export function EducationClientView({ initialData }: EducationClientViewProps) {
           sortedEducation.map((edu, idx) => {
             const startDate = edu.startDate
               ? new Date(edu.startDate).toLocaleDateString('en-US', {
-                  month: 'short',
-                  year: 'numeric',
-                })
+                month: 'short',
+                year: 'numeric',
+              })
               : '';
             const endDate = edu.isCurrent
               ? 'Present'
               : edu.endDate
                 ? new Date(edu.endDate).toLocaleDateString('en-US', {
-                    month: 'short',
-                    year: 'numeric',
-                  })
+                  month: 'short',
+                  year: 'numeric',
+                })
                 : '';
 
             const sectionNum = String(idx + 1).padStart(2, '0');

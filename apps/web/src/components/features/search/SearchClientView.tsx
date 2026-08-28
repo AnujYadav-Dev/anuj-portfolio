@@ -14,7 +14,7 @@ export function SearchClientView() {
       />
 
       <div className="py-12">
-        <div className="max-w-[1200px] mx-auto px-4 md:px-8">
+        <div className="max-w-[1400px] mx-auto px-4 md:px-8">
           <SearchInterface />
         </div>
       </div>

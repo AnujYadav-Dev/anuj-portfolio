@@ -68,7 +68,7 @@ The portfolio platform is an **architectural, minimalist, high-craft developer p
 
 ### Container Dimensions
 
-- **Max Container Width:** `1200px` centered (`mx-auto`).
+- **Max Container Width:** `1400px` centered (`mx-auto`).
 - **Horizontal Viewport Padding:** `16px` (`--space-3`) on mobile; `64px` (`--space-7`) on desktop (`lg:`).
 - **Prose Content Max-Width:** `720px` (`--container-content`) for readability.
 
@@ -227,7 +227,7 @@ The portfolio platform is an **architectural, minimalist, high-craft developer p
 | **Mobile (`< 640px`)**     | Base                | Single column layouts; split sections stack vertically; hero display font scales dynamically via `clamp()`; horizontal scroll eliminated. |
 | **Tablet (`md: 768px`)**   | $\ge 768\text{px}$  | 2-column split layouts activate (left label 30%, right content 70%); bento cards display side-by-side.                                    |
 | **Desktop (`lg: 1024px`)** | $\ge 1024\text{px}$ | Sticky "On this page" TOC sidebar appears on blog detail; full `64px` side padding.                                                       |
-| **Wide (`xl: 1280px`)**    | $\ge 1280\text{px}$ | Max container capped at `1200px` centered.                                                                                                |
+| **Wide (`xl: 1280px`)**    | $\ge 1280\text{px}$ | Max container capped at `1400px` centered.                                                                                                |
 
 ---
 

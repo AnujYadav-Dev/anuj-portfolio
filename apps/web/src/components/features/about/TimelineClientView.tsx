@@ -22,7 +22,7 @@ export function TimelineClientView() {
       />
 
       <div className="py-12">
-        <div className="max-w-[1200px] mx-auto px-4 md:px-8 flex flex-col gap-8">
+        <div className="max-w-[1400px] mx-auto px-4 md:px-8 flex flex-col gap-8">
           {/* Milestone Type Filter */}
           <div className="flex flex-wrap items-center gap-2 pb-4 border-b border-border">
             <Badge

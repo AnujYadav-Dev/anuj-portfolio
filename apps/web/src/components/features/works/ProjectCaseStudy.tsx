@@ -19,20 +19,20 @@ export interface ProjectCaseStudyProps {
 export function ProjectCaseStudy({ project }: ProjectCaseStudyProps) {
   const startDate = project.startDate
     ? new Date(project.startDate).toLocaleDateString('en-US', {
-        month: 'short',
-        year: 'numeric',
-      })
+      month: 'short',
+      year: 'numeric',
+    })
     : '';
   const endDate = project.endDate
     ? new Date(project.endDate).toLocaleDateString('en-US', {
-        month: 'short',
-        year: 'numeric',
-      })
+      month: 'short',
+      year: 'numeric',
+    })
     : 'Present';
 
   return (
     <div className="py-12 md:py-16">
-      <div className="max-w-[1200px] mx-auto px-4 md:px-8">
+      <div className="max-w-[1400px] mx-auto px-4 md:px-8">
         {/* Back Link */}
         <div className="mb-8">
           <Link

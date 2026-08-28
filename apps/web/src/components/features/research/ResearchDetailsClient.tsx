@@ -16,14 +16,14 @@ interface ResearchDetailsClientProps {
 export function ResearchDetailsClient({ paper }: ResearchDetailsClientProps) {
   const publishDate = paper.publishedAt
     ? new Date(paper.publishedAt).toLocaleDateString('en-US', {
-        month: 'long',
-        year: 'numeric',
-      })
+      month: 'long',
+      year: 'numeric',
+    })
     : '';
 
   return (
     <div className="py-12 md:py-16">
-      <div className="max-w-[1200px] mx-auto px-4 md:px-8">
+      <div className="max-w-[1400px] mx-auto px-4 md:px-8">
         <div className="mb-8">
           <Link
             href="/research"

@@ -369,7 +369,7 @@ export function Footer() {
       aria-label="Footer"
       className="w-full bg-background border-t border-border mt-auto transition-colors duration-fast"
     >
-      <div className="max-w-[1200px] mx-auto px-4 md:px-8 py-12 md:py-16 flex flex-col gap-10">
+      <div className="max-w-[1400px] mx-auto px-4 md:px-8 py-12 md:py-16 flex flex-col gap-10">
         {/* Large Typographic Name Display */}
         <FooterNameBanner name={authorName} />
 

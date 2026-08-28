@@ -104,7 +104,7 @@ export function Header() {
   return (
     <>
       <header className="sticky top-0 z-sticky w-full border-b border-border bg-background/80 backdrop-blur-md transition-colors duration-fast">
-        <div className="max-w-[1200px] mx-auto px-4 md:px-8 h-14 flex items-center justify-between gap-4">
+        <div className="max-w-[1400px] mx-auto px-4 md:px-8 h-14 flex items-center justify-between gap-4">
           {/* Brand Wordmark Logo */}
           <Link
             href="/"

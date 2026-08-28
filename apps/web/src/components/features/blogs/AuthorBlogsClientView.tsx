@@ -26,7 +26,7 @@ export function AuthorBlogsClientView({ author }: AuthorBlogsClientViewProps) {
       />
 
       <div className="py-12">
-        <div className="max-w-[1200px] mx-auto px-4 md:px-8">
+        <div className="max-w-[1400px] mx-auto px-4 md:px-8">
           {isLoading ? (
             <div className="flex flex-col gap-4">
               {[1, 2, 3].map((n) => (

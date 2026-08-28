@@ -54,7 +54,7 @@ export function HeroSection({ section }: DynamicSectionProps) {
       id="hero"
       className="sticky top-14 z-0 min-h-[calc(100vh-3.5rem)] flex flex-col justify-between bg-background border-b border-border overflow-hidden px-4 md:px-8 py-6 md:py-10"
     >
-      <div className="max-w-[1200px] w-full mx-auto flex-1 flex flex-col justify-between">
+      <div className="max-w-[1400px] w-full mx-auto flex-1 flex flex-col justify-between">
         {/* Main Content Row: Left Slogan + Right Minimal Action Links */}
         <RevealOnScroll>
           <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-6 md:gap-12">

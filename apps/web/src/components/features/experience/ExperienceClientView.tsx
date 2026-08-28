@@ -66,7 +66,7 @@ export function ExperienceClientView({ initialData }: ExperienceClientViewProps)
       </PageHeader>
 
       {/* Main Experience Content */}
-      <div className="max-w-[1200px] w-full mx-auto px-4 md:px-8 py-12 flex flex-col gap-12">
+      <div className="max-w-[1400px] w-full mx-auto px-4 md:px-8 py-12 flex flex-col gap-12">
         {isLoading && sortedExperiences.length === 0 ? (
           <div className="flex flex-col gap-8">
             <Skeleton className="h-48 w-full" />
@@ -77,17 +77,17 @@ export function ExperienceClientView({ initialData }: ExperienceClientViewProps)
           sortedExperiences.map((exp, idx) => {
             const startDate = exp.startDate
               ? new Date(exp.startDate).toLocaleDateString('en-US', {
-                  month: 'short',
-                  year: 'numeric',
-                })
+                month: 'short',
+                year: 'numeric',
+              })
               : '';
             const endDate = exp.isCurrent
               ? 'Present'
               : exp.endDate
                 ? new Date(exp.endDate).toLocaleDateString('en-US', {
-                    month: 'short',
-                    year: 'numeric',
-                  })
+                  month: 'short',
+                  year: 'numeric',
+                })
                 : '';
 
             const sectionNum = String(idx + 1).padStart(2, '0');

@@ -22,7 +22,7 @@ export function SingleExperienceClientView({ id, initialData }: SingleExperience
 
   if (isLoading && !exp) {
     return (
-      <div className="max-w-[1200px] mx-auto px-4 md:px-8 py-16 text-center text-sm text-muted font-mono">
+      <div className="max-w-[1400px] mx-auto px-4 md:px-8 py-16 text-center text-sm text-muted font-mono">
         Loading experience details...
       </div>
     );
@@ -30,7 +30,7 @@ export function SingleExperienceClientView({ id, initialData }: SingleExperience
 
   if (!exp) {
     return (
-      <div className="max-w-[1200px] mx-auto px-4 md:px-8 py-16 text-center">
+      <div className="max-w-[1400px] mx-auto px-4 md:px-8 py-16 text-center">
         <h2 className="text-xl font-bold text-foreground">Experience Not Found</h2>
         <p className="text-xs text-muted mt-2">The requested experience profile does not exist.</p>
         <Link
@@ -46,17 +46,17 @@ export function SingleExperienceClientView({ id, initialData }: SingleExperience
 
   const startDate = exp.startDate
     ? new Date(exp.startDate).toLocaleDateString('en-US', {
-        month: 'long',
-        year: 'numeric',
-      })
+      month: 'long',
+      year: 'numeric',
+    })
     : '';
   const endDate = exp.isCurrent
     ? 'Present'
     : exp.endDate
       ? new Date(exp.endDate).toLocaleDateString('en-US', {
-          month: 'long',
-          year: 'numeric',
-        })
+        month: 'long',
+        year: 'numeric',
+      })
       : '';
 
   return (
@@ -77,7 +77,7 @@ export function SingleExperienceClientView({ id, initialData }: SingleExperience
         </div>
       </PageHeader>
 
-      <div className="max-w-[1200px] w-full mx-auto px-4 md:px-8 py-12 flex flex-col gap-12">
+      <div className="max-w-[1400px] w-full mx-auto px-4 md:px-8 py-12 flex flex-col gap-12">
         <SplitSection
           labelNumber="01 // OVERVIEW"
           labelTitle="Role Overview"

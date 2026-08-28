@@ -23,8 +23,8 @@ export function WorksClientView() {
     const matchesCategory = category ? p.category?.slug === category : true;
     const matchesSearch = search.trim()
       ? p.title.toLowerCase().includes(search.toLowerCase()) ||
-        p.shortDescription.toLowerCase().includes(search.toLowerCase()) ||
-        p.technologies.some((t) => t.toLowerCase().includes(search.toLowerCase()))
+      p.shortDescription.toLowerCase().includes(search.toLowerCase()) ||
+      p.technologies.some((t) => t.toLowerCase().includes(search.toLowerCase()))
       : true;
     return matchesCategory && matchesSearch;
   });
@@ -38,7 +38,7 @@ export function WorksClientView() {
       />
 
       <div className="py-12">
-        <div className="max-w-[1200px] mx-auto px-4 md:px-8 flex flex-col gap-8">
+        <div className="max-w-[1400px] mx-auto px-4 md:px-8 flex flex-col gap-8">
           {/* Filters */}
           <ProjectFilters
             search={search}

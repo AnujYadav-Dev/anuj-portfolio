@@ -6,8 +6,8 @@ import { ArrowLeft, ExternalLink } from 'lucide-react';
 import { GitHubIcon } from '@/components/common/Icons';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { Avatar } from '@/components/ui/avatar';
 import { MarkdownRenderer } from '@/components/content/MarkdownRenderer';
-
 import { ZoomableImage } from '@/components/content/ZoomableImage';
 import { RevealOnScroll } from '@/components/motion/RevealOnScroll';
 import type { ProjectDto } from '@portfolio/shared';
@@ -82,9 +82,17 @@ export function ProjectCaseStudy({ project }: ProjectCaseStudyProps) {
               {project.author && (
                 <div>
                   <span className="text-muted block">AUTHOR</span>
-                  <span className="text-foreground font-semibold">
-                    {project.author.displayName}
-                  </span>
+                  <div className="flex items-center gap-1.5 mt-0.5">
+                    <Avatar
+                      src={project.author.avatarUrl}
+                      fallbackText={project.author.displayName}
+                      size="sm"
+                      className="h-5 w-5 text-[9px]"
+                    />
+                    <span className="text-foreground font-semibold">
+                      {project.author.displayName}
+                    </span>
+                  </div>
                 </div>
               )}
               <div>

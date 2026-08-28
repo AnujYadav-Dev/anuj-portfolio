@@ -26,11 +26,33 @@ export function BlogReader({ post }: BlogReaderProps) {
 
   const handleCopyLink = async () => {
     try {
-      await navigator.clipboard.writeText(window.location.href);
-      toast.success('Article link copied to clipboard');
+      if (typeof window !== 'undefined') {
+        await navigator.clipboard.writeText(window.location.href);
+        toast.success('Article link copied to clipboard');
+      }
     } catch {
       toast.error('Failed to copy link');
     }
+  };
+
+  const handleShareTwitter = () => {
+    if (typeof window === 'undefined') return;
+    const url = window.location.href;
+    window.open(
+      `https://twitter.com/intent/tweet?text=${encodeURIComponent(post.title)}&url=${encodeURIComponent(url)}`,
+      '_blank',
+      'noopener,noreferrer',
+    );
+  };
+
+  const handleShareLinkedIn = () => {
+    if (typeof window === 'undefined') return;
+    const url = window.location.href;
+    window.open(
+      `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(url)}`,
+      '_blank',
+      'noopener,noreferrer',
+    );
   };
 
   return (
@@ -88,7 +110,11 @@ export function BlogReader({ post }: BlogReaderProps) {
             <div className="flex flex-wrap items-center gap-4 pt-4 text-xs font-mono text-muted border-t border-border/60 mt-2">
               {post.author && (
                 <div className="flex items-center gap-2 text-foreground font-semibold">
-                  <Avatar fallbackText={post.author.displayName} size="sm" />
+                  <Avatar
+                    src={post.author.avatarUrl}
+                    fallbackText={post.author.displayName}
+                    size="sm"
+                  />
                   <span>{post.author.displayName}</span>
                 </div>
               )}
@@ -132,32 +158,34 @@ export function BlogReader({ post }: BlogReaderProps) {
                 >
                   Copy Link
                 </Button>
-                <a
-                  href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(post.title)}&url=${encodeURIComponent(typeof window !== 'undefined' ? window.location.href : '')}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={handleShareTwitter}
+                  aria-label="Share on Twitter / X"
+                  leftIcon={<Share2 className="h-3.5 w-3.5" />}
                 >
-                  <Button variant="ghost" size="sm" aria-label="Share on Twitter / X">
-                    <Share2 className="h-3.5 w-3.5" />
-                    <span>Post</span>
-                  </Button>
-                </a>
-                <a
-                  href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(typeof window !== 'undefined' ? window.location.href : '')}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
+                  Post
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={handleShareLinkedIn}
+                  aria-label="Share on LinkedIn"
                 >
-                  <Button variant="ghost" size="sm" aria-label="Share on LinkedIn">
-                    <span>LinkedIn</span>
-                  </Button>
-                </a>
+                  LinkedIn
+                </Button>
               </div>
             </div>
 
             {/* Author Bio Card */}
             {post.author && (
               <div className="mt-8 p-6 rounded-md border border-border bg-surface-muted/30 flex items-start gap-4">
-                <Avatar fallbackText={post.author.displayName} size="lg" />
+                <Avatar
+                  src={post.author.avatarUrl}
+                  fallbackText={post.author.displayName}
+                  size="lg"
+                />
                 <div className="flex flex-col gap-1 text-xs">
                   <span className="font-bold text-sm text-foreground">
                     Written by {post.author.displayName}

@@ -85,8 +85,17 @@ export function AdminHeader() {
             onClick={() => setIsMenuOpen(!isMenuOpen)}
             className="flex items-center gap-2.5 p-1.5 hover:bg-surface-muted rounded-md transition-colors border border-transparent hover:border-border"
           >
-            <div className="w-7 h-7 rounded-full bg-accent/20 border border-accent/40 flex items-center justify-center text-accent text-xs font-bold font-mono">
-              {author?.displayName ? author.displayName.charAt(0).toUpperCase() : 'A'}
+            <div className="w-7 h-7 rounded-full overflow-hidden border border-accent/40 bg-accent/15 flex items-center justify-center text-accent text-xs font-bold font-mono shrink-0">
+              {author?.avatarUrl ? (
+                /* eslint-disable-next-line @next/next/no-img-element */
+                <img
+                  src={author.avatarUrl}
+                  alt={author.displayName || 'Admin Avatar'}
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                <span>{author?.displayName ? author.displayName.charAt(0).toUpperCase() : 'A'}</span>
+              )}
             </div>
             <div className="hidden md:flex flex-col text-left">
               <span className="text-xs font-semibold text-foreground leading-tight">

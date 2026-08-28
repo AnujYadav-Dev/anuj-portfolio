@@ -7,6 +7,7 @@ const researchDetailedInclude = {
       id: true,
       username: true,
       displayName: true,
+      avatar: { select: { url: true } },
     },
   },
   pdf: { select: { url: true, filename: true, mimeType: true } },

@@ -5,6 +5,7 @@ import type {
   UpdateProfileInput,
   ChangePasswordInput,
 } from '@portfolio/shared';
+import { prisma } from '@/config/prisma';
 import { authorRepository } from '@/repositories/author.repository';
 import { sessionRepository } from '@/repositories/session.repository';
 import { siteSettingRepository } from '@/repositories/siteSetting.repository';
@@ -168,11 +169,38 @@ export const authService = {
       }
     }
 
+    let avatarId: string | null | undefined = undefined;
+
+    if (input.avatarUrl === null || input.avatarUrl === '') {
+      avatarId = null;
+    } else if (input.avatarUrl) {
+      const existingMedia = await prisma.media.findFirst({
+        where: { url: input.avatarUrl },
+      });
+
+      if (existingMedia) {
+        avatarId = existingMedia.id;
+      } else {
+        const newMedia = await prisma.media.create({
+          data: {
+            filename: 'author-avatar',
+            url: input.avatarUrl,
+            mediaType: 'image',
+            mimeType: 'image/jpeg',
+            sizeBytes: 0,
+            uploadedBy: authorId,
+          },
+        });
+        avatarId = newMedia.id;
+      }
+    }
+
     const updated = await authorRepository.update(authorId, {
       displayName: input.displayName,
       username: input.username,
       email: input.email,
       bio: input.bio,
+      ...(avatarId !== undefined ? { avatarId } : {}),
     });
 
     // Send Profile Update Security Alert

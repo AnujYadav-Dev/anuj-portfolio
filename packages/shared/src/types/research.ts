@@ -24,6 +24,7 @@ export interface ResearchPaperDto extends SeoFields {
     id: string;
     username: string;
     displayName: string;
+    avatarUrl?: string | null;
   };
   tags: string[];
 }
@@ -42,6 +43,7 @@ export interface ResearchPaperListItemDto {
   author: {
     username: string;
     displayName: string;
+    avatarUrl?: string | null;
   };
 }
 

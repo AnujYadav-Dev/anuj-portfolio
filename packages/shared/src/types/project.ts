@@ -28,6 +28,7 @@ export interface ProjectDto extends SeoFields {
     id: string;
     username: string;
     displayName: string;
+    avatarUrl?: string | null;
   };
   category: {
     id: string;
@@ -53,6 +54,7 @@ export interface ProjectListItemDto {
   author: {
     username: string;
     displayName: string;
+    avatarUrl?: string | null;
   };
   category: {
     name: string;

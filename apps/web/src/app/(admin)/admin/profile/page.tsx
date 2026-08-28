@@ -121,11 +121,28 @@ export default function AdminProfilePage() {
               <button
                 type="button"
                 onClick={() => setIsMediaPickerOpen(true)}
-                className="absolute inset-0 bg-black/60 rounded-full opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-[10px] font-semibold text-white"
+                className="absolute inset-0 bg-black/60 rounded-full opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-[10px] font-semibold text-white cursor-pointer"
               >
                 Change Avatar
               </button>
             </div>
+
+
+            {/* Avatar Actions */}
+            <div className="flex items-center gap-2 mb-3">
+              {avatarUrl && (
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setAvatarUrl('')}
+                  className="text-[11px] h-7 px-2 text-destructive hover:text-destructive"
+                >
+                  Remove
+                </Button>
+              )}
+            </div>
+
 
             <h3 className="font-bold text-foreground text-sm">{displayName || 'Author'}</h3>
             <p className="text-xs text-muted font-mono">{author?.email}</p>

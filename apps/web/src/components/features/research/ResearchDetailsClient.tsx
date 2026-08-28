@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { ArrowLeft, Download, ExternalLink } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { Avatar } from '@/components/ui/avatar';
 import { RevealOnScroll } from '@/components/motion/RevealOnScroll';
 import type { ResearchPaperDto } from '@portfolio/shared';
 
@@ -49,7 +50,15 @@ export function ResearchDetailsClient({ paper }: ResearchDetailsClientProps) {
             </h1>
 
             {paper.author && (
-              <p className="text-xs font-mono text-muted">Author: {paper.author.displayName}</p>
+              <div className="flex items-center gap-2 text-xs font-mono text-muted">
+                <Avatar
+                  src={paper.author.avatarUrl}
+                  fallbackText={paper.author.displayName}
+                  size="sm"
+                  className="h-5 w-5 text-[9px]"
+                />
+                <span>Author: {paper.author.displayName}</span>
+              </div>
             )}
 
             <div className="flex flex-wrap items-center gap-4 pt-2">

@@ -232,6 +232,7 @@ export function mapProjectToDto(project: ProjectWithRelations, tagNames?: string
       id: project.author.id,
       username: project.author.username,
       displayName: project.author.displayName,
+      avatarUrl: project.author.avatar?.url ?? null,
     },
     category: project.category
       ? {
@@ -261,6 +262,7 @@ export function mapProjectToListItemDto(project: ProjectWithRelations): ProjectL
     author: {
       username: project.author.username,
       displayName: project.author.displayName,
+      avatarUrl: project.author.avatar?.url ?? null,
     },
     category: project.category
       ? {
@@ -365,7 +367,7 @@ export function mapBlogCategoryToDto(category: BlogCategory): BlogCategoryDto {
 }
 
 type ResearchWithRelations = ResearchPaper & {
-  author: { id: string; username: string; displayName: string };
+  author: { id: string; username: string; displayName: string; avatar?: { url: string } | null };
   pdf?: { url: string } | null;
   ogImage?: { url: string } | null;
   tags?: { tag: { name: string } }[];
@@ -400,6 +402,7 @@ export function mapResearchPaperToDto(
       id: paper.author.id,
       username: paper.author.username,
       displayName: paper.author.displayName,
+      avatarUrl: paper.author.avatar?.url ?? null,
     },
     tags: tagNames ?? paper.tags?.map((t) => t.tag.name) ?? [],
   };
@@ -422,6 +425,7 @@ export function mapResearchPaperToListItemDto(
     author: {
       username: paper.author.username,
       displayName: paper.author.displayName,
+      avatarUrl: paper.author.avatar?.url ?? null,
     },
   };
 }

@@ -1,4 +1,5 @@
 import { achievementRepository } from '@/repositories/achievement.repository';
+import { activityLogService } from '@/services/activityLog.service';
 import { mapAchievementToDto } from '@/utils/mappers';
 import { NotFoundError } from '@/utils/errors';
 import type { AchievementDto, UpsertAchievementInput } from '@portfolio/shared';
@@ -30,6 +31,14 @@ export const achievementService = {
       sortOrder: input.sortOrder ?? 0,
       isEnabled: input.isEnabled ?? true,
     });
+
+    activityLogService.log({
+      action: 'achievement_create',
+      entityType: 'achievement',
+      entityId: created.id,
+      details: { title: created.title, issuer: created.issuer },
+    });
+
     return mapAchievementToDto(created);
   },
 
@@ -51,12 +60,27 @@ export const achievementService = {
     if (input.isEnabled !== undefined) updateData.isEnabled = input.isEnabled;
 
     const updated = await achievementRepository.update(id, updateData);
+
+    activityLogService.log({
+      action: 'achievement_update',
+      entityType: 'achievement',
+      entityId: updated.id,
+      details: { title: updated.title, issuer: updated.issuer },
+    });
+
     return mapAchievementToDto(updated);
   },
 
   async deleteAchievement(id: string): Promise<void> {
-    await achievementService.getAchievementById(id);
+    const existing = await achievementService.getAchievementById(id);
     await achievementRepository.delete(id);
+
+    activityLogService.log({
+      action: 'achievement_delete',
+      entityType: 'achievement',
+      entityId: id,
+      details: { title: existing.title, issuer: existing.issuer },
+    });
   },
 
   async reorderAchievements(items: { id: string; sortOrder: number }[]): Promise<void> {

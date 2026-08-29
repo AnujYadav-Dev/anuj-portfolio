@@ -30,6 +30,7 @@ export async function generateMetadata({ params }: SingleResearchPageProps): Pro
     description:
       paper.seoDescription || paper.abstract || `Explore ${paper.title} research publication.`,
     canonicalPath: `/research/${paper.slug}`,
+    image: paper.ogImageUrl || undefined,
     keywords: paper.seoKeywords || paper.tags?.join(', '),
     type: 'article',
     publishedTime: paper.publishedAt || paper.publicationDate || paper.createdAt,

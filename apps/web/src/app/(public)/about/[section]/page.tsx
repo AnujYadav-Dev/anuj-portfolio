@@ -25,6 +25,8 @@ export async function generateMetadata({ params }: SingleAboutSectionPageProps):
     title: section.seoTitle || `${section.title} — About`,
     description: section.seoDescription || `Learn more about Anuj Yadav — ${section.title}.`,
     canonicalPath: `/about/${section.slug}`,
+    image: section.ogImageUrl || undefined,
+    keywords: section.seoKeywords || undefined,
     type: 'profile',
   });
 }

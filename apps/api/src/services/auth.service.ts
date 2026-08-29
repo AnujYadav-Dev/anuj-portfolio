@@ -11,6 +11,7 @@ import { sessionRepository } from '@/repositories/session.repository';
 import { siteSettingRepository } from '@/repositories/siteSetting.repository';
 import { tokenService } from '@/services/token.service';
 import { emailService } from '@/services/email.service';
+import { activityLogService } from '@/services/activityLog.service';
 import { verifyPassword, hashPassword } from '@/utils/password';
 import { mapAuthorToDto } from '@/utils/mappers';
 import { parseUserAgent } from '@/utils/uaParser';
@@ -58,6 +59,18 @@ export const authService = {
 
     const refreshTokenHash = hashToken(refreshToken);
     await sessionRepository.updateRefreshTokenHash(session.id, refreshTokenHash, expiresAt);
+
+    // Record Activity Log
+    setImmediate(() => {
+      activityLogService.log({
+        action: 'admin.login',
+        entityType: 'Author',
+        entityId: author.id,
+        authorId: author.id,
+        ipAddress: context.ipAddress || undefined,
+        details: { userAgent: context.userAgent || undefined },
+      });
+    });
 
     // Send Security Login Alert
     setImmediate(async () => {
@@ -203,6 +216,18 @@ export const authService = {
       ...(avatarId !== undefined ? { avatarId } : {}),
     });
 
+    // Record Activity Log
+    setImmediate(() => {
+      activityLogService.log({
+        action: 'author.update_profile',
+        entityType: 'Author',
+        entityId: authorId,
+        authorId,
+        ipAddress: context?.ipAddress || undefined,
+        details: { displayName: input.displayName, email: input.email },
+      });
+    });
+
     // Send Profile Update Security Alert
     setImmediate(async () => {
       try {
@@ -246,6 +271,18 @@ export const authService = {
 
     const newHash = await hashPassword(input.newPassword);
     await authorRepository.updatePassword(authorId, newHash);
+
+    // Record Activity Log
+    setImmediate(() => {
+      activityLogService.log({
+        action: 'author.change_password',
+        entityType: 'Author',
+        entityId: authorId,
+        authorId,
+        ipAddress: context?.ipAddress || undefined,
+        details: { description: 'Master admin password successfully changed' },
+      });
+    });
 
     // Send Password Changed Security Notice
     setImmediate(async () => {

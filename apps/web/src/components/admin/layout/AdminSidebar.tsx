@@ -6,6 +6,7 @@ import { usePathname } from 'next/navigation';
 import {
   LayoutDashboard,
   BarChart3,
+  Activity,
   FolderGit2,
   FileText,
   GraduationCap,
@@ -59,6 +60,7 @@ const NAV_GROUPS: NavGroup[] = [
     items: [
       { label: 'Dashboard', href: '/admin', icon: LayoutDashboard },
       { label: 'Visitor Analytics', href: '/admin/analytics', icon: BarChart3 },
+      { label: 'Activity Logs', href: '/admin/activity', icon: Activity },
     ],
   },
   {

@@ -4,12 +4,14 @@ import React, { useEffect, useState } from 'react';
 import { apiClient } from '@/lib/api';
 import type {
   EducationDto,
+  MediaDto,
   CreateEducationRequest,
   UpdateEducationRequest,
 } from '@portfolio/shared';
 import { AdminPageHeader } from '@/components/admin/ui/AdminPageHeader';
 import { ReorderableList } from '@/components/admin/ui/ReorderableList';
 import { ConfirmDialog } from '@/components/admin/ui/ConfirmDialog';
+import { MediaPickerModal } from '@/components/admin/ui/MediaPickerModal';
 import {
   Dialog,
   DialogContent,
@@ -20,7 +22,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { MarkdownEditor } from '@/components/admin/ui/MarkdownEditor';
-import { Plus, Edit2, Trash2, BookOpen } from 'lucide-react';
+import { Plus, Edit2, Trash2, BookOpen, Image as ImageIcon, EyeOff } from 'lucide-react';
 import { toast } from 'sonner';
 
 export default function AdminEducationPage() {
@@ -28,14 +30,21 @@ export default function AdminEducationPage() {
   const [isLoading, setIsLoading] = useState(true);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isLogoPickerOpen, setIsLogoPickerOpen] = useState(false);
   const [editingEdu, setEditingEdu] = useState<EducationDto | null>(null);
   const [institution, setInstitution] = useState('');
   const [degree, setDegree] = useState('');
   const [fieldOfStudy, setFieldOfStudy] = useState('');
+  const [location, setLocation] = useState('');
+  const [institutionLogoUrl, setInstitutionLogoUrl] = useState('');
+  const [institutionLogoId, setInstitutionLogoId] = useState('');
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
+  const [isCurrent, setIsCurrent] = useState(false);
   const [grade, setGrade] = useState('');
+  const [activities, setActivities] = useState('');
   const [description, setDescription] = useState('');
+  const [isEnabled, setIsEnabled] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
 
   const [deleteTarget, setDeleteTarget] = useState<EducationDto | null>(null);
@@ -62,10 +71,16 @@ export default function AdminEducationPage() {
     setInstitution('');
     setDegree('');
     setFieldOfStudy('');
+    setLocation('');
+    setInstitutionLogoUrl('');
+    setInstitutionLogoId('');
     setStartDate('');
     setEndDate('');
+    setIsCurrent(false);
     setGrade('');
+    setActivities('');
     setDescription('');
+    setIsEnabled(true);
     setIsModalOpen(true);
   };
 
@@ -74,11 +89,22 @@ export default function AdminEducationPage() {
     setInstitution(edu.institution);
     setDegree(edu.degree);
     setFieldOfStudy(edu.fieldOfStudy || '');
+    setLocation(edu.location || '');
+    setInstitutionLogoUrl(edu.institutionLogoUrl || '');
+    setInstitutionLogoId('');
     setStartDate(edu.startDate ? new Date(edu.startDate).toISOString().split('T')[0]! : '');
     setEndDate(edu.endDate ? new Date(edu.endDate).toISOString().split('T')[0]! : '');
+    setIsCurrent(edu.isCurrent || false);
     setGrade(edu.grade || '');
+    setActivities(edu.activities || '');
     setDescription(edu.description || '');
+    setIsEnabled(edu.isEnabled);
     setIsModalOpen(true);
+  };
+
+  const handleSelectLogo = (media: MediaDto) => {
+    setInstitutionLogoUrl(media.url);
+    setInstitutionLogoId(media.id);
   };
 
   const handleSave = async (e: React.FormEvent) => {
@@ -94,10 +120,15 @@ export default function AdminEducationPage() {
         institution,
         degree,
         fieldOfStudy: fieldOfStudy || undefined,
+        location: location || undefined,
+        institutionLogoId: institutionLogoId || undefined,
         startDate,
-        endDate: endDate || undefined,
+        endDate: isCurrent || !endDate ? undefined : endDate,
+        isCurrent,
         grade: grade || undefined,
+        activities: activities || undefined,
         description: description || undefined,
+        isEnabled,
       };
 
       if (editingEdu) {
@@ -175,10 +206,16 @@ export default function AdminEducationPage() {
                   <span className="text-muted text-xs">in {item.fieldOfStudy}</span>
                 )}
                 <span className="text-accent text-xs">@ {item.institution}</span>
+                {!item.isEnabled && (
+                  <span className="text-[10px] text-destructive font-mono flex items-center gap-0.5">
+                    <EyeOff className="w-3 h-3" /> Hidden
+                  </span>
+                )}
               </div>
               <p className="text-[11px] text-muted font-mono mt-0.5">
                 {new Date(item.startDate).getFullYear()} —{' '}
-                {item.endDate ? new Date(item.endDate).getFullYear() : 'Present'}
+                {item.isCurrent ? 'Present' : item.endDate ? new Date(item.endDate).getFullYear() : 'Present'}
+                {item.location && ` • ${item.location}`}
                 {item.grade && ` • GPA/Grade: ${item.grade}`}
               </p>
             </div>
@@ -219,18 +256,31 @@ export default function AdminEducationPage() {
             </DialogHeader>
 
             <div className="flex-1 overflow-y-auto space-y-4 py-3 pr-1">
-              <div className="space-y-1">
-                <label className="text-xs font-semibold text-foreground">
-                  Institution / University
-                </label>
-                <Input
-                  type="text"
-                  placeholder="e.g. Stanford University"
-                  value={institution}
-                  onChange={(e) => setInstitution(e.target.value)}
-                  required
-                  className="bg-background text-xs"
-                />
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div className="space-y-1">
+                  <label className="text-xs font-semibold text-foreground">
+                    Institution / University
+                  </label>
+                  <Input
+                    type="text"
+                    placeholder="e.g. Stanford University"
+                    value={institution}
+                    onChange={(e) => setInstitution(e.target.value)}
+                    required
+                    className="bg-background text-xs"
+                  />
+                </div>
+
+                <div className="space-y-1">
+                  <label className="text-xs font-semibold text-foreground">Location</label>
+                  <Input
+                    type="text"
+                    placeholder="e.g. Stanford, CA"
+                    value={location}
+                    onChange={(e) => setLocation(e.target.value)}
+                    className="bg-background text-xs"
+                  />
+                </div>
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -276,27 +326,79 @@ export default function AdminEducationPage() {
                     type="date"
                     value={endDate}
                     onChange={(e) => setEndDate(e.target.value)}
+                    disabled={isCurrent}
                     className="bg-background text-xs font-mono"
                   />
                 </div>
               </div>
 
-              <div className="space-y-1">
-                <label className="text-xs font-semibold text-foreground">
-                  Grade / GPA (Optional)
+              <div>
+                <label className="flex items-center gap-2 cursor-pointer select-none">
+                  <input
+                    type="checkbox"
+                    checked={isCurrent}
+                    onChange={(e) => setIsCurrent(e.target.checked)}
+                    className="rounded border-border bg-background text-accent focus:ring-accent accent-accent w-4 h-4 cursor-pointer"
+                  />
+                  <span className="text-xs font-semibold text-foreground">
+                    I currently study here
+                  </span>
                 </label>
-                <Input
-                  type="text"
-                  placeholder="e.g. 3.9 / 4.0 or First Class Honors"
-                  value={grade}
-                  onChange={(e) => setGrade(e.target.value)}
-                  className="bg-background text-xs"
-                />
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div className="space-y-1">
+                  <label className="text-xs font-semibold text-foreground">
+                    Grade / GPA (Optional)
+                  </label>
+                  <Input
+                    type="text"
+                    placeholder="e.g. 3.9 / 4.0 or First Class Honors"
+                    value={grade}
+                    onChange={(e) => setGrade(e.target.value)}
+                    className="bg-background text-xs"
+                  />
+                </div>
+
+                <div className="space-y-1">
+                  <label className="text-xs font-semibold text-foreground">
+                    Activities & Societies
+                  </label>
+                  <Input
+                    type="text"
+                    placeholder="e.g. ACM Student Chapter, Robotics Club"
+                    value={activities}
+                    onChange={(e) => setActivities(e.target.value)}
+                    className="bg-background text-xs"
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-1">
+                <label className="text-xs font-semibold text-foreground">Institution Logo</label>
+                <div className="flex items-center gap-2">
+                  {institutionLogoUrl ? (
+                    <div className="flex items-center gap-2">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img src={institutionLogoUrl} alt="Logo" className="w-10 h-10 object-contain rounded border border-border bg-white/5 p-1" />
+                      <Button type="button" variant="outline" size="sm" onClick={() => setIsLogoPickerOpen(true)} className="text-xs h-7">
+                        Change Logo
+                      </Button>
+                      <Button type="button" variant="ghost" size="sm" onClick={() => { setInstitutionLogoUrl(''); setInstitutionLogoId(''); }} className="text-xs h-7 text-destructive">
+                        Remove
+                      </Button>
+                    </div>
+                  ) : (
+                    <Button type="button" variant="outline" size="sm" onClick={() => setIsLogoPickerOpen(true)} className="text-xs h-7">
+                      <ImageIcon className="w-3.5 h-3.5 mr-1" /> Select University / College Logo
+                    </Button>
+                  )}
+                </div>
               </div>
 
               <div className="space-y-1">
                 <label className="text-xs font-semibold text-foreground">
-                  Academic Highlights & Activities (Markdown)
+                  Academic Highlights & Coursework (Markdown)
                 </label>
                 <MarkdownEditor
                   value={description}
@@ -304,6 +406,20 @@ export default function AdminEducationPage() {
                   placeholder="Key coursework, honors, labs, research projects, leadership activities in markdown..."
                   minHeight="200px"
                 />
+              </div>
+
+              <div className="pt-1">
+                <label className="flex items-center gap-2 cursor-pointer select-none">
+                  <input
+                    type="checkbox"
+                    checked={isEnabled}
+                    onChange={(e) => setIsEnabled(e.target.checked)}
+                    className="rounded border-border bg-background text-accent focus:ring-accent accent-accent w-4 h-4 cursor-pointer"
+                  />
+                  <span className="text-xs font-semibold text-foreground">
+                    Visible on Public Site
+                  </span>
+                </label>
               </div>
             </div>
 
@@ -329,6 +445,14 @@ export default function AdminEducationPage() {
           </form>
         </DialogContent>
       </Dialog>
+
+      <MediaPickerModal
+        isOpen={isLogoPickerOpen}
+        onClose={() => setIsLogoPickerOpen(false)}
+        onSelect={handleSelectLogo}
+        title="Select Institution Logo"
+        acceptType="image"
+      />
 
       <ConfirmDialog
         isOpen={Boolean(deleteTarget)}

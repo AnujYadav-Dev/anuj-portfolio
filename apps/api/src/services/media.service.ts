@@ -7,6 +7,7 @@ import { mapMediaToDto, mimeTypeToMediaType } from '@/utils/mappers';
 import { ValidationError, NotFoundError } from '@/utils/errors';
 import { ALLOWED_UPLOAD_MIME_TYPES } from '@/config/constants';
 import { getPrismaPagination, buildPagination } from '@/utils/pagination';
+import { activityLogService } from '@/services/activityLog.service';
 
 export interface UploadedFile {
   originalname: string;
@@ -56,6 +57,14 @@ export const mediaService = {
       altText: metadata.altText ?? null,
       caption: metadata.caption ?? null,
       uploadedBy,
+    });
+
+    activityLogService.log({
+      action: 'media_upload',
+      entityType: 'media',
+      entityId: media.id,
+      authorId: uploadedBy,
+      details: { filename: media.filename, mimeType: media.mimeType, sizeBytes: media.sizeBytes },
     });
 
     return mapMediaToDto(media);
@@ -116,5 +125,12 @@ export const mediaService = {
     }
 
     await mediaRepository.delete(id);
+
+    activityLogService.log({
+      action: 'media_delete',
+      entityType: 'media',
+      entityId: id,
+      details: { filename: existing.filename, url: existing.url },
+    });
   },
 };

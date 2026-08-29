@@ -44,6 +44,7 @@ export const aboutSectionService = {
       seoTitle: input.seoTitle ?? null,
       seoDescription: input.seoDescription ?? null,
       seoKeywords: input.seoKeywords ?? null,
+      ogImage: input.ogImageId ? { connect: { id: input.ogImageId } } : undefined,
     });
     return mapAboutSectionToDto(created);
   },
@@ -65,6 +66,9 @@ export const aboutSectionService = {
     if (input.seoDescription !== undefined)
       updateData.seoDescription = input.seoDescription || null;
     if (input.seoKeywords !== undefined) updateData.seoKeywords = input.seoKeywords || null;
+    if (input.ogImageId !== undefined) {
+      updateData.ogImage = input.ogImageId ? { connect: { id: input.ogImageId } } : { disconnect: true };
+    }
 
     const updated = await aboutSectionRepository.update(id, updateData);
     return mapAboutSectionToDto(updated);

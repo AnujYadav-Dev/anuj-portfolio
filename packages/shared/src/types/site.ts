@@ -59,6 +59,7 @@ export interface HomepageSectionDto {
   sortOrder: number;
   isEnabled: boolean;
   config: HomepageSectionConfig;
+  contentBlocks?: ContentBlockDto[];
 }
 
 /** Create homepage section request. */
@@ -96,14 +97,15 @@ export interface ContentBlockDto {
 /** Create content block request. */
 export interface CreateContentBlockRequest {
   blockType: BlockType;
-  title?: string;
-  content?: string;
-  mediaUrl?: string;
+  title?: string | null;
+  content?: string | null;
+  mediaUrl?: string | null;
+  mediaId?: string | null;
   config?: Record<string, unknown>;
   sortOrder?: number;
   isEnabled?: boolean;
-  pageId?: string;
-  homepageSectionId?: string;
+  pageId?: string | null;
+  homepageSectionId?: string | null;
 }
 
 /** Update content block request. */
@@ -168,6 +170,7 @@ export interface PageDto extends SeoFields {
   isNavVisible: boolean;
   sortOrder: number;
   publishedAt: string | null;
+  scheduledAt: string | null;
   createdAt: string;
   updatedAt: string;
   contentBlocks: ContentBlockDto[];
@@ -181,6 +184,8 @@ export interface CreatePageRequest {
   status?: ContentStatus;
   isNavVisible?: boolean;
   sortOrder?: number;
+  publishedAt?: string;
+  scheduledAt?: string | null;
   seoTitle?: string;
   seoDescription?: string;
   seoKeywords?: string;

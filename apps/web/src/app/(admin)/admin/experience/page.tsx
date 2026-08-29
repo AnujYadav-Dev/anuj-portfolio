@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { apiClient } from '@/lib/api';
 import type {
   ExperienceDto,
+  MediaDto,
   CreateExperienceRequest,
   UpdateExperienceRequest,
 } from '@portfolio/shared';
@@ -20,7 +21,8 @@ import {
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { MarkdownEditor } from '@/components/admin/ui/MarkdownEditor';
-import { Plus, Edit2, Trash2, Briefcase } from 'lucide-react';
+import { MediaPickerModal } from '@/components/admin/ui/MediaPickerModal';
+import { Plus, Edit2, Trash2, Briefcase, Image as ImageIcon } from 'lucide-react';
 import { toast } from 'sonner';
 
 export default function AdminExperiencePage() {
@@ -29,11 +31,14 @@ export default function AdminExperiencePage() {
 
   // Modal State
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isLogoPickerOpen, setIsLogoPickerOpen] = useState(false);
   const [editingExp, setEditingExp] = useState<ExperienceDto | null>(null);
   const [companyName, setCompanyName] = useState('');
   const [role, setRole] = useState('');
   const [location, setLocation] = useState('');
   const [companyUrl, setCompanyUrl] = useState('');
+  const [companyLogoUrl, setCompanyLogoUrl] = useState('');
+  const [companyLogoId, setCompanyLogoId] = useState('');
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
   const [isCurrent, setIsCurrent] = useState(false);
@@ -67,6 +72,8 @@ export default function AdminExperiencePage() {
     setRole('');
     setLocation('');
     setCompanyUrl('');
+    setCompanyLogoUrl('');
+    setCompanyLogoId('');
     setStartDate('');
     setEndDate('');
     setIsCurrent(false);
@@ -82,6 +89,8 @@ export default function AdminExperiencePage() {
     setRole(exp.role);
     setLocation(exp.location || '');
     setCompanyUrl(exp.companyUrl || '');
+    setCompanyLogoUrl(exp.companyLogoUrl || '');
+    setCompanyLogoId('');
     setStartDate(exp.startDate ? new Date(exp.startDate).toISOString().split('T')[0]! : '');
     setEndDate(exp.endDate ? new Date(exp.endDate).toISOString().split('T')[0]! : '');
     setIsCurrent(exp.isCurrent);
@@ -89,6 +98,11 @@ export default function AdminExperiencePage() {
     setTechnologiesText(exp.technologies ? exp.technologies.join(', ') : '');
     setIsEnabled(exp.isEnabled);
     setIsModalOpen(true);
+  };
+
+  const handleSelectLogo = (media: MediaDto) => {
+    setCompanyLogoUrl(media.url);
+    setCompanyLogoId(media.id);
   };
 
   const handleSave = async (e: React.FormEvent) => {
@@ -110,6 +124,7 @@ export default function AdminExperiencePage() {
         role,
         location: location || undefined,
         companyUrl: companyUrl || undefined,
+        companyLogoId: companyLogoId || undefined,
         startDate,
         endDate: isCurrent || !endDate ? undefined : endDate,
         isCurrent,
@@ -367,6 +382,28 @@ export default function AdminExperiencePage() {
                 />
               </div>
 
+              <div className="space-y-1">
+                <label className="text-xs font-semibold text-foreground">Company Logo Image</label>
+                <div className="flex items-center gap-2">
+                  {companyLogoUrl ? (
+                    <div className="flex items-center gap-2">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img src={companyLogoUrl} alt="Logo" className="w-10 h-10 object-contain rounded border border-border bg-white/5 p-1" />
+                      <Button type="button" variant="outline" size="sm" onClick={() => setIsLogoPickerOpen(true)} className="text-xs h-7">
+                        Change Logo
+                      </Button>
+                      <Button type="button" variant="ghost" size="sm" onClick={() => { setCompanyLogoUrl(''); setCompanyLogoId(''); }} className="text-xs h-7 text-destructive">
+                        Remove
+                      </Button>
+                    </div>
+                  ) : (
+                    <Button type="button" variant="outline" size="sm" onClick={() => setIsLogoPickerOpen(true)} className="text-xs h-7">
+                      <ImageIcon className="w-3.5 h-3.5 mr-1" /> Select Company Logo
+                    </Button>
+                  )}
+                </div>
+              </div>
+
               <div className="pt-1">
                 <label className="flex items-center gap-2 cursor-pointer select-none">
                   <input
@@ -404,6 +441,14 @@ export default function AdminExperiencePage() {
           </form>
         </DialogContent>
       </Dialog>
+
+      <MediaPickerModal
+        isOpen={isLogoPickerOpen}
+        onClose={() => setIsLogoPickerOpen(false)}
+        onSelect={handleSelectLogo}
+        title="Select Company Logo"
+        acceptType="image"
+      />
 
       <ConfirmDialog
         isOpen={Boolean(deleteTarget)}

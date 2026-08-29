@@ -1,4 +1,5 @@
 import { educationRepository } from '@/repositories/education.repository';
+import { activityLogService } from '@/services/activityLog.service';
 import { mapEducationToDto } from '@/utils/mappers';
 import { NotFoundError } from '@/utils/errors';
 import type { EducationDto, UpsertEducationInput } from '@portfolio/shared';
@@ -34,6 +35,14 @@ export const educationService = {
       sortOrder: input.sortOrder ?? 0,
       isEnabled: input.isEnabled ?? true,
     });
+
+    activityLogService.log({
+      action: 'education_create',
+      entityType: 'education',
+      entityId: created.id,
+      details: { institution: created.institution, degree: created.degree },
+    });
+
     return mapEducationToDto(created);
   },
 
@@ -58,12 +67,27 @@ export const educationService = {
     if (input.isEnabled !== undefined) updateData.isEnabled = input.isEnabled;
 
     const updated = await educationRepository.update(id, updateData);
+
+    activityLogService.log({
+      action: 'education_update',
+      entityType: 'education',
+      entityId: updated.id,
+      details: { institution: updated.institution, degree: updated.degree },
+    });
+
     return mapEducationToDto(updated);
   },
 
   async deleteEducation(id: string): Promise<void> {
-    await educationService.getEducationById(id);
+    const existing = await educationService.getEducationById(id);
     await educationRepository.delete(id);
+
+    activityLogService.log({
+      action: 'education_delete',
+      entityType: 'education',
+      entityId: id,
+      details: { institution: existing.institution, degree: existing.degree },
+    });
   },
 
   async reorderEducation(items: { id: string; sortOrder: number }[]): Promise<void> {

@@ -28,6 +28,7 @@ export async function generateMetadata({ params }: SingleBlogPageProps): Promise
       post.excerpt ||
       `Read ${post.title} by ${post.author?.displayName || 'Anuj Yadav'}`,
     canonicalPath: `/blogs/${post.slug}`,
+    image: post.ogImageUrl || post.coverImageUrl || undefined,
     keywords: post.seoKeywords || post.tags?.join(', '),
     type: 'article',
     publishedTime: post.publishedAt || post.createdAt,

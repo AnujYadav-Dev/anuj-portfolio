@@ -58,7 +58,7 @@ export const researchController = {
   async update(req: Request, res: Response): Promise<void> {
     const id = String(req.params.id);
     const input = req.validatedBody as UpdateResearchPaperInput;
-    const paper = await researchService.update(id, input);
+    const paper = await researchService.update(id, input, req.author?.id);
     res.json({ data: paper });
   },
 

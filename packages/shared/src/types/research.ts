@@ -16,8 +16,10 @@ export interface ResearchPaperDto extends SeoFields {
   publicationDate: string | null;
   status: ContentStatus;
   isFeatured: boolean;
+  pdfId: string | null;
   pdfUrl: string | null;
   publishedAt: string | null;
+  scheduledAt: string | null;
   createdAt: string;
   updatedAt: string;
   author: {
@@ -60,6 +62,8 @@ export interface CreateResearchPaperRequest {
   status?: ContentStatus;
   isFeatured?: boolean;
   pdfId?: string;
+  publishedAt?: string;
+  scheduledAt?: string | null;
   seoTitle?: string;
   seoDescription?: string;
   seoKeywords?: string;

@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { apiClient } from '@/lib/api';
 import type {
   AboutSectionDto,
+  MediaDto,
   CreateAboutSectionRequest,
   UpdateAboutSectionRequest,
 } from '@portfolio/shared';
@@ -11,6 +12,7 @@ import { AdminPageHeader } from '@/components/admin/ui/AdminPageHeader';
 import { ReorderableList } from '@/components/admin/ui/ReorderableList';
 import { ConfirmDialog } from '@/components/admin/ui/ConfirmDialog';
 import { MarkdownEditor } from '@/components/admin/ui/MarkdownEditor';
+import { MediaPickerModal } from '@/components/admin/ui/MediaPickerModal';
 import {
   Dialog,
   DialogContent,
@@ -20,7 +22,8 @@ import {
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Plus, Edit2, Trash2, BookOpen, EyeOff } from 'lucide-react';
+import { Textarea } from '@/components/ui/textarea';
+import { Plus, Edit2, Trash2, BookOpen, EyeOff, Image as ImageIcon } from 'lucide-react';
 import { toast } from 'sonner';
 
 export default function AdminAboutPage() {
@@ -29,11 +32,18 @@ export default function AdminAboutPage() {
 
   // Modal State
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isOgPickerOpen, setIsOgPickerOpen] = useState(false);
   const [editingSection, setEditingSection] = useState<AboutSectionDto | null>(null);
   const [slug, setSlug] = useState('');
   const [title, setTitle] = useState('');
+  const [icon, setIcon] = useState('');
   const [content, setContent] = useState('');
   const [isEnabled, setIsEnabled] = useState(true);
+  const [seoTitle, setSeoTitle] = useState('');
+  const [seoDescription, setSeoDescription] = useState('');
+  const [seoKeywords, setSeoKeywords] = useState('');
+  const [ogImageUrl, setOgImageUrl] = useState('');
+  const [ogImageId, setOgImageId] = useState('');
   const [isSaving, setIsSaving] = useState(false);
 
   // Delete State
@@ -60,8 +70,14 @@ export default function AdminAboutPage() {
     setEditingSection(null);
     setSlug('');
     setTitle('');
+    setIcon('');
     setContent('');
     setIsEnabled(true);
+    setSeoTitle('');
+    setSeoDescription('');
+    setSeoKeywords('');
+    setOgImageUrl('');
+    setOgImageId('');
     setIsModalOpen(true);
   };
 
@@ -69,9 +85,20 @@ export default function AdminAboutPage() {
     setEditingSection(sec);
     setSlug(sec.slug);
     setTitle(sec.title);
+    setIcon(sec.icon || '');
     setContent(sec.content || '');
     setIsEnabled(sec.isEnabled);
+    setSeoTitle(sec.seoTitle || '');
+    setSeoDescription(sec.seoDescription || '');
+    setSeoKeywords(sec.seoKeywords || '');
+    setOgImageUrl(sec.ogImageUrl || '');
+    setOgImageId('');
     setIsModalOpen(true);
+  };
+
+  const handleSelectOg = (media: MediaDto) => {
+    setOgImageUrl(media.url);
+    setOgImageId(media.id);
   };
 
   const handleSave = async (e: React.FormEvent) => {
@@ -87,8 +114,13 @@ export default function AdminAboutPage() {
         const payload: UpdateAboutSectionRequest = {
           title,
           slug,
+          icon: icon || undefined,
           content,
           isEnabled,
+          seoTitle: seoTitle || undefined,
+          seoDescription: seoDescription || undefined,
+          seoKeywords: seoKeywords || undefined,
+          ogImageId: ogImageId || undefined,
         };
         await apiClient.put(`/about-sections/${editingSection.id}`, payload);
         toast.success('Section updated successfully');
@@ -96,9 +128,14 @@ export default function AdminAboutPage() {
         const payload: CreateAboutSectionRequest = {
           slug,
           title,
+          icon: icon || undefined,
           content,
           isEnabled,
           sortOrder: sections.length + 1,
+          seoTitle: seoTitle || undefined,
+          seoDescription: seoDescription || undefined,
+          seoKeywords: seoKeywords || undefined,
+          ogImageId: ogImageId || undefined,
         };
         await apiClient.post('/about-sections', payload);
         toast.success('Section created successfully');
@@ -201,7 +238,7 @@ export default function AdminAboutPage() {
       />
 
       {/* Section Editor Modal */}
-      <Dialog isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
+      <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
         <DialogContent className="max-w-2xl bg-surface border-border p-6 max-h-[90vh] overflow-y-auto">
           <form onSubmit={handleSave} className="space-y-4">
             <DialogHeader className="border-b border-border pb-3">
@@ -214,12 +251,12 @@ export default function AdminAboutPage() {
             </DialogHeader>
 
             <div className="space-y-4">
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-3 gap-3">
                 <div className="space-y-1">
                   <label className="text-xs font-semibold text-foreground">Section Title</label>
                   <Input
                     type="text"
-                    placeholder="e.g. My Philosophy / Research Background"
+                    placeholder="e.g. My Philosophy"
                     value={title}
                     onChange={(e) => {
                       setTitle(e.target.value);
@@ -243,6 +280,17 @@ export default function AdminAboutPage() {
                     className="bg-background text-xs font-mono"
                   />
                 </div>
+
+                <div className="space-y-1">
+                  <label className="text-xs font-semibold text-foreground">Icon (Lucide name)</label>
+                  <Input
+                    type="text"
+                    placeholder="e.g. Brain, Code, Rocket"
+                    value={icon}
+                    onChange={(e) => setIcon(e.target.value)}
+                    className="bg-background text-xs font-mono"
+                  />
+                </div>
               </div>
 
               <div className="space-y-1">
@@ -253,6 +301,66 @@ export default function AdminAboutPage() {
                   placeholder="Write the narrative text for this section in GitHub Flavored Markdown..."
                   minHeight="220px"
                 />
+              </div>
+
+              {/* SEO Sub-section */}
+              <div className="p-3 bg-surface-muted border border-border rounded-lg space-y-3 text-xs">
+                <h4 className="font-bold text-foreground">Section SEO & Open Graph</h4>
+                <div className="grid grid-cols-2 gap-3">
+                  <div className="space-y-1">
+                    <label className="font-semibold text-foreground">Meta Title</label>
+                    <Input
+                      type="text"
+                      placeholder="Defaults to Section Title"
+                      value={seoTitle}
+                      onChange={(e) => setSeoTitle(e.target.value)}
+                      className="bg-background text-xs"
+                    />
+                  </div>
+                  <div className="space-y-1">
+                    <label className="font-semibold text-foreground">SEO Keywords</label>
+                    <Input
+                      type="text"
+                      placeholder="e.g. research, background, biography"
+                      value={seoKeywords}
+                      onChange={(e) => setSeoKeywords(e.target.value)}
+                      className="bg-background text-xs"
+                    />
+                  </div>
+                </div>
+
+                <div className="space-y-1">
+                  <label className="font-semibold text-foreground">Meta Description</label>
+                  <Textarea
+                    placeholder="Brief description for SEO search results..."
+                    value={seoDescription}
+                    onChange={(e) => setSeoDescription(e.target.value)}
+                    rows={2}
+                    className="bg-background text-xs"
+                  />
+                </div>
+
+                <div className="space-y-1">
+                  <label className="font-semibold text-foreground">Open Graph Image</label>
+                  <div className="flex items-center gap-2">
+                    {ogImageUrl ? (
+                      <div className="flex items-center gap-2">
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img src={ogImageUrl} alt="OG" className="w-12 h-12 object-cover rounded border border-border" />
+                        <Button type="button" variant="outline" size="sm" onClick={() => setIsOgPickerOpen(true)} className="text-xs h-7">
+                          Change
+                        </Button>
+                        <Button type="button" variant="ghost" size="sm" onClick={() => { setOgImageUrl(''); setOgImageId(''); }} className="text-xs h-7 text-destructive">
+                          Remove
+                        </Button>
+                      </div>
+                    ) : (
+                      <Button type="button" variant="outline" size="sm" onClick={() => setIsOgPickerOpen(true)} className="text-xs h-7">
+                        <ImageIcon className="w-3 h-3 mr-1" /> Choose OG Image
+                      </Button>
+                    )}
+                  </div>
+                </div>
               </div>
 
               <div className="pt-2">
@@ -292,6 +400,14 @@ export default function AdminAboutPage() {
           </form>
         </DialogContent>
       </Dialog>
+
+      <MediaPickerModal
+        isOpen={isOgPickerOpen}
+        onClose={() => setIsOgPickerOpen(false)}
+        onSelect={handleSelectOg}
+        title="Select About Section OG Image"
+        acceptType="image"
+      />
 
       <ConfirmDialog
         isOpen={Boolean(deleteTarget)}

@@ -14,6 +14,8 @@ export interface AboutSectionDto {
   isEnabled: boolean;
   seoTitle: string | null;
   seoDescription: string | null;
+  seoKeywords: string | null;
+  ogImageUrl: string | null;
 }
 
 /** Skill category with its skills. */
@@ -177,6 +179,8 @@ export interface CreateAboutSectionRequest {
   isEnabled?: boolean;
   seoTitle?: string;
   seoDescription?: string;
+  seoKeywords?: string;
+  ogImageId?: string;
 }
 export interface UpdateAboutSectionRequest extends Partial<CreateAboutSectionRequest> {}
 

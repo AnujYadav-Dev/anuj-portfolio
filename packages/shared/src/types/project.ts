@@ -3,6 +3,16 @@
 import type { ContentStatus, ProjectType, ProjectStatus } from './enums';
 import type { SeoFields } from './common';
 
+/** Project image / screenshot DTO */
+export interface ProjectImageDto {
+  id: string;
+  mediaId: string;
+  url: string;
+  caption: string | null;
+  altText: string | null;
+  sortOrder: number;
+}
+
 /** Full project representation. */
 export interface ProjectDto extends SeoFields {
   id: string;
@@ -22,6 +32,7 @@ export interface ProjectDto extends SeoFields {
   sortOrder: number;
   coverImageUrl: string | null;
   publishedAt: string | null;
+  scheduledAt: string | null;
   createdAt: string;
   updatedAt: string;
   author: {
@@ -36,6 +47,7 @@ export interface ProjectDto extends SeoFields {
     slug: string;
   } | null;
   tags: string[];
+  images: ProjectImageDto[];
 }
 
 /** Condensed project for list views. */
@@ -71,12 +83,18 @@ export interface CreateProjectRequest {
   technologies?: string[];
   githubUrl?: string;
   liveUrl?: string;
+  documentationUrl?: string;
+  architectureDiagramUrl?: string;
+  challengesLearnings?: string;
   projectType?: ProjectType;
   projectStatus?: ProjectStatus;
   status?: ContentStatus;
   isFeatured?: boolean;
+  sortOrder?: number;
   startDate?: string;
   endDate?: string;
+  publishedAt?: string;
+  scheduledAt?: string | null;
   categoryId?: string;
   coverImageId?: string;
   seoTitle?: string;
@@ -84,6 +102,7 @@ export interface CreateProjectRequest {
   seoKeywords?: string;
   ogImageId?: string;
   tagIds?: string[];
+  images?: Array<{ mediaId: string; caption?: string | null; sortOrder?: number }>;
   notifySubscribers?: boolean;
 }
 

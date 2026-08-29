@@ -1,4 +1,5 @@
 import { galleryRepository } from '@/repositories/gallery.repository';
+import { activityLogService } from '@/services/activityLog.service';
 import { mapGalleryItemToDto } from '@/utils/mappers';
 import { NotFoundError } from '@/utils/errors';
 import type { GalleryItemDto, UpsertGalleryItemInput } from '@portfolio/shared';
@@ -27,6 +28,14 @@ export const galleryService = {
       sortOrder: input.sortOrder ?? 0,
       isEnabled: input.isEnabled ?? true,
     });
+
+    activityLogService.log({
+      action: 'gallery_create',
+      entityType: 'gallery_item',
+      entityId: created.id,
+      details: { title: created.title, category: created.category },
+    });
+
     return mapGalleryItemToDto(created);
   },
 
@@ -42,12 +51,27 @@ export const galleryService = {
     if (input.isEnabled !== undefined) updateData.isEnabled = input.isEnabled;
 
     const updated = await galleryRepository.update(id, updateData);
+
+    activityLogService.log({
+      action: 'gallery_update',
+      entityType: 'gallery_item',
+      entityId: updated.id,
+      details: { title: updated.title, category: updated.category },
+    });
+
     return mapGalleryItemToDto(updated);
   },
 
   async deleteItem(id: string): Promise<void> {
-    await galleryService.getItemById(id);
+    const existing = await galleryService.getItemById(id);
     await galleryRepository.delete(id);
+
+    activityLogService.log({
+      action: 'gallery_delete',
+      entityType: 'gallery_item',
+      entityId: id,
+      details: { title: existing.title, category: existing.category },
+    });
   },
 
   async reorderItems(items: { id: string; sortOrder: number }[]): Promise<void> {

@@ -24,6 +24,8 @@ export const createResearchPaperSchema = z
     status: z.nativeEnum(ContentStatus).default(ContentStatus.Draft),
     isFeatured: z.boolean().default(false),
     pdfId: optionalUuidSchema,
+    publishedAt: optionalDateStringSchema,
+    scheduledAt: optionalDateStringSchema,
     tagIds: z.array(z.string().uuid()).optional(),
     notifySubscribers: z.boolean().optional(),
   })

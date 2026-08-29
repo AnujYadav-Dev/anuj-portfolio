@@ -1,6 +1,7 @@
 import { guestbookRepository } from '@/repositories/guestbook.repository';
 import { siteSettingRepository } from '@/repositories/siteSetting.repository';
 import { emailService } from '@/services/email.service';
+import { activityLogService } from '@/services/activityLog.service';
 import { mapGuestbookEntryToDto } from '@/utils/mappers';
 import { buildPagination, getPrismaPagination } from '@/utils/pagination';
 import { NotFoundError } from '@/utils/errors';
@@ -113,6 +114,13 @@ export const guestbookService = {
     }
     const updated = await guestbookRepository.updateModeration(id, status as ModerationStatus);
 
+    activityLogService.log({
+      action: 'guestbook_moderate',
+      entityType: 'guestbook_entry',
+      entityId: id,
+      details: { authorName: entry.authorName, moderationStatus: status },
+    });
+
     // If entry was approved and author provided an email, send them a confirmation notification
     if (status === ModerationStatus.approved && entry.authorEmail) {
       setImmediate(async () => {
@@ -146,5 +154,12 @@ export const guestbookService = {
       throw new NotFoundError(`Guestbook entry '${id}' not found`);
     }
     await guestbookRepository.delete(id);
+
+    activityLogService.log({
+      action: 'guestbook_delete',
+      entityType: 'guestbook_entry',
+      entityId: id,
+      details: { authorName: entry.authorName },
+    });
   },
 };

@@ -21,8 +21,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import { Plus, Edit2, Trash2, Milestone } from 'lucide-react';
-
+import { Plus, Edit2, Trash2, Milestone, EyeOff } from 'lucide-react';
 import { toast } from 'sonner';
 
 export default function AdminTimelinePage() {
@@ -33,10 +32,12 @@ export default function AdminTimelinePage() {
   const [editingEvent, setEditingEvent] = useState<TimelineEventDto | null>(null);
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
+  const [icon, setIcon] = useState('');
   const [date, setDate] = useState('');
   const [endDate, setEndDate] = useState('');
   const [eventType, setEventType] = useState<TimelineEventType>(TimelineEventType.Milestone);
   const [url, setUrl] = useState('');
+  const [isEnabled, setIsEnabled] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
 
   const [deleteTarget, setDeleteTarget] = useState<TimelineEventDto | null>(null);
@@ -62,10 +63,12 @@ export default function AdminTimelinePage() {
     setEditingEvent(null);
     setTitle('');
     setDescription('');
+    setIcon('');
     setDate(new Date().toISOString().split('T')[0]!);
     setEndDate('');
     setEventType(TimelineEventType.Milestone);
     setUrl('');
+    setIsEnabled(true);
     setIsModalOpen(true);
   };
 
@@ -73,10 +76,12 @@ export default function AdminTimelinePage() {
     setEditingEvent(evt);
     setTitle(evt.title);
     setDescription(evt.description || '');
+    setIcon(evt.icon || '');
     setDate(evt.date ? evt.date.split('T')[0]! : '');
     setEndDate(evt.endDate ? evt.endDate.split('T')[0]! : '');
     setEventType(evt.eventType);
     setUrl(evt.url || '');
+    setIsEnabled(evt.isEnabled);
     setIsModalOpen(true);
   };
 
@@ -92,10 +97,12 @@ export default function AdminTimelinePage() {
       const payload: CreateTimelineEventRequest | UpdateTimelineEventRequest = {
         title,
         description: description || undefined,
+        icon: icon || undefined,
         eventType,
         date: date,
         endDate: endDate || undefined,
         url: url || undefined,
+        isEnabled,
       };
 
       if (editingEvent) {
@@ -172,6 +179,11 @@ export default function AdminTimelinePage() {
                 <span className="text-[10px] text-accent font-mono bg-surface-muted px-1.5 py-0.5 rounded border border-border uppercase">
                   {item.eventType}
                 </span>
+                {!item.isEnabled && (
+                  <span className="text-[10px] text-destructive font-mono flex items-center gap-0.5">
+                    <EyeOff className="w-3 h-3" /> Hidden
+                  </span>
+                )}
               </div>
               <p className="text-[11px] text-muted font-mono mt-0.5">
                 {new Date(item.date).toLocaleDateString(undefined, {
@@ -205,7 +217,7 @@ export default function AdminTimelinePage() {
       />
 
       {/* Editor Modal */}
-      <Dialog isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
+      <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
         <DialogContent className="max-w-md bg-surface border-border p-6">
           <form onSubmit={handleSave} className="space-y-4">
             <DialogHeader className="border-b border-border pb-3">
@@ -228,19 +240,32 @@ export default function AdminTimelinePage() {
                 />
               </div>
 
-              <div className="space-y-1">
-                <label className="text-xs font-semibold text-foreground">Event Type</label>
-                <select
-                  value={eventType}
-                  onChange={(e) => setEventType(e.target.value as TimelineEventType)}
-                  className="w-full bg-background border border-border rounded-md px-3 py-2 text-foreground font-mono text-xs focus:outline-none focus:border-accent"
-                >
-                  <option value={TimelineEventType.Milestone}>Milestone</option>
-                  <option value={TimelineEventType.Job}>Job / Career Transition</option>
-                  <option value={TimelineEventType.Education}>Education</option>
-                  <option value={TimelineEventType.Project}>Project Launch</option>
-                  <option value={TimelineEventType.Achievement}>Achievement</option>
-                </select>
+              <div className="grid grid-cols-2 gap-3">
+                <div className="space-y-1">
+                  <label className="text-xs font-semibold text-foreground">Event Type</label>
+                  <select
+                    value={eventType}
+                    onChange={(e) => setEventType(e.target.value as TimelineEventType)}
+                    className="w-full bg-background border border-border rounded-md px-3 py-2 text-foreground font-mono text-xs focus:outline-none focus:border-accent"
+                  >
+                    <option value={TimelineEventType.Milestone}>Milestone</option>
+                    <option value={TimelineEventType.Job}>Job / Career</option>
+                    <option value={TimelineEventType.Education}>Education</option>
+                    <option value={TimelineEventType.Project}>Project Launch</option>
+                    <option value={TimelineEventType.Achievement}>Achievement</option>
+                  </select>
+                </div>
+
+                <div className="space-y-1">
+                  <label className="text-xs font-semibold text-foreground">Icon (Lucide name)</label>
+                  <Input
+                    type="text"
+                    placeholder="e.g. Award, Rocket"
+                    value={icon}
+                    onChange={(e) => setIcon(e.target.value)}
+                    className="bg-background text-xs font-mono"
+                  />
+                </div>
               </div>
 
               <div className="grid grid-cols-2 gap-3">
@@ -292,6 +317,20 @@ export default function AdminTimelinePage() {
                   rows={3}
                   className="bg-background text-xs"
                 />
+              </div>
+
+              <div className="pt-2">
+                <label className="flex items-center gap-2 cursor-pointer select-none">
+                  <input
+                    type="checkbox"
+                    checked={isEnabled}
+                    onChange={(e) => setIsEnabled(e.target.checked)}
+                    className="rounded border-border bg-background text-accent focus:ring-accent accent-accent w-4 h-4 cursor-pointer"
+                  />
+                  <span className="text-xs font-semibold text-foreground">
+                    Visible on Public Site
+                  </span>
+                </label>
               </div>
             </div>
 

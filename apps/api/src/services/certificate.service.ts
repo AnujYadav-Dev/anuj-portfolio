@@ -1,4 +1,5 @@
 import { certificateRepository } from '@/repositories/certificate.repository';
+import { activityLogService } from '@/services/activityLog.service';
 import { mapCertificateToDto } from '@/utils/mappers';
 import { NotFoundError } from '@/utils/errors';
 import type { CertificateDto, UpsertCertificateInput } from '@portfolio/shared';
@@ -30,6 +31,14 @@ export const certificateService = {
       sortOrder: input.sortOrder ?? 0,
       isEnabled: input.isEnabled ?? true,
     });
+
+    activityLogService.log({
+      action: 'certificate_create',
+      entityType: 'certificate',
+      entityId: created.id,
+      details: { name: created.name, issuingOrganization: created.issuingOrganization },
+    });
+
     return mapCertificateToDto(created);
   },
 
@@ -54,12 +63,27 @@ export const certificateService = {
     if (input.isEnabled !== undefined) updateData.isEnabled = input.isEnabled;
 
     const updated = await certificateRepository.update(id, updateData);
+
+    activityLogService.log({
+      action: 'certificate_update',
+      entityType: 'certificate',
+      entityId: updated.id,
+      details: { name: updated.name, issuingOrganization: updated.issuingOrganization },
+    });
+
     return mapCertificateToDto(updated);
   },
 
   async deleteCertificate(id: string): Promise<void> {
-    await certificateService.getCertificateById(id);
+    const existing = await certificateService.getCertificateById(id);
     await certificateRepository.delete(id);
+
+    activityLogService.log({
+      action: 'certificate_delete',
+      entityType: 'certificate',
+      entityId: id,
+      details: { name: existing.name, issuingOrganization: existing.issuingOrganization },
+    });
   },
 
   async reorderCertificates(items: { id: string; sortOrder: number }[]): Promise<void> {

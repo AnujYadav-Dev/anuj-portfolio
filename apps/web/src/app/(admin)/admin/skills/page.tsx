@@ -1,7 +1,6 @@
 'use client';
 
 import React, { useEffect, useState, useCallback } from 'react';
-
 import { apiClient } from '@/lib/api';
 import type {
   SkillCategoryDto,
@@ -22,7 +21,8 @@ import {
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Plus, Edit2, Trash2, Code2, FolderPlus } from 'lucide-react';
+import { Textarea } from '@/components/ui/textarea';
+import { Plus, Edit2, Trash2, Code2, FolderPlus, EyeOff } from 'lucide-react';
 import { toast } from 'sonner';
 
 export default function AdminSkillsPage() {
@@ -37,14 +37,18 @@ export default function AdminSkillsPage() {
   const [editingSkill, setEditingSkill] = useState<SkillDto | null>(null);
   const [skillName, setSkillName] = useState('');
   const [skillSlug, setSkillSlug] = useState('');
+  const [skillIcon, setSkillIcon] = useState('');
   const [categoryId, setCategoryId] = useState('');
   const [proficiency, setProficiency] = useState<number>(85);
+  const [skillIsEnabled, setSkillIsEnabled] = useState(true);
   const [isSavingSkill, setIsSavingSkill] = useState(false);
 
   // Category Editor Modal
   const [isCatModalOpen, setIsCatModalOpen] = useState(false);
   const [catName, setCatName] = useState('');
   const [catSlug, setCatSlug] = useState('');
+  const [catIcon, setCatIcon] = useState('');
+  const [catDescription, setCatDescription] = useState('');
   const [isSavingCat, setIsSavingCat] = useState(false);
 
   // Delete State
@@ -78,7 +82,9 @@ export default function AdminSkillsPage() {
     setEditingSkill(null);
     setSkillName('');
     setSkillSlug('');
+    setSkillIcon('');
     setProficiency(85);
+    setSkillIsEnabled(true);
     if (categories.length > 0) setCategoryId(categories[0]!.id);
     setIsSkillModalOpen(true);
   };
@@ -87,8 +93,10 @@ export default function AdminSkillsPage() {
     setEditingSkill(skill);
     setSkillName(skill.name);
     setSkillSlug(skill.slug);
+    setSkillIcon(skill.icon || '');
     setProficiency(skill.proficiency ?? 80);
     setCategoryId(skill.categoryId || (categories[0]?.id ?? ''));
+    setSkillIsEnabled(skill.isEnabled);
     setIsSkillModalOpen(true);
   };
 
@@ -112,8 +120,10 @@ export default function AdminSkillsPage() {
         const payload: UpdateSkillRequest = {
           name: skillName,
           slug: generatedSlug,
+          icon: skillIcon || undefined,
           proficiency,
           categoryId,
+          isEnabled: skillIsEnabled,
         };
         await apiClient.put(`/skills/${editingSkill.id}`, payload);
         toast.success('Skill updated successfully');
@@ -121,8 +131,10 @@ export default function AdminSkillsPage() {
         const payload: CreateSkillRequest = {
           name: skillName,
           slug: generatedSlug,
+          icon: skillIcon || undefined,
           proficiency,
           categoryId,
+          isEnabled: skillIsEnabled,
         };
         await apiClient.post('/skills', payload);
         toast.success('Skill added successfully');
@@ -149,6 +161,8 @@ export default function AdminSkillsPage() {
       const payload: CreateSkillCategoryRequest = {
         name: catName,
         slug: catSlug,
+        icon: catIcon || undefined,
+        description: catDescription || undefined,
       };
 
       await apiClient.post('/skill-categories', payload);
@@ -156,6 +170,8 @@ export default function AdminSkillsPage() {
       setIsCatModalOpen(false);
       setCatName('');
       setCatSlug('');
+      setCatIcon('');
+      setCatDescription('');
       fetchData();
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : 'Failed to create category';
@@ -195,6 +211,16 @@ export default function AdminSkillsPage() {
         <div className="flex items-center gap-2">
           <span className="font-bold text-foreground">{item.name}</span>
           <span className="text-[10px] text-muted font-mono">{item.slug}</span>
+          {item.icon && (
+            <span className="text-[10px] text-accent font-mono bg-surface-muted px-1.5 py-0.5 rounded border border-border">
+              {item.icon}
+            </span>
+          )}
+          {!item.isEnabled && (
+            <span className="text-[10px] text-destructive font-mono flex items-center gap-0.5">
+              <EyeOff className="w-3 h-3" /> Hidden
+            </span>
+          )}
         </div>
       ),
     },
@@ -293,7 +319,7 @@ export default function AdminSkillsPage() {
       />
 
       {/* Skill Editor Modal */}
-      <Dialog isOpen={isSkillModalOpen} onClose={() => setIsSkillModalOpen(false)}>
+      <Dialog open={isSkillModalOpen} onOpenChange={setIsSkillModalOpen}>
         <DialogContent className="max-w-md bg-surface border-border p-6">
           <form onSubmit={handleSaveSkill} className="space-y-4">
             <DialogHeader className="border-b border-border pb-3">
@@ -321,16 +347,29 @@ export default function AdminSkillsPage() {
                 />
               </div>
 
-              <div className="space-y-1">
-                <label className="text-xs font-semibold text-foreground">Slug</label>
-                <Input
-                  type="text"
-                  placeholder="e.g. typescript"
-                  value={skillSlug}
-                  onChange={(e) => setSkillSlug(e.target.value)}
-                  required
-                  className="bg-background text-xs font-mono"
-                />
+              <div className="grid grid-cols-2 gap-3">
+                <div className="space-y-1">
+                  <label className="text-xs font-semibold text-foreground">Slug</label>
+                  <Input
+                    type="text"
+                    placeholder="e.g. typescript"
+                    value={skillSlug}
+                    onChange={(e) => setSkillSlug(e.target.value)}
+                    required
+                    className="bg-background text-xs font-mono"
+                  />
+                </div>
+
+                <div className="space-y-1">
+                  <label className="text-xs font-semibold text-foreground">Icon (Lucide name)</label>
+                  <Input
+                    type="text"
+                    placeholder="e.g. Code, Server"
+                    value={skillIcon}
+                    onChange={(e) => setSkillIcon(e.target.value)}
+                    className="bg-background text-xs font-mono"
+                  />
+                </div>
               </div>
 
               <div className="space-y-1">
@@ -362,6 +401,20 @@ export default function AdminSkillsPage() {
                   className="w-full accent-accent cursor-pointer"
                 />
               </div>
+
+              <div className="pt-2">
+                <label className="flex items-center gap-2 cursor-pointer select-none">
+                  <input
+                    type="checkbox"
+                    checked={skillIsEnabled}
+                    onChange={(e) => setSkillIsEnabled(e.target.checked)}
+                    className="rounded border-border bg-background text-accent focus:ring-accent accent-accent w-4 h-4 cursor-pointer"
+                  />
+                  <span className="text-xs font-semibold text-foreground">
+                    Visible on Public Site
+                  </span>
+                </label>
+              </div>
             </div>
 
             <DialogFooter className="pt-3 border-t border-border flex justify-end gap-2">
@@ -388,7 +441,7 @@ export default function AdminSkillsPage() {
       </Dialog>
 
       {/* Category Editor Modal */}
-      <Dialog isOpen={isCatModalOpen} onClose={() => setIsCatModalOpen(false)}>
+      <Dialog open={isCatModalOpen} onOpenChange={setIsCatModalOpen}>
         <DialogContent className="max-w-md bg-surface border-border p-6">
           <form onSubmit={handleCreateCategory} className="space-y-4">
             <DialogHeader className="border-b border-border pb-3">
@@ -416,15 +469,39 @@ export default function AdminSkillsPage() {
                 />
               </div>
 
+              <div className="grid grid-cols-2 gap-3">
+                <div className="space-y-1">
+                  <label className="text-xs font-semibold text-foreground">Category Slug</label>
+                  <Input
+                    type="text"
+                    placeholder="e.g. backend-architecture"
+                    value={catSlug}
+                    onChange={(e) => setCatSlug(e.target.value)}
+                    required
+                    className="bg-background text-xs font-mono"
+                  />
+                </div>
+
+                <div className="space-y-1">
+                  <label className="text-xs font-semibold text-foreground">Icon (Lucide name)</label>
+                  <Input
+                    type="text"
+                    placeholder="e.g. Server, Database"
+                    value={catIcon}
+                    onChange={(e) => setCatIcon(e.target.value)}
+                    className="bg-background text-xs font-mono"
+                  />
+                </div>
+              </div>
+
               <div className="space-y-1">
-                <label className="text-xs font-semibold text-foreground">Category Slug</label>
-                <Input
-                  type="text"
-                  placeholder="e.g. backend-architecture"
-                  value={catSlug}
-                  onChange={(e) => setCatSlug(e.target.value)}
-                  required
-                  className="bg-background text-xs font-mono"
+                <label className="text-xs font-semibold text-foreground">Description (Optional)</label>
+                <Textarea
+                  placeholder="Summary of this skill domain..."
+                  value={catDescription}
+                  onChange={(e) => setCatDescription(e.target.value)}
+                  rows={2}
+                  className="bg-background text-xs"
                 />
               </div>
             </div>

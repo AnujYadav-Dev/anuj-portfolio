@@ -32,6 +32,7 @@ export default function AdminSocialPage() {
   const [platform, setPlatform] = useState('');
   const [label, setLabel] = useState('');
   const [url, setUrl] = useState('');
+  const [icon, setIcon] = useState('');
   const [isEnabled, setIsEnabled] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
 
@@ -59,6 +60,7 @@ export default function AdminSocialPage() {
     setPlatform('');
     setLabel('');
     setUrl('');
+    setIcon('');
     setIsEnabled(true);
     setIsModalOpen(true);
   };
@@ -68,6 +70,7 @@ export default function AdminSocialPage() {
     setPlatform(lnk.platform);
     setLabel(lnk.label);
     setUrl(lnk.url);
+    setIcon(lnk.icon || '');
     setIsEnabled(lnk.isEnabled);
     setIsModalOpen(true);
   };
@@ -85,6 +88,7 @@ export default function AdminSocialPage() {
         platform,
         label: label || platform,
         url,
+        icon: icon || undefined,
         isEnabled,
       };
 
@@ -160,6 +164,11 @@ export default function AdminSocialPage() {
               <div className="flex items-center gap-2">
                 <span className="font-bold text-foreground text-xs">{item.platform}</span>
                 {item.label && <span className="text-muted text-xs font-mono">({item.label})</span>}
+                {item.icon && (
+                  <span className="text-[10px] text-accent font-mono bg-surface-muted px-1.5 py-0.5 rounded border border-border">
+                    {item.icon}
+                  </span>
+                )}
                 {!item.isEnabled && (
                   <span className="text-[10px] text-destructive font-mono flex items-center gap-0.5">
                     <EyeOff className="w-3 h-3" /> Hidden
@@ -203,7 +212,7 @@ export default function AdminSocialPage() {
       />
 
       {/* Editor Modal */}
-      <Dialog isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
+      <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
         <DialogContent className="max-w-md bg-surface border-border p-6">
           <form onSubmit={handleSave} className="space-y-4">
             <DialogHeader className="border-b border-border pb-3">
@@ -226,15 +235,28 @@ export default function AdminSocialPage() {
                 />
               </div>
 
-              <div className="space-y-1">
-                <label className="text-xs font-semibold text-foreground">Display Label</label>
-                <Input
-                  type="text"
-                  placeholder="e.g. github.com/anujyadav"
-                  value={label}
-                  onChange={(e) => setLabel(e.target.value)}
-                  className="bg-background text-xs font-mono"
-                />
+              <div className="grid grid-cols-2 gap-3">
+                <div className="space-y-1">
+                  <label className="text-xs font-semibold text-foreground">Display Label</label>
+                  <Input
+                    type="text"
+                    placeholder="e.g. github.com/anujyadav"
+                    value={label}
+                    onChange={(e) => setLabel(e.target.value)}
+                    className="bg-background text-xs font-mono"
+                  />
+                </div>
+
+                <div className="space-y-1">
+                  <label className="text-xs font-semibold text-foreground">Icon (Lucide name)</label>
+                  <Input
+                    type="text"
+                    placeholder="e.g. Github, Twitter, Linkedin"
+                    value={icon}
+                    onChange={(e) => setIcon(e.target.value)}
+                    className="bg-background text-xs font-mono"
+                  />
+                </div>
               </div>
 
               <div className="space-y-1">

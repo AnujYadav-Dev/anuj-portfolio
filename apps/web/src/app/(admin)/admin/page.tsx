@@ -29,6 +29,7 @@ import {
   ArrowUpRight,
   TrendingUp,
   Clock,
+  Activity,
 } from 'lucide-react';
 
 export default function AdminDashboardPage() {
@@ -284,6 +285,15 @@ export default function AdminDashboardPage() {
               <MessageSquare className="w-5 h-5 text-accent mb-2 group-hover:scale-110 transition-transform" />
               <h3 className="text-xs font-bold text-foreground">Guestbook Queue</h3>
               <p className="text-[11px] text-muted mt-0.5">Moderate comments</p>
+            </Link>
+
+            <Link
+              href="/admin/activity"
+              className="p-4 rounded-lg bg-surface border border-border hover:border-accent hover:bg-surface-muted transition-all group"
+            >
+              <Activity className="w-5 h-5 text-accent mb-2 group-hover:scale-110 transition-transform" />
+              <h3 className="text-xs font-bold text-foreground">Audit Trail</h3>
+              <p className="text-[11px] text-muted mt-0.5">System activity logs</p>
             </Link>
           </div>
         </div>

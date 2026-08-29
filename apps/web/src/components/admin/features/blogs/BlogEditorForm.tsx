@@ -40,6 +40,7 @@ export function BlogEditorForm({ initialData, isNew = false }: BlogEditorFormPro
   const [categories, setCategories] = useState<BlogCategoryDto[]>([]);
   const [availableTags, setAvailableTags] = useState<TagDto[]>([]);
   const [isMediaPickerOpen, setIsMediaPickerOpen] = useState(false);
+  const [isOgPickerOpen, setIsOgPickerOpen] = useState(false);
 
   // Version history modal state
   const [isVersionModalOpen, setIsVersionModalOpen] = useState(false);
@@ -59,6 +60,9 @@ export function BlogEditorForm({ initialData, isNew = false }: BlogEditorFormPro
   const [publishedAt, setPublishedAt] = useState<string>(
     initialData?.publishedAt ? new Date(initialData.publishedAt).toISOString().split('T')[0]! : '',
   );
+  const [scheduledAt, setScheduledAt] = useState(
+    initialData?.scheduledAt ? new Date(initialData.scheduledAt).toISOString().slice(0, 16) : '',
+  );
   const [coverImageUrl, setCoverImageUrl] = useState(initialData?.coverImageUrl || '');
   const [coverImageId, setCoverImageId] = useState('');
   const [selectedTagIds, setSelectedTagIds] = useState<string[]>([]);
@@ -67,6 +71,8 @@ export function BlogEditorForm({ initialData, isNew = false }: BlogEditorFormPro
   const [seoTitle, setSeoTitle] = useState(initialData?.seoTitle || '');
   const [seoDescription, setSeoDescription] = useState(initialData?.seoDescription || '');
   const [seoKeywords, setSeoKeywords] = useState(initialData?.seoKeywords || '');
+  const [ogImageUrl, setOgImageUrl] = useState(initialData?.ogImageUrl || '');
+  const [ogImageId, setOgImageId] = useState('');
 
   // Estimated reading time
   const wordCount = content.split(/\s+/).filter(Boolean).length;
@@ -109,6 +115,11 @@ export function BlogEditorForm({ initialData, isNew = false }: BlogEditorFormPro
   const handleSelectCover = (media: MediaDto) => {
     setCoverImageUrl(media.url);
     setCoverImageId(media.id);
+  };
+
+  const handleSelectOgImage = (media: MediaDto) => {
+    setOgImageUrl(media.url);
+    setOgImageId(media.id);
   };
 
   const handleToggleTag = (tagId: string) => {
@@ -168,11 +179,14 @@ export function BlogEditorForm({ initialData, isNew = false }: BlogEditorFormPro
         status,
         isFeatured,
         notifySubscribers,
+        publishedAt: publishedAt || undefined,
+        scheduledAt: scheduledAt ? new Date(scheduledAt).toISOString() : null,
         coverImageId: coverImageId || undefined,
         tagIds: selectedTagIds,
         seoTitle: seoTitle || undefined,
         seoDescription: seoDescription || undefined,
         seoKeywords: seoKeywords || undefined,
+        ogImageId: ogImageId || undefined,
       };
 
       if (isNew) {
@@ -359,6 +373,41 @@ export function BlogEditorForm({ initialData, isNew = false }: BlogEditorFormPro
                   className="bg-background text-xs"
                 />
               </div>
+
+              <div className="space-y-1.5">
+                <label className="text-xs font-semibold text-foreground">Open Graph Social Image</label>
+                {ogImageUrl ? (
+                  <div className="relative aspect-video w-full max-w-sm rounded-lg border border-border overflow-hidden group bg-surface-muted">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src={ogImageUrl} alt="OG preview" className="w-full h-full object-cover" />
+                    <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
+                      <Button type="button" variant="outline" size="sm" onClick={() => setIsOgPickerOpen(true)}>
+                        Change
+                      </Button>
+                      <Button
+                        type="button"
+                        variant="destructive"
+                        size="sm"
+                        onClick={() => {
+                          setOgImageUrl('');
+                          setOgImageId('');
+                        }}
+                      >
+                        Remove
+                      </Button>
+                    </div>
+                  </div>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={() => setIsOgPickerOpen(true)}
+                    className="w-full max-w-sm aspect-video border-2 border-dashed border-border hover:border-accent rounded-lg flex flex-col items-center justify-center gap-1 text-muted hover:text-foreground transition-colors p-3"
+                  >
+                    <ImageIcon className="w-5 h-5 text-placeholder" />
+                    <span className="text-xs font-semibold">Select Open Graph Image</span>
+                  </button>
+                )}
+              </div>
             </CardContent>
           </Card>
         </div>
@@ -403,6 +452,21 @@ export function BlogEditorForm({ initialData, isNew = false }: BlogEditorFormPro
                   </div>
                 </label>
               </div>
+
+              {status === ContentStatus.Scheduled && (
+                <div className="space-y-1.5 p-3 bg-surface-muted border border-border rounded-lg">
+                  <label className="font-semibold text-foreground block">Scheduled Release Time</label>
+                  <Input
+                    type="datetime-local"
+                    value={scheduledAt}
+                    onChange={(e) => setScheduledAt(e.target.value)}
+                    className="bg-background text-xs font-mono"
+                  />
+                  <p className="text-[10px] text-muted">
+                    Automated background scheduler will publish this post at the specified time.
+                  </p>
+                </div>
+              )}
 
               {status === ContentStatus.Published && (
                 <div className="p-3 bg-accent/10 border border-accent/20 rounded-lg space-y-1.5">
@@ -623,6 +687,24 @@ export function BlogEditorForm({ initialData, isNew = false }: BlogEditorFormPro
           </div>
         </DialogContent>
       </Dialog>
+
+      {/* Cover Image Picker Modal */}
+      <MediaPickerModal
+        isOpen={isMediaPickerOpen}
+        onClose={() => setIsMediaPickerOpen(false)}
+        onSelect={handleSelectCover}
+        title="Select Blog Cover Image"
+        acceptType="image"
+      />
+
+      {/* OG Social Card Picker Modal */}
+      <MediaPickerModal
+        isOpen={isOgPickerOpen}
+        onClose={() => setIsOgPickerOpen(false)}
+        onSelect={handleSelectOgImage}
+        title="Select Open Graph Social Card"
+        acceptType="image"
+      />
     </form>
   );
 }

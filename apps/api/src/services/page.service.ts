@@ -2,6 +2,7 @@ import { pageRepository } from '@/repositories/page.repository';
 import { mapPageToDto } from '@/utils/mappers';
 import { buildPagination, getPrismaPagination } from '@/utils/pagination';
 import { slugify } from '@/utils/slug';
+import { activityLogService } from '@/services/activityLog.service';
 import { NotFoundError, ConflictError } from '@/utils/errors';
 import type {
   CreatePageInput,
@@ -89,22 +90,45 @@ export const pageService = {
       seoDescription: input.seoDescription ?? null,
       seoKeywords: input.seoKeywords ?? null,
       ogImageId: input.ogImageId ?? null,
-      publishedAt: input.status === 'published' ? new Date() : null,
+      publishedAt: input.publishedAt
+        ? new Date(input.publishedAt)
+        : input.status === 'published'
+          ? new Date()
+          : null,
+      scheduledAt: input.scheduledAt ? new Date(input.scheduledAt) : null,
+    });
+
+    activityLogService.log({
+      action: 'page_create',
+      entityType: 'page',
+      entityId: created.id,
+      details: { title: created.title, slug: created.slug, status: created.status },
     });
 
     return mapPageToDto(created);
   },
 
   async update(id: string, input: UpdatePageInput): Promise<PageDto> {
-    await pageService.getById(id);
+    const existing = await pageService.getById(id);
 
     const updateData: Prisma.PageUncheckedUpdateInput = {};
     if (input.title !== undefined) updateData.title = input.title;
     if (input.slug !== undefined) updateData.slug = slugify(input.slug);
     if (input.content !== undefined) updateData.content = input.content || null;
-    if (input.status !== undefined) updateData.status = input.status as any;
+    if (input.status !== undefined) {
+      updateData.status = input.status as any;
+      if (input.status === 'published' && !existing.publishedAt && !input.publishedAt) {
+        updateData.publishedAt = new Date();
+      }
+    }
     if (input.isNavVisible !== undefined) updateData.isNavVisible = input.isNavVisible;
     if (input.sortOrder !== undefined) updateData.sortOrder = input.sortOrder;
+    if (input.publishedAt !== undefined) {
+      updateData.publishedAt = input.publishedAt ? new Date(input.publishedAt) : null;
+    }
+    if (input.scheduledAt !== undefined) {
+      updateData.scheduledAt = input.scheduledAt ? new Date(input.scheduledAt) : null;
+    }
     if (input.seoTitle !== undefined) updateData.seoTitle = input.seoTitle || null;
     if (input.seoDescription !== undefined)
       updateData.seoDescription = input.seoDescription || null;
@@ -112,11 +136,25 @@ export const pageService = {
     if (input.ogImageId !== undefined) updateData.ogImageId = input.ogImageId || null;
 
     const updated = await pageRepository.update(id, updateData);
+
+    activityLogService.log({
+      action: 'page_update',
+      entityType: 'page',
+      entityId: updated.id,
+      details: { title: updated.title, slug: updated.slug, status: updated.status },
+    });
+
     return mapPageToDto(updated);
   },
 
   async delete(id: string): Promise<void> {
-    await pageService.getById(id);
+    const existing = await pageService.getById(id);
     await pageRepository.delete(id);
+    activityLogService.log({
+      action: 'page_delete',
+      entityType: 'page',
+      entityId: id,
+      details: { title: existing.title, slug: existing.slug },
+    });
   },
 };

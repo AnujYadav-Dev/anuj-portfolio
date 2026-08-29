@@ -451,6 +451,16 @@ const ADMIN_ROUTES: RouteItem[] = [
     status: 'active',
   },
   {
+    id: 'adm-activity',
+    path: '/admin/activity',
+    title: 'System Activity & Audit Trail',
+    description: 'Comprehensive ledger of all administrative logins, content mutations, settings updates, and media operations',
+    area: 'admin',
+    category: 'admin_dashboard',
+    source: 'Admin App Router (app/(admin)/admin/activity/page.tsx)',
+    status: 'active',
+  },
+  {
     id: 'adm-works',
     path: '/admin/works',
     title: 'Projects & Works Manager',

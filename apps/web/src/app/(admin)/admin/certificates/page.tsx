@@ -4,12 +4,14 @@ import React, { useEffect, useState } from 'react';
 import { apiClient } from '@/lib/api';
 import type {
   CertificateDto,
+  MediaDto,
   CreateCertificateRequest,
   UpdateCertificateRequest,
 } from '@portfolio/shared';
 import { AdminPageHeader } from '@/components/admin/ui/AdminPageHeader';
 import { ReorderableList } from '@/components/admin/ui/ReorderableList';
 import { ConfirmDialog } from '@/components/admin/ui/ConfirmDialog';
+import { MediaPickerModal } from '@/components/admin/ui/MediaPickerModal';
 import {
   Dialog,
   DialogContent,
@@ -19,7 +21,7 @@ import {
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Plus, Edit2, Trash2, Award, ExternalLink } from 'lucide-react';
+import { Plus, Edit2, Trash2, Award, ExternalLink, Image as ImageIcon, EyeOff } from 'lucide-react';
 import { toast } from 'sonner';
 
 export default function AdminCertificatesPage() {
@@ -28,6 +30,7 @@ export default function AdminCertificatesPage() {
 
   // Editor Modal
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isImagePickerOpen, setIsImagePickerOpen] = useState(false);
   const [editingCert, setEditingCert] = useState<CertificateDto | null>(null);
   const [name, setName] = useState('');
   const [issuingOrganization, setIssuingOrganization] = useState('');
@@ -35,6 +38,8 @@ export default function AdminCertificatesPage() {
   const [expiryDate, setExpiryDate] = useState('');
   const [credentialId, setCredentialId] = useState('');
   const [credentialUrl, setCredentialUrl] = useState('');
+  const [certificateImageUrl, setCertificateImageUrl] = useState('');
+  const [certificateImageId, setCertificateImageId] = useState('');
   const [isEnabled, setIsEnabled] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
 
@@ -65,6 +70,8 @@ export default function AdminCertificatesPage() {
     setExpiryDate('');
     setCredentialId('');
     setCredentialUrl('');
+    setCertificateImageUrl('');
+    setCertificateImageId('');
     setIsEnabled(true);
     setIsModalOpen(true);
   };
@@ -77,8 +84,15 @@ export default function AdminCertificatesPage() {
     setExpiryDate(cert.expiryDate ? new Date(cert.expiryDate).toISOString().split('T')[0]! : '');
     setCredentialId(cert.credentialId || '');
     setCredentialUrl(cert.credentialUrl || '');
+    setCertificateImageUrl(cert.certificateImageUrl || '');
+    setCertificateImageId('');
     setIsEnabled(cert.isEnabled);
     setIsModalOpen(true);
+  };
+
+  const handleSelectImage = (media: MediaDto) => {
+    setCertificateImageUrl(media.url);
+    setCertificateImageId(media.id);
   };
 
   const handleSave = async (e: React.FormEvent) => {
@@ -97,6 +111,7 @@ export default function AdminCertificatesPage() {
         expiryDate: expiryDate || undefined,
         credentialId: credentialId || undefined,
         credentialUrl: credentialUrl || undefined,
+        certificateImageId: certificateImageId || undefined,
         isEnabled,
       };
 
@@ -172,6 +187,11 @@ export default function AdminCertificatesPage() {
               <div className="flex items-center gap-2">
                 <span className="font-bold text-foreground text-xs">{item.name}</span>
                 <span className="text-muted text-xs">issued by {item.issuingOrganization}</span>
+                {!item.isEnabled && (
+                  <span className="text-[10px] text-destructive font-mono flex items-center gap-0.5">
+                    <EyeOff className="w-3 h-3" /> Hidden
+                  </span>
+                )}
               </div>
               <p className="text-[11px] text-muted font-mono mt-0.5">
                 Issued {new Date(item.issueDate).toLocaleDateString()}
@@ -213,8 +233,8 @@ export default function AdminCertificatesPage() {
       />
 
       {/* Editor Modal */}
-      <Dialog isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
-        <DialogContent className="max-w-md bg-surface border-border p-6">
+      <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
+        <DialogContent className="max-w-md bg-surface border-border p-6 max-h-[90vh] overflow-y-auto">
           <form onSubmit={handleSave} className="space-y-4">
             <DialogHeader className="border-b border-border pb-3">
               <DialogTitle className="text-base font-bold text-foreground flex items-center gap-2">
@@ -299,6 +319,28 @@ export default function AdminCertificatesPage() {
                 />
               </div>
 
+              <div className="space-y-1">
+                <label className="text-xs font-semibold text-foreground">Certificate Image / Badge</label>
+                <div className="flex items-center gap-2">
+                  {certificateImageUrl ? (
+                    <div className="flex items-center gap-2">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img src={certificateImageUrl} alt="Certificate Badge" className="w-12 h-12 object-contain rounded border border-border bg-white/5 p-1" />
+                      <Button type="button" variant="outline" size="sm" onClick={() => setIsImagePickerOpen(true)} className="text-xs h-7">
+                        Change Badge
+                      </Button>
+                      <Button type="button" variant="ghost" size="sm" onClick={() => { setCertificateImageUrl(''); setCertificateImageId(''); }} className="text-xs h-7 text-destructive">
+                        Remove
+                      </Button>
+                    </div>
+                  ) : (
+                    <Button type="button" variant="outline" size="sm" onClick={() => setIsImagePickerOpen(true)} className="text-xs h-7">
+                      <ImageIcon className="w-3.5 h-3.5 mr-1" /> Select Certificate Badge
+                    </Button>
+                  )}
+                </div>
+              </div>
+
               <div className="pt-2">
                 <label className="flex items-center gap-2 cursor-pointer select-none">
                   <input
@@ -336,6 +378,14 @@ export default function AdminCertificatesPage() {
           </form>
         </DialogContent>
       </Dialog>
+
+      <MediaPickerModal
+        isOpen={isImagePickerOpen}
+        onClose={() => setIsImagePickerOpen(false)}
+        onSelect={handleSelectImage}
+        title="Select Certificate Badge"
+        acceptType="image"
+      />
 
       <ConfirmDialog
         isOpen={Boolean(deleteTarget)}

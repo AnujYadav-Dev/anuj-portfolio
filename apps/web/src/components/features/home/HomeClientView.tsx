@@ -11,6 +11,7 @@ import { LatestBlogsSection } from '@/components/features/home/LatestBlogsSectio
 import { ContactCTA } from '@/components/features/home/ContactCTA';
 import { CustomMarkdownSection } from '@/components/features/home/CustomMarkdownSection';
 import { useHomepageSections } from '@/hooks/useLayout';
+import { ContentBlocksRenderer } from '@/components/features/blocks/ContentBlocksRenderer';
 import type { DynamicSectionProps } from './types';
 
 // Section component registry mapping canonical database keys and aliases
@@ -38,7 +39,22 @@ export function HomeClientView({ initialSections }: HomeClientViewProps) {
   // Render a specific section based on registry or fallback
   const renderSection = (section: HomepageSectionDto, index: number) => {
     const Component = SECTION_REGISTRY[section.sectionKey] || CustomMarkdownSection;
-    return <Component key={section.id || section.sectionKey} section={section} index={index} />;
+    const hasBlocks = section.contentBlocks && section.contentBlocks.length > 0;
+    const isCustom =
+      !SECTION_REGISTRY[section.sectionKey] || section.sectionKey === 'custom_markdown';
+
+    return (
+      <React.Fragment key={section.id || section.sectionKey}>
+        <Component section={section} index={index} />
+        {hasBlocks && !isCustom && (
+          <div className="border-b border-border bg-surface/20 py-8 px-4 md:px-8">
+            <div className="max-w-[1400px] mx-auto">
+              <ContentBlocksRenderer blocks={section.contentBlocks} />
+            </div>
+          </div>
+        )}
+      </React.Fragment>
+    );
   };
 
   // If sections are defined in DB, map them dynamically

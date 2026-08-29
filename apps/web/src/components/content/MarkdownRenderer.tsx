@@ -23,6 +23,21 @@ const customSanitizeSchema = {
     span: [...(defaultSchema.attributes?.span || []), 'className'],
     div: [...(defaultSchema.attributes?.div || []), 'className'],
     a: [...(defaultSchema.attributes?.a || []), 'target', 'rel', 'className'],
+    img: [
+      ...(defaultSchema.attributes?.img || []),
+      'src',
+      'alt',
+      'title',
+      'className',
+      'loading',
+      'width',
+      'height',
+    ],
+  },
+  protocols: {
+    ...defaultSchema.protocols,
+    src: ['http', 'https', 'data'],
+    href: ['http', 'https', 'mailto', 'tel'],
   },
 };
 
@@ -94,9 +109,23 @@ export function MarkdownRenderer({ content, className }: MarkdownRendererProps) 
               </h3>
             );
           },
-          p: ({ children }) => (
-            <p className="my-4 text-foreground/90 leading-relaxed">{children}</p>
-          ),
+          p: ({ node, children }) => {
+            const hasImageInAst = (node?.children as Array<{ type?: string; tagName?: string }> | undefined)?.some(
+              (child) => child.type === 'element' && child.tagName === 'img',
+            );
+
+            const hasImageInReactChildren = React.Children.toArray(children).some(
+              (child) =>
+                React.isValidElement(child) &&
+                (child.type === 'img' || (child.props as Record<string, unknown>)?.src !== undefined),
+            );
+
+            if (hasImageInAst || hasImageInReactChildren) {
+              return <div className="my-4 text-foreground/90 leading-relaxed">{children}</div>;
+            }
+
+            return <p className="my-4 text-foreground/90 leading-relaxed">{children}</p>;
+          },
           ul: ({ children }) => (
             <ul className="my-4 ml-6 list-disc [&>li]:mt-1.5 text-foreground/90">{children}</ul>
           ),
@@ -148,8 +177,8 @@ export function MarkdownRenderer({ content, className }: MarkdownRendererProps) 
           },
           img: (props) => {
             const src = typeof props.src === 'string' ? props.src : undefined;
-            if (!src) return null;
-            return <ZoomableImage src={src} alt={props.alt || ''} caption={props.alt} />;
+            if (!src || src.trim() === '') return null;
+            return <ZoomableImage src={src} alt={props.alt || ''} caption={props.alt || undefined} />;
           },
 
           table: ({ children }) => (

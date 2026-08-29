@@ -4,6 +4,7 @@ import type {
   UpdateEmailTemplateInput,
 } from '@portfolio/shared';
 import { emailTemplateRepository } from '@/repositories/emailTemplate.repository';
+import { activityLogService } from '@/services/activityLog.service';
 import { mapEmailTemplateToDto } from '@/utils/mappers';
 import { NotFoundError, ValidationError } from '@/utils/errors';
 
@@ -43,6 +44,13 @@ export const emailTemplateService = {
       isEnabled: input.isEnabled ?? true,
     });
 
+    activityLogService.log({
+      action: 'email_template_create',
+      entityType: 'email_template',
+      entityId: created.id,
+      details: { name: created.name, purpose: created.purpose },
+    });
+
     return mapEmailTemplateToDto(created);
   },
 
@@ -53,6 +61,14 @@ export const emailTemplateService = {
     }
 
     const updated = await emailTemplateRepository.update(id, input);
+
+    activityLogService.log({
+      action: 'email_template_update',
+      entityType: 'email_template',
+      entityId: id,
+      details: { name: updated.name, purpose: updated.purpose },
+    });
+
     return mapEmailTemplateToDto(updated);
   },
 
@@ -63,6 +79,14 @@ export const emailTemplateService = {
     }
 
     const updated = await emailTemplateRepository.setActive(id, existing.purpose);
+
+    activityLogService.log({
+      action: 'email_template_set_active',
+      entityType: 'email_template',
+      entityId: id,
+      details: { name: updated.name, purpose: updated.purpose },
+    });
+
     return mapEmailTemplateToDto(updated);
   },
 
@@ -89,5 +113,12 @@ export const emailTemplateService = {
     }
 
     await emailTemplateRepository.delete(id);
+
+    activityLogService.log({
+      action: 'email_template_delete',
+      entityType: 'email_template',
+      entityId: id,
+      details: { name: existing.name, purpose: existing.purpose },
+    });
   },
 };

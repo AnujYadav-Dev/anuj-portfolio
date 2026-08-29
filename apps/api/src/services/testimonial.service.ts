@@ -1,4 +1,5 @@
 import { testimonialRepository } from '@/repositories/testimonial.repository';
+import { activityLogService } from '@/services/activityLog.service';
 import { mapTestimonialToDto } from '@/utils/mappers';
 import { NotFoundError } from '@/utils/errors';
 import type { TestimonialDto, UpsertTestimonialInput } from '@portfolio/shared';
@@ -30,6 +31,14 @@ export const testimonialService = {
       sortOrder: input.sortOrder ?? 0,
       isEnabled: input.isEnabled ?? true,
     });
+
+    activityLogService.log({
+      action: 'testimonial_create',
+      entityType: 'testimonial',
+      entityId: created.id,
+      details: { authorName: created.authorName, authorCompany: created.authorCompany },
+    });
+
     return mapTestimonialToDto(created);
   },
 
@@ -52,12 +61,27 @@ export const testimonialService = {
     if (input.isEnabled !== undefined) updateData.isEnabled = input.isEnabled;
 
     const updated = await testimonialRepository.update(id, updateData);
+
+    activityLogService.log({
+      action: 'testimonial_update',
+      entityType: 'testimonial',
+      entityId: updated.id,
+      details: { authorName: updated.authorName, authorCompany: updated.authorCompany },
+    });
+
     return mapTestimonialToDto(updated);
   },
 
   async deleteTestimonial(id: string): Promise<void> {
-    await testimonialService.getTestimonialById(id);
+    const existing = await testimonialService.getTestimonialById(id);
     await testimonialRepository.delete(id);
+
+    activityLogService.log({
+      action: 'testimonial_delete',
+      entityType: 'testimonial',
+      entityId: id,
+      details: { authorName: existing.authorName, authorCompany: existing.authorCompany },
+    });
   },
 
   async reorderTestimonials(items: { id: string; sortOrder: number }[]): Promise<void> {

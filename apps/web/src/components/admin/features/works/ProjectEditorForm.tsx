@@ -19,7 +19,19 @@ import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { MarkdownEditor } from '@/components/admin/ui/MarkdownEditor';
 import { MediaPickerModal } from '@/components/admin/ui/MediaPickerModal';
 import { toast } from 'sonner';
-import { Save, Image as ImageIcon, ExternalLink, FolderGit2, Star, Sparkles } from 'lucide-react';
+import {
+  Save,
+  Image as ImageIcon,
+  ExternalLink,
+  FolderGit2,
+  Star,
+  Sparkles,
+  Plus,
+  Trash2,
+  Calendar,
+  Layers,
+  BookOpen,
+} from 'lucide-react';
 
 interface ProjectEditorFormProps {
   initialData?: ProjectDto;
@@ -31,7 +43,9 @@ export function ProjectEditorForm({ initialData, isNew = false }: ProjectEditorF
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [categories, setCategories] = useState<ProjectCategoryDto[]>([]);
   const [availableTags, setAvailableTags] = useState<TagDto[]>([]);
-  const [isMediaPickerOpen, setIsMediaPickerOpen] = useState(false);
+  const [isCoverPickerOpen, setIsCoverPickerOpen] = useState(false);
+  const [isOgPickerOpen, setIsOgPickerOpen] = useState(false);
+  const [isGalleryPickerOpen, setIsGalleryPickerOpen] = useState(false);
 
   // Form fields
   const [title, setTitle] = useState(initialData?.title || '');
@@ -48,16 +62,41 @@ export function ProjectEditorForm({ initialData, isNew = false }: ProjectEditorF
     (initialData?.projectType as ProjectType) || ProjectType.Personal,
   );
   const [isFeatured, setIsFeatured] = useState(initialData?.isFeatured || false);
+  const [sortOrder, setSortOrder] = useState<number>(initialData?.sortOrder ?? 0);
   const [liveUrl, setLiveUrl] = useState(initialData?.liveUrl || '');
   const [githubUrl, setGithubUrl] = useState(initialData?.githubUrl || '');
+  const [documentationUrl, setDocumentationUrl] = useState('');
+  const [architectureDiagramUrl, setArchitectureDiagramUrl] = useState('');
+  const [challengesLearnings, setChallengesLearnings] = useState('');
+
+  const [startDate, setStartDate] = useState(initialData?.startDate || '');
+  const [endDate, setEndDate] = useState(initialData?.endDate || '');
+  const [publishedAt, setPublishedAt] = useState(
+    initialData?.publishedAt ? new Date(initialData.publishedAt).toISOString().split('T')[0]! : '',
+  );
+  const [scheduledAt, setScheduledAt] = useState(
+    initialData?.scheduledAt ? new Date(initialData.scheduledAt).toISOString().slice(0, 16) : '',
+  );
+
+  // Technologies
+  const [technologies, setTechnologies] = useState<string[]>(initialData?.technologies || []);
+  const [newTechInput, setNewTechInput] = useState('');
+
+  // Media
   const [coverImageUrl, setCoverImageUrl] = useState(initialData?.coverImageUrl || '');
   const [coverImageId, setCoverImageId] = useState('');
-  const [selectedTagIds, setSelectedTagIds] = useState<string[]>([]);
+  const [galleryImages, setGalleryImages] = useState<{ id: string; url: string; caption?: string }[]>(
+    initialData?.images?.map((img) => ({ id: img.mediaId, url: img.url, caption: img.caption || '' })) || [],
+  );
 
   // SEO fields
   const [seoTitle, setSeoTitle] = useState(initialData?.seoTitle || '');
   const [seoDescription, setSeoDescription] = useState(initialData?.seoDescription || '');
   const [seoKeywords, setSeoKeywords] = useState(initialData?.seoKeywords || '');
+  const [ogImageUrl, setOgImageUrl] = useState(initialData?.ogImageUrl || '');
+  const [ogImageId, setOgImageId] = useState('');
+
+  const [selectedTagIds, setSelectedTagIds] = useState<string[]>([]);
 
   // Load categories and tags
   useEffect(() => {
@@ -100,6 +139,33 @@ export function ProjectEditorForm({ initialData, isNew = false }: ProjectEditorF
     setCoverImageId(media.id);
   };
 
+  const handleSelectOgImage = (media: MediaDto) => {
+    setOgImageUrl(media.url);
+    setOgImageId(media.id);
+  };
+
+  const handleAddGalleryImage = (media: MediaDto) => {
+    setGalleryImages((prev) => [...prev, { id: media.id, url: media.url, caption: media.altText || '' }]);
+  };
+
+  const handleRemoveGalleryImage = (mediaId: string) => {
+    setGalleryImages((prev) => prev.filter((img) => img.id !== mediaId));
+  };
+
+  const handleAddTech = (e: React.KeyboardEvent | React.MouseEvent) => {
+    if ('key' in e && e.key !== 'Enter') return;
+    e.preventDefault();
+    const trimmed = newTechInput.trim();
+    if (trimmed && !technologies.includes(trimmed)) {
+      setTechnologies([...technologies, trimmed]);
+      setNewTechInput('');
+    }
+  };
+
+  const handleRemoveTech = (tech: string) => {
+    setTechnologies(technologies.filter((t) => t !== tech));
+  };
+
   const handleToggleTag = (tagId: string) => {
     setSelectedTagIds((prev) =>
       prev.includes(tagId) ? prev.filter((id) => id !== tagId) : [...prev, tagId],
@@ -120,19 +186,34 @@ export function ProjectEditorForm({ initialData, isNew = false }: ProjectEditorF
         slug,
         shortDescription,
         content: content || undefined,
+        technologies,
         categoryId: categoryId || undefined,
         status,
         notifySubscribers,
         projectStatus,
         projectType,
         isFeatured,
+        sortOrder,
+        startDate: startDate || undefined,
+        endDate: endDate || undefined,
+        publishedAt: publishedAt || undefined,
+        scheduledAt: scheduledAt ? new Date(scheduledAt).toISOString() : null,
         liveUrl: liveUrl || undefined,
         githubUrl: githubUrl || undefined,
+        documentationUrl: documentationUrl || undefined,
+        architectureDiagramUrl: architectureDiagramUrl || undefined,
+        challengesLearnings: challengesLearnings || undefined,
         coverImageId: coverImageId || undefined,
         tagIds: selectedTagIds,
         seoTitle: seoTitle || undefined,
         seoDescription: seoDescription || undefined,
         seoKeywords: seoKeywords || undefined,
+        ogImageId: ogImageId || undefined,
+        images: galleryImages.map((img, idx) => ({
+          mediaId: img.id,
+          caption: img.caption || null,
+          sortOrder: idx,
+        })),
       };
 
       if (isNew) {
@@ -162,7 +243,7 @@ export function ProjectEditorForm({ initialData, isNew = false }: ProjectEditorF
             {isNew ? 'Create New Project' : `Edit: ${initialData?.title}`}
           </h2>
           <p className="text-xs text-muted font-mono">
-            {status.toUpperCase()} • {slug || 'no-slug'}
+            {status.toUpperCase()} • /{slug || 'no-slug'}
           </p>
         </div>
 
@@ -245,6 +326,45 @@ export function ProjectEditorForm({ initialData, isNew = false }: ProjectEditorF
                   className="bg-background text-xs"
                 />
               </div>
+
+              {/* Technologies Array Input */}
+              <div className="space-y-1.5">
+                <label className="text-xs font-semibold text-foreground">
+                  Technologies Used (Frameworks, DBs, Cloud)
+                </label>
+                <div className="flex gap-2">
+                  <Input
+                    type="text"
+                    placeholder="e.g. Next.js, Rust, Docker, PostgreSQL"
+                    value={newTechInput}
+                    onChange={(e) => setNewTechInput(e.target.value)}
+                    onKeyDown={handleAddTech}
+                    className="bg-background text-xs"
+                  />
+                  <Button type="button" variant="outline" size="sm" onClick={handleAddTech}>
+                    <Plus className="w-3.5 h-3.5 mr-1" /> Add
+                  </Button>
+                </div>
+                {technologies.length > 0 && (
+                  <div className="flex flex-wrap gap-1.5 pt-1">
+                    {technologies.map((tech) => (
+                      <span
+                        key={tech}
+                        className="inline-flex items-center gap-1 text-[11px] font-mono bg-surface-muted border border-border px-2 py-0.5 rounded"
+                      >
+                        <span>{tech}</span>
+                        <button
+                          type="button"
+                          onClick={() => handleRemoveTech(tech)}
+                          className="text-muted hover:text-destructive text-xs ml-1"
+                        >
+                          ×
+                        </button>
+                      </span>
+                    ))}
+                  </div>
+                )}
+              </div>
             </CardContent>
           </Card>
 
@@ -262,6 +382,100 @@ export function ProjectEditorForm({ initialData, isNew = false }: ProjectEditorF
                 placeholder="Write the full architectural case study: problem statement, technical stack decisions, trade-offs, benchmarks, code samples..."
                 minHeight="420px"
               />
+            </CardContent>
+          </Card>
+
+          {/* Extended Engineering Details */}
+          <Card className="bg-surface border-border">
+            <CardHeader className="pb-3">
+              <CardTitle className="text-sm font-bold text-foreground flex items-center gap-2">
+                <Layers className="w-4 h-4 text-accent" />
+                <span>Architecture & Engineering Insights</span>
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="space-y-1.5">
+                <label className="text-xs font-semibold text-foreground flex items-center gap-1.5">
+                  <BookOpen className="w-3.5 h-3.5 text-accent" />
+                  <span>Documentation URL</span>
+                </label>
+                <Input
+                  type="url"
+                  placeholder="https://docs.myproject.dev"
+                  value={documentationUrl}
+                  onChange={(e) => setDocumentationUrl(e.target.value)}
+                  className="bg-background text-xs font-mono"
+                />
+              </div>
+
+              <div className="space-y-1.5">
+                <label className="text-xs font-semibold text-foreground flex items-center gap-1.5">
+                  <Layers className="w-3.5 h-3.5 text-accent" />
+                  <span>Architecture Diagram Image URL</span>
+                </label>
+                <Input
+                  type="url"
+                  placeholder="https://.../architecture-diagram.png"
+                  value={architectureDiagramUrl}
+                  onChange={(e) => setArchitectureDiagramUrl(e.target.value)}
+                  className="bg-background text-xs font-mono"
+                />
+              </div>
+
+              <div className="space-y-1.5">
+                <label className="text-xs font-semibold text-foreground">
+                  Key Challenges & Key Technical Learnings
+                </label>
+                <Textarea
+                  placeholder="Summarize the core technical hurdles overcome during this project's development..."
+                  value={challengesLearnings}
+                  onChange={(e) => setChallengesLearnings(e.target.value)}
+                  rows={3}
+                  className="bg-background text-xs"
+                />
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Project Screenshot Gallery Manager */}
+          <Card className="bg-surface border-border">
+            <CardHeader className="pb-3 flex flex-row items-center justify-between">
+              <CardTitle className="text-sm font-bold text-foreground flex items-center gap-2">
+                <ImageIcon className="w-4 h-4 text-accent" />
+                <span>Project Screenshot Gallery</span>
+              </CardTitle>
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={() => setIsGalleryPickerOpen(true)}
+                className="text-xs h-7"
+              >
+                <Plus className="w-3 h-3 mr-1" /> Add Screenshot
+              </Button>
+            </CardHeader>
+            <CardContent>
+              {galleryImages.length === 0 ? (
+                <div className="text-center py-6 border border-dashed border-border rounded-lg bg-surface-muted">
+                  <p className="text-xs text-muted">No secondary screenshots attached.</p>
+                </div>
+              ) : (
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                  {galleryImages.map((img) => (
+                    <div key={img.id} className="relative aspect-video rounded border border-border overflow-hidden group bg-surface-muted">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img src={img.url} alt="Gallery item" className="w-full h-full object-cover" />
+                      <button
+                        type="button"
+                        onClick={() => handleRemoveGalleryImage(img.id)}
+                        className="absolute top-1 right-1 p-1 rounded bg-destructive/80 text-white opacity-0 group-hover:opacity-100 transition-opacity"
+                      >
+                        <Trash2 className="w-3 h-3" />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
             </CardContent>
           </Card>
 
@@ -305,6 +519,41 @@ export function ProjectEditorForm({ initialData, isNew = false }: ProjectEditorF
                   className="bg-background text-xs"
                 />
               </div>
+
+              <div className="space-y-1.5">
+                <label className="text-xs font-semibold text-foreground">Open Graph Social Image</label>
+                {ogImageUrl ? (
+                  <div className="relative aspect-video w-full max-w-sm rounded-lg border border-border overflow-hidden group bg-surface-muted">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src={ogImageUrl} alt="OG preview" className="w-full h-full object-cover" />
+                    <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
+                      <Button type="button" variant="outline" size="sm" onClick={() => setIsOgPickerOpen(true)}>
+                        Change
+                      </Button>
+                      <Button
+                        type="button"
+                        variant="destructive"
+                        size="sm"
+                        onClick={() => {
+                          setOgImageUrl('');
+                          setOgImageId('');
+                        }}
+                      >
+                        Remove
+                      </Button>
+                    </div>
+                  </div>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={() => setIsOgPickerOpen(true)}
+                    className="w-full max-w-sm aspect-video border-2 border-dashed border-border hover:border-accent rounded-lg flex flex-col items-center justify-center gap-1 text-muted hover:text-foreground transition-colors p-3"
+                  >
+                    <ImageIcon className="w-5 h-5 text-placeholder" />
+                    <span className="text-xs font-semibold">Select Open Graph Image</span>
+                  </button>
+                )}
+              </div>
             </CardContent>
           </Card>
         </div>
@@ -315,7 +564,7 @@ export function ProjectEditorForm({ initialData, isNew = false }: ProjectEditorF
           <Card className="bg-surface border-border">
             <CardHeader className="pb-3">
               <CardTitle className="text-sm font-bold text-foreground">
-                Publishing & Status
+                Publishing & Timeline
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4 text-xs">
@@ -332,6 +581,21 @@ export function ProjectEditorForm({ initialData, isNew = false }: ProjectEditorF
                   <option value={ContentStatus.Archived}>Archived</option>
                 </select>
               </div>
+
+              {status === ContentStatus.Scheduled && (
+                <div className="space-y-1.5 p-3 bg-surface-muted border border-border rounded-lg">
+                  <label className="font-semibold text-foreground block">Scheduled Release Time</label>
+                  <Input
+                    type="datetime-local"
+                    value={scheduledAt}
+                    onChange={(e) => setScheduledAt(e.target.value)}
+                    className="bg-background text-xs font-mono"
+                  />
+                  <p className="text-[10px] text-muted">
+                    Scheduler service will automatically make this project live at the specified time.
+                  </p>
+                </div>
+              )}
 
               {status === ContentStatus.Published && (
                 <div className="p-3 bg-accent/10 border border-accent/20 rounded-lg space-y-1.5">
@@ -351,6 +615,51 @@ export function ProjectEditorForm({ initialData, isNew = false }: ProjectEditorF
                   </label>
                 </div>
               )}
+
+              <div className="grid grid-cols-2 gap-2">
+                <div className="space-y-1">
+                  <label className="font-semibold text-foreground flex items-center gap-1">
+                    <Calendar className="w-3 h-3 text-accent" /> Start Date
+                  </label>
+                  <Input
+                    type="date"
+                    value={startDate}
+                    onChange={(e) => setStartDate(e.target.value)}
+                    className="bg-background text-xs font-mono"
+                  />
+                </div>
+                <div className="space-y-1">
+                  <label className="font-semibold text-foreground flex items-center gap-1">
+                    <Calendar className="w-3 h-3 text-accent" /> End Date
+                  </label>
+                  <Input
+                    type="date"
+                    value={endDate}
+                    onChange={(e) => setEndDate(e.target.value)}
+                    className="bg-background text-xs font-mono"
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-1.5">
+                <label className="font-semibold text-foreground">Live Public Date</label>
+                <Input
+                  type="date"
+                  value={publishedAt}
+                  onChange={(e) => setPublishedAt(e.target.value)}
+                  className="bg-background text-xs font-mono"
+                />
+              </div>
+
+              <div className="space-y-1.5">
+                <label className="font-semibold text-foreground">Sort Order</label>
+                <Input
+                  type="number"
+                  value={sortOrder}
+                  onChange={(e) => setSortOrder(parseInt(e.target.value, 10) || 0)}
+                  className="bg-background text-xs font-mono"
+                />
+              </div>
 
               <div className="space-y-1.5">
                 <label className="font-semibold text-foreground">Project Stage</label>
@@ -415,7 +724,7 @@ export function ProjectEditorForm({ initialData, isNew = false }: ProjectEditorF
                       type="button"
                       variant="outline"
                       size="sm"
-                      onClick={() => setIsMediaPickerOpen(true)}
+                      onClick={() => setIsCoverPickerOpen(true)}
                     >
                       Change Cover
                     </Button>
@@ -435,7 +744,7 @@ export function ProjectEditorForm({ initialData, isNew = false }: ProjectEditorF
               ) : (
                 <button
                   type="button"
-                  onClick={() => setIsMediaPickerOpen(true)}
+                  onClick={() => setIsCoverPickerOpen(true)}
                   className="w-full aspect-video border-2 border-dashed border-border hover:border-accent rounded-lg flex flex-col items-center justify-center gap-2 text-muted hover:text-foreground transition-colors p-4"
                 >
                   <ImageIcon className="w-6 h-6 text-placeholder" />
@@ -532,12 +841,30 @@ export function ProjectEditorForm({ initialData, isNew = false }: ProjectEditorF
         </div>
       </div>
 
-      {/* Media Picker Modal */}
+      {/* Cover Media Picker Modal */}
       <MediaPickerModal
-        isOpen={isMediaPickerOpen}
-        onClose={() => setIsMediaPickerOpen(false)}
+        isOpen={isCoverPickerOpen}
+        onClose={() => setIsCoverPickerOpen(false)}
         onSelect={handleSelectCover}
         title="Select Project Cover Image"
+        acceptType="image"
+      />
+
+      {/* OG Social Card Picker Modal */}
+      <MediaPickerModal
+        isOpen={isOgPickerOpen}
+        onClose={() => setIsOgPickerOpen(false)}
+        onSelect={handleSelectOgImage}
+        title="Select Open Graph Social Card"
+        acceptType="image"
+      />
+
+      {/* Gallery Screenshots Picker Modal */}
+      <MediaPickerModal
+        isOpen={isGalleryPickerOpen}
+        onClose={() => setIsGalleryPickerOpen(false)}
+        onSelect={handleAddGalleryImage}
+        title="Add Screenshot to Project Gallery"
         acceptType="image"
       />
     </form>

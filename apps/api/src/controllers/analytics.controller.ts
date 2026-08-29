@@ -8,6 +8,7 @@ import type {
   PaginationQuery,
 } from '@portfolio/shared';
 import { trackerService } from '@/services/tracker.service';
+import { activityLogService } from '@/services/activityLog.service';
 import { getClientIp } from '@/utils/ip';
 
 export const analyticsController = {
@@ -142,5 +143,11 @@ export const analyticsController = {
     }
 
     res.status(200).json({ data: output });
+  },
+
+  async getAuditLogs(req: Request, res: Response): Promise<void> {
+    const limit = req.query.limit ? Number(req.query.limit) : 50;
+    const logs = await activityLogService.getRecent(limit);
+    res.status(200).json({ data: logs });
   },
 };

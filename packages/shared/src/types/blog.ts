@@ -15,6 +15,7 @@ export interface BlogPostDto extends SeoFields {
   isFeatured: boolean;
   coverImageUrl: string | null;
   publishedAt: string | null;
+  scheduledAt: string | null;
   createdAt: string;
   updatedAt: string;
   author: {
@@ -63,6 +64,8 @@ export interface CreateBlogPostRequest {
   isFeatured?: boolean;
   categoryId?: string;
   coverImageId?: string;
+  publishedAt?: string;
+  scheduledAt?: string | null;
   seoTitle?: string;
   seoDescription?: string;
   seoKeywords?: string;

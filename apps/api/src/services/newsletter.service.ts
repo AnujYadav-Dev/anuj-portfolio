@@ -1,6 +1,7 @@
 import { newsletterRepository } from '@/repositories/newsletter.repository';
 import { siteSettingRepository } from '@/repositories/siteSetting.repository';
 import { emailService } from '@/services/email.service';
+import { activityLogService } from '@/services/activityLog.service';
 import { mapNewsletterSubscriberToDto } from '@/utils/mappers';
 import { buildPagination, getPrismaPagination } from '@/utils/pagination';
 import { NotFoundError, ValidationError } from '@/utils/errors';
@@ -213,6 +214,12 @@ export const newsletterService = {
       },
     });
 
+    activityLogService.log({
+      action: 'newsletter_broadcast',
+      entityType: 'newsletter_subscriber',
+      details: { subject: input.subject, sentCount: result.sent, failedCount: result.failed },
+    });
+
     return {
       message: `Broadcast sent to ${result.sent} subscriber(s) (${result.failed} failed).`,
       sent: result.sent,
@@ -268,6 +275,13 @@ export const newsletterService = {
       throw new NotFoundError(`Subscriber '${id}' not found`);
     }
     await newsletterRepository.delete(id);
+
+    activityLogService.log({
+      action: 'newsletter_subscriber_delete',
+      entityType: 'newsletter_subscriber',
+      entityId: id,
+      details: { email: subscriber.email, name: subscriber.name },
+    });
   },
 
   sendAdminNotification(email: string, name: string, status: string): void {

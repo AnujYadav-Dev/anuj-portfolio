@@ -1,4 +1,5 @@
 import { homepageSectionRepository } from '@/repositories/homepageSection.repository';
+import { activityLogService } from '@/services/activityLog.service';
 import { mapHomepageSectionToDto } from '@/utils/mappers';
 import { NotFoundError, ConflictError } from '@/utils/errors';
 import type { HomepageSectionDto, UpsertHomepageSectionInput } from '@portfolio/shared';
@@ -39,6 +40,14 @@ export const homepageSectionService = {
       isEnabled: input.isEnabled ?? true,
       config: (input.config ?? {}) as Prisma.InputJsonValue,
     });
+
+    activityLogService.log({
+      action: 'homepage_section_create',
+      entityType: 'homepage_section',
+      entityId: created.id,
+      details: { sectionKey: created.sectionKey, title: created.title },
+    });
+
     return mapHomepageSectionToDto(created);
   },
 
@@ -56,12 +65,27 @@ export const homepageSectionService = {
     if (input.config !== undefined) updateData.config = input.config as Prisma.InputJsonValue;
 
     const updated = await homepageSectionRepository.update(id, updateData);
+
+    activityLogService.log({
+      action: 'homepage_section_update',
+      entityType: 'homepage_section',
+      entityId: updated.id,
+      details: { sectionKey: updated.sectionKey, title: updated.title },
+    });
+
     return mapHomepageSectionToDto(updated);
   },
 
   async deleteSection(id: string): Promise<void> {
-    await homepageSectionService.getSectionById(id);
+    const existing = await homepageSectionService.getSectionById(id);
     await homepageSectionRepository.delete(id);
+
+    activityLogService.log({
+      action: 'homepage_section_delete',
+      entityType: 'homepage_section',
+      entityId: id,
+      details: { sectionKey: existing.sectionKey, title: existing.title },
+    });
   },
 
   async reorderSections(items: { id: string; sortOrder: number }[]): Promise<void> {

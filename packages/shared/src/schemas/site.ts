@@ -1,5 +1,11 @@
 import { z } from 'zod';
-import { slugSchema, paginationSchema, seoFieldsSchema, optionalUuidSchema } from './common';
+import {
+  slugSchema,
+  paginationSchema,
+  seoFieldsSchema,
+  optionalUuidSchema,
+  optionalDateStringSchema,
+} from './common';
 
 import { ContentStatus, BlockType, NavLocation, NavItemType } from '../types/enums';
 
@@ -65,6 +71,8 @@ export const createPageSchema = z
     status: z.nativeEnum(ContentStatus).default(ContentStatus.Draft),
     isNavVisible: z.boolean().default(false),
     sortOrder: z.number().int().default(0),
+    publishedAt: optionalDateStringSchema,
+    scheduledAt: optionalDateStringSchema,
   })
   .merge(seoFieldsSchema);
 

@@ -1,6 +1,7 @@
 import { blogRepository } from '@/repositories/blog.repository';
 import { siteSettingRepository } from '@/repositories/siteSetting.repository';
 import { contentBroadcastService } from '@/services/contentBroadcast.service';
+import { activityLogService } from '@/services/activityLog.service';
 import { logger } from '@/config/logger';
 import {
   mapBlogPostToDto,
@@ -126,7 +127,12 @@ export const blogService = {
         seoKeywords: input.seoKeywords ?? null,
         ogImageId: input.ogImageId ?? null,
         authorId,
-        publishedAt: input.status === 'published' ? new Date() : null,
+        publishedAt: input.publishedAt
+          ? new Date(input.publishedAt)
+          : input.status === 'published'
+            ? new Date()
+            : null,
+        scheduledAt: input.scheduledAt ? new Date(input.scheduledAt) : null,
       },
       input.tagIds,
     );
@@ -158,6 +164,14 @@ export const blogService = {
         }
       });
     }
+
+    activityLogService.log({
+      action: 'blog_create',
+      entityType: 'blog_post',
+      entityId: created.id,
+      authorId,
+      details: { title: created.title, slug: created.slug, status: created.status },
+    });
 
     return dto;
   },
@@ -194,9 +208,15 @@ export const blogService = {
     if (input.excerpt !== undefined) updateData.excerpt = input.excerpt || null;
     if (input.status !== undefined) {
       updateData.status = input.status as any;
-      if (input.status === 'published' && !existing.publishedAt) {
+      if (input.status === 'published' && !existing.publishedAt && !input.publishedAt) {
         updateData.publishedAt = new Date();
       }
+    }
+    if (input.publishedAt !== undefined) {
+      updateData.publishedAt = input.publishedAt ? new Date(input.publishedAt) : null;
+    }
+    if (input.scheduledAt !== undefined) {
+      updateData.scheduledAt = input.scheduledAt ? new Date(input.scheduledAt) : null;
     }
     if (input.isFeatured !== undefined) updateData.isFeatured = input.isFeatured;
     if (input.categoryId !== undefined) updateData.categoryId = input.categoryId || null;
@@ -210,6 +230,14 @@ export const blogService = {
     const updated = await blogRepository.update(id, updateData, input.tagIds);
     const tagNames = await blogRepository.getBlogPostTags(updated.id);
     const dto = mapBlogPostToDto(updated, tagNames);
+
+    activityLogService.log({
+      action: 'blog_update',
+      entityType: 'blog_post',
+      entityId: updated.id,
+      authorId: adminAuthorId,
+      details: { title: updated.title, slug: updated.slug, status: updated.status },
+    });
 
     // If transitioned from non-published to published
     if (existing.status !== 'published' && updated.status === 'published') {
@@ -241,8 +269,14 @@ export const blogService = {
   },
 
   async delete(id: string): Promise<void> {
-    await blogService.getById(id);
+    const existing = await blogService.getById(id);
     await blogRepository.delete(id);
+    activityLogService.log({
+      action: 'blog_delete',
+      entityType: 'blog_post',
+      entityId: id,
+      details: { title: existing.title, slug: existing.slug },
+    });
   },
 
   async updateStatus(id: string, status: any): Promise<BlogPostDto> {

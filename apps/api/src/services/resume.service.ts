@@ -1,4 +1,5 @@
 import { resumeRepository } from '@/repositories/resume.repository';
+import { activityLogService } from '@/services/activityLog.service';
 import { mapResumeToDto } from '@/utils/mappers';
 import { NotFoundError } from '@/utils/errors';
 import type { CreateResumeInput, ResumeDto } from '@portfolio/shared';
@@ -33,6 +34,13 @@ export const resumeService = {
       isActive: input.isActive ?? false,
     });
 
+    activityLogService.log({
+      action: 'resume_create',
+      entityType: 'resume',
+      entityId: created.id,
+      details: { title: created.title, versionLabel: created.versionLabel, isActive: created.isActive },
+    });
+
     if (input.isActive) {
       const active = await resumeRepository.setActive(created.id);
       return mapResumeToDto(active);
@@ -42,13 +50,28 @@ export const resumeService = {
   },
 
   async setActiveResume(id: string): Promise<ResumeDto> {
-    await resumeService.getResumeById(id);
+    const existing = await resumeService.getResumeById(id);
     const updated = await resumeRepository.setActive(id);
+
+    activityLogService.log({
+      action: 'resume_set_active',
+      entityType: 'resume',
+      entityId: id,
+      details: { title: existing.title, versionLabel: existing.versionLabel },
+    });
+
     return mapResumeToDto(updated);
   },
 
   async deleteResume(id: string): Promise<void> {
-    await resumeService.getResumeById(id);
+    const existing = await resumeService.getResumeById(id);
     await resumeRepository.delete(id);
+
+    activityLogService.log({
+      action: 'resume_delete',
+      entityType: 'resume',
+      entityId: id,
+      details: { title: existing.title, versionLabel: existing.versionLabel },
+    });
   },
 };

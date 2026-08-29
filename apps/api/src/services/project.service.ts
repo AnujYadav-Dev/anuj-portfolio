@@ -1,6 +1,7 @@
 import { projectRepository } from '@/repositories/project.repository';
 import { siteSettingRepository } from '@/repositories/siteSetting.repository';
 import { contentBroadcastService } from '@/services/contentBroadcast.service';
+import { activityLogService } from '@/services/activityLog.service';
 import { logger } from '@/config/logger';
 import { mapProjectToDto, mapProjectToListItemDto } from '@/utils/mappers';
 import { buildPagination, getPrismaPagination } from '@/utils/pagination';
@@ -117,6 +118,7 @@ export const projectService = {
         projectStatus: input.projectStatus as any,
         status: input.status as any,
         isFeatured: input.isFeatured ?? false,
+        sortOrder: input.sortOrder ?? 0,
         startDate: input.startDate ? new Date(input.startDate) : null,
         endDate: input.endDate ? new Date(input.endDate) : null,
         categoryId: input.categoryId ?? null,
@@ -126,9 +128,15 @@ export const projectService = {
         seoKeywords: input.seoKeywords ?? null,
         ogImageId: input.ogImageId ?? null,
         authorId,
-        publishedAt: input.status === 'published' ? new Date() : null,
+        publishedAt: input.publishedAt
+          ? new Date(input.publishedAt)
+          : input.status === 'published'
+            ? new Date()
+            : null,
+        scheduledAt: input.scheduledAt ? new Date(input.scheduledAt) : null,
       },
       input.tagIds,
+      input.images as any,
     );
 
     const tagNames = await projectRepository.getProjectTags(created.id);
@@ -157,6 +165,14 @@ export const projectService = {
         }
       });
     }
+
+    activityLogService.log({
+      action: 'project_create',
+      entityType: 'project',
+      entityId: created.id,
+      authorId,
+      details: { title: created.title, slug: created.slug, status: created.status },
+    });
 
     return dto;
   },
@@ -188,15 +204,20 @@ export const projectService = {
     if (input.projectStatus !== undefined) updateData.projectStatus = input.projectStatus as any;
     if (input.status !== undefined) {
       updateData.status = input.status as any;
-      if (input.status === 'published' && !existing.publishedAt) {
+      if (input.status === 'published' && !existing.publishedAt && !input.publishedAt) {
         updateData.publishedAt = new Date();
       }
     }
     if (input.isFeatured !== undefined) updateData.isFeatured = input.isFeatured;
+    if (input.sortOrder !== undefined) updateData.sortOrder = input.sortOrder;
     if (input.startDate !== undefined)
       updateData.startDate = input.startDate ? new Date(input.startDate) : null;
     if (input.endDate !== undefined)
       updateData.endDate = input.endDate ? new Date(input.endDate) : null;
+    if (input.publishedAt !== undefined)
+      updateData.publishedAt = input.publishedAt ? new Date(input.publishedAt) : null;
+    if (input.scheduledAt !== undefined)
+      updateData.scheduledAt = input.scheduledAt ? new Date(input.scheduledAt) : null;
     if (input.categoryId !== undefined) updateData.categoryId = input.categoryId || null;
     if (input.coverImageId !== undefined) updateData.coverImageId = input.coverImageId || null;
     if (input.seoTitle !== undefined) updateData.seoTitle = input.seoTitle || null;
@@ -205,9 +226,17 @@ export const projectService = {
     if (input.seoKeywords !== undefined) updateData.seoKeywords = input.seoKeywords || null;
     if (input.ogImageId !== undefined) updateData.ogImageId = input.ogImageId || null;
 
-    const updated = await projectRepository.update(id, updateData, input.tagIds);
+    const updated = await projectRepository.update(id, updateData, input.tagIds, input.images as any);
     const tagNames = await projectRepository.getProjectTags(updated.id);
     const dto = mapProjectToDto(updated, tagNames);
+
+    activityLogService.log({
+      action: 'project_update',
+      entityType: 'project',
+      entityId: updated.id,
+      authorId: adminAuthorId,
+      details: { title: updated.title, slug: updated.slug, status: updated.status },
+    });
 
     if (existing.status !== 'published' && updated.status === 'published') {
       setImmediate(async () => {
@@ -237,8 +266,14 @@ export const projectService = {
   },
 
   async delete(id: string): Promise<void> {
-    await projectService.getById(id);
+    const existing = await projectService.getById(id);
     await projectRepository.delete(id);
+    activityLogService.log({
+      action: 'project_delete',
+      entityType: 'project',
+      entityId: id,
+      details: { title: existing.title, slug: existing.slug },
+    });
   },
 
   async updateStatus(id: string, status: any): Promise<ProjectDto> {

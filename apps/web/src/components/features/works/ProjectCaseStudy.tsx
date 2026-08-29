@@ -10,6 +10,7 @@ import { Avatar } from '@/components/ui/avatar';
 import { MarkdownRenderer } from '@/components/content/MarkdownRenderer';
 import { ZoomableImage } from '@/components/content/ZoomableImage';
 import { RevealOnScroll } from '@/components/motion/RevealOnScroll';
+import { MasonryGallery } from '@/components/features/gallery/MasonryGallery';
 import type { ProjectDto } from '@portfolio/shared';
 
 export interface ProjectCaseStudyProps {
@@ -159,6 +160,31 @@ export function ProjectCaseStudy({ project }: ProjectCaseStudyProps) {
               <MarkdownRenderer content={project.content} />
             </div>
           </RevealOnScroll>
+        )}
+
+        {/* Screenshots & Architecture Gallery */}
+        {project.images && project.images.length > 0 && (
+          <div className="py-12 border-t border-border mt-8">
+            <div className="flex flex-col gap-2 mb-8">
+              <span className="text-xs font-mono text-muted uppercase tracking-wider">
+                GALLERY // INTERFACES & ARCHITECTURE
+              </span>
+              <h2 className="text-2xl font-bold tracking-tight text-foreground font-mono">
+                Screenshots & Visuals
+              </h2>
+            </div>
+
+            <MasonryGallery
+              items={project.images.map((img) => ({
+                id: img.id,
+                url: img.url,
+                caption: img.caption,
+                title: img.caption,
+                altText: img.altText || img.caption || project.title,
+              }))}
+              columnsClassName="columns-1 sm:columns-2 md:columns-3 gap-6 space-y-6"
+            />
+          </div>
         )}
       </div>
     </div>

@@ -25,6 +25,7 @@ export async function generateMetadata({ params }: GenericDynamicPageProps): Pro
     title: page.seoTitle || page.title,
     description: page.seoDescription || `View ${page.title} on Anuj Yadav's platform.`,
     canonicalPath: `/${page.slug}`,
+    image: page.ogImageUrl || undefined,
     keywords: page.seoKeywords || undefined,
     type: 'website',
   });

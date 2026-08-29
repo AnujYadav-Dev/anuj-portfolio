@@ -27,6 +27,43 @@ This is a paragraph with **bold** and *italic* text.
     expect(screen.getByText(/This is an important note block/)).toBeInTheDocument();
   });
 
+  it('renders Markdown images with ZoomableImage without invalid p > figure nesting', () => {
+    const md = `
+A paragraph before.
+
+![System Architecture](https://example.com/arch.png)
+
+A paragraph after.
+    `;
+
+    const { container } = render(<MarkdownRenderer content={md} />);
+
+    // Verify image rendered
+    const img = screen.getByAltText('System Architecture');
+    expect(img).toBeInTheDocument();
+    expect(img).toHaveAttribute('src', 'https://example.com/arch.png');
+
+    // Verify no <figure> is nested inside a <p>
+    const pElements = container.querySelectorAll('p');
+    pElements.forEach((p) => {
+      expect(p.querySelector('figure')).toBeNull();
+      expect(p.querySelector('div[role="button"]')).toBeNull();
+    });
+  });
+
+  it('renders multiple Markdown images and handles empty captions gracefully', () => {
+    const md = `
+![](https://example.com/image1.png)
+![Second Image](https://example.com/image2.png)
+    `;
+
+    const { container } = render(<MarkdownRenderer content={md} />);
+
+    const images = container.querySelectorAll('img');
+    expect(images.length).toBe(2);
+    expect(screen.getByAltText('Second Image')).toBeInTheDocument();
+  });
+
   it('sanitizes dangerous XSS payloads such as script tags', () => {
     const md = `
 Hello safe text

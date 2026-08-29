@@ -1,4 +1,5 @@
 import { navItemRepository } from '@/repositories/navItem.repository';
+import { activityLogService } from '@/services/activityLog.service';
 import { mapNavItemToDto } from '@/utils/mappers';
 import { NotFoundError } from '@/utils/errors';
 import type { NavItemDto, UpsertNavItemInput } from '@portfolio/shared';
@@ -33,6 +34,14 @@ export const navItemService = {
       isEnabled: input.isEnabled ?? true,
       parentId: input.parentId ?? null,
     });
+
+    activityLogService.log({
+      action: 'nav_item_create',
+      entityType: 'nav_item',
+      entityId: created.id,
+      details: { label: created.label, url: created.url },
+    });
+
     return mapNavItemToDto(created);
   },
 
@@ -55,12 +64,27 @@ export const navItemService = {
     if (input.parentId !== undefined) updateData.parentId = input.parentId || null;
 
     const updated = await navItemRepository.update(id, updateData);
+
+    activityLogService.log({
+      action: 'nav_item_update',
+      entityType: 'nav_item',
+      entityId: updated.id,
+      details: { label: updated.label, url: updated.url },
+    });
+
     return mapNavItemToDto(updated);
   },
 
   async deleteNavItem(id: string): Promise<void> {
-    await navItemService.getNavItemById(id);
+    const existing = await navItemService.getNavItemById(id);
     await navItemRepository.delete(id);
+
+    activityLogService.log({
+      action: 'nav_item_delete',
+      entityType: 'nav_item',
+      entityId: id,
+      details: { label: existing.label, url: existing.url },
+    });
   },
 
   async reorderNavItems(items: { id: string; sortOrder: number }[]): Promise<void> {

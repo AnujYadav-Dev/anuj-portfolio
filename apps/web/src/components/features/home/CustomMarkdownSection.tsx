@@ -1,11 +1,10 @@
-'use client';
-
 import * as React from 'react';
 import Link from 'next/link';
 import { ArrowUpRight } from 'lucide-react';
 import { SplitSection } from '@/components/common/SplitSection';
 import { RevealOnScroll } from '@/components/motion/RevealOnScroll';
 import { MarkdownRenderer } from '@/components/content/MarkdownRenderer';
+import { ContentBlocksRenderer } from '@/components/features/blocks/ContentBlocksRenderer';
 import { formatSectionTag, type DynamicSectionProps } from './types';
 
 export function CustomMarkdownSection({ section, index }: DynamicSectionProps) {
@@ -42,6 +41,12 @@ export function CustomMarkdownSection({ section, index }: DynamicSectionProps) {
           <div className="text-sm leading-relaxed text-foreground/90">
             <MarkdownRenderer content={markdownContent} />
           </div>
+
+          {section?.contentBlocks && section.contentBlocks.length > 0 && (
+            <div className="pt-4 border-t border-border/50">
+              <ContentBlocksRenderer blocks={section.contentBlocks} />
+            </div>
+          )}
 
           {ctaLabel && ctaUrl && (
             <div className="pt-2">

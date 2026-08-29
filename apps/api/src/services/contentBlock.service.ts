@@ -1,6 +1,8 @@
 import { contentBlockRepository } from '@/repositories/contentBlock.repository';
+import { homepageSectionRepository } from '@/repositories/homepageSection.repository';
+import { activityLogService } from '@/services/activityLog.service';
 import { mapContentBlockToDto } from '@/utils/mappers';
-import { NotFoundError } from '@/utils/errors';
+import { NotFoundError, ValidationError } from '@/utils/errors';
 import type { ContentBlockDto, UpsertContentBlockInput } from '@portfolio/shared';
 import type { Prisma } from '@prisma/client';
 
@@ -28,6 +30,13 @@ export const contentBlockService = {
   },
 
   async createBlock(input: UpsertContentBlockInput): Promise<ContentBlockDto> {
+    if (input.homepageSectionId) {
+      const section = await homepageSectionRepository.findById(input.homepageSectionId);
+      if (section && section.sectionKey === 'hero') {
+        throw new ValidationError('Content blocks cannot be attached to the sticky Hero section.');
+      }
+    }
+
     const created = await contentBlockRepository.create({
       blockType: input.blockType as any,
       title: input.title ?? null,
@@ -39,11 +48,26 @@ export const contentBlockService = {
       pageId: input.pageId ?? null,
       homepageSectionId: input.homepageSectionId ?? null,
     });
+
+    activityLogService.log({
+      action: 'content_block_create',
+      entityType: 'content_block',
+      entityId: created.id,
+      details: { title: created.title, blockType: created.blockType },
+    });
+
     return mapContentBlockToDto(created);
   },
 
   async updateBlock(id: string, input: Partial<UpsertContentBlockInput>): Promise<ContentBlockDto> {
     await contentBlockService.getBlockById(id);
+
+    if (input.homepageSectionId) {
+      const section = await homepageSectionRepository.findById(input.homepageSectionId);
+      if (section && section.sectionKey === 'hero') {
+        throw new ValidationError('Content blocks cannot be attached to the sticky Hero section.');
+      }
+    }
 
     const updateData: Prisma.ContentBlockUncheckedUpdateInput = {};
     if (input.blockType !== undefined) updateData.blockType = input.blockType as any;
@@ -58,12 +82,27 @@ export const contentBlockService = {
       updateData.homepageSectionId = input.homepageSectionId || null;
 
     const updated = await contentBlockRepository.update(id, updateData);
+
+    activityLogService.log({
+      action: 'content_block_update',
+      entityType: 'content_block',
+      entityId: updated.id,
+      details: { title: updated.title, blockType: updated.blockType },
+    });
+
     return mapContentBlockToDto(updated);
   },
 
   async deleteBlock(id: string): Promise<void> {
-    await contentBlockService.getBlockById(id);
+    const existing = await contentBlockService.getBlockById(id);
     await contentBlockRepository.delete(id);
+
+    activityLogService.log({
+      action: 'content_block_delete',
+      entityType: 'content_block',
+      entityId: id,
+      details: { title: existing.title, blockType: existing.blockType },
+    });
   },
 
   async reorderBlocks(items: { id: string; sortOrder: number }[]): Promise<void> {

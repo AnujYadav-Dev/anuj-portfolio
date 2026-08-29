@@ -1,4 +1,5 @@
 import { experienceRepository } from '@/repositories/experience.repository';
+import { activityLogService } from '@/services/activityLog.service';
 import { mapExperienceToDto } from '@/utils/mappers';
 import { NotFoundError } from '@/utils/errors';
 import type { ExperienceDto, UpsertExperienceInput } from '@portfolio/shared';
@@ -33,6 +34,14 @@ export const experienceService = {
       sortOrder: input.sortOrder ?? 0,
       isEnabled: input.isEnabled ?? true,
     });
+
+    activityLogService.log({
+      action: 'experience_create',
+      entityType: 'experience',
+      entityId: created.id,
+      details: { companyName: created.companyName, role: created.role },
+    });
+
     return mapExperienceToDto(created);
   },
 
@@ -58,12 +67,27 @@ export const experienceService = {
     if (input.isEnabled !== undefined) updateData.isEnabled = input.isEnabled;
 
     const updated = await experienceRepository.update(id, updateData);
+
+    activityLogService.log({
+      action: 'experience_update',
+      entityType: 'experience',
+      entityId: updated.id,
+      details: { companyName: updated.companyName, role: updated.role },
+    });
+
     return mapExperienceToDto(updated);
   },
 
   async deleteExperience(id: string): Promise<void> {
-    await experienceService.getExperienceById(id);
+    const existing = await experienceService.getExperienceById(id);
     await experienceRepository.delete(id);
+
+    activityLogService.log({
+      action: 'experience_delete',
+      entityType: 'experience',
+      entityId: id,
+      details: { companyName: existing.companyName, role: existing.role },
+    });
   },
 
   async reorderExperiences(items: { id: string; sortOrder: number }[]): Promise<void> {

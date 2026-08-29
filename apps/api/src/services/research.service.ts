@@ -1,11 +1,13 @@
 import { researchRepository } from '@/repositories/research.repository';
 import { siteSettingRepository } from '@/repositories/siteSetting.repository';
 import { contentBroadcastService } from '@/services/contentBroadcast.service';
+import { activityLogService } from '@/services/activityLog.service';
 import { logger } from '@/config/logger';
 import { mapResearchPaperToDto, mapResearchPaperToListItemDto } from '@/utils/mappers';
 import { buildPagination, getPrismaPagination } from '@/utils/pagination';
 import { slugify } from '@/utils/slug';
 import { NotFoundError, ConflictError } from '@/utils/errors';
+import { saveContentVersion } from '@/utils/versioning';
 import type {
   CreateResearchPaperInput,
   ListResearchPapersQuery,
@@ -121,7 +123,12 @@ export const researchService = {
         seoKeywords: input.seoKeywords ?? null,
         ogImageId: input.ogImageId ?? null,
         authorId,
-        publishedAt: input.status === 'published' ? new Date() : null,
+        publishedAt: input.publishedAt
+          ? new Date(input.publishedAt)
+          : input.status === 'published'
+            ? new Date()
+            : null,
+        scheduledAt: input.scheduledAt ? new Date(input.scheduledAt) : null,
       },
       input.tagIds,
     );
@@ -153,11 +160,35 @@ export const researchService = {
       });
     }
 
+    activityLogService.log({
+      action: 'research_create',
+      entityType: 'research_paper',
+      entityId: created.id,
+      authorId,
+      details: { title: created.title, slug: created.slug, status: created.status },
+    });
+
     return dto;
   },
 
-  async update(id: string, input: UpdateResearchPaperInput): Promise<ResearchPaperDto> {
-    const existing = await researchService.getById(id);
+  async update(
+    id: string,
+    input: UpdateResearchPaperInput,
+    adminAuthorId?: string,
+  ): Promise<ResearchPaperDto> {
+    const existing = await researchRepository.findById(id);
+    if (!existing) {
+      throw new NotFoundError(`Research paper '${id}' not found`);
+    }
+
+    // Save version snapshot before update
+    await saveContentVersion(
+      'research_paper',
+      id,
+      existing as any,
+      adminAuthorId,
+      'Research paper updated via API',
+    );
 
     const updateData: Prisma.ResearchPaperUncheckedUpdateInput = {};
     if (input.title !== undefined) updateData.title = input.title;
@@ -174,9 +205,15 @@ export const researchService = {
     }
     if (input.status !== undefined) {
       updateData.status = input.status as any;
-      if (input.status === 'published' && !existing.publishedAt) {
+      if (input.status === 'published' && !existing.publishedAt && !input.publishedAt) {
         updateData.publishedAt = new Date();
       }
+    }
+    if (input.publishedAt !== undefined) {
+      updateData.publishedAt = input.publishedAt ? new Date(input.publishedAt) : null;
+    }
+    if (input.scheduledAt !== undefined) {
+      updateData.scheduledAt = input.scheduledAt ? new Date(input.scheduledAt) : null;
     }
     if (input.isFeatured !== undefined) updateData.isFeatured = input.isFeatured;
     if (input.pdfId !== undefined) updateData.pdfId = input.pdfId || null;
@@ -189,6 +226,14 @@ export const researchService = {
     const updated = await researchRepository.update(id, updateData, input.tagIds);
     const tagNames = await researchRepository.getResearchTags(updated.id);
     const dto = mapResearchPaperToDto(updated, tagNames);
+
+    activityLogService.log({
+      action: 'research_update',
+      entityType: 'research_paper',
+      entityId: updated.id,
+      authorId: adminAuthorId,
+      details: { title: updated.title, slug: updated.slug, status: updated.status },
+    });
 
     if (existing.status !== 'published' && updated.status === 'published') {
       setImmediate(async () => {
@@ -218,8 +263,14 @@ export const researchService = {
   },
 
   async delete(id: string): Promise<void> {
-    await researchService.getById(id);
+    const existing = await researchService.getById(id);
     await researchRepository.delete(id);
+    activityLogService.log({
+      action: 'research_delete',
+      entityType: 'research_paper',
+      entityId: id,
+      details: { title: existing.title, slug: existing.slug },
+    });
   },
 
   async updateStatus(id: string, status: any): Promise<ResearchPaperDto> {

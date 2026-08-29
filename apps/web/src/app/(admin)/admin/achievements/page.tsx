@@ -4,12 +4,14 @@ import React, { useEffect, useState } from 'react';
 import { apiClient } from '@/lib/api';
 import type {
   AchievementDto,
+  MediaDto,
   CreateAchievementRequest,
   UpdateAchievementRequest,
 } from '@portfolio/shared';
 import { AdminPageHeader } from '@/components/admin/ui/AdminPageHeader';
 import { ReorderableList } from '@/components/admin/ui/ReorderableList';
 import { ConfirmDialog } from '@/components/admin/ui/ConfirmDialog';
+import { MediaPickerModal } from '@/components/admin/ui/MediaPickerModal';
 import {
   Dialog,
   DialogContent,
@@ -20,7 +22,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import { Plus, Edit2, Trash2, Trophy, ExternalLink } from 'lucide-react';
+import { Plus, Edit2, Trash2, Trophy, ExternalLink, Image as ImageIcon, Star, EyeOff } from 'lucide-react';
 import { toast } from 'sonner';
 
 export default function AdminAchievementsPage() {
@@ -29,12 +31,15 @@ export default function AdminAchievementsPage() {
 
   // Editor Modal
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isImagePickerOpen, setIsImagePickerOpen] = useState(false);
   const [editingAch, setEditingAch] = useState<AchievementDto | null>(null);
   const [title, setTitle] = useState('');
   const [issuer, setIssuer] = useState('');
   const [date, setDate] = useState('');
   const [description, setDescription] = useState('');
   const [url, setUrl] = useState('');
+  const [imageUrl, setImageUrl] = useState('');
+  const [imageId, setImageId] = useState('');
   const [isFeatured, setIsFeatured] = useState(false);
   const [isEnabled, setIsEnabled] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
@@ -65,6 +70,8 @@ export default function AdminAchievementsPage() {
     setDate('');
     setDescription('');
     setUrl('');
+    setImageUrl('');
+    setImageId('');
     setIsFeatured(false);
     setIsEnabled(true);
     setIsModalOpen(true);
@@ -77,9 +84,16 @@ export default function AdminAchievementsPage() {
     setDate(ach.date ? new Date(ach.date).toISOString().split('T')[0]! : '');
     setDescription(ach.description || '');
     setUrl(ach.url || '');
+    setImageUrl(ach.imageUrl || '');
+    setImageId('');
     setIsFeatured(ach.isFeatured);
     setIsEnabled(ach.isEnabled);
     setIsModalOpen(true);
+  };
+
+  const handleSelectImage = (media: MediaDto) => {
+    setImageUrl(media.url);
+    setImageId(media.id);
   };
 
   const handleSave = async (e: React.FormEvent) => {
@@ -97,6 +111,7 @@ export default function AdminAchievementsPage() {
         date: date || undefined,
         description: description || undefined,
         url: url || undefined,
+        imageId: imageId || undefined,
         isFeatured,
         isEnabled,
       };
@@ -173,6 +188,16 @@ export default function AdminAchievementsPage() {
               <div className="flex items-center gap-2">
                 <span className="font-bold text-foreground text-xs">{item.title}</span>
                 {item.issuer && <span className="text-muted text-xs">by {item.issuer}</span>}
+                {item.isFeatured && (
+                  <span className="text-[10px] text-accent font-mono flex items-center gap-0.5">
+                    <Star className="w-3 h-3 text-accent" /> Featured
+                  </span>
+                )}
+                {!item.isEnabled && (
+                  <span className="text-[10px] text-destructive font-mono flex items-center gap-0.5">
+                    <EyeOff className="w-3 h-3" /> Hidden
+                  </span>
+                )}
               </div>
               <p className="text-[11px] text-muted font-mono mt-0.5">
                 {item.date ? new Date(item.date).toLocaleDateString() : 'Awarded'}
@@ -213,8 +238,8 @@ export default function AdminAchievementsPage() {
       />
 
       {/* Editor Modal */}
-      <Dialog isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
-        <DialogContent className="max-w-md bg-surface border-border p-6">
+      <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
+        <DialogContent className="max-w-md bg-surface border-border p-6 max-h-[90vh] overflow-y-auto">
           <form onSubmit={handleSave} className="space-y-4">
             <DialogHeader className="border-b border-border pb-3">
               <DialogTitle className="text-base font-bold text-foreground flex items-center gap-2">
@@ -275,6 +300,28 @@ export default function AdminAchievementsPage() {
               </div>
 
               <div className="space-y-1">
+                <label className="text-xs font-semibold text-foreground">Award / Trophy Image</label>
+                <div className="flex items-center gap-2">
+                  {imageUrl ? (
+                    <div className="flex items-center gap-2">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img src={imageUrl} alt="Award" className="w-12 h-12 object-contain rounded border border-border bg-white/5 p-1" />
+                      <Button type="button" variant="outline" size="sm" onClick={() => setIsImagePickerOpen(true)} className="text-xs h-7">
+                        Change Image
+                      </Button>
+                      <Button type="button" variant="ghost" size="sm" onClick={() => { setImageUrl(''); setImageId(''); }} className="text-xs h-7 text-destructive">
+                        Remove
+                      </Button>
+                    </div>
+                  ) : (
+                    <Button type="button" variant="outline" size="sm" onClick={() => setIsImagePickerOpen(true)} className="text-xs h-7">
+                      <ImageIcon className="w-3.5 h-3.5 mr-1" /> Select Award Photo
+                    </Button>
+                  )}
+                </div>
+              </div>
+
+              <div className="space-y-1">
                 <label className="text-xs font-semibold text-foreground">Short Description</label>
                 <Textarea
                   placeholder="Built decentralized indexing protocol in 36 hours..."
@@ -285,7 +332,19 @@ export default function AdminAchievementsPage() {
                 />
               </div>
 
-              <div className="pt-2">
+              <div className="space-y-2 pt-2">
+                <label className="flex items-center gap-2 cursor-pointer select-none">
+                  <input
+                    type="checkbox"
+                    checked={isFeatured}
+                    onChange={(e) => setIsFeatured(e.target.checked)}
+                    className="rounded border-border bg-background text-accent focus:ring-accent accent-accent w-4 h-4 cursor-pointer"
+                  />
+                  <span className="text-xs font-semibold text-foreground flex items-center gap-1">
+                    <Star className="w-3.5 h-3.5 text-accent" /> Featured on Homepage Showcase
+                  </span>
+                </label>
+
                 <label className="flex items-center gap-2 cursor-pointer select-none">
                   <input
                     type="checkbox"
@@ -322,6 +381,14 @@ export default function AdminAchievementsPage() {
           </form>
         </DialogContent>
       </Dialog>
+
+      <MediaPickerModal
+        isOpen={isImagePickerOpen}
+        onClose={() => setIsImagePickerOpen(false)}
+        onSelect={handleSelectImage}
+        title="Select Award Image"
+        acceptType="image"
+      />
 
       <ConfirmDialog
         isOpen={Boolean(deleteTarget)}

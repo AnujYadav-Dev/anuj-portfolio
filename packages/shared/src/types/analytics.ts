@@ -212,3 +212,16 @@ export interface AdminVisitorJourneyDto {
   steps: JourneyStep[];
   totalDwellTimeSeconds: number;
 }
+
+/** Administrative audit trail & system activity log DTO. */
+export interface ActivityLogDto {
+  id: string;
+  action: string;
+  entityType?: string | null;
+  entityId?: string | null;
+  authorId?: string | null;
+  authorName?: string | null;
+  details?: Record<string, any> | null;
+  ipAddress?: string | null;
+  createdAt: string;
+}

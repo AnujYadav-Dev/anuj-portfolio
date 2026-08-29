@@ -1,5 +1,6 @@
 import { skillCategoryRepository } from '@/repositories/skillCategory.repository';
 import { skillRepository } from '@/repositories/skill.repository';
+import { activityLogService } from '@/services/activityLog.service';
 import { mapSkillCategoryToDto, mapSkillToDto } from '@/utils/mappers';
 import { NotFoundError, ConflictError } from '@/utils/errors';
 import { slugify } from '@/utils/slug';
@@ -41,6 +42,14 @@ export const skillService = {
       sortOrder: input.sortOrder ?? 0,
       isEnabled: input.isEnabled ?? true,
     });
+
+    activityLogService.log({
+      action: 'skill_category_create',
+      entityType: 'skill_category',
+      entityId: created.id,
+      details: { name: created.name, slug: created.slug },
+    });
+
     return mapSkillCategoryToDto(created);
   },
 
@@ -59,12 +68,27 @@ export const skillService = {
     if (input.isEnabled !== undefined) updateData.isEnabled = input.isEnabled;
 
     const updated = await skillCategoryRepository.update(id, updateData);
+
+    activityLogService.log({
+      action: 'skill_category_update',
+      entityType: 'skill_category',
+      entityId: updated.id,
+      details: { name: updated.name, slug: updated.slug },
+    });
+
     return mapSkillCategoryToDto(updated);
   },
 
   async deleteCategory(id: string): Promise<void> {
-    await skillService.getCategoryById(id);
+    const existing = await skillService.getCategoryById(id);
     await skillCategoryRepository.delete(id);
+
+    activityLogService.log({
+      action: 'skill_category_delete',
+      entityType: 'skill_category',
+      entityId: id,
+      details: { name: existing.name, slug: existing.slug },
+    });
   },
 
   async reorderCategories(items: { id: string; sortOrder: number }[]): Promise<void> {
@@ -107,6 +131,14 @@ export const skillService = {
       isEnabled: input.isEnabled ?? true,
       categoryId: input.categoryId,
     });
+
+    activityLogService.log({
+      action: 'skill_create',
+      entityType: 'skill',
+      entityId: created.id,
+      details: { name: created.name, slug: created.slug },
+    });
+
     return mapSkillToDto(created);
   },
 
@@ -123,12 +155,27 @@ export const skillService = {
     if (input.categoryId !== undefined) updateData.categoryId = input.categoryId;
 
     const updated = await skillRepository.update(id, updateData);
+
+    activityLogService.log({
+      action: 'skill_update',
+      entityType: 'skill',
+      entityId: updated.id,
+      details: { name: updated.name, slug: updated.slug },
+    });
+
     return mapSkillToDto(updated);
   },
 
   async deleteSkill(id: string): Promise<void> {
-    await skillService.getSkillById(id);
+    const existing = await skillService.getSkillById(id);
     await skillRepository.delete(id);
+
+    activityLogService.log({
+      action: 'skill_delete',
+      entityType: 'skill',
+      entityId: id,
+      details: { name: existing.name, slug: existing.slug },
+    });
   },
 
   async reorderSkills(items: { id: string; sortOrder: number }[]): Promise<void> {

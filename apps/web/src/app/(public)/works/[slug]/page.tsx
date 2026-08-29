@@ -28,6 +28,7 @@ export async function generateMetadata({ params }: SingleProjectPageProps): Prom
       project.shortDescription ||
       `Explore ${project.title} architecture case study.`,
     canonicalPath: `/works/${project.slug}`,
+    image: project.ogImageUrl || project.coverImageUrl || undefined,
     keywords: project.seoKeywords || project.technologies?.join(', '),
     type: 'website',
   });

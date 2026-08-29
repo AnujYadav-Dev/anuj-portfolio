@@ -1,4 +1,5 @@
 import { opensourceRepository } from '@/repositories/opensource.repository';
+import { activityLogService } from '@/services/activityLog.service';
 import { mapOpensourceToDto } from '@/utils/mappers';
 import { NotFoundError } from '@/utils/errors';
 import type { OpensourceContributionDto, UpsertOpensourceInput } from '@portfolio/shared';
@@ -34,6 +35,14 @@ export const opensourceService = {
       sortOrder: input.sortOrder ?? 0,
       isEnabled: input.isEnabled ?? true,
     });
+
+    activityLogService.log({
+      action: 'opensource_create',
+      entityType: 'opensource_contribution',
+      entityId: created.id,
+      details: { name: created.name, role: created.role },
+    });
+
     return mapOpensourceToDto(created);
   },
 
@@ -56,12 +65,27 @@ export const opensourceService = {
     if (input.isEnabled !== undefined) updateData.isEnabled = input.isEnabled;
 
     const updated = await opensourceRepository.update(id, updateData);
+
+    activityLogService.log({
+      action: 'opensource_update',
+      entityType: 'opensource_contribution',
+      entityId: updated.id,
+      details: { name: updated.name, role: updated.role },
+    });
+
     return mapOpensourceToDto(updated);
   },
 
   async deleteContribution(id: string): Promise<void> {
-    await opensourceService.getContributionById(id);
+    const existing = await opensourceService.getContributionById(id);
     await opensourceRepository.delete(id);
+
+    activityLogService.log({
+      action: 'opensource_delete',
+      entityType: 'opensource_contribution',
+      entityId: id,
+      details: { name: existing.name, role: existing.role },
+    });
   },
 
   async reorderContributions(items: { id: string; sortOrder: number }[]): Promise<void> {

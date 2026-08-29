@@ -1,4 +1,5 @@
 import { timelineRepository } from '@/repositories/timeline.repository';
+import { activityLogService } from '@/services/activityLog.service';
 import { mapTimelineEventToDto } from '@/utils/mappers';
 import { NotFoundError } from '@/utils/errors';
 import type { TimelineEventDto, UpsertTimelineEventInput } from '@portfolio/shared';
@@ -30,6 +31,14 @@ export const timelineService = {
       sortOrder: input.sortOrder ?? 0,
       isEnabled: input.isEnabled ?? true,
     });
+
+    activityLogService.log({
+      action: 'timeline_create',
+      entityType: 'timeline_event',
+      entityId: created.id,
+      details: { title: created.title, eventType: created.eventType },
+    });
+
     return mapTimelineEventToDto(created);
   },
 
@@ -52,12 +61,27 @@ export const timelineService = {
     if (input.isEnabled !== undefined) updateData.isEnabled = input.isEnabled;
 
     const updated = await timelineRepository.update(id, updateData);
+
+    activityLogService.log({
+      action: 'timeline_update',
+      entityType: 'timeline_event',
+      entityId: updated.id,
+      details: { title: updated.title, eventType: updated.eventType },
+    });
+
     return mapTimelineEventToDto(updated);
   },
 
   async deleteEvent(id: string): Promise<void> {
-    await timelineService.getEventById(id);
+    const existing = await timelineService.getEventById(id);
     await timelineRepository.delete(id);
+
+    activityLogService.log({
+      action: 'timeline_delete',
+      entityType: 'timeline_event',
+      entityId: id,
+      details: { title: existing.title, eventType: existing.eventType },
+    });
   },
 
   async reorderEvents(items: { id: string; sortOrder: number }[]): Promise<void> {

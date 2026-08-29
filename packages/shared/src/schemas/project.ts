@@ -21,15 +21,30 @@ export const createProjectSchema = z
     technologies: z.array(z.string()).optional(),
     githubUrl: optionalUrlSchema,
     liveUrl: optionalUrlSchema,
+    documentationUrl: optionalUrlSchema,
+    architectureDiagramUrl: optionalUrlSchema,
+    challengesLearnings: z.string().optional(),
     projectType: z.nativeEnum(ProjectType).default(ProjectType.Personal),
     projectStatus: z.nativeEnum(ProjectStatus).default(ProjectStatus.Completed),
     status: z.nativeEnum(ContentStatus).default(ContentStatus.Draft),
     isFeatured: z.boolean().default(false),
+    sortOrder: z.number().int().optional(),
     startDate: optionalDateStringSchema,
     endDate: optionalDateStringSchema,
+    publishedAt: optionalDateStringSchema,
+    scheduledAt: optionalDateStringSchema,
     categoryId: optionalUuidSchema,
     coverImageId: optionalUuidSchema,
     tagIds: z.array(z.string().uuid()).optional(),
+    images: z
+      .array(
+        z.object({
+          mediaId: z.string().uuid(),
+          caption: z.string().nullable().optional(),
+          sortOrder: z.number().int().optional(),
+        }),
+      )
+      .optional(),
     notifySubscribers: z.boolean().optional(),
   })
   .merge(seoFieldsSchema);

@@ -34,10 +34,12 @@ import type {
   Testimonial,
   TimelineEvent,
   Visitor,
+  ActivityLog,
 } from '@prisma/client';
 import type {
   AboutSectionDto,
   AchievementDto,
+  ActivityLogDto,
   AuthorDto,
   BlogCategoryDto,
   BlogPostDto,
@@ -233,6 +235,7 @@ export function mapProjectToDto(project: ProjectWithRelations, tagNames?: string
     seoKeywords: project.seoKeywords,
     ogImageUrl: project.ogImage?.url ?? null,
     publishedAt: project.publishedAt?.toISOString() ?? null,
+    scheduledAt: project.scheduledAt?.toISOString() ?? null,
     createdAt: project.createdAt.toISOString(),
     updatedAt: project.updatedAt.toISOString(),
     author: {
@@ -249,6 +252,15 @@ export function mapProjectToDto(project: ProjectWithRelations, tagNames?: string
         }
       : null,
     tags: tagNames ?? project.tags?.map((t) => t.tag.name) ?? [],
+    images:
+      project.images?.map((img) => ({
+        id: img.id,
+        mediaId: img.mediaId,
+        url: img.media?.url ?? '',
+        caption: img.caption,
+        altText: img.media?.altText ?? null,
+        sortOrder: img.sortOrder,
+      })) ?? [],
   };
 }
 
@@ -317,6 +329,7 @@ export function mapBlogPostToDto(post: BlogPostWithRelations, tagNames?: string[
     seoKeywords: post.seoKeywords,
     ogImageUrl: post.ogImage?.url ?? null,
     publishedAt: post.publishedAt?.toISOString() ?? null,
+    scheduledAt: post.scheduledAt?.toISOString() ?? null,
     createdAt: post.createdAt.toISOString(),
     updatedAt: post.updatedAt.toISOString(),
     author: {
@@ -397,12 +410,14 @@ export function mapResearchPaperToDto(
     publicationDate: paper.publicationDate?.toISOString().split('T')[0] ?? null,
     status: paper.status as ContentStatus,
     isFeatured: paper.isFeatured,
+    pdfId: paper.pdfId ?? null,
     pdfUrl: paper.pdf?.url ?? null,
     seoTitle: paper.seoTitle,
     seoDescription: paper.seoDescription,
     seoKeywords: paper.seoKeywords,
     ogImageUrl: paper.ogImage?.url ?? null,
     publishedAt: paper.publishedAt?.toISOString() ?? null,
+    scheduledAt: paper.scheduledAt?.toISOString() ?? null,
     createdAt: paper.createdAt.toISOString(),
     updatedAt: paper.updatedAt.toISOString(),
     author: {
@@ -457,6 +472,7 @@ export function mapPageToDto(page: PageWithBlocks): PageDto {
     seoKeywords: page.seoKeywords,
     ogImageUrl: page.ogImage?.url ?? null,
     publishedAt: page.publishedAt?.toISOString() ?? null,
+    scheduledAt: page.scheduledAt?.toISOString() ?? null,
     createdAt: page.createdAt.toISOString(),
     updatedAt: page.updatedAt.toISOString(),
     contentBlocks: page.contentBlocks?.map(mapContentBlockToDto) ?? [],
@@ -481,8 +497,12 @@ export function mapContentBlockToDto(block: BlockWithMedia): ContentBlockDto {
   };
 }
 
+type AboutSectionWithMedia = AboutSection & {
+  ogImage?: { url: string } | null;
+};
+
 /** Map Prisma AboutSection to AboutSectionDto. */
-export function mapAboutSectionToDto(section: AboutSection): AboutSectionDto {
+export function mapAboutSectionToDto(section: AboutSectionWithMedia): AboutSectionDto {
   return {
     id: section.id,
     title: section.title,
@@ -493,6 +513,8 @@ export function mapAboutSectionToDto(section: AboutSection): AboutSectionDto {
     isEnabled: section.isEnabled,
     seoTitle: section.seoTitle,
     seoDescription: section.seoDescription,
+    seoKeywords: section.seoKeywords,
+    ogImageUrl: section.ogImage?.url ?? null,
   };
 }
 
@@ -683,8 +705,12 @@ export function mapGalleryItemToDto(item: GalleryWithMedia): GalleryItemDto {
   };
 }
 
+type HomepageSectionWithBlocks = HomepageSection & {
+  contentBlocks?: (ContentBlock & { media?: { url: string } | null })[];
+};
+
 /** Map Prisma HomepageSection to HomepageSectionDto. */
-export function mapHomepageSectionToDto(section: HomepageSection): HomepageSectionDto {
+export function mapHomepageSectionToDto(section: HomepageSectionWithBlocks): HomepageSectionDto {
   return {
     id: section.id,
     sectionKey: section.sectionKey,
@@ -692,6 +718,9 @@ export function mapHomepageSectionToDto(section: HomepageSection): HomepageSecti
     sortOrder: section.sortOrder,
     isEnabled: section.isEnabled,
     config: (section.config as Record<string, unknown>) ?? {},
+    contentBlocks: section.contentBlocks
+      ? section.contentBlocks.map((b) => mapContentBlockToDto(b as any))
+      : [],
   };
 }
 
@@ -823,6 +852,24 @@ export function mapEmailTemplateToDto(t: EmailTemplate): EmailTemplateDto {
     isEnabled: t.isEnabled,
     createdAt: t.createdAt.toISOString(),
     updatedAt: t.updatedAt.toISOString(),
+  };
+}
+
+type ActivityLogWithAuthor = ActivityLog & {
+  author?: { id: string; displayName: string; username: string; email: string } | null;
+};
+
+export function mapActivityLogToDto(log: ActivityLogWithAuthor): ActivityLogDto {
+  return {
+    id: log.id,
+    action: log.action,
+    entityType: log.entityType,
+    entityId: log.entityId,
+    authorId: log.authorId,
+    authorName: log.author?.displayName || log.author?.username || null,
+    details: (log.details as Record<string, unknown>) ?? null,
+    ipAddress: log.ipAddress,
+    createdAt: log.createdAt.toISOString(),
   };
 }
 

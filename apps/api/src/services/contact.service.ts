@@ -10,6 +10,7 @@ import { contactRepository } from '@/repositories/contact.repository';
 import { visitorRepository } from '@/repositories/visitor.repository';
 import { siteSettingRepository } from '@/repositories/siteSetting.repository';
 import { emailService } from '@/services/email.service';
+import { activityLogService } from '@/services/activityLog.service';
 import { mapContactSubmissionToDto } from '@/utils/mappers';
 import { buildPagination, getPrismaPagination } from '@/utils/pagination';
 import { NotFoundError } from '@/utils/errors';
@@ -125,15 +126,30 @@ export const contactService = {
   },
 
   async updateStatus(id: string, status: ContactStatus): Promise<ContactSubmissionDto> {
-    await contactService.getSubmissionById(id);
+    const existing = await contactService.getSubmissionById(id);
     const readAt = status === ContactStatus.read ? new Date() : undefined;
     const repliedAt = status === ContactStatus.replied ? new Date() : undefined;
     const updated = await contactRepository.updateStatus(id, status, readAt, repliedAt);
+
+    activityLogService.log({
+      action: 'contact_status_update',
+      entityType: 'contact_submission',
+      entityId: id,
+      details: { name: existing.name, email: existing.email, status },
+    });
+
     return mapContactSubmissionToDto(updated);
   },
 
   async deleteSubmission(id: string): Promise<void> {
-    await contactService.getSubmissionById(id);
+    const existing = await contactService.getSubmissionById(id);
     await contactRepository.delete(id);
+
+    activityLogService.log({
+      action: 'contact_delete',
+      entityType: 'contact_submission',
+      entityId: id,
+      details: { name: existing.name, email: existing.email, subject: existing.subject },
+    });
   },
 };

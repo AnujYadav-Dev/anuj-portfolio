@@ -107,4 +107,10 @@ router.get(
   asyncHandler(analyticsController.exportTelemetry),
 );
 
+router.get(
+  '/admin/audit-logs',
+  authenticateAdmin,
+  asyncHandler(analyticsController.getAuditLogs),
+);
+
 export { router as analyticsRouter };

@@ -5,24 +5,38 @@ export const aboutSectionRepository = {
   async findAll(onlyEnabled = true) {
     return prisma.aboutSection.findMany({
       where: onlyEnabled ? { isEnabled: true } : undefined,
+      include: { ogImage: { select: { url: true } } },
       orderBy: { sortOrder: 'asc' },
     });
   },
 
   async findById(id: string) {
-    return prisma.aboutSection.findUnique({ where: { id } });
+    return prisma.aboutSection.findUnique({
+      where: { id },
+      include: { ogImage: { select: { url: true } } },
+    });
   },
 
   async findBySlug(slug: string) {
-    return prisma.aboutSection.findUnique({ where: { slug } });
+    return prisma.aboutSection.findUnique({
+      where: { slug },
+      include: { ogImage: { select: { url: true } } },
+    });
   },
 
   async create(data: Prisma.AboutSectionCreateInput) {
-    return prisma.aboutSection.create({ data });
+    return prisma.aboutSection.create({
+      data,
+      include: { ogImage: { select: { url: true } } },
+    });
   },
 
   async update(id: string, data: Prisma.AboutSectionUpdateInput) {
-    return prisma.aboutSection.update({ where: { id }, data });
+    return prisma.aboutSection.update({
+      where: { id },
+      data,
+      include: { ogImage: { select: { url: true } } },
+    });
   },
 
   async delete(id: string) {

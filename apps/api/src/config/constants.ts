@@ -21,14 +21,14 @@ export const ALLOWED_UPLOAD_MIME_TYPES = [
   'application/pdf',
 ] as const;
 
-/** Rate limit: strict endpoints (auth, contact) — requests per 15 minutes. */
-export const RATE_LIMIT_STRICT_MAX = 20;
+/** Rate limit: strict endpoints (auth, contact) — requests per 15 minutes (relaxed in dev/test for E2E runs). */
+export const RATE_LIMIT_STRICT_MAX = config.NODE_ENV === 'production' ? 20 : 1000;
 
 /** Rate limit: analytics endpoints — requests per minute. */
-export const RATE_LIMIT_ANALYTICS_MAX = 60;
+export const RATE_LIMIT_ANALYTICS_MAX = config.NODE_ENV === 'production' ? 60 : 1000;
 
 /** Rate limit: general public GET endpoints — requests per minute. */
-export const RATE_LIMIT_PUBLIC_MAX = 120;
+export const RATE_LIMIT_PUBLIC_MAX = config.NODE_ENV === 'production' ? 120 : 1000;
 
 /** Rate limit window for strict limiter (15 minutes in ms). */
 export const RATE_LIMIT_STRICT_WINDOW_MS = 15 * 60 * 1000;

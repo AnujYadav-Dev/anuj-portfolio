@@ -1,6 +1,7 @@
 import rateLimit from 'express-rate-limit';
 import type { Request, Response } from 'express';
 import { ERROR_CODES } from '@portfolio/shared';
+import { config } from '@/config/env';
 import {
   RATE_LIMIT_ANALYTICS_MAX,
   RATE_LIMIT_DEFAULT_WINDOW_MS,
@@ -25,6 +26,7 @@ export const strictRateLimiter = rateLimit({
   standardHeaders: true,
   legacyHeaders: false,
   handler: rateLimitHandler,
+  skip: () => config.NODE_ENV === 'test',
 });
 
 /** Moderate rate limiter for analytics endpoints. */
@@ -34,6 +36,7 @@ export const analyticsRateLimiter = rateLimit({
   standardHeaders: true,
   legacyHeaders: false,
   handler: rateLimitHandler,
+  skip: () => config.NODE_ENV === 'test',
 });
 
 /** Permissive rate limiter for general public GET endpoints. */
@@ -43,4 +46,5 @@ export const publicRateLimiter = rateLimit({
   standardHeaders: true,
   legacyHeaders: false,
   handler: rateLimitHandler,
+  skip: () => config.NODE_ENV === 'test',
 });

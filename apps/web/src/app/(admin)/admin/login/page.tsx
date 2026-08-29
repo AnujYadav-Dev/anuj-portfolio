@@ -83,11 +83,15 @@ export default function AdminLoginPage() {
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-foreground flex items-center gap-1.5">
+              <label
+                htmlFor="admin-email"
+                className="text-xs font-semibold text-foreground flex items-center gap-1.5 cursor-pointer"
+              >
                 <Mail className="w-3.5 h-3.5 text-muted" />
                 <span>Email Address</span>
               </label>
               <Input
+                id="admin-email"
                 type="email"
                 placeholder="admin@example.com"
                 value={email}
@@ -101,12 +105,16 @@ export default function AdminLoginPage() {
             </div>
 
             <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-foreground flex items-center gap-1.5">
+              <label
+                htmlFor="admin-password"
+                className="text-xs font-semibold text-foreground flex items-center gap-1.5 cursor-pointer"
+              >
                 <Lock className="w-3.5 h-3.5 text-muted" />
                 <span>Password</span>
               </label>
               <div className="relative">
                 <Input
+                  id="admin-password"
                   type={showPassword ? 'text' : 'password'}
                   placeholder="••••••••••••"
                   value={password}

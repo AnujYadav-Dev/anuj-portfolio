@@ -227,111 +227,114 @@ export function CommandPalette({ isOpen, onClose, initialQuery = '' }: CommandPa
     <Dialog isOpen={isOpen} onClose={onClose}>
       <DialogContent
         showClose={false}
+        expandable={false}
         className="max-w-2xl p-0 overflow-hidden border-border bg-surface shadow-2xl"
       >
-        {/* Search input bar */}
-        <div className="flex items-center px-4 py-3 border-b border-border gap-3">
-          <Search className="h-4 w-4 text-muted shrink-0" />
-          <input
-            autoFocus
-            type="text"
-            role="combobox"
-            aria-expanded="true"
-            aria-controls="command-palette-results"
-            aria-label="Search portfolio content or trigger commands"
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            onKeyDown={handleKeyDown}
-            placeholder="Type a command or search (projects, blogs, skills, actions)..."
-            className="w-full bg-transparent text-sm text-foreground placeholder:text-placeholder focus:outline-none font-sans"
-          />
-          {query && (
+        <div className="-mr-1 w-[calc(100%+4px)] flex flex-col">
+          {/* Search input bar */}
+          <div className="flex items-center px-4 py-3 border-b border-border gap-3">
+            <Search className="h-4 w-4 text-muted shrink-0" />
+            <input
+              autoFocus
+              type="text"
+              role="combobox"
+              aria-expanded="true"
+              aria-controls="command-palette-results"
+              aria-label="Search portfolio content or trigger commands"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              onKeyDown={handleKeyDown}
+              placeholder="Type a command or search (projects, blogs, skills, actions)..."
+              className="w-full bg-transparent text-sm text-foreground placeholder:text-placeholder focus:outline-none font-sans"
+            />
+            {query && (
+              <button
+                onClick={() => setQuery('')}
+                aria-label="Clear search input"
+                className="text-muted hover:text-foreground p-1 cursor-pointer"
+              >
+                <X className="h-3.5 w-3.5" />
+              </button>
+            )}
             <button
-              onClick={() => setQuery('')}
-              aria-label="Clear search input"
-              className="text-muted hover:text-foreground p-1 cursor-pointer"
+              type="button"
+              onClick={onClose}
+              aria-label="Close command palette"
+              className="cursor-pointer focus:outline-none"
             >
-              <X className="h-3.5 w-3.5" />
+              <Badge variant="outline" size="sm" className="hover:bg-surface-muted transition-colors">
+                ESC
+              </Badge>
             </button>
-          )}
-          <button
-            type="button"
-            onClick={onClose}
-            aria-label="Close command palette"
-            className="cursor-pointer focus:outline-none"
-          >
-            <Badge variant="outline" size="sm" className="hover:bg-surface-muted transition-colors">
-              ESC
-            </Badge>
-          </button>
-        </div>
-
-        {/* Results / Action list */}
-        <div
-          id="command-palette-results"
-          role="listbox"
-          className="max-h-[380px] overflow-y-auto p-2 divide-y divide-border/30"
-        >
-          {displayedItems.length === 0 ? (
-            <div className="py-12 text-center text-xs text-muted">
-              {isLoading ? 'Searching...' : `No results found for "${cleanSearchTerm || query}"`}
-            </div>
-          ) : (
-            displayedItems.map((item, index) => {
-              const isSelected = index === selectedIndex;
-              return (
-                <div
-                  key={item.id}
-                  role="option"
-                  aria-selected={isSelected}
-                  onClick={() => {
-                    item.action();
-                    onClose();
-                  }}
-                  onMouseEnter={() => setSelectedIndex(index)}
-                  className={cn(
-                    'flex items-center justify-between px-3 py-2.5 rounded-sm cursor-pointer transition-colors text-xs select-none',
-                    isSelected
-                      ? 'bg-surface-muted text-accent font-semibold'
-                      : 'text-foreground hover:bg-surface-muted/50',
-                  )}
-                >
-                  <div className="flex items-center gap-3 min-w-0">
-                    <span className={cn('shrink-0', isSelected ? 'text-accent' : 'text-muted')}>
-                      {item.icon}
-                    </span>
-                    <div className="flex flex-col min-w-0">
-                      <span className="truncate">{item.title}</span>
-                      {item.meta && (
-                        <span className="text-[11px] text-muted truncate font-normal">
-                          {item.meta}
-                        </span>
-                      )}
-                    </div>
-                  </div>
-                  <Badge variant={isSelected ? 'accent' : 'outline'} size="sm">
-                    {item.category}
-                  </Badge>
-                </div>
-              );
-            })
-          )}
-        </div>
-
-        {/* Footer shortcuts */}
-        <div className="flex items-center justify-between px-4 py-2 border-t border-border bg-surface-muted/50 text-[11px] text-muted font-mono select-none">
-          <div className="flex items-center gap-2">
-            <span>
-              Navigate{' '}
-              <kbd className="px-1 bg-surface border border-border rounded-xs text-[10px]">↑</kbd>{' '}
-              <kbd className="px-1 bg-surface border border-border rounded-xs text-[10px]">↓</kbd>
-            </span>
-            <span>
-              Select{' '}
-              <kbd className="px-1 bg-surface border border-border rounded-xs text-[10px]">↵</kbd>
-            </span>
           </div>
-          <span>Command Palette</span>
+
+          {/* Results / Action list */}
+          <div
+            id="command-palette-results"
+            role="listbox"
+            className="max-h-[380px] overflow-y-auto p-2 divide-y divide-border/30"
+          >
+            {displayedItems.length === 0 ? (
+              <div className="py-12 text-center text-xs text-muted">
+                {isLoading ? 'Searching...' : `No results found for "${cleanSearchTerm || query}"`}
+              </div>
+            ) : (
+              displayedItems.map((item, index) => {
+                const isSelected = index === selectedIndex;
+                return (
+                  <div
+                    key={item.id}
+                    role="option"
+                    aria-selected={isSelected}
+                    onClick={() => {
+                      item.action();
+                      onClose();
+                    }}
+                    onMouseEnter={() => setSelectedIndex(index)}
+                    className={cn(
+                      'flex items-center justify-between px-3 py-2.5 rounded-sm cursor-pointer transition-colors text-xs select-none',
+                      isSelected
+                        ? 'bg-surface-muted text-accent font-semibold'
+                        : 'text-foreground hover:bg-surface-muted/50',
+                    )}
+                  >
+                    <div className="flex items-center gap-3 min-w-0">
+                      <span className={cn('shrink-0', isSelected ? 'text-accent' : 'text-muted')}>
+                        {item.icon}
+                      </span>
+                      <div className="flex flex-col min-w-0">
+                        <span className="truncate">{item.title}</span>
+                        {item.meta && (
+                          <span className="text-[11px] text-muted truncate font-normal">
+                            {item.meta}
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                    <Badge variant={isSelected ? 'accent' : 'outline'} size="sm">
+                      {item.category}
+                    </Badge>
+                  </div>
+                );
+              })
+            )}
+          </div>
+
+          {/* Footer shortcuts */}
+          <div className="flex items-center justify-between px-4 py-2 border-t border-border bg-surface-muted/50 text-[11px] text-muted font-mono select-none">
+            <div className="flex items-center gap-2">
+              <span>
+                Navigate{' '}
+                <kbd className="px-1 bg-surface border border-border rounded-xs text-[10px]">↑</kbd>{' '}
+                <kbd className="px-1 bg-surface border border-border rounded-xs text-[10px]">↓</kbd>
+              </span>
+              <span>
+                Select{' '}
+                <kbd className="px-1 bg-surface border border-border rounded-xs text-[10px]">↵</kbd>
+              </span>
+            </div>
+            <span>Command Palette</span>
+          </div>
         </div>
       </DialogContent>
     </Dialog>

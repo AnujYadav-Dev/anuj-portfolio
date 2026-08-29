@@ -79,6 +79,21 @@ export const newsletterBroadcastSchema = z.object({
 
 export type NewsletterBroadcastInput = z.infer<typeof newsletterBroadcastSchema>;
 
+/** Newsletter unsubscribe schema. */
+export const newsletterUnsubscribeSchema = z.object({
+  token: z.string().min(1, 'Token is required'),
+});
+
+export type NewsletterUnsubscribeInput = z.infer<typeof newsletterUnsubscribeSchema>;
+
+/** Newsletter unsubscribe query schema. */
+export const newsletterUnsubscribeQuerySchema = z.object({
+  token: z.string().min(1, 'Token is required'),
+});
+
+export type NewsletterUnsubscribeQuery = z.infer<typeof newsletterUnsubscribeQuerySchema>;
+
+
 /** Create/update testimonial schema. */
 export const upsertTestimonialSchema = z.object({
   authorName: z.string().min(1).max(200),

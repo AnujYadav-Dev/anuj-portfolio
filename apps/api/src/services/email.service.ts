@@ -61,7 +61,7 @@ async function sleep(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
-const DEFAULT_FALLBACK_TEMPLATES: Record<
+export const DEFAULT_FALLBACK_TEMPLATES: Record<
   string,
   { subject: string; bodyHtml: string; bodyText: string }
 > = {
@@ -97,6 +97,14 @@ const DEFAULT_FALLBACK_TEMPLATES: Record<
       '<p>New subscriber joined your newsletter:</p><p><strong>Email:</strong> {{email}}<br/><strong>Name:</strong> {{name}}</p>',
     bodyText: 'New subscriber:\nEmail: {{email}}\nName: {{name}}',
   },
+  newsletter_unsubscribe_admin_notification: {
+    subject: 'Newsletter Unsubscribed: {{email}}',
+    bodyHtml:
+      '<div style="max-width: 560px; margin: 0 auto; background: #0c1017; border: 1px solid #1c2333; border-radius: 12px; padding: 32px 32px; font-family: -apple-system, BlinkMacSystemFont, \'Segoe UI\', Roboto, sans-serif;"><h2 style="font-size: 20px; font-weight: bold; color: #10b981; margin: 0 0 6px 0;">Subscriber Unsubscribed</h2><p style="margin: 0 0 20px 0; font-size: 13px; color: #8b949e;">A reader has unsubscribed from your newsletter dispatch:</p><table style="width: 100%; border-collapse: collapse; font-size: 13px;"><tr style="border-bottom: 1px solid #1c2333;"><td style="padding: 10px 0; color: #8b949e; width: 140px;">Email:</td><td style="padding: 10px 0; color: #ffffff; font-weight: 500;"><a href="mailto:{{email}}" style="color: #ffffff; text-decoration: none;">{{email}}</a></td></tr><tr style="border-bottom: 1px solid #1c2333;"><td style="padding: 10px 0; color: #8b949e;">Name:</td><td style="padding: 10px 0; color: #ffffff; font-weight: 500;">{{name}}</td></tr><tr style="border-bottom: 1px solid #1c2333;"><td style="padding: 10px 0; color: #8b949e;">Status:</td><td style="padding: 10px 0; color: #10b981; font-weight: 500;">Unsubscribed</td></tr><tr><td style="padding: 10px 0; color: #8b949e;">Unsubscribed At:</td><td style="padding: 10px 0; color: #ffffff;">{{unsubscribedAt}}</td></tr></table></div>',
+    bodyText:
+      'Newsletter Unsubscribed:\nEmail: {{email}}\nName: {{name}}\nStatus: Unsubscribed\nUnsubscribed At: {{unsubscribedAt}}',
+  },
+
   newsletter_broadcast: {
     subject: '{{subject}}',
     bodyHtml: '<div>{{{contentHtml}}}</div>',

@@ -61,6 +61,7 @@ const CATEGORIES: CategoryTab[] = [
       'newsletter_confirmation',
       'newsletter_welcome',
       'newsletter_admin_notification',
+      'newsletter_unsubscribe_admin_notification',
       'newsletter_broadcast',
     ],
   },
@@ -122,6 +123,12 @@ const PURPOSE_META: Record<
     description: 'Alert sent to administrator whenever a new reader joins the subscriber list.',
     defaultVariables: ['email', 'name', 'isConfirmed', 'subscribedAt', 'siteUrl'],
   },
+  newsletter_unsubscribe_admin_notification: {
+    label: 'Subscriber Unsubscribed Alert (Admin)',
+    description: 'Notification sent to administrator whenever a reader unsubscribes from the newsletter.',
+    defaultVariables: ['email', 'name', 'unsubscribedAt', 'siteUrl'],
+  },
+
   newsletter_broadcast: {
     label: 'Newsletter Campaign / Broadcast',
     description:
@@ -867,8 +874,11 @@ export default function AdminEmailsPage() {
                               .replace(/\{\{os\}\}/g, 'macOS')
                               .replace(/\{\{referrerSource\}\}/g, 'GitHub / Search')
                               .replace(/\{\{submittedAt\}\}/g, new Date().toLocaleString())
+                              .replace(/\{\{subscribedAt\}\}/g, new Date().toLocaleString())
+                              .replace(/\{\{isConfirmed\}\}/g, 'Active / Confirmed')
                               .replace(/\{\{visitedAt\}\}/g, new Date().toLocaleString())
                               .replace(/\{\{downloadedAt\}\}/g, new Date().toLocaleString())
+                              .replace(/\{\{unsubscribedAt\}\}/g, new Date().toLocaleString())
                               .replace(/\{\{loginTime\}\}/g, new Date().toLocaleString())
                               .replace(/\{\{updatedAt\}\}/g, new Date().toLocaleString())
                               .replace(/\{\{authorName\}\}/g, 'Morgan Reed')

@@ -6,10 +6,11 @@ import { ArrowUpRight, GraduationCap, Calendar, MapPin, Award } from 'lucide-rea
 import { PageHeader } from '@/components/common/PageHeader';
 import { SplitSection } from '@/components/common/SplitSection';
 import { RevealOnScroll } from '@/components/motion/RevealOnScroll';
-import { MarkdownRenderer } from '@/components/content/MarkdownRenderer';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useEducation } from '@/hooks/useProfile';
+import { getPlainTextSummary } from '@/lib/format';
 import type { EducationDto } from '@portfolio/shared';
+
 
 interface EducationClientViewProps {
   initialData?: EducationDto[];
@@ -134,11 +135,11 @@ export function EducationClientView({ initialData }: EducationClientViewProps) {
                       </div>
                     </div>
 
-                    {/* Description */}
+                    {/* Short Description Summary Preview */}
                     {edu.description && (
-                      <div className="text-sm text-foreground/90 leading-relaxed">
-                        <MarkdownRenderer content={edu.description} />
-                      </div>
+                      <p className="text-sm text-foreground/85 leading-relaxed">
+                        {getPlainTextSummary(edu.description, 240)}
+                      </p>
                     )}
 
                     {/* Activities & Coursework */}
@@ -155,14 +156,15 @@ export function EducationClientView({ initialData }: EducationClientViewProps) {
                     <div className="pt-2">
                       <Link
                         href={`/education/${edu.id}`}
-                        className="text-xs font-semibold text-accent hover:text-accent-hover underline decoration-accent/40 hover:decoration-accent underline-offset-4 inline-flex items-center gap-1 transition-colors"
+                        className="text-xs font-semibold text-accent hover:text-accent-hover underline decoration-accent/40 hover:decoration-accent underline-offset-4 inline-flex items-center gap-1.5 transition-colors"
                       >
-                        <span>View Academic Profile & Summary</span>
+                        <span>Read Full Academic Profile & Honors</span>
                         <ArrowUpRight className="h-3.5 w-3.5" />
                       </Link>
                     </div>
                   </div>
                 </RevealOnScroll>
+
               </SplitSection>
             );
           })

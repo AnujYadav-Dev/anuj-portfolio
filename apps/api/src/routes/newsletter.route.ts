@@ -21,7 +21,10 @@ router.post(
   asyncHandler(newsletterController.subscribe),
 );
 router.get('/confirm', asyncHandler(newsletterController.confirm));
+router.get('/unsubscribe', asyncHandler(newsletterController.verifyUnsubscribe));
 router.post('/unsubscribe', asyncHandler(newsletterController.unsubscribe));
+router.post('/resubscribe', asyncHandler(newsletterController.resubscribe));
+
 
 // Admin
 router.get(

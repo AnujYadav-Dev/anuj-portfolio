@@ -15,11 +15,24 @@ export const newsletterController = {
     res.json({ data: result });
   },
 
-  async unsubscribe(req: Request, res: Response): Promise<void> {
-    const tokenOrEmail = String(req.query.token || req.body.email);
-    const result = await newsletterService.unsubscribe(tokenOrEmail);
+  async verifyUnsubscribe(req: Request, res: Response): Promise<void> {
+    const token = String(req.query.token || '');
+    const result = await newsletterService.verifyUnsubscribeToken(token);
     res.json({ data: result });
   },
+
+  async unsubscribe(req: Request, res: Response): Promise<void> {
+    const token = String(req.body?.token || req.query?.token || '');
+    const result = await newsletterService.unsubscribe(token);
+    res.json({ data: result });
+  },
+
+  async resubscribe(req: Request, res: Response): Promise<void> {
+    const token = String(req.body?.token || req.query?.token || '');
+    const result = await newsletterService.resubscribe(token);
+    res.json({ data: result });
+  },
+
 
   async listSubscribers(req: Request, res: Response): Promise<void> {
     const query = (req.validatedQuery as ListNewsletterSubscribersQuery) ?? req.query;

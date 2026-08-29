@@ -10,6 +10,9 @@ export const statsService = {
       totalSkills,
       experiences,
       openSourceRepos,
+      publishedBlogPosts,
+      publishedProjects,
+      distinctCountries,
     ] = await Promise.all([
       prisma.project.count({ where: { status: 'published' } }),
       prisma.blogPost.count({ where: { status: 'published' } }),
@@ -23,6 +26,18 @@ export const statsService = {
       prisma.opensourceContribution.findMany({
         where: { isEnabled: true },
         select: { stars: true },
+      }),
+      prisma.blogPost.findMany({
+        where: { status: 'published' },
+        select: { readingTimeMinutes: true, content: true },
+      }),
+      prisma.project.findMany({
+        where: { status: 'published' },
+        select: { technologies: true, content: true },
+      }),
+      prisma.visitor.groupBy({
+        by: ['country'],
+        where: { country: { not: null } },
       }),
     ]);
 
@@ -38,6 +53,37 @@ export const statsService = {
 
     const totalGithubStars = openSourceRepos.reduce((acc, repo) => acc + (repo.stars ?? 0), 0);
 
+    const totalReadingTimeMinutes = publishedBlogPosts.reduce(
+      (acc, p) =>
+        acc +
+        (p.readingTimeMinutes ||
+          Math.max(1, Math.round((p.content?.split(/\s+/).filter(Boolean).length || 0) / 200))),
+      0,
+    );
+
+    const totalWordsWritten = [...publishedBlogPosts, ...publishedProjects].reduce(
+      (acc, item) => acc + (item.content ? item.content.split(/\s+/).filter(Boolean).length : 0),
+      0,
+    );
+
+    const techCounts: Record<string, number> = {};
+    for (const proj of publishedProjects) {
+      if (Array.isArray(proj.technologies)) {
+        for (const tech of proj.technologies) {
+          if (tech) {
+            techCounts[tech] = (techCounts[tech] || 0) + 1;
+          }
+        }
+      }
+    }
+
+    const topTechnologies = Object.entries(techCounts)
+      .map(([name, count]) => ({ name, count }))
+      .sort((a, b) => b.count - a.count)
+      .slice(0, 8);
+
+    const totalCountriesCount = distinctCountries.length;
+
     return {
       totalProjects,
       totalBlogPosts,
@@ -47,6 +93,10 @@ export const statsService = {
       yearsOfExperience,
       totalOpenSourceRepos: openSourceRepos.length,
       totalGithubStars,
+      totalReadingTimeMinutes,
+      totalWordsWritten,
+      totalCountriesCount,
+      topTechnologies,
       updatedAt: new Date().toISOString(),
     };
   },

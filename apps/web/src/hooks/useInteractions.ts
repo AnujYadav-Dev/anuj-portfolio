@@ -92,3 +92,43 @@ export function useNewsletterMutation() {
     },
   });
 }
+
+export function useNewsletterUnsubscribeVerify(token: string | null) {
+  return useQuery<{ data: { isValid: boolean; email: string; isUnsubscribed: boolean } }>({
+    queryKey: ['newsletter-unsubscribe-verify', token],
+    queryFn: () =>
+      apiClient.get<{ data: { isValid: boolean; email: string; isUnsubscribed: boolean } }>(
+        '/newsletter/unsubscribe',
+        { params: { token: token! } },
+      ),
+    enabled: Boolean(token && token.trim()),
+    retry: false,
+  });
+}
+
+export function useNewsletterUnsubscribeMutation() {
+  return useMutation<{ data: { message: string; email: string } }, Error, { token: string }>({
+    mutationFn: (input) =>
+      apiClient.post<{ data: { message: string; email: string } }>('/newsletter/unsubscribe', input),
+    onSuccess: (res) => {
+      toast.success(res.data?.message || 'Unsubscribed successfully.');
+    },
+    onError: (err) => {
+      toast.error(err.message || 'Failed to unsubscribe. Please try again.');
+    },
+  });
+}
+
+export function useNewsletterResubscribeMutation() {
+  return useMutation<{ data: { message: string; email: string } }, Error, { token: string }>({
+    mutationFn: (input) =>
+      apiClient.post<{ data: { message: string; email: string } }>('/newsletter/resubscribe', input),
+    onSuccess: (res) => {
+      toast.success(res.data?.message || 'Resubscribed successfully!');
+    },
+    onError: (err) => {
+      toast.error(err.message || 'Failed to resubscribe. Please try again.');
+    },
+  });
+}
+

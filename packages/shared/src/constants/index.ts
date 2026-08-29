@@ -37,6 +37,7 @@ export const EMAIL_TEMPLATE_KEYS = {
   NEWSLETTER_CONFIRMATION: 'newsletter_confirmation',
   NEWSLETTER_WELCOME: 'newsletter_welcome',
   NEWSLETTER_ADMIN_NOTIFICATION: 'newsletter_admin_notification',
+  NEWSLETTER_UNSUBSCRIBE_ADMIN_NOTIFICATION: 'newsletter_unsubscribe_admin_notification',
   NEWSLETTER_BROADCAST: 'newsletter_broadcast',
   RESUME_DOWNLOAD_ADMIN: 'resume_download_admin',
   CONTENT_PUBLISHED_ADMIN: 'content_published_admin',
@@ -67,6 +68,7 @@ export const SITE_SETTING_KEYS = {
   EMAIL_NOTIFICATIONS_RESUME_DOWNLOAD_ENABLED: 'email_notifications_resume_download_enabled',
   EMAIL_NOTIFICATIONS_CONTACT_ENABLED: 'email_notifications_contact_enabled',
   EMAIL_NOTIFICATIONS_NEWSLETTER_ENABLED: 'email_notifications_newsletter_enabled',
+  EMAIL_NOTIFICATIONS_NEWSLETTER_UNSUBSCRIBE_ENABLED: 'email_notifications_newsletter_unsubscribe_enabled',
   EMAIL_NOTIFICATIONS_GUESTBOOK_ENABLED: 'email_notifications_guestbook_enabled',
   EMAIL_NOTIFICATIONS_SCHEDULED_PUBLISH_ENABLED: 'email_notifications_scheduled_publish_enabled',
   EMAIL_NOTIFICATIONS_SECURITY_LOGIN_ENABLED: 'email_notifications_security_login_enabled',
@@ -158,6 +160,11 @@ export const DEFAULT_SYSTEM_SITE_SETTINGS: Array<{
     group: 'notifications',
   },
   {
+    key: SITE_SETTING_KEYS.EMAIL_NOTIFICATIONS_NEWSLETTER_UNSUBSCRIBE_ENABLED,
+    value: 'true',
+    group: 'notifications',
+  },
+  {
     key: SITE_SETTING_KEYS.EMAIL_NOTIFICATIONS_GUESTBOOK_ENABLED,
     value: 'true',
     group: 'notifications',
@@ -194,6 +201,7 @@ export const DEFAULT_SYSTEM_SITE_SETTINGS: Array<{
     group: 'notifications',
   },
 ];
+
 
 /** Availability status values. */
 export const AVAILABILITY_STATUSES = {

@@ -171,13 +171,119 @@ export const newsletterService = {
     };
   },
 
-  async unsubscribe(tokenOrEmail: string): Promise<{ message: string }> {
-    const subscriber = await newsletterRepository.unsubscribe(tokenOrEmail);
+  async verifyUnsubscribeToken(token: string): Promise<{ isValid: boolean; email: string; isUnsubscribed: boolean }> {
+    if (!token || !token.trim()) {
+      throw new ValidationError('Unsubscribe token is required');
+    }
+
+    const subscriber = await newsletterRepository.findByToken(token.trim());
+    if (!subscriber) {
+      throw new NotFoundError('Invalid or expired unsubscribe link');
+    }
+
+    const parts = subscriber.email.split('@');
+    const name = parts[0] || '';
+    const domain = parts[1] || '';
+    const masked = name.length <= 2
+      ? `${name[0]}*@${domain}`
+      : `${name[0]}${'*'.repeat(Math.min(name.length - 2, 4))}${name[name.length - 1]}@${domain}`;
+
+    return {
+      isValid: true,
+      email: masked,
+      isUnsubscribed: Boolean(subscriber.unsubscribedAt),
+    };
+  },
+
+  async unsubscribe(token: string): Promise<{ message: string; email: string }> {
+    if (!token || !token.trim()) {
+      throw new ValidationError('Unsubscribe token is required');
+    }
+
+    const subscriber = await newsletterRepository.unsubscribe(token.trim());
+    if (!subscriber) {
+      throw new NotFoundError('Invalid or expired unsubscribe link');
+    }
+
+    activityLogService.log({
+      action: 'newsletter_unsubscribed',
+      entityType: 'newsletter_subscriber',
+      entityId: subscriber.id,
+      details: { email: subscriber.email },
+    });
+
+    // Notify admin if notification setting enabled
+    try {
+      const setting = await siteSettingRepository.findByKey(
+        'email_notifications_newsletter_unsubscribe_enabled',
+      );
+      if (!setting || setting.value !== 'false') {
+        const adminEmails = await emailService.resolveAdminRecipients();
+        const siteUrl = await emailService.resolveSiteUrl();
+        for (const adminEmail of adminEmails) {
+          await emailService.sendTemplatedEmail({
+            purpose: EMAIL_TEMPLATE_KEYS.NEWSLETTER_UNSUBSCRIBE_ADMIN_NOTIFICATION,
+            to: adminEmail,
+            variables: {
+              email: subscriber.email,
+              name: subscriber.name || 'Reader',
+              unsubscribedAt: new Date().toUTCString(),
+              siteUrl,
+            },
+          });
+        }
+      }
+    } catch (err) {
+      logger.error(
+        { err, subscriberId: subscriber.id },
+        'Failed to send newsletter unsubscribe admin notification',
+      );
+    }
+
+    const parts = subscriber.email.split('@');
+    const name = parts[0] || '';
+    const domain = parts[1] || '';
+    const masked = name.length <= 2
+      ? `${name[0]}*@${domain}`
+      : `${name[0]}${'*'.repeat(Math.min(name.length - 2, 4))}${name[name.length - 1]}@${domain}`;
+
+    return {
+      message: 'You have been successfully unsubscribed from the newsletter dispatch.',
+      email: masked,
+    };
+  },
+
+
+  async resubscribe(token: string): Promise<{ message: string; email: string }> {
+    if (!token || !token.trim()) {
+      throw new ValidationError('Token is required');
+    }
+
+    const subscriber = await newsletterRepository.resubscribe(token.trim());
     if (!subscriber) {
       throw new NotFoundError('Subscriber not found');
     }
-    return { message: 'Unsubscribed successfully' };
+
+    activityLogService.log({
+      action: 'newsletter_resubscribed',
+      entityType: 'newsletter_subscriber',
+      entityId: subscriber.id,
+      details: { email: subscriber.email },
+    });
+
+    const parts = subscriber.email.split('@');
+    const name = parts[0] || '';
+    const domain = parts[1] || '';
+    const masked = name.length <= 2
+      ? `${name[0]}*@${domain}`
+      : `${name[0]}${'*'.repeat(Math.min(name.length - 2, 4))}${name[name.length - 1]}@${domain}`;
+
+    return {
+      message: 'Your newsletter subscription has been restored successfully!',
+      email: masked,
+    };
   },
+
 
   async broadcast(
     input: NewsletterBroadcastInput,
@@ -240,9 +346,6 @@ export const newsletterService = {
       where.unsubscribedAt = null;
     } else if (query.status === 'unsubscribed') {
       where.unsubscribedAt = { not: null };
-    } else {
-      // Default 'all' active subscribers
-      where.unsubscribedAt = null;
     }
 
     if (query.search) {

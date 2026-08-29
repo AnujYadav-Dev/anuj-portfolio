@@ -280,7 +280,7 @@ function AdminNewsletterContent() {
   };
 
   const confirmedCount = useMemo(() => {
-    return subscribers.filter((s) => s.isConfirmed).length;
+    return subscribers.filter((s) => s.isConfirmed && !s.unsubscribedAt).length;
   }, [subscribers]);
 
   const handleExportCSV = () => {
@@ -289,12 +289,13 @@ function AdminNewsletterContent() {
       return;
     }
 
-    const headers = ['Email', 'Name', 'Confirmed', 'Subscribed Date'];
+    const headers = ['Email', 'Name', 'Status', 'Subscribed Date', 'Unsubscribed Date'];
     const rows = subscribers.map((s) => [
       s.email,
       s.name || '',
-      s.isConfirmed ? 'Yes' : 'No',
+      s.unsubscribedAt ? 'Unsubscribed' : s.isConfirmed ? 'Confirmed' : 'Pending',
       new Date(s.createdAt).toISOString(),
+      s.unsubscribedAt ? new Date(s.unsubscribedAt).toISOString() : '',
     ]);
 
     const csvContent =
@@ -382,25 +383,34 @@ function AdminNewsletterContent() {
     {
       key: 'isConfirmed',
       header: 'Confirmation Status',
-      render: (item) => (
-        <span
-          className={`inline-flex items-center gap-1 text-[10px] font-mono px-2 py-0.5 rounded border uppercase font-bold ${
-            item.isConfirmed
-              ? 'bg-accent/10 text-accent border-accent/30'
-              : 'bg-amber-500/10 text-amber-400 border-amber-500/30'
-          }`}
-        >
-          {item.isConfirmed ? (
-            <>
-              <CheckCircle2 className="w-3 h-3" /> Confirmed
-            </>
-          ) : (
-            <>
-              <Clock className="w-3 h-3" /> Pending (Double Opt-In)
-            </>
-          )}
-        </span>
-      ),
+      render: (item) => {
+        if (item.unsubscribedAt) {
+          return (
+            <span className="inline-flex items-center gap-1 text-[10px] font-mono px-2 py-0.5 rounded border uppercase font-bold bg-rose-500/10 text-rose-400 border-rose-500/30">
+              <span className="w-1.5 h-1.5 rounded-full bg-rose-400" /> Unsubscribed
+            </span>
+          );
+        }
+        return (
+          <span
+            className={`inline-flex items-center gap-1 text-[10px] font-mono px-2 py-0.5 rounded border uppercase font-bold ${
+              item.isConfirmed
+                ? 'bg-accent/10 text-accent border-accent/30'
+                : 'bg-amber-500/10 text-amber-400 border-amber-500/30'
+            }`}
+          >
+            {item.isConfirmed ? (
+              <>
+                <CheckCircle2 className="w-3 h-3" /> Confirmed
+              </>
+            ) : (
+              <>
+                <Clock className="w-3 h-3" /> Pending (Double Opt-In)
+              </>
+            )}
+          </span>
+        );
+      },
     },
     {
       key: 'createdAt',
@@ -465,7 +475,7 @@ function AdminNewsletterContent() {
         onSearchChange={setSearch}
         filterSlot={
           <div className="flex items-center gap-1 bg-surface-muted p-1 rounded-lg border border-border">
-            {['all', 'confirmed', 'pending'].map((st) => (
+            {['all', 'confirmed', 'pending', 'unsubscribed'].map((st) => (
               <button
                 key={st}
                 type="button"

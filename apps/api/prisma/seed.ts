@@ -1371,7 +1371,201 @@ async function main() {
     }
   }
 
+  // ─── 14. Email Templates ───────────────────────────────────
+  console.log('📧 Seeding default email templates...');
+  const defaultTemplates = [
+    {
+      purpose: 'contact_auto_reply',
+      name: 'Contact Form Auto-Reply',
+      description: 'Auto-reply sent to visitors acknowledging their contact message submission.',
+      subject: 'Thank you for reaching out, {{name}}!',
+      bodyHtml:
+        '<p>Hi <strong>{{name}}</strong>,</p><p>Thank you for reaching out. I have received your message regarding "{{subject}}" and will get back to you shortly.</p><p>Best regards,<br/>Anuj Yadav</p>',
+      bodyText:
+        'Hi {{name}},\n\nThank you for reaching out. I have received your message regarding "{{subject}}" and will get back to you shortly.\n\nBest regards,\nAnuj Yadav',
+      variables: ['name', 'email', 'subject', 'message', 'siteUrl'],
+      isActive: true,
+      isEnabled: true,
+    },
+    {
+      purpose: 'contact_admin_notification',
+      name: 'Contact Admin Notification',
+      description: 'Instant notification dispatched to administrator upon a new contact form inquiry.',
+      subject: 'New Contact Inquiry from {{name}}: {{subject}}',
+      bodyHtml:
+        '<p>You have received a new contact inquiry:</p><p><strong>From:</strong> {{name}} ({{email}})<br/><strong>Subject:</strong> {{subject}}<br/><strong>IP:</strong> {{ipAddress}}</p><p><strong>Message:</strong></p><p>{{message}}</p>',
+      bodyText:
+        'New contact inquiry:\nFrom: {{name}} ({{email}})\nSubject: {{subject}}\nIP: {{ipAddress}}\nMessage:\n{{message}}',
+      variables: ['name', 'email', 'subject', 'message', 'ipAddress', 'submittedAt', 'siteUrl'],
+      isActive: true,
+      isEnabled: true,
+    },
+    {
+      purpose: 'newsletter_confirmation',
+      name: 'Newsletter Confirmation',
+      description: 'Sent to new newsletter subscribers with their unique verification link.',
+      subject: 'Confirm your newsletter subscription',
+      bodyHtml:
+        '<p>Hi {{name}},</p><p>Please confirm your subscription by clicking <a href="{{confirmationUrl}}">here</a>.</p>',
+      bodyText: 'Hi {{name}},\n\nPlease confirm your subscription:\n{{confirmationUrl}}',
+      variables: ['name', 'email', 'confirmationUrl', 'siteUrl'],
+      isActive: true,
+      isEnabled: true,
+    },
+    {
+      purpose: 'newsletter_welcome',
+      name: 'Newsletter Welcome Email',
+      description: 'Sent to subscribers immediately upon confirming their subscription.',
+      subject: 'Welcome to the Engineering Dispatch!',
+      bodyHtml:
+        '<p>Hi {{name}},</p><p>Welcome to the newsletter! You will receive periodic engineering updates and case studies.</p>',
+      bodyText: 'Hi {{name}},\n\nWelcome to the newsletter!',
+      variables: ['name', 'email', 'unsubscribeUrl', 'siteUrl'],
+      isActive: true,
+      isEnabled: true,
+    },
+    {
+      purpose: 'newsletter_admin_notification',
+      name: 'Newsletter New Subscriber Alert',
+      description: 'Alert sent to administrator whenever a new reader joins the subscriber list.',
+      subject: 'New Newsletter Subscriber: {{email}}',
+      bodyHtml:
+        '<p>New subscriber joined your newsletter:</p><p><strong>Email:</strong> {{email}}<br/><strong>Name:</strong> {{name}}</p>',
+      bodyText: 'New subscriber:\nEmail: {{email}}\nName: {{name}}',
+      variables: ['email', 'name', 'isConfirmed', 'subscribedAt', 'siteUrl'],
+      isActive: true,
+      isEnabled: true,
+    },
+    {
+      purpose: 'newsletter_unsubscribe_admin_notification',
+      name: 'Newsletter Unsubscribed Alert',
+      description: 'Notification sent to administrator whenever a reader unsubscribes from the newsletter.',
+      subject: 'Newsletter Unsubscribed: {{email}}',
+      bodyHtml:
+        '<div style="max-width: 560px; margin: 0 auto; background: #0c1017; border: 1px solid #1c2333; border-radius: 12px; padding: 32px 32px; font-family: -apple-system, BlinkMacSystemFont, \'Segoe UI\', Roboto, sans-serif;"><h2 style="font-size: 20px; font-weight: bold; color: #10b981; margin: 0 0 6px 0;">Subscriber Unsubscribed</h2><p style="margin: 0 0 20px 0; font-size: 13px; color: #8b949e;">A reader has unsubscribed from your newsletter dispatch:</p><table style="width: 100%; border-collapse: collapse; font-size: 13px;"><tr style="border-bottom: 1px solid #1c2333;"><td style="padding: 10px 0; color: #8b949e; width: 140px;">Email:</td><td style="padding: 10px 0; color: #ffffff; font-weight: 500;"><a href="mailto:{{email}}" style="color: #ffffff; text-decoration: none;">{{email}}</a></td></tr><tr style="border-bottom: 1px solid #1c2333;"><td style="padding: 10px 0; color: #8b949e;">Name:</td><td style="padding: 10px 0; color: #ffffff; font-weight: 500;">{{name}}</td></tr><tr style="border-bottom: 1px solid #1c2333;"><td style="padding: 10px 0; color: #8b949e;">Status:</td><td style="padding: 10px 0; color: #10b981; font-weight: 500;">Unsubscribed</td></tr><tr><td style="padding: 10px 0; color: #8b949e;">Unsubscribed At:</td><td style="padding: 10px 0; color: #ffffff;">{{unsubscribedAt}}</td></tr></table></div>',
+      bodyText:
+        'Newsletter Unsubscribed:\nEmail: {{email}}\nName: {{name}}\nStatus: Unsubscribed\nUnsubscribed At: {{unsubscribedAt}}',
+      variables: ['email', 'name', 'unsubscribedAt', 'siteUrl'],
+      isActive: true,
+      isEnabled: true,
+    },
+
+    {
+      purpose: 'newsletter_broadcast',
+      name: 'Newsletter Broadcast Template',
+      description: 'Default template for broadcasting new blog posts and articles to all subscribers.',
+      subject: '{{subject}}',
+      bodyHtml: '<div>{{{contentHtml}}}</div>',
+      bodyText: '{{subject}}\n\n{{contentHtml}}',
+      variables: ['name', 'email', 'subject', 'previewText', 'contentHtml', 'unsubscribeUrl', 'siteUrl'],
+      isActive: true,
+      isEnabled: true,
+    },
+    {
+      purpose: 'resume_download_admin',
+      name: 'Resume Download Alert',
+      description: 'Dispatched when a visitor or recruiter downloads your resume PDF.',
+      subject: 'Resume Downloaded by visitor from {{country}}, {{city}}',
+      bodyHtml:
+        '<p>A visitor has downloaded your resume:</p><p><strong>Location:</strong> {{city}}, {{country}}<br/><strong>Referrer:</strong> {{referrerSource}}<br/><strong>IP:</strong> {{ipAddress}}</p>',
+      bodyText:
+        'Resume Downloaded:\nLocation: {{city}}, {{country}}\nReferrer: {{referrerSource}}\nIP: {{ipAddress}}',
+      variables: ['resumeTitle', 'ipAddress', 'country', 'city', 'referrerSource', 'downloadedAt', 'siteUrl'],
+      isActive: true,
+      isEnabled: true,
+    },
+    {
+      purpose: 'content_published_admin',
+      name: 'Scheduled Content Published',
+      description: 'Summary report sent when scheduled blog posts or projects go live automatically.',
+      subject: 'Scheduled Content Published ({{itemCount}} item(s))',
+      bodyHtml:
+        '<p>The automated scheduler published {{itemCount}} item(s):</p><p>{{publishedItemsSummary}}</p>',
+      bodyText: 'Scheduled content published ({{itemCount}} items):\n{{publishedItemsSummary}}',
+      variables: ['itemCount', 'publishedItemsSummary', 'publishedAt', 'siteUrl'],
+      isActive: true,
+      isEnabled: true,
+    },
+    {
+      purpose: 'guestbook_admin_notification',
+      name: 'Guestbook New Entry Alert',
+      description: 'Dispatched when a new guestbook note is submitted and awaiting review.',
+      subject: 'New Guestbook Signature from {{authorName}}',
+      bodyHtml:
+        '<p>New guestbook entry awaiting moderation from <strong>{{authorName}}</strong> ({{authorEmail}}):</p><p>{{message}}</p>',
+      bodyText:
+        'New guestbook entry:\nAuthor: {{authorName}} ({{authorEmail}})\nMessage:\n{{message}}',
+      variables: ['authorName', 'authorEmail', 'message', 'submittedAt', 'siteUrl'],
+      isActive: true,
+      isEnabled: true,
+    },
+    {
+      purpose: 'guestbook_approved',
+      name: 'Guestbook Entry Approved',
+      description: 'Notice sent to author when their guestbook entry is approved.',
+      subject: 'Your guestbook message is now live!',
+      bodyHtml:
+        '<p>Hi {{authorName}},</p><p>Your guestbook entry has been approved and is now live on the portfolio:</p><p><em>"{{message}}"</em></p>',
+      bodyText:
+        'Hi {{authorName}},\n\nYour guestbook message is now live:\n"{{message}}"\n\nBest,\nAnuj Yadav',
+      variables: ['authorName', 'authorEmail', 'message', 'approvedAt', 'siteUrl'],
+      isActive: true,
+      isEnabled: true,
+    },
+    {
+      purpose: 'visit_admin_notification',
+      name: 'Visitor Telemetry Alert',
+      description: 'Notification sent to admin when a new unique visitor browses the site.',
+      subject: 'New Portfolio Visitor from {{country}}, {{city}}',
+      bodyHtml:
+        '<p>New visitor session:</p><p><strong>Location:</strong> {{city}}, {{country}}<br/><strong>Device:</strong> {{deviceType}} ({{os}}, {{browser}})<br/><strong>Referrer:</strong> {{referrerSource}}</p>',
+      bodyText:
+        'New visitor session:\nLocation: {{city}}, {{country}}\nDevice: {{deviceType}} ({{os}}, {{browser}})\nReferrer: {{referrerSource}}',
+      variables: ['city', 'country', 'deviceType', 'os', 'browser', 'referrerSource', 'visitedAt', 'siteUrl'],
+      isActive: true,
+      isEnabled: true,
+    },
+    {
+      purpose: 'admin_login_security',
+      name: 'Security: Admin Login Alert',
+      description: 'Security alert sent to admin upon login.',
+      subject: 'Security Alert: New Admin Login from {{ipAddress}}',
+      bodyHtml:
+        '<p>Security Notice: New admin login detected from IP <strong>{{ipAddress}}</strong> ({{location}}) using {{deviceType}} / {{browser}}.</p>',
+      bodyText:
+        'Security Alert: New admin login from {{ipAddress}} ({{location}}) on {{deviceType}} ({{browser}}).',
+      variables: ['ipAddress', 'location', 'deviceType', 'browser', 'loginTime', 'siteUrl'],
+      isActive: true,
+      isEnabled: true,
+    },
+    {
+      purpose: 'security_profile_updated',
+      name: 'Security: Profile Updated',
+      description: 'Notice sent when admin credentials or profile change.',
+      subject: 'Security Notice: {{actionType}} on your account',
+      bodyHtml:
+        '<p>Confirmation: {{actionType}} was performed on your admin account from IP {{ipAddress}} at {{updatedAt}}.</p>',
+      bodyText:
+        'Security Notice: {{actionType}} on your account from {{ipAddress}} at {{updatedAt}}.',
+      variables: ['adminName', 'adminEmail', 'actionType', 'ipAddress', 'updatedAt', 'siteUrl'],
+      isActive: true,
+      isEnabled: true,
+    },
+  ];
+
+  for (const t of defaultTemplates) {
+    const existing = await prisma.emailTemplate.findFirst({
+      where: { purpose: t.purpose },
+    });
+    if (!existing) {
+      await prisma.emailTemplate.create({
+        data: t,
+      });
+    }
+  }
+
   console.log('✅ Database seed completed successfully!');
+
 }
 
 main()

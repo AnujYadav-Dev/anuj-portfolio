@@ -84,5 +84,19 @@ export interface NewsletterSubscriberDto {
   email: string;
   name: string | null;
   isConfirmed: boolean;
+  unsubscribedAt?: string | null;
   createdAt: string;
 }
+
+/** Newsletter unsubscribe request. */
+export interface NewsletterUnsubscribeRequest {
+  token: string;
+}
+
+/** Newsletter unsubscribe verification response. */
+export interface NewsletterUnsubscribeVerifyDto {
+  isValid: boolean;
+  email: string;
+  isUnsubscribed: boolean;
+}
+

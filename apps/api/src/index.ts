@@ -86,6 +86,11 @@ if (config.STORAGE_PROVIDER === 'local') {
     (_req, res, next) => {
       res.setHeader('Cross-Origin-Resource-Policy', 'cross-origin');
       res.setHeader('Access-Control-Allow-Origin', '*');
+      res.removeHeader('X-Frame-Options');
+      res.setHeader(
+        'Content-Security-Policy',
+        "default-src 'self' data: blob:; frame-ancestors *;",
+      );
       next();
     },
     express.static(uploadPath),

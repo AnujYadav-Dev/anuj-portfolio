@@ -171,11 +171,20 @@ export function LatestBlogsSection({ section, index }: DynamicSectionProps) {
                     </div>
 
                     {/* Expandable Hover Details */}
-                    {isHovered && item.excerpt && (
-                      <div className="mt-2.5 pt-2 border-t border-border/40 flex flex-col gap-2 animate-in fade-in slide-in-from-top-1 duration-instant">
-                        <p className="text-xs text-muted line-clamp-2 leading-relaxed">
-                          {item.excerpt}
-                        </p>
+                    {item.excerpt && (
+                      <div
+                        className={cn(
+                          'grid transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)]',
+                          isHovered
+                            ? 'grid-rows-[1fr] opacity-100 mt-2.5 pt-2 border-t border-border/40'
+                            : 'grid-rows-[0fr] opacity-0 mt-0 pt-0 border-t border-transparent pointer-events-none',
+                        )}
+                      >
+                        <div className="overflow-hidden flex flex-col gap-2">
+                          <p className="text-xs text-muted line-clamp-2 leading-relaxed">
+                            {item.excerpt}
+                          </p>
+                        </div>
                       </div>
                     )}
                   </Link>

@@ -24,8 +24,18 @@ export const newsletterRepository = {
     return prisma.newsletterSubscriber.findUnique({ where: { email } });
   },
 
-  async findByToken(confirmationToken: string) {
-    return prisma.newsletterSubscriber.findFirst({ where: { confirmationToken } });
+  async findByToken(token: string) {
+    if (!token || !token.trim()) return null;
+    const cleanToken = token.trim();
+    const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(cleanToken);
+
+    return prisma.newsletterSubscriber.findFirst({
+      where: {
+        OR: isUuid
+          ? [{ id: cleanToken }, { confirmationToken: cleanToken }]
+          : [{ confirmationToken: cleanToken }],
+      },
+    });
   },
 
   async findById(id: string) {
@@ -65,12 +75,8 @@ export const newsletterRepository = {
     return { subscriber: updated, isNewlyConfirmed: true };
   },
 
-  async unsubscribe(tokenOrEmail: string) {
-    const subscriber = await prisma.newsletterSubscriber.findFirst({
-      where: {
-        OR: [{ confirmationToken: tokenOrEmail }, { email: tokenOrEmail }],
-      },
-    });
+  async unsubscribe(token: string) {
+    const subscriber = await this.findByToken(token);
     if (!subscriber) return null;
 
     return prisma.newsletterSubscriber.update({
@@ -81,7 +87,21 @@ export const newsletterRepository = {
     });
   },
 
+  async resubscribe(token: string) {
+    const subscriber = await this.findByToken(token);
+    if (!subscriber) return null;
+
+    return prisma.newsletterSubscriber.update({
+      where: { id: subscriber.id },
+      data: {
+        unsubscribedAt: null,
+        isConfirmed: true,
+      },
+    });
+  },
+
   async delete(id: string) {
     return prisma.newsletterSubscriber.delete({ where: { id } });
   },
 };
+

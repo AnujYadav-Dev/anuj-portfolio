@@ -104,8 +104,15 @@ export function WorksBento({ section, index }: DynamicSectionProps) {
                     </div>
 
                     {/* Expandable Hover Details Drawer */}
-                    {isHovered && (
-                      <div className="mt-3 pt-2.5 border-t border-border/40 flex flex-col gap-3 animate-in fade-in slide-in-from-top-1 duration-instant">
+                    <div
+                      className={cn(
+                        'grid transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)]',
+                        isHovered
+                          ? 'grid-rows-[1fr] opacity-100 mt-3 pt-2.5 border-t border-border/40'
+                          : 'grid-rows-[0fr] opacity-0 mt-0 pt-0 border-t border-transparent pointer-events-none',
+                      )}
+                    >
+                      <div className="overflow-hidden flex flex-col gap-3">
                         {project.shortDescription && (
                           <p className="text-xs text-muted line-clamp-2 leading-relaxed">
                             {project.shortDescription}
@@ -136,7 +143,7 @@ export function WorksBento({ section, index }: DynamicSectionProps) {
                           </div>
                         </div>
                       </div>
-                    )}
+                    </div>
                   </div>
                 </RevealOnScroll>
               );

@@ -1,10 +1,12 @@
 'use client';
 
 import * as React from 'react';
-import { ExternalLink, Award, ShieldCheck } from 'lucide-react';
+import { ExternalLink, Award, ShieldCheck, FileCheck2, Image as ImageIcon } from 'lucide-react';
 import { Card, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import { RevealOnScroll } from '@/components/motion/RevealOnScroll';
+import { ProofDocumentModal, type ProofDocumentModalProps } from '@/components/features/about/ProofDocumentModal';
 
 import type { CertificateDto, AchievementDto } from '@portfolio/shared';
 
@@ -14,6 +16,36 @@ export interface CertificatesGalleryProps {
 }
 
 export function CertificatesGallery({ certificates, achievements }: CertificatesGalleryProps) {
+  const [selectedProof, setSelectedProof] = React.useState<Omit<ProofDocumentModalProps, 'isOpen' | 'onClose'> | null>(null);
+
+  const handleOpenCertProof = (cert: CertificateDto, issueDate: string) => {
+    if (!cert.certificateImageUrl) return;
+    setSelectedProof({
+      title: cert.name,
+      subtitle: cert.issuingOrganization,
+      date: issueDate,
+      issuer: cert.issuingOrganization,
+      credentialId: cert.credentialId || undefined,
+      credentialUrl: cert.credentialUrl || undefined,
+      mediaUrl: cert.certificateImageUrl,
+      isCertificate: true,
+    });
+  };
+
+  const handleOpenAchProof = (ach: AchievementDto, achDate: string) => {
+    if (!ach.imageUrl) return;
+    setSelectedProof({
+      title: ach.title,
+      subtitle: ach.issuer || undefined,
+      date: achDate,
+      issuer: ach.issuer || undefined,
+      credentialUrl: ach.url || undefined,
+      description: ach.description || undefined,
+      mediaUrl: ach.imageUrl,
+      isCertificate: false,
+    });
+  };
+
   return (
     <div className="flex flex-col gap-16">
       {/* Certifications Section */}
@@ -53,19 +85,31 @@ export function CertificatesGallery({ certificates, achievements }: Certificates
                       )}
                     </CardHeader>
 
-                    <CardFooter className="justify-between border-t border-border mt-4 pt-3 text-xs">
-                      {cert.credentialUrl ? (
+                    <CardFooter className="justify-between border-t border-border mt-4 pt-3 text-xs flex-wrap gap-2">
+                      {cert.certificateImageUrl ? (
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          className="h-7 text-[11px] px-2.5 text-accent border-accent/30 hover:bg-accent/10"
+                          onClick={() => handleOpenCertProof(cert, issueDate)}
+                        >
+                          <FileCheck2 className="h-3 w-3 mr-1" />
+                          <span>View Proof</span>
+                        </Button>
+                      ) : (
+                        <span className="text-muted">Verified</span>
+                      )}
+
+                      {cert.credentialUrl && (
                         <a
                           href={cert.credentialUrl}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="text-accent hover:underline underline-offset-4 flex items-center gap-1 font-semibold"
+                          className="text-accent hover:underline underline-offset-4 flex items-center gap-1 font-semibold ml-auto"
                         >
                           <ExternalLink className="h-3.5 w-3.5" />
-                          <span>Verify Credential</span>
+                          <span>Verify</span>
                         </a>
-                      ) : (
-                        <span className="text-muted">Verified</span>
                       )}
                     </CardFooter>
                   </Card>
@@ -113,19 +157,31 @@ export function CertificatesGallery({ certificates, achievements }: Certificates
                       )}
                     </CardHeader>
 
-                    {ach.url && (
-                      <CardFooter className="border-t border-border mt-4 pt-3 text-xs">
+                    <CardFooter className="border-t border-border mt-4 pt-3 text-xs justify-between flex-wrap gap-2">
+                      {ach.imageUrl && (
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          className="h-7 text-[11px] px-2.5 text-accent border-accent/30 hover:bg-accent/10"
+                          onClick={() => handleOpenAchProof(ach, achDate)}
+                        >
+                          <ImageIcon className="h-3 w-3 mr-1" />
+                          <span>View Photo & Proof</span>
+                        </Button>
+                      )}
+
+                      {ach.url && (
                         <a
                           href={ach.url}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="text-accent hover:underline underline-offset-4 flex items-center gap-1 font-semibold"
+                          className="text-accent hover:underline underline-offset-4 flex items-center gap-1 font-semibold ml-auto"
                         >
                           <ExternalLink className="h-3.5 w-3.5" />
-                          <span>View Announcement</span>
+                          <span>Announcement</span>
                         </a>
-                      </CardFooter>
-                    )}
+                      )}
+                    </CardFooter>
                   </Card>
                 </RevealOnScroll>
               );
@@ -133,6 +189,16 @@ export function CertificatesGallery({ certificates, achievements }: Certificates
           </div>
         </div>
       )}
+
+      {/* Proof Modal Viewer */}
+      {selectedProof && (
+        <ProofDocumentModal
+          isOpen={Boolean(selectedProof)}
+          onClose={() => setSelectedProof(null)}
+          {...selectedProof}
+        />
+      )}
     </div>
   );
 }
+

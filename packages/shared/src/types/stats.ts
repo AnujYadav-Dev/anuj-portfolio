@@ -1,5 +1,10 @@
 // Public statistics DTO.
 
+export interface TechnologyStatItem {
+  name: string;
+  count: number;
+}
+
 export interface PublicStatsDto {
   totalProjects: number;
   totalBlogPosts: number;
@@ -9,5 +14,10 @@ export interface PublicStatsDto {
   yearsOfExperience: number;
   totalOpenSourceRepos: number;
   totalGithubStars: number;
+  totalReadingTimeMinutes?: number;
+  totalWordsWritten?: number;
+  totalCountriesCount?: number;
+  topTechnologies?: TechnologyStatItem[];
   updatedAt: string;
 }
+

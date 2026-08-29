@@ -793,6 +793,7 @@ export function mapNewsletterSubscriberToDto(sub: NewsletterSubscriber): Newslet
     email: sub.email,
     name: sub.name,
     isConfirmed: sub.isConfirmed,
+    unsubscribedAt: sub.unsubscribedAt ? sub.unsubscribedAt.toISOString() : null,
     createdAt: sub.createdAt.toISOString(),
   };
 }

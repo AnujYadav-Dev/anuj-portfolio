@@ -9,9 +9,7 @@ import { useTheme } from 'next-themes';
 import {
   Dialog,
   DialogContent,
-  DialogHeader,
   DialogTitle,
-  DialogDescription,
 } from '@/components/ui/dialog';
 
 interface GeoWorldMapProps {

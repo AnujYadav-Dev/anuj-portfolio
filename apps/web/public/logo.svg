@@ -1,0 +1,41 @@
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  viewBox="0 0 1200 1200"
+  role="img"
+  aria-label="A dash logo"
+>
+  <!-- Background -->
+  <rect width="1200" height="1200" fill="#000000" rx="142" ry="142"
+  />
+
+  <!-- A -->
+  <path
+    fill="#ffffff"
+    fill-rule="evenodd"
+    d="
+      M 220 335
+      H 410
+      L 595 850
+      H 420
+      L 395 775
+      H 220
+      L 198 850
+      H 30
+      Z
+
+      M 312 475
+      L 255 660
+      H 365
+      Z
+    "
+  />
+
+  <!-- Dash -->
+  <rect
+    x="645"
+    y="732"
+    width="500"
+    height="120"
+    fill="#ffffff"
+  />
+</svg>

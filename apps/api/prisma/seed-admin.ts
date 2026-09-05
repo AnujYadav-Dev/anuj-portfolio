@@ -17,8 +17,8 @@ const adapter = new PrismaPg(pool);
 const prisma = new PrismaClient({ adapter });
 
 async function seedAdmin() {
-  const email = process.env.ADMIN_SEED_EMAIL || 'anujy7591@gmail.com';
-  const username = process.env.ADMIN_SEED_USERNAME || 'anujy7591';
+  const email = process.env.ADMIN_SEED_EMAIL || 'anujyadav9449@gmail.com';
+  const username = process.env.ADMIN_SEED_USERNAME || 'anujyadav';
   const displayName = process.env.ADMIN_SEED_NAME || 'Anuj Yadav';
   const password = process.env.ADMIN_SEED_PASSWORD || 'Admin@123';
 

@@ -27,6 +27,11 @@ export function getClientIp(req: Request): string {
     if (first) {
       return normalizeIpForDb(first);
     }
+  } else if (Array.isArray(forwarded) && forwarded.length > 0) {
+    const first = forwarded[0]?.split(',')[0]?.trim();
+    if (first) {
+      return normalizeIpForDb(first);
+    }
   }
 
   // 5. Direct socket IP
@@ -61,7 +66,15 @@ export function parseReferrerSource(referrer: string | undefined): string | null
   }
 }
 
-/** Normalize IP for PostgreSQL INET column (strip IPv6-mapped prefix). */
+/** Normalize IP for PostgreSQL INET column (strip IPv6-mapped prefix and optional port). */
 export function normalizeIpForDb(ip: string): string {
-  return ip.replace(/^::ffff:/, '');
+  let clean = ip.replace(/^::ffff:/, '').trim();
+  const ipv6WithPort = clean.match(/^\[([a-fA-F0-9:]+)\](?::\d+)?$/);
+  if (ipv6WithPort && ipv6WithPort[1]) {
+    return ipv6WithPort[1];
+  }
+  if (/^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}:\d+$/.test(clean)) {
+    clean = clean.split(':')[0]!;
+  }
+  return clean;
 }

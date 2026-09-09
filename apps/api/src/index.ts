@@ -150,7 +150,7 @@ app.use('/api/v1', apiRouter);
 app.use(errorHandler);
 
 if (process.env.NODE_ENV !== 'test') {
-  app.listen(config.PORT, () => {
+  app.listen(config.PORT, '127.0.0.1', () => {
     logger.info({ port: config.PORT, env: config.NODE_ENV }, 'API server started');
     schedulerService.startScheduler();
   });
